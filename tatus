@@ -1,0 +1,521 @@
+[33mcommit 4ab37071424c261f5c1ab4ca0f4e041484038d55[m[33m ([m[1;36mHEAD[m[33m)[m
+Author: Agata Ping <agataping2001@gmail.com>
+Date:   Tue Dec 31 13:48:07 2024 +0800
+
+    Initial commit
+
+[33mcommit 890835b7a13213d09c9f005d06be614204c2ef59[m[33m ([m[1;33mtag: [m[1;33mv10.3.1[m[33m)[m
+Author: Ahmed shamim <shaon.cse81@gmail.com>
+Date:   Sat Dec 23 21:57:06 2023 +0600
+
+    [10.x] Add roundrobin transport driver config (#6301)
+    
+    * add roundrobin transport driver config
+    
+    * Update mail.php
+    
+    ---------
+    
+    Co-authored-by: Taylor Otwell <taylor@laravel.com>
+
+[33mcommit 07fdfbc8d8d88440634bd1c42075653dbb5df402[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Dec 19 15:18:17 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 647c9bc29e7ff2dd5d3455e925c33445c8400b79[m[33m ([m[1;33mtag: [m[1;33mv10.3.0[m[33m)[m
+Author: Tim MacDonald <hello@timacdonald.me>
+Date:   Wed Dec 20 01:44:37 2023 +1100
+
+    Update version requirement (#6292)
+
+[33mcommit 4705136d1b90c708097d57f0959802772d65cb69[m
+Author: Taylor Otwell <taylor@laravel.com>
+Date:   Thu Dec 14 09:31:30 2023 -0600
+
+    disable pulse for testing
+
+[33mcommit 3142d3feb916d93683c020189c00f4e89d6ab385[m
+Author: TENIOS <40282681+TENIOS@users.noreply.github.com>
+Date:   Mon Dec 11 15:17:19 2023 +0700
+
+    Use `assertOk()` instead of `assertStatus(200)` (#6287)
+
+[33mcommit e57d15ac8f71ac65eb974b7a535804b6552bf4f1[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Dec 5 19:45:52 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit d6a2d8b837fc86af6ba9f57ea6bd2bac1e386e39[m[33m ([m[1;33mtag: [m[1;33mv10.2.10[m[33m)[m
+Author: Fabrice Locher <fabrice.locher@contoweb.ch>
+Date:   Thu Nov 30 23:35:41 2023 +0100
+
+    [10.x] Add partitioned cookie config key (#6257)
+    
+    * [10.x] Add partitioned cookie config key
+    
+    * formatting
+    
+    ---------
+    
+    Co-authored-by: Taylor Otwell <taylor@laravel.com>
+
+[33mcommit 73cf5bc5bcbf8af21d70a41a00473b53e6cc04d4[m
+Author: Nuno Maduro <enunomaduro@gmail.com>
+Date:   Tue Nov 21 02:20:28 2023 +1100
+
+    [10.x] Fixes missing property description (#6275)
+    
+    * Fixes missing property description
+    
+    * Update UserFactory.php
+    
+    ---------
+    
+    Co-authored-by: Taylor Otwell <taylor@laravel.com>
+
+[33mcommit 4d3c3a130f5e46d3cbca2efa34dce0c714ccd963[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Nov 14 18:50:10 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit a546b52b3bbbfd06361d9feada3932f95eb5ef82[m[33m ([m[1;33mtag: [m[1;33mv10.2.9[m[33m)[m
+Author: Eliezer Margareten <46111162+emargareten@users.noreply.github.com>
+Date:   Mon Nov 13 18:36:45 2023 +0200
+
+    Update package.json (#6272)
+
+[33mcommit 40a7605dc1c5bea2d78fb31472e14b982252a5f2[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Thu Nov 2 13:49:26 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 024c86a24bdc8b02c38d41442f3908aae09f31a7[m[33m ([m[1;33mtag: [m[1;33mv10.2.8[m[33m)[m
+Author: Taylor Otwell <taylor@laravel.com>
+Date:   Thu Nov 2 08:42:28 2023 -0500
+
+    Revert "Let database handle default collation (#6241)" (#6266)
+    
+    This reverts commit 74c5a01b09b24950cfcffbbc3bad9c2749f7388b.
+
+[33mcommit c7098938d3a2ee7c24c03b88652b1361d04671f9[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Oct 31 15:25:43 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit ad1c5fe4c2e60e35d123eb4361a0734d51776e45[m[33m ([m[1;33mtag: [m[1;33mv10.2.7[m[33m)[m
+Author: hedge-freek <117437674+hedge-freek@users.noreply.github.com>
+Date:   Tue Oct 31 15:38:55 2023 +0100
+
+    Redis maintenance store config example contains an excess space (#6264)
+    
+    Binary operators should be surrounded by space a single space.
+
+[33mcommit 21ad6d6915df7d8b3825e6d7a7f47f716600e87b[m
+Author: Tim MacDonald <hello@timacdonald.me>
+Date:   Thu Oct 26 06:32:54 2023 +1100
+
+    Verify algo (#6258)
+
+[33mcommit b0b29e12963d286daaaa5f182d0471aa04fbcd79[m
+Author: Mior Muhammad Zaki <crynobone@gmail.com>
+Date:   Wed Oct 25 22:29:35 2023 +0800
+
+    [10.x] Update minimum `laravel/sanctum` (#6261)
+    
+    PR #6234 updated the configuration but it depends on Sanctum 3.3. This PR avoids installing Sanctum 3.2 with the new config.
+
+[33mcommit 7fe97a165af1b480eed172e7f38c1ca8de7eb2ff[m
+Author: Tim MacDonald <hello@timacdonald.me>
+Date:   Wed Oct 25 01:11:07 2023 +1100
+
+    [10.x] Update fixture hash to match testing cost (#6259)
+    
+    * Update fixture hash to match testing cost
+    
+    * Conditionally use lower cost in tests
+    
+    * use hash facade and memoize
+    
+    * remove import
+    
+    ---------
+    
+    Co-authored-by: Taylor Otwell <taylor@laravel.com>
+
+[33mcommit 036ea83da2afba28163a1f959a227cda7bd14a88[m
+Author: Nuno Maduro <enunomaduro@gmail.com>
+Date:   Tue Oct 17 14:17:21 2023 +0100
+
+    Uses `actions/checkout@v4`
+
+[33mcommit 25070a3ffb175c15b59cd7f12289a9648165bba3[m
+Author: Martin Bastien <bastien.martin@gmail.com>
+Date:   Tue Sep 26 21:37:09 2023 -0400
+
+    Fix typo in the comment for token prefix (sanctum config) (#6248)
+
+[33mcommit 960ea7b325e3ec43c8e795da307f354e61941a66[m
+Author: Taylor Otwell <taylor@laravel.com>
+Date:   Mon Sep 25 16:38:15 2023 -0500
+
+    Update README.md
+
+[33mcommit 78243dda899443d478e2a555f8c94d023a2db633[m
+Author: Taylor Otwell <taylor@laravel.com>
+Date:   Mon Sep 25 16:29:45 2023 -0500
+
+    Update README.md
+
+[33mcommit 8e5f0e5d00c2398da45404fdcd052c9518a4622f[m
+Author: Julius Kiekbusch <contact@julius-kiekbusch.de>
+Date:   Fri Sep 22 20:03:48 2023 +0200
+
+    Use 12 bcrypt rounds for password in UserFactory (#6247)
+
+[33mcommit 540cec038fe3b2ae6859e0f26d12caf839082d03[m
+Author: Stephen Rees-Carter <stephen@rees-carter.net>
+Date:   Sat Sep 23 01:06:29 2023 +1000
+
+    Increase bcrypt rounds to 12 (#6245)
+
+[33mcommit 88695a7cf4b1fb2a248d129f8b53400ec65ddf8f[m
+Author: Julius Kiekbusch <contact@julius-kiekbusch.de>
+Date:   Wed Sep 20 15:58:12 2023 +0200
+
+    Add PHP 8.3 to Tests Matrix (#6244)
+
+[33mcommit 74c5a01b09b24950cfcffbbc3bad9c2749f7388b[m
+Author: Julius Kiekbusch <contact@julius-kiekbusch.de>
+Date:   Tue Sep 19 16:15:38 2023 +0200
+
+    Let database handle default collation (#6241)
+
+[33mcommit 96d3ecf5c26577530306374eb8e164fdc7425978[m
+Author: Julius Kiekbusch <jubeki99@gmail.com>
+Date:   Sat Sep 16 00:29:57 2023 +0200
+
+    Revert "Fix incorrect collation for MySQL 8 (#6239)" (#6240)
+    
+    This reverts commit c088b3b7655fd2bc8c53d883f90f53e65bacc3e7.
+
+[33mcommit c088b3b7655fd2bc8c53d883f90f53e65bacc3e7[m
+Author: Raj Siva-Rajah <5361908+binaryfire@users.noreply.github.com>
+Date:   Fri Sep 15 22:48:41 2023 +0930
+
+    Fix incorrect collation for MySQL 8 (#6239)
+
+[33mcommit bfead27a2880347b0b5bfcf456a3691e9ba54ac0[m
+Author: Ahmed Fathy <fathy.dev@gmail.com>
+Date:   Thu Sep 7 18:48:35 2023 +0300
+
+    [10.x] Update sanctum config file (#6234)
+    
+    * update sanctum config file
+    
+    * Update sanctum.php
+    
+    ---------
+    
+    Co-authored-by: Taylor Otwell <taylor@laravel.com>
+
+[33mcommit 32ecad53a9a59d7ad33dbfd6352a5ea0fd0da2cf[m
+Author: Ninja <yazjallad@gmail.com>
+Date:   Mon Aug 21 12:34:28 2023 -0700
+
+    Postmark mailer configuraiton update. (#6228)
+    
+    * Update mail.php
+    
+    ref https://github.com/craigpaul/laravel-postmark/issues/141
+    
+    * Update mail.php
+    
+    ---------
+    
+    Co-authored-by: Taylor Otwell <taylor@laravel.com>
+
+[33mcommit 56c6f6b6b64a00c529e35e5af139cb3a5fc0ae21[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Aug 15 15:27:37 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 36047268f130477fa17270e26b1bb5991d781265[m[33m ([m[1;33mtag: [m[1;33mv10.2.6[m[33m)[m
+Author: Andréas Lundgren <1066486+adevade@users.noreply.github.com>
+Date:   Thu Aug 10 09:19:31 2023 +0200
+
+    Bump `laravel-vite-plugin` to latest version (#6224)
+
+[33mcommit 04a8e8553e6bf0ed54f5136949d7152df025dd91[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Jul 11 14:38:41 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit f419821bd8cbc736ac6f9b2fce75a4e373a4b49f[m[33m ([m[1;33mtag: [m[1;33mv10.2.5[m[33m)[m
+Author: Taylor Otwell <taylor@laravel.com>
+Date:   Fri Jun 30 10:18:14 2023 -0500
+
+    shorten directories
+
+[33mcommit 6c1a39b5b38eebbb43f7a2ae28c73c155f506d21[m
+Author: Benedikt Franke <benedikt@franke.tech>
+Date:   Fri Jun 30 17:16:51 2023 +0200
+
+    Omit default values for suffix in phpunit.xml (#6210)
+    
+    The values specified for `suffix` are their respective defaults and can be omitted.
+
+[33mcommit 3ac233abb21e29c94727c56c027067f3da9cbe32[m
+Author: Domantas Petrauskas <hello@domnantas.lt>
+Date:   Thu Jun 22 02:07:13 2023 +0300
+
+    Allow accessing APP_NAME in Vite (#6204)
+
+[33mcommit f31772234895a7e317be2a87edc9a453aff474d1[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Jun 20 15:53:51 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 84991f23011dfde4bc3ae3db04343c3afb3bc122[m[33m ([m[1;33mtag: [m[1;33mv10.2.4[m[33m)[m
+Author: Eliezer Margareten <46111162+emargareten@users.noreply.github.com>
+Date:   Wed Jun 7 16:20:56 2023 +0300
+
+    Update Kernel.php (#6193)
+
+[33mcommit a410a5af42385470fe9c5eec098acee4fb4de7fa[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Jun 6 14:54:05 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 85203d687ebba72b2805b89bba7d18dfae8f95c8[m[33m ([m[1;33mtag: [m[1;33mv10.2.3[m[33m)[m
+Author: Taylor Otwell <taylor@laravel.com>
+Date:   Thu Jun 1 11:12:25 2023 -0500
+
+    update description
+
+[33mcommit 812bfb6911c225df3921c7874e6b373eb4c8ddae[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Wed May 24 13:24:31 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit a6bfbc7f90e33fd6cae3cb23f106c9689858c3b5[m[33m ([m[1;33mtag: [m[1;33mv10.2.2[m[33m)[m
+Author: Taylor Otwell <taylor@laravel.com>
+Date:   Tue May 23 16:45:40 2023 -0500
+
+    add lock path
+
+[33mcommit fb8e9cee79bc3cebff9ee20068d95eefbb281aa7[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue May 16 15:38:55 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 953eae29387eb962b5e308a29f9a6d95de837ab0[m[33m ([m[1;33mtag: [m[1;33mv10.2.1[m[33m)[m
+Author: Jesse Leite <jesseleite@gmail.com>
+Date:   Fri May 12 14:39:56 2023 -0400
+
+    Bring back cluster config option, as required by pusher-js v8.0. (#6174)
+
+[33mcommit 7e0a2db2e072436dd00a4fa129aebffb3c08d877[m
+Author: Eliezer Margareten <46111162+emargareten@users.noreply.github.com>
+Date:   Wed May 10 21:51:00 2023 +0300
+
+    Add hashed cast to user password (#6171)
+    
+    * Add `hashed` cast to user password
+    
+    * Update composer.json
+
+[33mcommit 90acdfe92be3c471f3fa2b599f8cabda43dbf245[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue May 9 14:24:52 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 150e379ce2f2af2205ce87839565acb8ac6ace2e[m[33m ([m[1;33mtag: [m[1;33mv10.2.0[m[33m)[m
+Author: Saya <379924+chu121su12@users.noreply.github.com>
+Date:   Sat May 6 01:42:51 2023 +0800
+
+    Update mail.php (#6170)
+
+[33mcommit d3b2eada8618f8608c755137acc1741ec74771dc[m
+Author: Tim MacDonald <hello@timacdonald.me>
+Date:   Fri May 5 01:02:09 2023 +1000
+
+    Migrate to modules (#6090)
+
+[33mcommit d14bdeeb6db121cc7d181ce5497211612ce4bc10[m
+Author: Ayman Atmeh <ayman.atmeh@gmail.com>
+Date:   Wed Apr 26 16:39:12 2023 +0300
+
+    Update welcome.blade.php (#6163)
+    
+    "Set z-index to 10 for Login/Register container to ensure it appears on top of other elements"
+
+[33mcommit 5070934fc5fb8bea7a4c8eca44a6b0bd59571be7[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Apr 18 16:22:10 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit ec38e3bf7618cda1b44c79f907590d4f97749d96[m[33m ([m[1;33mtag: [m[1;33mv10.1.1[m[33m)[m
+Author: Julius Kiekbusch <jubeki99@gmail.com>
+Date:   Tue Apr 18 18:21:20 2023 +0200
+
+    Fix laravel/framework constraints for Default Service Providers (#6160)
+
+[33mcommit 05a41f8a4bf428070cb5cbe0d4f94b85ee6d9bd7[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Apr 18 14:05:48 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit badcf92f91c90a43c6d559002a5be19cfce9eb97[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Apr 18 14:05:26 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit ebf9d30bf3cf41c376e5b2e1ba1b51882d200848[m[33m ([m[1;33mtag: [m[1;33mv10.1.0[m[33m)[m
+Author: Taylor Otwell <taylor@laravel.com>
+Date:   Sat Apr 15 16:53:39 2023 -0500
+
+    [10.x] Minor skeleton slimming (#6159)
+    
+    * remove rate limiter from route provider by default
+    
+    * remove policy place holder
+    
+    * remove broadcast skeleton in favor of new provider in core
+    
+    * use default provider collection
+    
+    * Remove unnecessary properties from exception handler.
+    
+    * add back broadcast provider
+    
+    * update comment
+    
+    * add rate limiting
+    
+    * Apply fixes from StyleCI
+    
+    * fix formatting
+    
+    ---------
+    
+    Co-authored-by: StyleCI Bot <bot@styleci.io>
+
+[33mcommit 64685e6f206bed04d7785e90a5e2e59d14966232[m[33m ([m[1;33mtag: [m[1;33mv10.0.7[m[33m)[m
+Author: Nuno Maduro <enunomaduro@gmail.com>
+Date:   Fri Apr 14 15:03:05 2023 +0100
+
+    Adds `phpunit/phpunit@10.1` support (#6155)
+
+[33mcommit 7cc6699c3d118a5d258a9b23a91478352e26a7d8[m
+Author: Taylor Otwell <taylor@laravel.com>
+Date:   Tue Apr 11 17:17:21 2023 -0500
+
+    clean up comment
+
+[33mcommit a25f40590b302b7673ca805eab83aaabfaee1b26[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Apr 11 16:36:22 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 0bcd012dc0abf47e5eee45daa6bfc0222e2971f3[m[33m ([m[1;33mtag: [m[1;33mv10.0.6[m[33m)[m
+Author: André Olsen <andreolsen4200@gmail.com>
+Date:   Wed Apr 5 17:03:08 2023 +0200
+
+    Add job batching options to Queue configuration file (#6149)
+    
+    * add batching config options to queue config file
+    
+    This adds the batching configuration options to the queue configuration skeleton, so everyone has a faster way of knowing that it's possible to customize the database connection and table options.
+    
+    * formatting
+    
+    ---------
+    
+    Co-authored-by: Taylor Otwell <taylor@laravel.com>
+
+[33mcommit 9184b212130a1eaf95513198f27569f6b9126602[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Mar 28 18:05:26 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 9ae75b58a1ffc00ad36bf1e877fe2bf9ec601b82[m[33m ([m[1;33mtag: [m[1;33mv10.0.5[m[33m)[m
+Author: Alan Poulain <contact@alanpoulain.eu>
+Date:   Wed Mar 8 17:57:09 2023 +0100
+
+    [10.x] Add replace_placeholders to log channels (#6139)
+    
+    * add replace_placeholders to log channels
+    
+    * Update logging.php
+    
+    ---------
+    
+    Co-authored-by: Taylor Otwell <taylor@laravel.com>
+
+[33mcommit d39fb35b4d1192e434b77240547c9a0896aae7e2[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Thu Mar 2 16:19:33 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 22df611a2fe1e95e262643382d583ee0dbbca360[m[33m ([m[1;33mtag: [m[1;33mv10.0.4[m[33m)[m
+Author: Nico <3315078+nicolus@users.noreply.github.com>
+Date:   Mon Feb 27 19:37:48 2023 +0100
+
+    Specify facility in the syslog driver config (#6130)
+
+[33mcommit a337b99dfbc9e5c8d01d3358844cbd57adf6096a[m
+Author: Izzudin Anuar <izzudinanuar96@gmail.com>
+Date:   Sun Feb 26 07:07:54 2023 +1300
+
+    Fix typo (#6128)
+
+[33mcommit 9507bf2b2ad9656eabbb7176b554791c5c402026[m
+Author: driesvints <driesvints@users.noreply.github.com>
+Date:   Tue Feb 21 15:35:21 2023 +0000
+
+    Update CHANGELOG
+
+[33mcommit 37ab32cf760406f767f6a278748546214585c93f[m[33m ([m[1;33mtag: [m[1;33mv10.0.3[m[33m)[m
+Author: Dries Vints <dries@vints.io>
+Date:   Tue Feb 21 16:33:51 2023 +0100
+
+    Update CHANGELOG.md
+
+[33mcommit 63202ceb0f735353cc8becf593200ced6e3b9ba8[m
+Author: TENIOS <40282681+TENIOS@users.noreply.github.com>
+Date:   Tue Feb 21 14:49:27 2023 +0700
+
+    Update .gitignore (#6123)
+    
+    Reorder
+
+[33mcommit e121424f90b3acc0358c5c94dace6524428f74a8[m
+Author: Tim MacDonald <hello@timacdonald.me>
+Date:   Mon Feb 20 22:05:45 2023 +1100
+
+    Reverts #6089 (#6122)
+
+[33mcommit 330995f6bdb8242963f8ef45ffbe866261ab1f38[m
+Author: Ngô Quốc Đạt <datlechin@gmail.com>
+Date:   Sun Feb 19 03:54:42 2023 +0700
+
+    Remove redundant `@return` docblock in UserFactory (#6119)
