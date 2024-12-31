@@ -1,0 +1,77 @@
+@extends('template.main')
+
+@section('title', 'Laba Rugi')
+
+@section('content')
+<div class="container mt-2">
+    <div class="card">
+        <div class="card-body">
+            <div class="col-12">
+                <h2 class="mb-3">LABA RUGI</h2>
+                @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+                @endif
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                <select id="kategori" name="kategori">
+                    @foreach($kategoris as $kategori)
+                    <option value="{{ $kategori->id }}">{{ $kategori->kategori }}</option>
+                    @endforeach
+                </select>
+                <div id="form-input" style="display:none;">
+                    <form action="{{ route('CreateMining') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="KategoriMining" id="kategori-mining">
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" class="form-control" id="description" name="description" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nomor_legalitas">Nomer Legalitas</label>
+                            <input type="text" class="form-control" id="nomor_legalitas" name="nomor_legalitas" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="Status">Status</label>
+                            <input type="text" class="form-control" id="Status" name="Status" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tanggal_berlaku">Tanggal Berlaku</label>
+                            <input type="date" class="form-control" id="tanggal_berlaku" name="tanggal_berlaku" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="achievement">Achievement</label>
+                            <input type="number" class="form-control" id="achievement" name="achievement" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nomor">Nomor</label>
+                            <input type="text" class="form-control" id="nomor" name="nomor" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="kategori_description">Kategori Description</label>
+                            <input type="text" class="form-control" id="kategori_description" name="kategori_description" required>
+                        </div>
+                        <div class="d-flex justify-content-end mt-3">
+                            <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@endsection
+@section('scripts')
+
+@endsection
