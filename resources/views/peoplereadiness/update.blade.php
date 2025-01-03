@@ -1,5 +1,4 @@
 @extends('template.main')
-@extends('components.style')
 
 @section('title', 'Update People Readiness')
 @section('content')

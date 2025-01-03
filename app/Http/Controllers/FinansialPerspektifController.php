@@ -26,21 +26,55 @@ class FinansialPerspektifController extends Controller
             ->pluck('year');
             $datas = DB::table('laba_rugis')
             ->join('kategori_laba_rugis', 'laba_rugis.Description', '=', 'kategori_laba_rugis.id')
-            ->select('laba_rugis.id', 'laba_rugis.PlaYtd', 'laba_rugis.created_by', 'laba_rugis.Actualytd', 'kategori_laba_rugis.id as category_id', 'kategori_laba_rugis.DescriptionName')
+            ->select('laba_rugis.Description', 'laba_rugis.PlaYtd', 
+            'laba_rugis.created_by', 'laba_rugis.Actualytd',
+            'laba_rugis.VerticalAnalisys1',
+            'laba_rugis.VerticalAnalisys',
+            'laba_rugis.Deviation',
+            'laba_rugis.Percentage', 
+            'kategori_laba_rugis.id as category_id', 'kategori_laba_rugis.DescriptionName')
             ->get();
         
         $structuredData = [];
-        $categories = DB::table('kategori_laba_rugis')->get(); 
-        
+        // $categories = DB::table('kategori_laba_rugis')->get(); 
+        $categories = DB::table('kategori_laba_rugis')
+        ->join('laba_rugis', 'kategori_laba_rugis.id', '=', 'laba_rugis.Description')
+        ->select(
+            'laba_rugis.Description', 
+            'laba_rugis.PlaYtd', 
+            'laba_rugis.created_by', 
+            'laba_rugis.Actualytd', 
+            'laba_rugis.VerticalAnalisys1',
+            'laba_rugis.VerticalAnalisys',
+            'laba_rugis.Deviation',
+            'laba_rugis.Percentage', 
+
+            'kategori_laba_rugis.DescriptionName', 
+            'kategori_laba_rugis.parent_id', 
+            'kategori_laba_rugis.id as id'
+        )
+        ->get();
+    
+    // dd($categories); // Debug data
+    
+
         foreach ($categories as $category) {
+            // dd($category);
             if ($category->parent_id === null) {
+                
                 $mainCounter = count(array_filter($structuredData, fn($desc) => $desc['parent_id'] === null)) + 1;
                 $categoryData = [
                     'id' => $category->id,
                     'name' => "{$mainCounter}. {$category->DescriptionName}",
                     'parent_id' => null,
+                    'PlaYtd' => $category->PlaYtd ?? null,  // Default ke null jika tidak ada
+                    'ActualYtd' => $category->ActualYtd ?? null,  // Default ke null jika tidak ada                    
+                    'VerticalAnalisys1' => $category->VerticalAnalisys1 ?? null,  // Default ke null jika tidak ada
+                    'VerticalAnalisys' => $category->VerticalAnalisys ?? null,  // Default ke null jika tidak ada                    
+                    'Deviation' => $category->Deviation ?? null,  // Default ke null jika tidak ada
+                    'Percentage' => $category->Percentage ?? null,  // Default ke null jika tidak ada       
+                    'created_by' => $category->created_by,             
                     'subcategories' => [],
-                    'PlaYtd' => null,
                 ];
         
                 foreach ($categories as $subCategory) {
@@ -48,7 +82,6 @@ class FinansialPerspektifController extends Controller
                         $categoryData['subcategories'][] = [
                             'id' => $subCategory->id,
                             'name' => "{$mainCounter}." . (count($categoryData['subcategories']) + 1) . " {$subCategory->DescriptionName}",
-                            'PlaYtd' => null, 
                             'created_by' => $category->created_by,  // Menambahkan created_by
                         ];
                     }
@@ -62,11 +95,19 @@ class FinansialPerspektifController extends Controller
             foreach ($structuredData as &$category) {
                 if ($category['id'] == $data->category_id && $category['parent_id'] === null) {
                     $category['PlaYtd'] = $data->PlaYtd;
+                    $category['Actualytd'] = $data->Actualytd;
+                    $category['VerticalAnalisys1'] = $data->VerticalAnalisys1;
+                    $category['VerticalAnalisys'] = $data->VerticalAnalisys;
+                    $category['Deviation'] = $data->Deviation;
+                    $category['Percentage'] = $data->Percentage;
+                    $category['created_by'] = $data->created_by;
+
+
                 }
                 foreach ($category['subcategories'] as &$subcategory) {
                     if ($subcategory['id'] == $data->category_id) {
-                        $subcategory['PlaYtd'] = $data->PlaYtd;
                         $subcategory['Actualytd'] = $data->Actualytd;
+
                         $subcategory['created_by'] = $data->created_by;
                     }
                 }
@@ -165,10 +206,10 @@ class FinansialPerspektifController extends Controller
             {
                 // Validasi input
                 $request->validate([
-                    'values.*.PlaYtd' => 'nullable|numeric',
-                    'values.*.VerticalAnalisys1' => 'nullable|numeric',
+                    'values.*.PlaYtd' => 'nullable',
+                    'values.*.VerticalAnalisys1' => 'nullable',
                     'values.*.VerticalAnalisys' => 'nullable',
-                    'values.*.Actualytd' => 'nullable|numeric',
+                    'values.*.Actualytd' => 'nullable',
                     'values.*.Deviation' => 'nullable|numeric',
                     'values.*.Percentage' => 'nullable',
                     'year' => 'required|integer'
@@ -178,12 +219,13 @@ class FinansialPerspektifController extends Controller
                 foreach ($request->values as $descriptionId => $inputData) {
                     LabaRugi::create([
                         'Description' => $descriptionId,
-                        'PlaYtd' => $inputData['PlaYtd'],
-                        'Actualytd' => $inputData['Actualytd'],
-                        'Deviation' => $inputData['Deviation'],
-                        'Percentage' => $inputData['Percentage'],
-                        'VerticalAnalisys1' => $inputData['VerticalAnalisys1'],
-                        'VerticalAnalisys' => $inputData['VerticalAnalisys'],
+                        'PlaYtd' => isset($inputData['PlaYtd']) ? $inputData['PlaYtd'] : null,
+                        'Deviation' => isset($inputData['Deviation']) ? $inputData['Deviation'] : null,
+                        'Actualytd' => isset($inputData['Actualytd']) ? $inputData['Actualytd'] : null,
+                        'Percentage' => isset($inputData['Percentage']) ? $inputData['Percentage'] : null,
+                        'VerticalAnalisys' => isset($inputData['VerticalAnalisys']) ? $inputData['VerticalAnalisys'] : null,
+
+                        'VerticalAnalisys1' => isset($inputData['VerticalAnalisys1']) ? $inputData['VerticalAnalisys1'] : null,
                         'year' => $tahun,
                         'created_by' => auth()->user()->username, 
                     ]);
@@ -191,6 +233,146 @@ class FinansialPerspektifController extends Controller
             }       
             return redirect('/index')->with('success', 'Data berhasil disimpan.');
         }
+    //update
+    public function formupdateLabaRugi()
+    {
+        $datas = DB::table('laba_rugis')
+        ->join('kategori_laba_rugis', 'laba_rugis.Description', '=', 'kategori_laba_rugis.id')
+        ->select('laba_rugis.Description', 'laba_rugis.PlaYtd', 
+        'laba_rugis.created_by', 'laba_rugis.Actualytd',
+        'laba_rugis.VerticalAnalisys1',
+        'laba_rugis.VerticalAnalisys',
+        'laba_rugis.Deviation',
+        'laba_rugis.Percentage', 
+        'kategori_laba_rugis.id as category_id', 'kategori_laba_rugis.DescriptionName')
+        ->get();
     
+    $structuredData = [];
+    // $categories = DB::table('kategori_laba_rugis')->get(); 
+    $categories = DB::table('kategori_laba_rugis')
+    ->join('laba_rugis', 'kategori_laba_rugis.id', '=', 'laba_rugis.Description')
+    ->select(
+        'laba_rugis.Description', 
+        'laba_rugis.PlaYtd', 
+        'laba_rugis.created_by', 
+        'laba_rugis.Actualytd', 
+        'laba_rugis.VerticalAnalisys1',
+        'laba_rugis.VerticalAnalisys',
+        'laba_rugis.Deviation',
+        'laba_rugis.Percentage', 
+
+        'kategori_laba_rugis.DescriptionName', 
+        'kategori_laba_rugis.parent_id', 
+        'kategori_laba_rugis.id as id'
+    )
+    ->get();
+
+// dd($categories); // Debug data
+
+
+    foreach ($categories as $category) {
+        // dd($category);
+        if ($category->parent_id === null) {
+            
+            $mainCounter = count(array_filter($structuredData, fn($desc) => $desc['parent_id'] === null)) + 1;
+            $categoryData = [
+                'id' => $category->id,
+                'name' => "{$mainCounter}. {$category->DescriptionName}",
+                'parent_id' => null,
+                'PlaYtd' => $category->PlaYtd ?? null,  // Default ke null jika tidak ada
+                'ActualYtd' => $category->ActualYtd ?? null,  // Default ke null jika tidak ada                    
+                'VerticalAnalisys1' => $category->VerticalAnalisys1 ?? null,  // Default ke null jika tidak ada
+                'VerticalAnalisys' => $category->VerticalAnalisys ?? null,  // Default ke null jika tidak ada                    
+                'Deviation' => $category->Deviation ?? null,  // Default ke null jika tidak ada
+                'Percentage' => $category->Percentage ?? null,  // Default ke null jika tidak ada       
+                'created_by' => $category->created_by,             
+                'subcategories' => [],
+            ];
+    
+            foreach ($categories as $subCategory) {
+                if ($subCategory->parent_id === $category->id) {
+
+                    $categoryData['subcategories'][] = [
+                        'id' => $subCategory->id,
+                        'name' => "{$mainCounter}." . (count($categoryData['subcategories']) + 1) . " {$subCategory->DescriptionName}",
+                        'ActualYtd' => $subCategory->ActualYtd ?? null,
+                        'parent_id' => $subCategory->parent_id ?? null,  // Default ke null jika tidak ada                    
+
+                        'created_by' => $category->created_by,  // Menambahkan created_by
+                    ];
+                }
+            }
+    
+            $structuredData[] = $categoryData;
+        }
+    }
+    
+    foreach ($datas as $data) {
+        foreach ($structuredData as &$category) {
+            if ($category['id'] == $data->category_id && $category['parent_id'] === null) {
+                $category['PlaYtd'] = $data->PlaYtd;
+                $category['Actualytd'] = $data->Actualytd;
+                $category['VerticalAnalisys1'] = $data->VerticalAnalisys1;
+                $category['VerticalAnalisys'] = $data->VerticalAnalisys;
+                $category['Deviation'] = $data->Deviation;
+                $category['Percentage'] = $data->Percentage;
+                $category['created_by'] = $data->created_by;
+
+
+            }
+            foreach ($category['subcategories'] as &$subcategory) {
+                if ($subcategory['id'] == $data->category_id) {
+                    $subcategory['Actualytd'] = $data->Actualytd;
+
+                    $subcategory['created_by'] = $data->created_by;
+                }
+            }
+        }
+    }
+
+        
+        return view('Finansial.updatedata', compact('structuredData'));
+    }
+
+
+    public function updateLabarugi(Request $request){
+        $validatedData = $request->validate([
+            'values.*.PlaYtd' => 'nullable',
+            'values.*.VerticalAnalisys1' => 'nullable',
+            'values.*.VerticalAnalisys' => 'nullable',
+            'values.*.Actualytd' => 'nullable',
+            'values.*.Deviation' => 'nullable|numeric',
+            'values.*.Percentage' => 'nullable',
+        ]);
+        // dd($request->all());
+
+        
+        // Menyimpan atau memperbarui data input untuk setiap deskripsi
+        foreach ($request->values as $descriptionId => $inputData) {
+            // Cari data yang sudah ada berdasarkan Description dan year
+            $labaRugi = LabaRugi::where('Description', $descriptionId)
+                                ->first();
+        
+            // Jika data ditemukan, lakukan update
+            if ($labaRugi) {
+                $labaRugi->PlaYtd = isset($inputData['PlaYtd']) ? $inputData['PlaYtd'] : $labaRugi->PlaYtd;
+                $labaRugi->Deviation = isset($inputData['Deviation']) ? $inputData['Deviation'] : $labaRugi->Deviation;
+                $labaRugi->Actualytd = isset($inputData['Actualytd']) ? $inputData['Actualytd'] : $labaRugi->Actualytd;
+                
+                $labaRugi->Percentage = isset($inputData['Percentage']) ? $inputData['Percentage'] : $labaRugi->Percentage;
+                $labaRugi->VerticalAnalisys = isset($inputData['VerticalAnalisys']) ? $inputData['VerticalAnalisys'] : $labaRugi->VerticalAnalisys;
+                $labaRugi->VerticalAnalisys1 = isset($inputData['VerticalAnalisys1']) ? $inputData['VerticalAnalisys1'] : $labaRugi->VerticalAnalisys1;
+        
+                // Update atribut 'updated_by' dan simpan perubahan
+                $labaRugi->updated_by = auth()->user()->username;
+                $labaRugi->save();
+            }
+        }
+        return redirect('/index')->with('success', 'Data berhasil disimpan.');
+
+    }
+       
+
+
 
 }

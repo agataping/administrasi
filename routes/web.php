@@ -153,7 +153,9 @@ Route::get('/index', [finansialPerspektifController::class, 'index'])->middlewar
 Route::get('/KFormLabarugi', [finansialPerspektifController::class, 'KFormLabarugi'])->middleware('auth')->name('KFormLabarugi');
 Route::post('/createDeskripsi', [finansialPerspektifController::class, 'createDeskripsi'])->middleware('auth')->name('createDeskripsi');
 Route::get('/formLabaRugi', [finansialPerspektifController::class, 'formLabaRugi'])->middleware('auth')->name('formLabaRugi');
+Route::get('/formupdateLabaRugi', [finansialPerspektifController::class, 'formupdateLabaRugi'])->middleware('auth')->name('formupdateLabaRugi');
 Route::post('/createLabrugi', [finansialPerspektifController::class, 'createLabarugi'])->middleware('auth')->name('createLabarugi');
+Route::post('/updateLabarugi', [finansialPerspektifController::class, 'updateLabarugi'])->middleware('auth')->name('updateLabarugi');
 
 //neraca
 Route::get('/indexneraca', [NeracaController::class, 'indexneraca'])->middleware('auth')->name('indexneraca');

@@ -62,48 +62,6 @@
   });
 
 
-  // Fungsi untuk menambah input Laba Rugi
-  document.getElementById('addSubkategori').addEventListener('click', function() 
-  {
-    const subkategoriContainer = document.getElementById('subkategori-container');
-    const subkategoriItem = document.createElement('div');
-    subkategoriItem.classList.add('subkategori-item', 'mb-2');
-    const newSubkategoriInput = document.createElement('input');
-    newSubkategoriInput.type = 'text';
-    newSubkategoriInput.name = 'sub[]';
-    newSubkategoriInput.classList.add('form-control');
-    newSubkategoriInput.placeholder = 'Sub Kategori';
-    const deleteButton = document.createElement('button');
-    deleteButton.type = 'button';
-    deleteButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
-    deleteButton.textContent = 'Hapus';
-    
-    deleteButton.addEventListener('click', function() {
-      subkategoriContainer.removeChild(subkategoriItem);  // Menghapus div yang berisi input dan tombol
-    });
-    
-    // Menambahkan input dan tombol ke dalam subkategoriItem
-    subkategoriItem.appendChild(newSubkategoriInput);
-    subkategoriItem.appendChild(deleteButton);
-
-    // Menambahkan subkategoriItem ke dalam subkategoriContainer
-// Fungsi untuk menghitung nilai actual kategori (induk) berdasarkan subkategori
-function updateCategoryActual(categoryId) {
-    let totalActual = 0;
-
-    // Ambil semua input dengan kelas 'actual-ytd' yang memiliki parent_id yang sesuai dengan kategori induk
-    const subcategories = document.querySelectorAll(`.actual-ytd[data-parent-id="${categoryId}"]`);
-    
-    // Jumlahkan nilai actual dari setiap subkategori
-    subcategories.forEach(subcategory => {
-        totalActual += parseFloat(subcategory.value) || 0; // Gunakan 0 jika nilai input kosong atau tidak valid
-    });
-
-    // Update nilai total actual di kategori (induk)
-    const categoryInput = document.getElementById(`categoryActual_${categoryId}`);
-    categoryInput.value = totalActual.toFixed(2); // Menampilkan hasil dengan 2 angka desimal
-}
-
 
   // Fungsi untuk menambah input Kategori
   let inputCounterKategori = 1;
@@ -142,14 +100,14 @@ function updateCategoryActual(categoryId) {
     inputkategoricsmining.appendChild(newRow);
   }
 
-  // Menangani perubahan pada kategori
+  // Mining
   $('#kategori').on('change', function() {
     const kategoriText = $('#kategori option:selected').text();
     $('#kategori-mining').val(kategoriText);
     $('#form-input').slideDown();
   });
 
-  // Menangani perubahan pada CS Mining
+  //  pada CS Mining
   $('#csmining').on('change', function() {
     const csminingText = $('#csmining option:selected').text();
     $('#cs-mining').val(csminingText);
@@ -158,7 +116,7 @@ function updateCategoryActual(categoryId) {
 
   // Fungsi untuk menghitung total
   document.addEventListener("DOMContentLoaded", function() {
-  // Fungsi untuk menghitung total
+  // Fungsi untuk menghitung total ifra 
   function total() {
     const kelayakanBangunan = parseFloat(document.getElementById('kelayakan-bangunan').value);
     const kelengkapan = parseFloat(document.getElementById('kelengkapan').value);
@@ -190,4 +148,104 @@ document.getElementById('csmining').addEventListener('change', function() {
     document.getElementById('mining').value = this.value;
 });
 
+
+
+//laba rugi
+document.addEventListener('DOMContentLoaded', function () {
+    const actualInputs = document.querySelectorAll('.actual-ytd'); 
+    // Fungsi untuk menghitung total actual YTD pada kategori
+    function calculateActualYtd() {
+        actualInputs.forEach(input => {
+            input.addEventListener('input', function () {
+                const parentId = input.getAttribute('data-parent-id'); 
+                let totalActualYtd = 0;
+
+                document.querySelectorAll(`.actual-ytd[data-parent-id="${parentId}"]`).forEach(subInput => {
+                    totalActualYtd += parseFloat(subInput.value) || 0;
+                });
+
+                const categoryTotalElem = document.querySelector(`#categoryTotal_${parentId}`);
+                if (categoryTotalElem) {
+                    categoryTotalElem.value = totalActualYtd; 
+                }
+            });
+        });
+    }
+
+    calculateActualYtd();
+});
+
+function calculateVerticalAnalysis(descriptionId) {
+    // Ambil nilai dari input Plan YTD untuk kategori yang sesuai
+    var planYtdElement = document.getElementById('planYtd_' + descriptionId);
+    var verticalAnalisysElement = document.getElementById('verticalAnalisys1_' + descriptionId);
+
+    // Periksa apakah elemen Plan YTD dan Vertical Analysis ada
+    if (!planYtdElement || !verticalAnalisysElement) return;
+
+    // Jika input planYtd kosong, set default ke 0
+    var planYtd = planYtdElement.value.trim() !== '' ? 
+    parseFloat(planYtdElement.value.trim().replace(/[^0-9.-]/g, '')) : 0;
+
+    // Pastikan nilai Plan YTD diambil dengan benar
+    if (planYtd > 0) {
+        // Ambil nilai Plan YTD untuk kategori Revenue (kategori ID 3)
+        var revenuePlanYtdElement = document.getElementById('planYtd_3');
+        var revenuePlanYtd = revenuePlanYtdElement ? 
+                             parseFloat(revenuePlanYtdElement.value.trim().replace(/[^0-9.-]/g, '')) : 1;
+
+        // Hitung Vertical Analysis jika Revenue Plan YTD ada
+        if (revenuePlanYtd !== 0) {
+            var verticalAnalysis = (planYtd / revenuePlanYtd) * 100;
+            verticalAnalisysElement.value = verticalAnalysis.toFixed(2) + '%';
+        } else {
+            verticalAnalisysElement.value = '';
+        }
+    } else {
+        verticalAnalisysElement.value = '';
+    }
+}
+
+
+
+
+
+
+// Fungsi untuk menghitung Deviation
+function HitungDev(descriptionId) {
+    const actual = parseFloat(document.getElementById('categoryTotal_' + descriptionId).value);
+    const plan = parseFloat(document.getElementById('planYtd_' + descriptionId).value);
+    const hasilInput = document.getElementById('deviation_' + descriptionId);
+
+    // Menghitung deviasi berdasarkan nilai actual dan plan
+    if (!isNaN(plan) && !isNaN(actual)) {
+        const deviation = plan - actual; // Deviation adalah selisih antara actual dan plan
+        hasilInput.value = deviation; // Menampilkan deviasi pada input
+    } else {
+        hasilInput.value = ''; // Jika nilai kosong atau tidak valid
+    }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+    HitungDev();
+  });
+
+
+        // Fungsi untuk menghitung Percentage
+    function calculatePercentage(descriptionId) {
+            const PlanY = parseFloat(document.getElementById('planYtd_' + descriptionId).value);
+            const Dev = parseFloat(document.getElementById('deviation_' + descriptionId).value);
+            const hasilPercentage = document.getElementById('percentage_'+ descriptionId);
+      
+      if (PlanY !== 0 && !isNaN(PlanY) && !isNaN(Dev)) {
+        const Percentage = (Dev / PlanY) * 100;
+        hasilPercentage.value = Math.round(Percentage) +"%";
+        
+      } else {
+        hasilPercentage.value = '';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        calculatePercentage();
+    });
+    
 </script>
