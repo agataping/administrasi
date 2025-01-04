@@ -52,7 +52,8 @@
                             </td>
                                 @if ($category['id'] == '3') 
                                 <td colspan="">
-                                    <input type="number" name="categories[{{ $category['id'] }}][PlaYtd]" class="form-control"
+                                    <input type="number" 
+                                    name="values[{{ $category['id'] }}][PlaYtd]"
                                     value="{{ old('values.' . $category['id'] . '.PlaYtd', $category['PlaYtd'] ?? '') }}"
                                     id="planYtd_{{ $category['id'] }}"
                                     oninput="calculateVerticalAnalysis({{ $category['id'] }}); 
@@ -81,7 +82,7 @@
                                 <td>
                                     <input type="text" id="verticalAnalisys1_{{ $category['id'] }}" class="form-control" 
                                         data-parent-id="{{ $category['parent_id'] }}" 
-                                        name="categories[{{ $category['id'] }}][VerticalAnalisys1]" 
+                                         name="values[{{ $category['id'] }}][VerticalAnalisys1]" 
                                         value="{{ old('values.' . $category['id'] . '.VerticalAnalisys1', $category['VerticalAnalisys1'] ?? '') }}"
                                         readonly>
 
@@ -94,8 +95,8 @@
                                     <input type="number" id="categoryTotal_{{ $category['id'] }}" 
                                     class="form-control" 
                                     name="values[{{ $category['id'] }}][Actualytd]" 
-                                    value="{{ old('values.' . $category['id'] . '.Actualytd', $category['Actualytd'] ?? '') }}"
-                                    
+                                    value="{{ old('values.' . $category['id'] . '.categoryTotal', $category['Actualytd'] ?? '') }}" 
+
                                     readonly
                                     placeholder="Total"
                                     oninput="HitungDev({{ $category['id'] }})">
@@ -107,11 +108,10 @@
 
                                 @if (!$category['parent_id'])
                                 <td>
-                                    <input type="text" id="verticalAnalisys1_{{ $category['id'] }}" class="form-control" 
+                                    <input type="number" id="verticalAnalisys2_{{ $category['id'] }}" class="form-control" 
                                     data-parent-id="{{ $category['parent_id'] }}" 
-                                    name="categories[{{ $category['id'] }}][VerticalAnalisys1]" 
-                                    value="{{ old('values.' . $category['id'] . '.VerticalAnalisys1', $category['VerticalAnalisys1'] ?? '') }}"
-                                    readonly>
+                                    name="values[{{ $category['id'] }}][VerticalAnalisys]" 
+                                    value="{{ old('values.' . $category['id'] . '.VerticalAnalisys') }}">                                
                                 </td>
                                 @endif
                                 
@@ -139,26 +139,33 @@
                             @foreach ($category['subcategories'] as $subcategory)
                             <tr>
                                 <td><strong>{{ $subcategory['name'] }}</strong>
+                                <input type="hidden" name="values[{{ $subcategory['id'] }}][description_DescriptionName]" value="{{ $subcategory['name'] }}">
+
 
                             </td>
                                 <td></td>
                                 <td></td>
                                 
                                 <!-- Pengecekan apakah 'parent_id' ada sebelum mengaksesnya -->
-                                @if (isset($subcategory['parent_id']) && $subcategory['parent_id'])
+                                @if (($subcategory['parent_id']))
                                 <td colspan="" style="padding-left: 20px;">
-                                    <input type="number" id="actualYtd_{{ $subcategory['id'] }}"
-                                    class="form-control actual-ytd"
-                                    data-parent-id="{{ $subcategory['parent_id'] }}"
-                                    name="values[{{ $category['id'] }}][Actualytd]"
-                                    value="{{ old('values.' . $category['id'] . '.Actualytd', $subcategory['Actualytd'] ?? '') }}">
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                @endif
-                            </tr>
-                            @endforeach
+                                <input type="number" 
+                                id="actualYtd_{{ $subcategory['id'] }}" 
+                                class="form-control actual-ytd" 
+                                data-parent-id="{{ $subcategory['parent_id'] }}" 
+                                name="values[{{ $subcategory['id'] }}][Actualytd]" 
+                                value="{{ old('values.' . $subcategory['id'] . '.Actualytd', $subcategory['Actualytd'] ?? '') }}">
+                                
+
+                                
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            @endif
+                        </tr>
+                        @endforeach
+                        
                             
 
                             

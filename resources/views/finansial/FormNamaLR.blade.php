@@ -23,7 +23,7 @@
                     </ul>
                 </div>
                 @endif
-                
+                @if($form_type == 'kategori')
                 <form action="{{ route('createDeskripsi') }}" method="post">
                 @csrf
                 <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
@@ -54,7 +54,7 @@
                         <!-- Input Sub Kategori akan ditambahkan di sini -->
                     </div>
                 </div>       
-                
+                @endif
 
 
 
@@ -63,8 +63,31 @@
                 </div>
                 
                 </form>
+
+
+                @if($form_type == 'subkategori')
+                <form method="POST" action="{{ route('addSubkategori') }}">
+                    @csrf
+                    <div class="form-group">
+                        <label for="kategori_id">Pilih Kategori</label>
+                        <select name="kategori_id" id="kategori_id" class="form-control" required>
+                            @foreach($data as $kategori)
+                            <option value="{{ $kategori->id }}">{{ $kategori->DescriptionName }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     
+                    <div class="form-group">
+                        <label for="subkategori_name">Nama Subkategori</label>
+                        <input type="text" name="subkategori_name" id="subkategori_name" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Tambah Subkategori</button>
+                </form>
+                
             </div>
+            
+            @endif
         </div>      
     </div>
 </div>

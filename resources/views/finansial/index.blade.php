@@ -25,18 +25,27 @@
                     </ul>
                 </div>
                 @endif
-                
-                <div class="row">
-                    <div class="col-sm-">
-                        <a href="/KFormLabarugi" class="btn btn-custom">Add Deskripsi</a>
+                <div class="row justify-content-start">
+                    <div class="col-auto">
+                        <form action="{{ route('KFormLabarugi') }}" method="get">
+                            <input type="hidden" name="form_type" value="kategori">
+                            <button type="submit" class="btn btn-custom">Add Deskripsi</button>
+                        </form>
                     </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-sm-">
+                    
+                    <div class="col-auto">
+                        <form action="{{ route('KFormLabarugi') }}" method="get">
+                            <input type="hidden" name="form_type" value="subkategori">
+                            <button type="submit" class="btn btn-custom">Add Sub. Desc</button>
+                        </form>
+                    </div>
+                    
+                    <div class="col-auto">
                         <a href="/formLabaRugi" class="btn btn-custom">Add Laba Rugi</a>
                     </div>
                 </div>
+                
+
                 
                 <div class="row">
                     <div class="col-sm-2">
@@ -75,8 +84,14 @@
                         @foreach ($structuredData as $category)
                             <tr>
                                 <td><strong>{{ $category['name'] }}</strong></td>
+                                
                                 <td>{{ $category['PlaYtd'] ?? '' }}</td>
+                                @if (in_array($category['id'], [3])) 
+                                <td></td>
+                                @endif                                   
+                                @if (in_array($category['id'], [6, 15, 22])) 
                                 <td>{{ $category['VerticalAnalisys1'] ?? '' }}</td>
+                                @endif                                   
                                 <td>{{ $category['Actualytd'] ?? '' }}</td>
                                 <td>{{ $category['VerticalAnalisys'] ?? '' }}</td>
                                 <td>{{ $category['Deviation'] ?? '' }}</td>
@@ -100,11 +115,11 @@
                         @endforeach
                         <tfoot>
 
-                        <!-- <td style="text-align: end; vertical-align: end;"  colspan="11">
+                        <td style="text-align: end; vertical-align: end;"  colspan="11">
                                 <a href="/formupdateLabaRugi" class="btn btn-primary btn-sm">
                                     Edit
                                 </a>
-                            </td> -->
+                            </td>
                         </tfoot>
 
                     </tbody>
