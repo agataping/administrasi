@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 03, 2025 at 08:14 PM
+-- Generation Time: Jan 05, 2025 at 06:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -208,18 +208,29 @@ CREATE TABLE `failed_jobs` (
 
 CREATE TABLE `harga_poko_penjualans` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `parent_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `level` int(11) NOT NULL DEFAULT 0,
-  `rencana` varchar(255) DEFAULT NULL,
-  `uraian` varchar(255) NOT NULL,
-  `realisai` varchar(255) DEFAULT NULL,
-  `tahun` varchar(255) DEFAULT NULL,
+  `category` varchar(50) NOT NULL,
+  `rencana` bigint(20) DEFAULT NULL,
+  `subcategory` varchar(255) NOT NULL,
+  `realisasi` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` varchar(255) DEFAULT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
-  `deleted_by` varchar(255) DEFAULT NULL
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `item` varchar(50) DEFAULT NULL,
+  `planSub` bigint(20) DEFAULT NULL,
+  `realissasiSub` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `harga_poko_penjualans`
+--
+
+INSERT INTO `harga_poko_penjualans` (`id`, `category`, `rencana`, `subcategory`, `realisasi`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `item`, `planSub`, `realissasiSub`) VALUES
+(1, 'Contraktor Cost', 4848646905, 'over burden', NULL, '2025-01-04 07:52:56', '2025-01-04 07:52:56', 'STAFF1234567', NULL, NULL, 'Subcontraktor a', NULL, NULL),
+(2, 'Contraktor Cost', 0, 'over burden', NULL, '2025-01-04 07:52:56', '2025-01-04 07:52:56', 'STAFF1234567', NULL, NULL, 'Subcontraktor B', NULL, NULL),
+(3, 'Contraktor Cost', 0, 'over burden', NULL, '2025-01-04 07:52:56', '2025-01-04 07:52:56', 'STAFF1234567', NULL, NULL, 'Subcontraktor C', NULL, NULL),
+(4, 'Contraktor Cost', 0, 'Coal Getting', NULL, '2025-01-04 08:30:35', '2025-01-04 08:30:35', 'STAFF1234567', NULL, NULL, NULL, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -419,24 +430,24 @@ CREATE TABLE `laba_rugis` (
 --
 
 INSERT INTO `laba_rugis` (`id`, `Description`, `PlaYtd`, `VerticalAnalisys1`, `VerticalAnalisys`, `Actualytd`, `Deviation`, `Percentage`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`) VALUES
-(104, '3', 123231233.00, NULL, NULL, 1.00, 44996.00, '100%', '2025-01-03 08:45:28', '2025-01-03 11:12:33', 'STAFF1234567', 'STAFF1234567', NULL),
-(105, '4', NULL, NULL, NULL, 22362323.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(106, '5', NULL, NULL, NULL, 1231232.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(107, '6', 12312123.00, '9.99%', NULL, 12312.00, 12022097.00, '98%', '2025-01-03 08:45:28', '2025-01-03 10:50:15', 'STAFF1234567', 'STAFF1234567', NULL),
-(108, '7', NULL, NULL, NULL, 13212.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(109, '8', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(110, '9', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(111, '10', NULL, NULL, NULL, 213123.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(112, '11', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(113, '12', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(114, '13', NULL, NULL, NULL, 2131.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(115, '14', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(116, '15', 2342342323.00, '1900.77%', NULL, 234234.00, 2107505748.00, '90%', '2025-01-03 08:45:28', '2025-01-03 10:50:15', 'STAFF1234567', 'STAFF1234567', NULL),
-(117, '16', NULL, NULL, NULL, 2342.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(118, '17', NULL, NULL, NULL, 23423.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(119, '18', NULL, NULL, NULL, 342342.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(120, '19', NULL, NULL, NULL, 234234234.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL),
-(121, '20', NULL, NULL, NULL, 234234.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-03 08:45:28', 'STAFF1234567', NULL, NULL);
+(104, '3', 51805400843.00, '100.00%', NULL, 3.00, 51805400840.00, '100%', '2025-01-03 08:45:28', '2025-01-04 02:17:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(105, '4', NULL, NULL, NULL, 1.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:16:24', 'STAFF1234567', 'STAFF1234567', NULL),
+(106, '5', NULL, NULL, NULL, 2.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:16:24', 'STAFF1234567', 'STAFF1234567', NULL),
+(107, '6', 68798548396.00, '132.80%', NULL, 12312.00, 68798536084.00, '100%', '2025-01-03 08:45:28', '2025-01-04 02:17:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(108, '7', NULL, NULL, NULL, 13212.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(109, '8', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(110, '9', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(111, '10', NULL, NULL, NULL, 213123.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(112, '11', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(113, '12', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(114, '13', NULL, NULL, NULL, 2131.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(115, '14', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(116, '15', 51805400843.00, '100.00%', NULL, 234234.00, 51805166609.00, '100%', '2025-01-03 08:45:28', '2025-01-04 02:17:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(117, '16', NULL, NULL, NULL, 2342.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(118, '17', NULL, NULL, NULL, 23423.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(119, '18', NULL, NULL, NULL, 342342.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(120, '19', NULL, NULL, NULL, 234234234.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
+(121, '20', NULL, NULL, NULL, 234234.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL);
 
 -- --------------------------------------------------------
 
@@ -701,6 +712,25 @@ CREATE TABLE `perusahaans` (
   `deleted_by` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `perusahaans`
+--
+
+INSERT INTO `perusahaans` (`id`, `nama`, `created_at`, `updated_at`, `induk`, `created_by`, `updated_by`, `deleted_by`) VALUES
+(1, 'Pt. A', '2025-01-05 07:45:26', '2025-01-05 07:45:26', 'IUP', NULL, NULL, NULL),
+(2, 'Pt. A', '2025-01-05 07:45:33', '2025-01-05 07:45:33', 'Kontraktor', NULL, NULL, NULL),
+(3, 'Pt. A', '2025-01-05 07:45:39', '2025-01-05 07:45:39', 'Non Energi', NULL, NULL, NULL),
+(4, 'Kontraktor A', '2025-01-05 08:57:50', '2025-01-05 08:57:50', 'Kontraktor', NULL, NULL, NULL),
+(5, 'Kontraktor B', '2025-01-05 08:58:28', '2025-01-05 08:58:28', 'Kontraktor', NULL, NULL, NULL),
+(6, 'IUP A', '2025-01-05 08:58:40', '2025-01-05 08:58:40', 'IUP', NULL, NULL, NULL),
+(7, 'IUP B', '2025-01-05 08:58:46', '2025-01-05 08:58:46', 'IUP', NULL, NULL, NULL),
+(8, 'Non Energi A', '2025-01-05 08:58:55', '2025-01-05 08:58:55', 'Non Energi', NULL, NULL, NULL),
+(9, 'Non Energi C', '2025-01-05 08:59:01', '2025-01-05 08:59:01', 'Non Energi', NULL, NULL, NULL),
+(10, 'Kontraktor C', '2025-01-05 08:59:22', '2025-01-05 08:59:22', 'Kontraktor', NULL, NULL, NULL),
+(11, 'Mineral A', '2025-01-05 09:02:48', '2025-01-05 09:02:48', 'Mineral', NULL, NULL, NULL),
+(12, 'Mineral B', '2025-01-05 09:02:54', '2025-01-05 09:02:54', 'Mineral', NULL, NULL, NULL),
+(13, 'Mineral C', '2025-01-05 09:03:01', '2025-01-05 09:03:01', 'Mineral', NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -776,7 +806,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('Wox46hVgU439JoCp5uwYIQpU2lBXfx8pLa6s2UHs', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiOTAzWnZLeTVwNVBxVkpTUkdWeVJybXI5SnF5eXM5U0hXbkhBandrbiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbmRleCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1735931616);
+('hicJ8q1tG0XGHVcbX1UuY5c3QVYSz548v2oCTpkB', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYWp1M2hFbkJwS0U0WkhQbEY4UjZvbFdzMks1QW9GNFFGVHpkQTZwcyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbmRleCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1736099642);
 
 -- --------------------------------------------------------
 
@@ -1044,7 +1074,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `harga_poko_penjualans`
 --
 ALTER TABLE `harga_poko_penjualans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `infrastructure_readinesses`
@@ -1128,7 +1158,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT for table `perusahaans`
 --
 ALTER TABLE `perusahaans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `produksis`

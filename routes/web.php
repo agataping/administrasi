@@ -155,7 +155,7 @@ Route::post('/createDeskripsi', [finansialPerspektifController::class, 'createDe
 Route::get('/formLabaRugi', [finansialPerspektifController::class, 'formLabaRugi'])->middleware('auth')->name('formLabaRugi');
 Route::get('/formupdateLabaRugi', [finansialPerspektifController::class, 'formupdateLabaRugi'])->middleware('auth')->name('formupdateLabaRugi');
 Route::post('/createLabrugi', [finansialPerspektifController::class, 'createLabarugi'])->middleware('auth')->name('createLabarugi');
-Route::post('/addSubkategori', [finansialPerspektifController::class, 'addSubkategori'])->middleware('auth')->name('addSubkategori');
+Route::post('/addSubkategori', [finansialPerspektifController::class, 'addSubkategori'])->middleware('auth')->name('addSubkategoriiu');
 Route::post('/updateLabarugi', [finansialPerspektifController::class, 'updateLabarugi'])->middleware('auth')->name('updateLabarugi');
 
 //neraca

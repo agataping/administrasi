@@ -34,7 +34,7 @@
                 <div class="row">
                     <div class="col-sm-2">
                         
-                        <form method="GET" action="{{ url('/') }}">
+                        <form method="GET" action="{{ url('/indexbarging') }}">
                             <label for="year">Filter by Year:</label>
                             <select name="year" id="year" onchange="this.form.submit()">
                                 <option value="">All Years</option>

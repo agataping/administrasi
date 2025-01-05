@@ -64,5 +64,35 @@
     background-color: #000;
     width: 100%;
 }
+.cardcostum {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  width: 200px;
+  width: 200px; /* Seragamkan ukuran */
+  background-color: darkgreen;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  z-index: 3;
+}
+  .cardcostum:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
 
+.cardcost {
+  color: white;
+  text-align: center;
+  margin: 0; /* Hilangkan margin ekstra */
+}
+
+.percentage-box {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-top: auto; 
+  align-self: center; 
+}
 </style>

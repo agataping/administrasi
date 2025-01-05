@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('harga_poko_penjualans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parent_id')->nullable();
-            $table->integer('level')->default(0);
-            $table->string('rencana')->nullable();
-            $table->string('uraian');
-            $table->string('realisai')->nullable();
-            $table->string('tahun')->nullable();
-
+            $table->string('category'); 
+            $table->string('subcategory');
+            $table->string('item')->nullable();
+            $table->bigInteger('plan')->nullable(); 
+            $table->bigInteger('realization')->nullable(); 
             $table->timestamps();
         });
     }

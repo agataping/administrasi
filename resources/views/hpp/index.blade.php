@@ -25,54 +25,72 @@
                 </div>
                 @endif
                 <div class="row">
-                    <div class="col-sm-2 ms-3">
-                        <a href="/hpp" class="btn btn-custom">Add Monthly Production</a>
+                    <div class="col-sm-">
+                        <a href="/hpp" class="btn btn-custom">Add Hpp</a>
                     </div>
-                </div>
+                </div> 
+                
+                <div class="row">
+                    <div class="col-sm-2">
+                        
+                        <form method="GET" action="{{ url('/indexhpp') }}">
+                            <label for="year">Filter by Year:</label>
+                            <select name="year" id="year" onchange="this.form.submit()">
+                                <option value="">All Years</option>
+                                @foreach ($years as $availableYear)
+                                <option value="{{ $availableYear }}" {{ $year == $availableYear ? 'selected' : '' }}>
+                                    {{ $availableYear }}
+                                </option>
+                                @endforeach  
+
+                            </select>
+                        </form>
+                    </div> 
+                </div> 
+                
                 <table class="table table-bordered">
                     <thead>
                         
                         <tr>
-                            <th>No</th>
-                            <th>Uraian</th>
-                            <th colspan="2" class="text-center"></th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">No</th>
+                            <th rowspan="2" style="vertical-align: middle; text-align: center;">Uraian</th>
+                            <th colspan="2" style="text-align: center;">Tahun {{$year ?? 'Semua Tahun' }}</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">created_by</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Aksi</th>
+
+                        </tr>
+                        <tr>
+                        <th style="text-align: center;">Rencana</th>
+                        <th style="text-align: center;">Realisasi</th>
+                        </tr>
+
+
+                        <tbody>
+                        <tr>
+                            <th></th>
+                            <th colspan="5"style="text-align: start ;">{{ $categories->first()->category ?? '-' }}:</th>
                         </tr>
                         <tr>
                             <th></th>
-                            <th></th>
-                            <th>Rencana</th>
-                            <th>Realisasi</th>
+                            <th colspan=""style="text-align: ;">A. {{ $categories->first()->subcategory ?? '-' }}</th>
                         </tr>
+
+                            @foreach ($categories as $d)
+                            <!-- Tampilkan item -->
+                            <tr>
+                            <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
+
+                                <td class="item">{{ $d->item }}</td>
+                                <td>{{ number_format($d->rencana, 0, ',', '.') }}</td>
+                                <td>{{ number_format($d->realisasi, 0, ',', '.') }}</td>
+                                <td class="item">{{ $d->created_by }}</td>
+
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        
+                        
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="2"><strong>HPP</strong></td>
-                            <td class="text-end">{{ number_format($data['HPP']['rencana'], 0, ',', '.') }}</td>
-                            <td class="text-end">{{ number_format($data['HPP']['realisasi'], 0, ',', '.') }}</td>
-                        </tr>
-                        @php $no = 1; @endphp
-                        @foreach($categories as $category)
-                        <tr>
-                            <td>{{ $no++ }}</td>
-                            <td><strong>{{ $category->uraian }}</strong></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        @foreach($category->children as $child)
-                        <tr>
-                            <td></td>
-                            <td>  - {{ $child->uraian }}</td>
-                            <td class="text-end">{{ number_format($child->nominal ?? 0, 0, ',', '.') }}</td>
-                            <td class="text-end">0</td>
-                        </tr>
-                        @endforeach
-                        @endforeach
-                        <tr>
-                            <td colspan="2"><strong>Total HPP</strong></td>
-                            <td class="text-end"><strong>{{ number_format($data['HPP']['rencana'], 0, ',', '.') }}</strong></td>
-                            <td class="text-end"><strong>{{ number_format($data['HPP']['realisasi'], 0, ',', '.') }}</strong></td>
-                        </tr>
-                    </tbody>
                 </table>
 
                 

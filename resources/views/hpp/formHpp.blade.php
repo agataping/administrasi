@@ -24,60 +24,114 @@
                     </ul>
                 </div>
                 @endif
-                <div class="subcategory-input">
 
-                    
-                        <form action="{{ route('addhpp') }}" method="post">
-                            @csrf
-
-                            <div class="form-group">
-                                <label for="uraian">Uraian</label>
-                                <input type="text" class="form-control" id="uraian" name="uraian" required>
+                <form action="{{ route('addhpp') }}" method="POST">
+                    @csrf
+                    <div id="input-sub">
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <label for="subcategory">Sub Category</label>
+                                <input type="text" class="form-control" name="items[0][subcategory]" placeholder="Over Burden dll" >
                             </div>
-
-                            
-                            <div class="form-group">
-                                <label for="tanggal_berlaku">Parent Kategori</label>
-                                <select name="parent_id" id="parent_id">
-                                    <option value="">None (Root Category)</option>
-                                    @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ str_repeat('--', $category->level) }} {{ $category->uraian }}</option>
-                                    @endforeach
-                                    
-                                </select>
+                            <div class="col-md-4">
+                                <label for="plan">Rencana</label>
+                                <input type="text" class="form-control" name="items[0][planSub]" placeholder="Rencana" >
                             </div>
-                            
-
-                            <div class="form-group">
-                                <label for="rencana">Rencana</label>
-                                <input type="text" class="form-control" id="rencana" name="rencana" >
-                            </div>
-
-                            <div class="form-group">
+                            <div class="col-md-4">
                                 <label for="realisasi">Realisasi</label>
-                                <input type="text" class="form-control" id="realisasi" name="realisasi" >
+                                <input type="text" class="form-control" name="items[0][realisasiSub]" placeholder="Realisasi" >
                             </div>
-
-                            <div class="form-group">
-                                <label for="tahun">tahun</label>
-                                <input type="text" class="form-control" id="tahun" name="tahun" >
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-auto justify-content-start">
+                                <button type="button" id="add-sub" class="btn btn-success">Tambah Baris Sub Category</button>
                             </div>
-
-
-                    
-                    <div class="d-flex justify-content-end mt-3">
-                        
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                        </div>
                     </div>
-                </form>              
-            </div>
-            </div>
+                    <div class="container-fluid mt-4 " style="border-bottom: 1px solid black;">
+                        </div>
 
+                    <div id="dynamic-input">
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <label for="item">Item</label>
+                                <input type="text" class="form-control" name="items[0][item]" placeholder="Misal: Subcontractor A" >
+                            </div>
+                            <div class="col-md-4">
+                                <label for="rencana">Rencana</label>
+                                <input type="number" class="form-control" name="items[0][rencana]" placeholder="Masukkan jumlah rencana" >
+                            </div>
+                            <div class="col-md-4">
+                                <label for="realisasi">Realisasi</label>
+                                <input type="number" class="form-control" name="items[0][realisasi]" placeholder="Masukkan jumlah realisasi">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-auto justify-content-start">
+                            <button type="button" id="add-row" class="btn btn-success">Tambah Baris Item</button>
+                        </div>
+                        
+                        <div class="col-auto justify-content-end">
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
 @endsection
 
-@section('scripts')
-@endsection
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let rowIndex = 1;
+    let rowIndexSub = 1;
 
+    // Menambahkan baris untuk Item
+    document.getElementById('add-row').addEventListener('click', function () {
+        const dynamicInput = document.getElementById('dynamic-input');
+        const newRow = `
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="item">Item</label>
+                    <input type="text" class="form-control" name="items[${rowIndex}][item]" placeholder="Misal: Subcontractor B" >
+                </div>
+                <div class="col-md-4">
+                    <label for="rencana">Rencana</label>
+                    <input type="number" class="form-control" name="items[${rowIndex}][rencana]" placeholder="Masukkan jumlah rencana" >
+                </div>
+                <div class="col-md-4">
+                    <label for="realisasi">Realisasi</label>
+                    <input type="number" class="form-control" name="items[${rowIndex}][realisasi]" placeholder="Masukkan jumlah realisasi">
+                </div>
+            </div>`;
+        dynamicInput.insertAdjacentHTML('beforeend', newRow);
+        rowIndex++;
+    });
+
+    // Menambahkan baris untuk Sub Category
+    document.getElementById('add-sub').addEventListener('click', function () {
+        const inputSub = document.getElementById('input-sub');
+        const newRow = `
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="subcategory">Sub Category</label>
+                    <input type="text" class="form-control" name="items[${rowIndexSub}][subcategory]" placeholder="Over Burden dll">
+                </div>
+                <div class="col-md-4">
+                    <label for="plan">Rencana</label>
+                    <input type="text" class="form-control" name="items[${rowIndexSub}][planSub]" placeholder="Rencana">
+                </div>
+                <div class="col-md-4">
+                    <label for="realisasi">Realisasi</label>
+                    <input type="text" class="form-control" name="items[${rowIndexSub}][realisasiSub]" placeholder="Realisasi">
+                </div>
+            </div>`;
+        inputSub.insertAdjacentHTML('beforeend', newRow);
+        rowIndexSub++;
+    });
+});
+</script>
