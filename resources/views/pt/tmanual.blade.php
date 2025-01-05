@@ -23,7 +23,7 @@
                 </div>
                 @endif
                             <h2 class="text-center">TOTAL PERFORMANCE (YEAR TO DATE)</h2>
-            <p class="text-right">LEVEL: JTN SITE</p>
+            <p class="text-center">LEVEL: JTN SITE</p>
 
 
                 <div class="container mt-2">

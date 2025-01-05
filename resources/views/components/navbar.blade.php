@@ -12,26 +12,26 @@
             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Costumer Prespective</a>
             <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item " href="/indexbarging">Barging</a></li>
-
+<!-- 
                 <li><a class="dropdown-item " href="/indexmproduction">Monthly Production</a></li>
 
 
                 <li><a class="dropdown-item " href="/indexPembebasanLahanCs">Pembebasan Lahan</a></li>
 
                 <li><a class="dropdown-item " href="/indexdeadlineCostumers">Deadline Compensations</a></li>
-
+ -->
 
             </ul>
         </li>
 
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Finansial Perspektif</a>
-            <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item " href="/index">Laba Rugi</a></li>
-                <li><a class="dropdown-item " href="#">RKAB Laba Rugi</a></li>
-                <li><a class="dropdown-item " href="/indexhpp">HPP RKAB</a></li>
-                <li><a class="dropdown-item " href="/indexneraca">Neraca</a></li>
-                <li><a class="dropdown-item " href="#">RAKB Neraca</a></li>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="/index">Profit and Loss</a></li>
+                <li><a class="dropdown-item" href="">Work Plan and Budget Income Statement</a></li>
+                <li><a class="dropdown-item" href="/indexneraca">Balance Sheet </a></li>
+                <li><a class="dropdown-item" href="">Work Plan, Budget and Financial Statements</a></li>
+
             </ul>
         </li>
 
@@ -47,10 +47,11 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Learning & Growth Perspective</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="/index">Profit and Loss</a></li>
-                <li><a class="dropdown-item" href="">Work Plan and Budget Income Statement</a></li>
-                <li><a class="dropdown-item" href="/indexneraca">Balance Sheet </a></li>
-                <li><a class="dropdown-item" href="">Work Plan, Budget and Financial Statements</a></li>
+                <li><a class="dropdown-item" href="/indexPeople">People Readiness</a></li>
+                <li><a class="dropdown-item" href="/indexInfrastructureReadiness">Infrastructure Readiness</a></li>
+
+                <li><a class="dropdown-item" href="/indexdeadline">Deadline Compensation</a></li>
+                <li><a class="dropdown-item" href="/indexPembebasanLahan">Land Acquisition</a></li>
 
               </ul>
         </li>
