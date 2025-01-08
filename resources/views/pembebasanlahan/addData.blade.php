@@ -63,6 +63,11 @@
                                 <label for="achievement">Achievement</label>
                                 <input type="text" class="form-control" id="achievement" name="Achievement" required>
                             </div>
+
+                            <div class="form-group">
+                                <label for="targetselesai">Target Selesai</label>
+                                <input type="targetselesai" class="form-control" id="achievement" name="targetselesai" >
+                            </div>
                             
 
 

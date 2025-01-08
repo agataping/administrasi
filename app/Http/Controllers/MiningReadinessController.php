@@ -9,125 +9,118 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\KategoriMiniR;
 use App\Models\MiningReadiness;
+use App\Models\PicaMining;
 
 class MiningReadinessController extends Controller
 {
     public function indexmining(Request $request)
     {
-        $data = DB::table('mining_readinesses')
-        ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
-        ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
-        ->where('kategori_mini_r_s.kategori', 'Lingkungan')
-        ->select('mining_readinesses.*', 'users.username as created_by')
-        ->get();
-    
-      
-        $dataP = DB::table('mining_readinesses')
-        ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
-        ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
-        ->where('kategori_mini_r_s.kategori', 'Penjualan')
-        ->select('mining_readinesses.*', 'users.username as created_by')
-        ->get();  
-        $dataK = DB::table('mining_readinesses')
-        ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
-        ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
-        ->where('kategori_mini_r_s.kategori', 'Keuangan')
-        ->select('mining_readinesses.*', 'users.username as created_by')
-        ->get();  
-        $dataL = DB::table('mining_readinesses')
-        ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
-        ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
-        ->where('kategori_mini_r_s.kategori', 'Legalitas')
-        ->select('mining_readinesses.*', 'users.username as created_by')
-        ->get();      
-        
-        
-        //filter tahun di laporan
+        //filter data perbaikan pakai tanggal
         $year = $request->input('year');
         $reports = MiningReadiness::when($year, function ($query, $year) {
             return $query->whereYear('created_at', $year);
         })->get();
-
-
-
-        //hitung total berdasarkan kategori
-        $avarage = MiningReadiness::selectRaw('REPLACE(Achievement, "%", "") as total_numeric')
+        
+        $years = MiningReadiness::selectRaw('YEAR(created_at) as year')
+        ->distinct()
+        ->orderBy('year', 'desc')
+        ->pluck('year');
+        
+        //ngambil data
+        $data = DB::table('mining_readinesses')
+        ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
+        ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
         ->when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
+            return $query->whereYear('mining_readinesses.created_at', $year);
         })
+        ->select(
+            'kategori_mini_r_s.kategori',
+            'mining_readinesses.Description',
+            'mining_readinesses.NomerLegalitas',
+            'mining_readinesses.tanggal',
+            'mining_readinesses.status',
+            'mining_readinesses.berlaku',
+            'mining_readinesses.nomor',
+            'mining_readinesses.id',
+            'mining_readinesses.Achievement',
+            'mining_readinesses.filling',
+            'mining_readinesses.created_by',
+            'mining_readinesses.KatgoriDescription'
+            )
+            ->get();
+
+            //hitung achievement, konversi data, kelompok+hitung data by"kategori"
+            $data->transform(function ($item) 
+            {
+                $achievement = str_replace('%', '', $item->Achievement);
+                $item->average_achievement = $achievement ? (float)$achievement : 0;
+                return $item;
+            });
+            $groupedData = $data->groupBy('kategori')->map(function ($items) {
+               $total = $items->sum(function ($item) {
+                    return (float)str_replace('%', '', $item->Achievement); 
+                });
+               $count = $items->count();
+                $average = $count > 0 ? $total / $count : 0;
+               return $items->map(function ($item) use ($average) {
+                    $item->average_achievement = $average;
+                    return $item;
+                });
+            });
+            $totalAllCategories = $groupedData->map(function ($items) {
+                $totalAchievement = $items->sum(function ($item) {
+                    return (float)str_replace('%', '', $item->Achievement);
+                });
+                $count = $items->count();
+                return $count > 0 ? $totalAchievement / $count : 0;
+            })->sum(); 
+            //hitung tot. aspect 
+            $totalCategories = $groupedData->count(); 
+            $totalAspect = round($totalAllCategories / $totalCategories, 2);
+            //cek hitungan sesuai gak + cocokin hitungan di excel 
+            // dd([
+            //     'totalAllCategories' => $totalAllCategories,
+            //     'totalCategories' => $totalCategories,
+            //     'totalAspect' => $totalAspect,
+            // ]);
+            //  total "Legal Aspect"
+            $groupedData = $groupedData->map(function ($items, $key) use ($totalAspect) {
+                if ($key === 'Legal Aspect') {
+                    return $items->map(function ($item) use ($totalAspect) {
+                        $item->average_achievement = $totalAspect;
+                        return $item;
+                    });
+                }
+                return $items;
+            });
+            return view('Mining.index', compact('groupedData', 'reports', 'years', 'year','totalAspect'));
+        }
         
-        ->where('KatgoriDescription', 'Lingkungan')
-        ->get()
-        ->avg('total_numeric');
-
-
-        //hitung total berdasarkan kategori
-        $avarageL = MiningReadiness::selectRaw('REPLACE(Achievement, "%", "") as total_numeric')
-        ->when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })
-        
-        ->where('KatgoriDescription', 'Legalitas')
-        ->get()
-        ->avg('total_numeric');
-
-        //hitung total berdasarkan kategori
-        $avarageP = MiningReadiness::selectRaw('REPLACE(Achievement, "%", "") as total_numeric')
-        ->when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })
-        
-        ->where('KatgoriDescription', 'Penjualan')
-        ->get()
-        ->avg('total_numeric');
-        
-        //hitung total berdasarkan kategori
-        $avarageK = MiningReadiness::selectRaw('REPLACE(Achievement, "%", "") as total_numeric')
-        ->when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })
-        
-        ->where('KatgoriDescription', 'Keuangan')
-        ->get()
-        ->avg('total_numeric');
-
-
-
-       $years = MiningReadiness::selectRaw('YEAR(created_at) as year')
-           ->distinct()
-           ->orderBy('year', 'desc')
-           ->pluck('year');
-        return view('Mining.index',compact('data','dataP','dataK','dataL','reports','years','year','avarage','avarageL','avarageP','avarageK'));
-         }
-
-
-
-
-        //UNTUK MENAMPILAKN FORM dan ADD DATA NAMA LABA RUGI
         public function FormKategori()
         {
             return view('Mining.formKategori');
         }
         
-        public function createKatgori(Request $request) {
+        public function createKatgori(Request $request)
+        
+        {
             $validatedData = $request->validate([
-              'kategori' => 'required|array',
-              'kategori.*' => 'required|string',
+                'kategori' => 'required|array',
+                'kategori.*' => 'required|string',
             ]);
             $createdBy = auth()->user()->username;
-          
+            
             foreach ($validatedData['kategori'] as $nama) {
-              KategoriMiniR::create(['kategori' => $nama]);
+                KategoriMiniR::create(['kategori' => $nama]);
             }
-          
+            
             return redirect('/indexmining')->with('success', 'Data berhasil disimpan.');
-          }
-          
-        //UNTUK MENAMPILAKN FORM dan ADD DATA NAMA LABA RUGI
+        }
+        
         public function FormMining()
         {
             $kategori = KategoriMiniR::all();
-            return view('Mining.formMining',compact('kategori'));
+            return view('Mining.formMining', compact('kategori'));
         }
         
         public function CreateMining(Request $request)
@@ -143,23 +136,21 @@ class MiningReadinessController extends Controller
                 'filling' => 'nullable',
                 'KatgoriDescription' => 'required',
             ]);
-    
+            
             $validatedData['created_by'] = auth()->user()->username;
             MiningReadiness::create($validatedData);
-
-            return redirect('/indexmining')->with('success', 'data berhasil disimpan.');
+            
+            return redirect('/indexmining')->with('success', 'Data berhasil disimpan.');
         }
-
-
-        //update data
+        
         public function FormMiningUpdate($id)
         {
             $kategori = KategoriMiniR::all();
             $mining = MiningReadiness::findOrFail($id);
-
-            return view('Mining.updateMining',compact('mining','kategori'));
+            
+            return view('Mining.updateMining', compact('mining', 'kategori'));
         }
-
+        
         public function UpdateMining(Request $request, $id)
         {
             $validatedData = $request->validate([
@@ -172,7 +163,7 @@ class MiningReadinessController extends Controller
                 'nomor' => 'required',
                 'filling' => 'nullable',
                 'KatgoriDescription' => 'required',
-        ]);
+            ]);
             
             $validatedData['updated_by'] = auth()->user()->username;
             
@@ -181,7 +172,73 @@ class MiningReadinessController extends Controller
             
             return redirect('/indexmining')->with('success', 'Data berhasil diperbarui.');
         }
-    
+        
+        public function picamining(Request $request)
+        {
+            $user = Auth::user();
+            $data = PicaMining::all();
+            $year = $request->input('year');
+            
+            $reports = PicaMining::when($year, function ($query, $year) {
+                return $query->whereYear('created_at', $year);
+            })->get();
+            
+            $years = PicaMining::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+            
+            return view('picamining.index', compact('data', 'reports', 'years', 'year',));
+        }
+        
+        public function formpicamining()
+        {
+            $user = Auth::user();
+            return view('picamining.addData');
+        }
+        
+        public function createpicamining(Request $request)
+        {
+            $validatedData = $request->validate([
+                'problem' => 'required|string',
+                'corectiveaction' => 'required|string',
+                'cause' => 'required|string',
+                'duedate' => 'required|string',
+                'pic' => 'required|string',
+                'status' => 'required|string',
+                'remerks' => 'required|string',
+            ]);
+            $validatedData['created_by'] = auth()->user()->username;
+            PicaMining::create($validatedData);
+            
+            return redirect('/picamining')->with('success', 'Data berhasil disimpan.');
+        }
+        
+        public function formupdatepicamining($id)
+        {
+            $data = PicaMining::findOrFail($id);
+            return view('picamining.update', compact('data'));
+        }
+        
+        public function updatepicamining(Request $request, $id)
+        {
+            $validatedData = $request->validate([
+                'problem' => 'required|string',
+                'corectiveaction' => 'required|string',
+                'cause' => 'required|string',
+                'duedate' => 'required|string',
+                'pic' => 'required|string',
+                'status' => 'required|string',
+                'remerks' => 'required|string',
+            ]);
+            $validatedData['updated_by'] = auth()->user()->username;
+            
+            $PicaPeople = PicaMining::findOrFail($id);
+            $PicaPeople->update($validatedData);
+            
+            return redirect('/picamining')->with('success', 'data berhasil disimpan.');
+        }
+        
         
 
 

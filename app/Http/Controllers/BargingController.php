@@ -5,6 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barging;
+use App\Models\PicaBarging;
+
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class BargingController extends Controller
 {
@@ -110,5 +116,76 @@ class BargingController extends Controller
 
     }
     
+    public function indexpicabarging (Request $request)
+    {
+        $user = Auth::user();  
+        $data = PicaBarging::all();
+        $year = $request->input('year');
 
+        //filter tahun di laporan
+        $reports = PicaBarging::when($year, function ($query, $year) {
+            return $query->whereYear('created_at', $year);
+        })->get();
+        
+        $years = PicaBarging::selectRaw('YEAR(created_at) as year')
+        ->distinct()
+        ->orderBy('year', 'desc')
+        ->pluck('year');
+        
+        return view('picabarging.index', compact('data','reports','years', 'year'));
+        
+    }
+
+    
+    public function formpicabarging()
+    {
+        $user = Auth::user();  
+        return view('picabarging.addData');
+    }
+
+    public function createpicabarging(Request $request)
+    {
+                // dd($request->all());
+
+
+                $validatedData = $request->validate([
+                    'problem' => 'required|string',
+                    'corectiveaction' => 'required|string',
+                    'cause' => 'required|string',
+                    'duedate' => 'required|string',
+                    'pic' => 'required|string',
+                    'status' => 'required|string',
+                    'remerks' => 'required|string',
+                ]);
+                $validatedData['created_by'] = auth()->user()->username;
+                PicaBarging::create($validatedData);        
+        return redirect('/picamining')->with('success', 'Surat berhasil disimpan.');
+    }
+
+    public function updatepicabarging($id){
+        $data = PicaBarging::findOrFail($id);
+        return view('picabarging.update', compact('data'));
+    }
+
+    public function updatedatapicabarging(Request $request, $id)
+    {
+                // dd($request->all());
+
+
+                $validatedData = $request->validate([
+                    'problem' => 'required|string',
+                    'corectiveaction' => 'required|string',
+                    'cause' => 'required|string',
+                    'duedate' => 'required|string',
+                    'pic' => 'required|string',
+                    'status' => 'required|string',
+                    'remerks' => 'required|string',
+                ]);
+                $validatedData['updated_by'] = auth()->user()->username;
+        
+                $PicaPeople =PicaBarging::findOrFail($id);
+                $PicaPeople->update($validatedData);
+        
+        return redirect('/indexpicabarging')->with('success', 'data berhasil disimpan.');
+    }
 }

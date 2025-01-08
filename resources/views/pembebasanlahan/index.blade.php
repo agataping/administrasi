@@ -59,6 +59,7 @@
                             <th  style="vertical-align: middle;">Progress</th>
                             <th  style="vertical-align: middle;">Status</th>
                             <th  style="vertical-align: middle;">Achievement</th>
+                            <th  style="vertical-align: middle;">Target Selesai</th>
                             
                             <th  style="vertical-align: middle;">created_by</th>
                             <th  style="vertical-align: middle;">Aksi</th>
@@ -78,6 +79,7 @@
                             
                             <td style="text-align: center; vertical-align: middle;">{{ $d->Status }}</td>
                             <td style="text-align: center; vertical-align: middle;" >{{ $d->Achievement }}</td>
+                            <td style="text-align: center; vertical-align: middle;" >{{ $d->targetselesai }}</td>
 
                             <td style="text-align: center; vertical-align: middle;" >{{ $d->created_by }}</td>
                             <td style="text-align: center; vertical-align: middle;" >
@@ -90,8 +92,10 @@
                         
                         @endforeach
                         <tr>
-                        <th  colspan="8" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; ">Total</th>
-                        <th style="background-color:rgb(244, 244, 244); text-align: center;">
+                        <th  colspan="6" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; ">Total</th>
+                        <th colspan="4" style="background-color:rgb(244, 244, 244); text-align: start;">
+                        {{ round($averageAchievement , 2) }}%
+
                         </th>
                     </tr>
                     </tfoot>

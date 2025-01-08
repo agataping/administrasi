@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('KebutuhanLahan');
             $table->string('Progress');
             $table->string('Status')->nullable();
+            $table->string('targetselesai')->nullable();
             $table->string('Achievement');
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable(); 

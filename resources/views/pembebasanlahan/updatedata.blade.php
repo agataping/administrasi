@@ -60,6 +60,13 @@
                         <input type="text" class="form-control" id="achievement" name="Achievement" value="{{ $pembebasanLahan->Achievement }}" required>
                     </div>
 
+                    <div class="form-group">
+                        <label for="targetselesai">Target Selesai</label>
+                        <input type="targetselesai" class="form-control" id="achievement" value="{{ $pembebasanLahan->targetselesai }}" name="targetselesai" >
+                    </div>
+                    
+                    
+                    
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Update</button>
                     </div>

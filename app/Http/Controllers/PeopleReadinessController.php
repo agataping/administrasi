@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Models\PeopleReadiness;
+use App\Models\picaPeople;
 
 class PeopleReadinessController extends Controller
 {
@@ -92,6 +93,7 @@ class PeopleReadinessController extends Controller
             'pou_pou_plan' => 'required|integer',
             'Quality_plan' => 'required|string',
             'pou_pou_actual' => 'required|integer',
+            'note' => 'nullable|string',
         ]);
         
         $validatedData['updated_by'] = auth()->user()->username;
@@ -122,6 +124,8 @@ class PeopleReadinessController extends Controller
                     'pou_pou_plan' => 'required|integer',
                     'Quality_plan' => 'required|string',
                     'pou_pou_actual' => 'required|integer',
+                    'note' => 'nullable|string',
+
                 ]);
                 $validatedData['created_by'] = auth()->user()->username;
                 PeopleReadiness::create($validatedData);        
@@ -129,4 +133,77 @@ class PeopleReadinessController extends Controller
     }
 
 
-}
+
+    public function indexpicapeople(Request $request)
+    {
+        $user = Auth::user();  
+        $data = picaPeople::all();
+        $year = $request->input('year');
+
+        //filter tahun di laporan
+        $reports = picaPeople::when($year, function ($query, $year) {
+            return $query->whereYear('created_at', $year);
+        })->get();
+        
+    $years = picaPeople::selectRaw('YEAR(created_at) as year')
+    ->distinct()
+    ->orderBy('year', 'desc')
+    ->pluck('year');
+    
+        return view('picapeople.index', compact('data','reports','years', 'year'));
+    }
+
+    
+    public function formpicapeople()
+    {
+        $user = Auth::user();  
+        return view('picapeople.addData');
+    }
+
+    public function createpicapeople(Request $request)
+    {
+                // dd($request->all());
+
+
+                $validatedData = $request->validate([
+                    'problem' => 'required|string',
+                    'corectiveaction' => 'required|string',
+                    'cause' => 'required|string',
+                    'duedate' => 'required|string',
+                    'pic' => 'required|string',
+                    'status' => 'required|string',
+                    'remerks' => 'required|string',
+                ]);
+                $validatedData['created_by'] = auth()->user()->username;
+                PicaPeople::create($validatedData);        
+        return redirect('/indexpicapeople')->with('success', 'Surat berhasil disimpan.');
+    }
+
+    public function formupdatepicapeople($id){
+        $data = picaPeople::findOrFail($id);
+        return view('picapeople.update', compact('data'));
+    }
+
+    public function updatepicapeople(Request $request, $id)
+    {
+                // dd($request->all());
+
+
+                $validatedData = $request->validate([
+                    'problem' => 'required|string',
+                    'corectiveaction' => 'required|string',
+                    'cause' => 'required|string',
+                    'duedate' => 'required|string',
+                    'pic' => 'required|string',
+                    'status' => 'required|string',
+                    'remerks' => 'required|string',
+                ]);
+                $validatedData['updated_by'] = auth()->user()->username;
+        
+                $PicaPeople = PicaPeople::findOrFail($id);
+                $PicaPeople->update($validatedData);
+        
+        return redirect('/indexpicapeople')->with('success', 'Surat berhasil disimpan.');
+    }
+
+}            

@@ -1,14 +1,14 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Mining Readines')
+@section('title', 'Maening Readines')
 @section('content')
 
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Mining Readines</h2>
+                <h2 class="mb-3">Maening Readines</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -31,7 +31,7 @@
                 </div> 
                 <div class="row">
                     <div class="col-sm-">
-                        <a href="/FormMining" class="btn btn-custom">Add Mining Readines</a>
+                        <a href="/FormMining" class="btn btn-custom">Add Maening Readines</a>
                     </div>
                 </div> 
                 
@@ -53,204 +53,81 @@
                 </div> 
 
                 <table class="table table-bordered">
-                    <thead>
+                    <thead style="text-align: end; background-color:rgb(56, 181, 73);">
                         <tr>
                             <th rowspan="2" style="vertical-align: middle;">No</th>
-                            <th  rowspan="2" style="vertical-align: middle;">Description </th>
+                            <th rowspan="2" style="vertical-align: middle;">Description</th>
                             <th rowspan="2" style="text-align: center; vertical-align: middle;">Nomer Legalitas</th>
                             <th rowspan="2" style="vertical-align: middle;">Status</th>
-                            <th  colspan="3"style="text-align: center;">JTN</th>
-                            <th  rowspan="2"style="vertical-align: middle;">Achievement</th>
-                            
-                            <th rowspan="2"style="vertical-align: middle;">created_by</th>
-                            <th rowspan="2"  style="vertical-align: middle;">Aksi</th>
+                            <th colspan="3" style="text-align: center;">JTN</th>
+                            <th rowspan="2" style="vertical-align: middle;">Achievement</th>
+                            <th rowspan="2" style="vertical-align: middle;">Created By</th>
+                            <th rowspan="2" style="vertical-align: middle;">Aksi</th>
                         </tr>
-                        
                         <tr>
                             <th>Tanggal</th>
                             <th>Berlaku s/d</th>
-                            <th>Filling / Lokasi dokumen </th>                            
+                            <th>Filling / Lokasi dokumen</th>
                         </tr>
                     </thead>
                     <tbody>
+
+                        @foreach ($groupedData as $kategori => $items)
                         <tr>
-                            @php($no = 1)
-                            <th  style="text-align: center;">{{ $no}}</th>
-                            <th colspan="10"style="text-align: ;">{{ $dataL->first()->KatgoriDescription ?? '-' }}</th>
-                            
+                        <th style="vertical-align: middle; background-color: #f0f0f0;">{{ $loop->iteration }}</th>
+
+                            <th colspan="10" style="text-align: left; background-color: #f0f0f0;">
+                                {{ $kategori ?? '-' }}
+                            </th>
                         </tr>
-                        
 
-                        @foreach($dataL as $d)
-                        
+                        @foreach ($items as $d)
                         <tr>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->nomor }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->Description }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->NomerLegalitas }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->status }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->tanggal }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->berlaku }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->filling }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->Achievement }}</td>
-
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->created_by }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >
-                                <a href="{{ route('FormMiningUpdate', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
-                                    Edit
-                                </a>
+                            <th style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->Description ?? '-' }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->NomerLegalitas ?? '-' }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->status ?? '-' }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->tanggal ?? '-' }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->berlaku ?? '-' }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->filling ?? '-' }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->Achievement ?? '-' }} </td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->created_by ?? '-' }}</td>
+                            <td style="text-align: center; vertical-align: middle;">
+                                <a href="{{ route('FormMiningUpdate', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">Edit</a>
                             </td>
                             
                             
                         </tr>
+                        @endforeach
                         
+                        
+                        <tr>
+                            <th colspan="9" style="text-align: end; background-color:rgb(244, 244, 244);">Total</th>
+                            <th style="background-color:rgb(244, 244, 244); text-align: center;">
+                                {{ round($d->average_achievement, 2) }}%
+                            </th>
+                        </tr>
+
+
+
                         @endforeach
                         <tr>
-                        <th  colspan="9" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; ">Total</th>
-                        <th style="background-color:rgb(244, 244, 244); text-align: center;">
-                        {{ round($avarageL, 2) }}%
-                        </th>
-                    </tr>
-                    </tfoot>
-                    </tbody>
-                    
-
-                    <tbody>
-                    @php($no = 2)
-                            <th  style="text-align: center;">{{ $no}}</th>
-                            <th colspan="10"style="text-align: ;">{{ $data->first()->KatgoriDescription ?? '-' }}</th>
-
-                        <tr>
-                        @foreach($data as $d)
-
-                        <tr>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->nomor }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->Description }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->NomerLegalitas }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->status }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->tanggal }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->berlaku }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->filling }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->Achievement }}</td>
-
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->created_by }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >
-                                <a href="{{ route('FormMiningUpdate', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
-                                    Edit
-                                </a>
-                            </td>
-
-                            
-                            
+                            <th colspan="9" style="text-align: end; background-color: rgb(244, 244, 244);">Total Aspect</th>
+                            <th style="background-color: rgb(244, 244, 244); text-align: center;">
+                                {{ round($totalAspect , 2) }}%
+                            </th>
                         </tr>
                         
-                        @endforeach
-                        <tr>
-                        <th  colspan="9" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; ">Total</th>
-                        <th style="background-color:rgb(244, 244, 244); text-align: center;">
-                        {{ round($avarage, 2) }}%
-                        </th>
-                    </tr>
-                    </tfoot>
+
                     </tbody>
-
-                    <tbody>
-                    @php($no = 3)
-                            <th  style="text-align: center;">{{ $no}}</th>
-                            <th colspan="10"style="text-align: ;">{{ $dataP->first()->KatgoriDescription ?? '-' }}</th>
-
-                        <tr>
-                        @foreach($dataP as $d)
-
-                        <tr>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->nomor }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->Description }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->NomerLegalitas }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->status }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->tanggal }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->berlaku }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->filling }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->Achievement }}</td>
-
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->created_by }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >
-                                <a href="{{ route('FormMiningUpdate', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
-                                    Edit
-                                </a>
-                            </td>
-
-                            
-                            
-                        </tr>
-                        
-                        @endforeach
-                        <tr>
-                        <th  colspan="9" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; ">Total</th>
-                        <th style="background-color:rgb(244, 244, 244); text-align: center;">
-                        {{ round($avarageP, 2) }}%
-                        </th>
-                    </tr>
-                    </tfoot>
-                    </tbody>
-
-                    <tbody>
-                    @php($no = 4)
-                            <th  style="text-align: center;">{{ $no}}</th>
-                            <th colspan="10"style="text-align: ;">{{ $dataK->first()->KatgoriDescription ?? '-' }}</th>
-
-                        <tr>
-                        @foreach($dataK as $d)
-
-                        <tr>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->nomor }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->Description }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->NomerLegalitas }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->status }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->tanggal }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->berlaku }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->filling }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->Achievement }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->created_by }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >
-                                <a href="{{ route('FormMiningUpdate', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
-                                    Edit
-                                </a>
-                            </td>
-
-                            
-                        </tr>
-                        
-                        @endforeach
-                        <tr>
-                        <th  colspan="9" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; ">Total</th>
-                        <th style="background-color:rgb(244, 244, 244); text-align: center;">
-                        {{ round($avarageK, 2) }}%
-                        </th>
-                    </tr>
-                    </tfoot>
-                    </tbody>
-
-                </table>                        
-
-
-                </div>
+                </table>
+                
             </div>
-            
-      
-        
-
-        
+        </div>
     </div>
 </div>
-        
-        
-        
 
-
-
-
-
-
-
+    
 @endsection
 @section('scripts')
 

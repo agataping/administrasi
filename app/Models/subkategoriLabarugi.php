@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class subkategoriLabarugi extends Model
 {
     use HasFactory;
+    protected $table = 'sub_labarugis';
+    protected $guarded = ['id'];
+
+
 }

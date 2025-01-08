@@ -248,4 +248,15 @@ function HitungDev(descriptionId) {
         calculatePercentage();
     });
     
+
+
+    const textarea = document.getElementById("note");
+
+textarea.addEventListener("input", () => {
+  const lines = textarea.value.split("\n"); // Pisahkan berdasarkan baris
+  const numberedLines = lines.map((line, index) => {
+    return `${index + 1}. ${line.replace(/^\d+\.\s*/, "")}`; // Tambahkan nomor urut dan hapus nomor lama
+  });
+  textarea.value = numberedLines.join("\n"); // Gabungkan kembali
+});
 </script>

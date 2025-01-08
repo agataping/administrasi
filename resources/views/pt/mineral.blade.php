@@ -29,7 +29,7 @@
                     <div class="cardcost">
                         <a href="/dashboard" class="cardcost text-decoration-none">
                             
-                            <h4><b>Mineral</b></h4>                        
+                            <h4><b>Marketing</b></h4>                        
                             <div class="percentage-box" >
                                 98%
                             </div>

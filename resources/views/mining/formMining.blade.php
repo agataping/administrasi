@@ -1,13 +1,13 @@
 @extends('template.main')
 
-@section('title', 'Mining Readines')
+@section('title', 'Maening Readines')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Mining Readines</h2>
+                <h2 class="mb-3">Maening Readines</h2>
                 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -31,7 +31,7 @@
                         @endforeach
                     </select>
                     
-                    <div id="form-input" style="display:none;">
+                    <div >
                         <form action="{{ route('CreateMining') }}" method="post">
                             @csrf
                             <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">

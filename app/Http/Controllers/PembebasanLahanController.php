@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PembebasanLahan;
+use App\Models\PicaPl;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PembebasanLahanController extends Controller
 {
@@ -12,6 +16,10 @@ class PembebasanLahanController extends Controller
         public function indexPembebasanLahan(Request $request)
         {
          $data= PembebasanLahan::all();
+         $averageAchievement = $data->average(function ($item) {
+             return (float)str_replace('%', '', $item->Achievement);
+            });
+
          $year = $request->input('year');
 
         //filter tahun di laporan
@@ -23,7 +31,7 @@ class PembebasanLahanController extends Controller
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
-            return view('pembebasanlahan.index',compact('data','reports','years','year'));
+            return view('pembebasanlahan.index',compact('data','reports','years','year','averageAchievement'));
         }
 
         public function formlahan()
@@ -40,6 +48,7 @@ class PembebasanLahanController extends Controller
                 'KebutuhanLahan' => 'required',
                 'Progress' => 'required',
                 'Status' => 'nullable',
+                'targetselesai' => 'nullable',
                 'Achievement' => 'required',
                 
 
@@ -68,6 +77,7 @@ class PembebasanLahanController extends Controller
                 'KebutuhanLahan' => 'required',
                 'Progress' => 'required',
                 'Status' => 'nullable',
+                'targetselesai' => 'nullable',
                 'Achievement' => 'required',
                 
 
@@ -80,5 +90,72 @@ class PembebasanLahanController extends Controller
             return redirect('/indexPembebasanLahan')->with('success', 'data berhasil disimpan.');
 
         }
+
+        public function picapl(Request $request)
+        {
+            $user = Auth::user();
+            $data = PicaPl::all();
+            $year = $request->input('year');
+            
+            $reports = PicaPl::when($year, function ($query, $year) {
+                return $query->whereYear('created_at', $year);
+            })->get();
+            
+            $years = PicaPl::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+            
+            return view('picapl.index', compact('data', 'reports', 'years', 'year',));
+        }
+        
+        public function formpicapl()
+        {
+            $user = Auth::user();
+            return view('picapl.addData');
+        }
+        
+        public function createpicapl(Request $request)
+        {
+            $validatedData = $request->validate([
+                'problem' => 'required|string',
+                'corectiveaction' => 'required|string',
+                'cause' => 'required|string',
+                'duedate' => 'required|string',
+                'pic' => 'required|string',
+                'status' => 'required|string',
+                'remerks' => 'required|string',
+            ]);
+            $validatedData['created_by'] = auth()->user()->username;
+            PicaPl::create($validatedData);
+            
+            return redirect('/picapl')->with('success', 'Data berhasil disimpan.');
+        }
+        
+        public function formupdatepicapl($id)
+        {
+            $data = PicaPl::findOrFail($id);
+            return view('picapl.update', compact('data'));
+        }
+        
+        public function updatepicapl(Request $request, $id)
+        {
+            $validatedData = $request->validate([
+                'problem' => 'required|string',
+                'corectiveaction' => 'required|string',
+                'cause' => 'required|string',
+                'duedate' => 'required|string',
+                'pic' => 'required|string',
+                'status' => 'required|string',
+                'remerks' => 'required|string',
+            ]);
+            $validatedData['updated_by'] = auth()->user()->username;
+            
+            $PicaPeople = PicaPl::findOrFail($id);
+            $PicaPeople->update($validatedData);
+            
+            return redirect('/picapl')->with('success', 'data berhasil disimpan.');
+        }
+
     
 }

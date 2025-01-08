@@ -63,6 +63,11 @@
                             <label for="total">Total</label>
                             <input type="text" class="form-control" id="total" name="total" value="{{ $data->total }}" readonly>
                         </div>
+
+                        <div class="form-group">
+                                <label for="note">Catatan:</label>
+                                <textarea class="form-control" rows="10" cols="50" id="note" name="note" rows="5" placeholder="Catatan"></textarea>
+                            </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Update</button>

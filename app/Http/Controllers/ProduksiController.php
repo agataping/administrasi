@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Produksi;
+use App\Models\PicaPaUa;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ProduksiController extends Controller
 {
@@ -166,7 +168,80 @@ class ProduksiController extends Controller
         
         return redirect('/indexpaua')->with('success', 'Data berhasil disimpan.');
     }
+
+    public function picapaua(Request $request)
+    {
+        $user = Auth::user();  
+        $data = PicaPaUa::all();
+        $year = $request->input('year');
+
+        //filter tahun di laporan
+        $reports = PicaPaUa::when($year, function ($query, $year) {
+            return $query->whereYear('created_at', $year);
+        })->get();
+        
+        $years = PicaPaUa::selectRaw('YEAR(created_at) as year')
+        ->distinct()
+        ->orderBy('year', 'desc')
+        ->pluck('year');
+        
+        return view('picapaua.index', compact('data','reports','years', 'year'));
+        
+    }
+
     
+    public function formpicapaua()
+    {
+        $user = Auth::user();  
+        return view('picapaua.addData');
+    }
+
+    public function createpicapaua(Request $request)
+    {
+                // dd($request->all());
+
+
+                $validatedData = $request->validate([
+                    'problem' => 'required|string',
+                    'corectiveaction' => 'required|string',
+                    'cause' => 'required|string',
+                    'duedate' => 'required|string',
+                    'pic' => 'required|string',
+                    'status' => 'required|string',
+                    'remerks' => 'required|string',
+                ]);
+                $validatedData['created_by'] = auth()->user()->username;
+                PicaPaUa::create($validatedData);        
+        return redirect('/picapaua')->with('success', 'Surat berhasil disimpan.');
+    }
+
+    public function formupdatepicapaua($id){
+        $data = PicaPaUa::findOrFail($id);
+        return view('picapaua.update', compact('data'));
+    }
+
+    public function updatepicapaua (Request $request, $id)
+    {
+                // dd($request->all());
+
+
+                $validatedData = $request->validate([
+                    'problem' => 'required|string',
+                    'corectiveaction' => 'required|string',
+                    'cause' => 'required|string',
+                    'duedate' => 'required|string',
+                    'pic' => 'required|string',
+                    'status' => 'required|string',
+                    'remerks' => 'required|string',
+                ]);
+                $validatedData['updated_by'] = auth()->user()->username;
+        
+                $PicaPeople =PicaPaUa::findOrFail($id);
+                $PicaPeople->update($validatedData);
+        
+        return redirect('/picapaua')->with('success', 'Surat berhasil disimpan.');
+    }
+
     
 }
 

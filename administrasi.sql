@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 05, 2025 at 06:54 PM
+-- Generation Time: Jan 08, 2025 at 11:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -52,6 +52,32 @@ CREATE TABLE `bargings` (
 INSERT INTO `bargings` (`id`, `laycan`, `namebarge`, `surveyor`, `portloading`, `portdishcharging`, `notifyaddres`, `initialsurvei`, `finalsurvey`, `quantity`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`) VALUES
 (1, '10-11 Nov 2024', 'TB. TMH 16 / BG ELECTRA 10', 'PT. CARSURIN', 'JETTY JTN', 'GARONGKONG', 'PT.INDOCEMENT TUNGGAL PRAKARSA', '2024-11-12', '2024-11-18', 55623575.00, '2024-12-29 01:15:08', '2024-12-29 02:06:36', 'STAFF1234567', 'STAFF1234567', NULL),
 (2, '21 Nov 2024', 'TB. MITRA CATUR 6 / BG. MANDIRI 273', 'PT. CARSURIN', 'JETTY JTN', 'MV. Best Unity', 'PT. RLK ASIA DEVELOPMENT', '2024-11-23', '2024-12-25', 5110048.00, '2024-12-29 01:17:17', '2024-12-29 01:17:17', 'STAFF1234567', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `category_labarugis`
+--
+
+CREATE TABLE `category_labarugis` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `namecategory` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `category_labarugis`
+--
+
+INSERT INTO `category_labarugis` (`id`, `namecategory`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, 'Revenue', 'STAFF1234567', NULL, NULL, '2025-01-08 11:06:48', '2025-01-08 11:06:48'),
+(2, 'Cost of Goods Sold (COGS)', 'STAFF1234567', NULL, NULL, '2025-01-08 11:07:11', '2025-01-08 11:07:11'),
+(4, 'Shipping', 'STAFF1234567', NULL, NULL, '2025-01-08 11:08:54', '2025-01-08 11:08:54'),
+(5, 'Royalti', 'STAFF1234567', NULL, NULL, '2025-01-08 11:09:02', '2025-01-08 11:09:02');
 
 -- --------------------------------------------------------
 
@@ -187,6 +213,34 @@ INSERT INTO `deadline_compentsation_cs` (`id`, `Keterangan`, `MasaSewa`, `Nomina
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `detailabarugis`
+--
+
+CREATE TABLE `detailabarugis` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `nominalactual` decimal(20,2) DEFAULT NULL,
+  `nominalplan` decimal(20,2) DEFAULT NULL,
+  `tanggal` date NOT NULL,
+  `desc` varchar(255) NOT NULL,
+  `sub_id` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `detailabarugis`
+--
+
+INSERT INTO `detailabarugis` (`id`, `created_by`, `updated_by`, `deleted_by`, `nominalactual`, `nominalplan`, `tanggal`, `desc`, `sub_id`, `created_at`, `updated_at`) VALUES
+(1, 'STAFF1234567', NULL, NULL, NULL, 5180540084342.00, '2024-12-12', 'abcd', 1, '2025-01-08 11:44:22', '2025-01-08 11:44:22'),
+(2, 'STAFF1234567', NULL, NULL, 5180540084342.00, NULL, '0023-02-12', 'abcd', 3, '2025-01-08 12:15:03', '2025-01-08 12:15:03');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `failed_jobs`
 --
 
@@ -235,6 +289,37 @@ INSERT INTO `harga_poko_penjualans` (`id`, `category`, `rencana`, `subcategory`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `hses`
+--
+
+CREATE TABLE `hses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nameindikator` varchar(255) NOT NULL,
+  `target` varchar(255) NOT NULL,
+  `nilai` varchar(255) NOT NULL,
+  `indikator` varchar(255) DEFAULT NULL,
+  `keterangan` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `created_by` varchar(50) DEFAULT NULL,
+  `updated_by` varchar(50) DEFAULT NULL,
+  `deleted_by` varchar(50) DEFAULT NULL,
+  `kategori_id` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `hses`
+--
+
+INSERT INTO `hses` (`id`, `nameindikator`, `target`, `nilai`, `indikator`, `keterangan`, `date`, `created_by`, `updated_by`, `deleted_by`, `kategori_id`, `created_at`, `updated_at`) VALUES
+(1, '1', '1', '1', '1', '1', '0024-02-12', 'STAFF1234567', NULL, NULL, 2, '2025-01-07 10:09:38', '2025-01-07 10:09:38'),
+(2, '1', '1', '1', '1', '1', '2024-02-12', 'STAFF1234567', NULL, NULL, 3, '2025-01-07 10:09:53', '2025-01-07 10:09:53'),
+(3, '4', '1', '1', '1', '1', '2024-03-12', 'STAFF1234567', 'STAFF1234567', NULL, 4, '2025-01-07 10:10:15', '2025-01-07 10:20:03');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `infrastructure_readinesses`
 --
 
@@ -252,15 +337,16 @@ CREATE TABLE `infrastructure_readinesses` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` varchar(255) DEFAULT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
-  `deleted_by` varchar(255) DEFAULT NULL
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `note` varchar(300) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `infrastructure_readinesses`
 --
 
-INSERT INTO `infrastructure_readinesses` (`id`, `ProjectName`, `Preparation`, `Construction`, `Commissiong`, `KelayakanBangunan`, `Kelengakapan`, `Kebersihan`, `total`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`) VALUES
-(1, 'Kantor', NULL, NULL, '90', 90, 85, 90, '88%', '2024-12-26 08:39:11', '2024-12-28 04:06:37', 'STAFF1234567', 'STAFF1234567', NULL);
+INSERT INTO `infrastructure_readinesses` (`id`, `ProjectName`, `Preparation`, `Construction`, `Commissiong`, `KelayakanBangunan`, `Kelengakapan`, `Kebersihan`, `total`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `note`) VALUES
+(1, 'Kantor', NULL, NULL, '90', 90, 85, 90, '88%', '2024-12-26 08:39:11', '2024-12-28 04:06:37', 'STAFF1234567', 'STAFF1234567', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -287,6 +373,31 @@ INSERT INTO `kategori_cs_minings` (`id`, `kategori`, `created_at`, `updated_at`,
 (3, 'Penjualan', '2024-12-29 07:14:00', '2024-12-29 07:14:00', NULL, NULL, NULL),
 (4, 'Keuangan', '2024-12-29 07:39:45', '2024-12-29 07:39:45', NULL, NULL, NULL),
 (5, 'Lingkungan', '2024-12-29 07:40:00', '2024-12-29 07:40:00', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kategori_hses`
+--
+
+CREATE TABLE `kategori_hses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `kategori_hses`
+--
+
+INSERT INTO `kategori_hses` (`id`, `name`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(2, 'Leading Indicator', NULL, NULL, NULL, '2025-01-07 09:48:51', '2025-01-07 09:48:51'),
+(3, 'Lagging Indicator', NULL, NULL, NULL, '2025-01-07 09:49:04', '2025-01-07 09:49:04'),
+(4, 'Umum', NULL, NULL, NULL, '2025-01-07 09:49:11', '2025-01-07 09:49:11');
 
 -- --------------------------------------------------------
 
@@ -383,7 +494,34 @@ INSERT INTO `kategori_mini_r_s` (`id`, `kategori`, `created_at`, `updated_at`, `
 (1, 'Keuangan', '2024-12-26 09:34:06', '2024-12-26 09:34:06', NULL, NULL, NULL),
 (2, 'Lingkungan', '2024-12-26 09:34:27', '2024-12-26 09:34:27', NULL, NULL, NULL),
 (3, 'Legalitas', '2024-12-26 10:28:44', '2024-12-26 10:28:44', NULL, NULL, NULL),
-(4, 'Penjualan', '2024-12-26 10:29:03', '2024-12-26 10:29:03', NULL, NULL, NULL);
+(4, 'Penjualan', '2024-12-26 10:29:03', '2024-12-26 10:29:03', NULL, NULL, NULL),
+(7, '2', '2025-01-07 13:52:58', '2025-01-07 13:52:58', NULL, NULL, NULL),
+(8, '1', '2025-01-07 13:56:15', '2025-01-07 13:56:15', NULL, NULL, NULL),
+(9, 'test', '2025-01-08 01:13:25', '2025-01-08 01:13:25', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kategori_overcoals`
+--
+
+CREATE TABLE `kategori_overcoals` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `kategori_overcoals`
+--
+
+INSERT INTO `kategori_overcoals` (`id`, `name`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, 'Over Burden', 'STAFF1234567', NULL, NULL, '2025-01-08 06:46:29', '2025-01-08 06:46:29'),
+(2, 'Coal Getting', 'STAFF1234567', NULL, NULL, '2025-01-08 06:48:22', '2025-01-08 06:48:22');
 
 -- --------------------------------------------------------
 
@@ -516,7 +654,25 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (48, '2024_12_25_200418_add_audit_columns_to_perusahaans_table', 5),
 (49, '2024_12_25_200440_add_audit_columns_to_units_table', 5),
 (50, '2024_12_29_155337_create_pembebasan_lahan_cs_table', 6),
-(51, '2024_12_30_044741_add_updated_at_to_kategori_laba_rugis', 7);
+(51, '2024_12_30_044741_add_updated_at_to_kategori_laba_rugis', 7),
+(52, '2025_01_06_163709_create_pica_people_table', 8),
+(53, '2025_01_06_174506_create_picainfrastrukturs_table', 9),
+(54, '2025_01_06_181035_create_picai_dealines_table', 10),
+(55, '2025_01_07_095540_create_pica_hses_table', 11),
+(56, '2025_01_07_095557_create_pica_minings_table', 11),
+(57, '2025_01_07_095634_create_pica_pa_uas_table', 11),
+(58, '2025_01_07_095704_create_pica_over_coal_table', 11),
+(59, '2025_01_07_165634_create_kategori_hses_table', 12),
+(60, '2025_01_07_165651_create_hses_table', 12),
+(61, '2025_01_07_183149_create_pica_bargings_table', 13),
+(62, '2025_01_08_115502_create_pica_pls_table', 14),
+(63, '2025_01_08_124001_create_kategori_overcoals_table', 15),
+(64, '2025_01_08_181027_create_category_labarugis_table', 16),
+(65, '2025_01_08_181204_create_sub_labarugis_table', 16),
+(66, '2025_01_08_181445_create_detailabarugis_table', 16),
+(67, '2025_01_08_181717_create_picalaba_rugis_table', 16),
+(68, '2025_01_08_204704_create_stock_jts_table', 17),
+(69, '2025_01_08_204731_create_picastockjts_table', 17);
 
 -- --------------------------------------------------------
 
@@ -549,7 +705,20 @@ CREATE TABLE `mining_readinesses` (
 INSERT INTO `mining_readinesses` (`id`, `Description`, `NomerLegalitas`, `status`, `tanggal`, `berlaku`, `Achievement`, `created_at`, `updated_at`, `nomor`, `KatgoriDescription`, `created_by`, `updated_by`, `deleted_by`, `filling`) VALUES
 (2, 'IUP', '503/1573/IUP-OP/BPPMD/BPPMD-PTSP/X/2015', 'Operasional', '2015-10-02', 'sekarang', '100', '2024-12-26 10:16:59', '2024-12-28 04:54:03', '1a', 'Lingkungan', 'STAFF1234567', 'STAFF1234567', NULL, 'office'),
 (3, 'SPT Tahunan', NULL, NULL, NULL, NULL, '70%', '2024-12-26 11:42:42', '2024-12-28 04:56:45', '4a', 'Keuangan', 'STAFF1234567', 'STAFF1234567', NULL, NULL),
-(4, 'q', NULL, 'qq', NULL, 'q', '10%', '2024-12-26 11:46:47', '2024-12-26 11:46:47', 'q', 'Keuangan', 'STAFF1234567', NULL, NULL, 'qq');
+(4, 'q', NULL, 'qq', NULL, 'q', '10%', '2024-12-26 11:46:47', '2024-12-26 11:46:47', 'q', 'Keuangan', 'STAFF1234567', NULL, NULL, 'qq'),
+(5, '1', '1', 'On Progres', '2024-12-12', '1', '40', '2025-01-07 13:16:06', '2025-01-07 13:16:06', '4a', 'Penjualan', 'STAFF1234567', NULL, NULL, 'office'),
+(6, '1', '1', 'On Progres', NULL, '1', '40', '2025-01-07 13:16:20', '2025-01-07 13:16:20', '4a', 'Penjualan', 'STAFF1234567', NULL, NULL, 'office'),
+(7, '1', '1', 'On Progres', NULL, '1', '40', '2025-01-07 13:53:06', '2025-01-07 13:53:06', '4a', '2', 'STAFF1234567', NULL, NULL, 'office'),
+(8, '1', '1', 'On Progres', NULL, '1', '90', '2025-01-07 13:53:35', '2025-01-07 13:53:35', '4a', '2', 'STAFF1234567', NULL, NULL, 'office'),
+(9, '1', '1', 'On Progres', NULL, '1', '90', '2025-01-07 13:54:45', '2025-01-07 13:54:45', '4a', '2', 'STAFF1234567', NULL, NULL, 'office'),
+(10, '1', '1', 'On Progres', NULL, '1', '90', '2025-01-07 13:55:05', '2025-01-07 13:55:05', '4a', '2', 'STAFF1234567', NULL, NULL, 'office'),
+(11, '1', '1', 'On Progres', NULL, '1', '100', '2025-01-08 01:13:38', '2025-01-08 01:13:38', '4a', 'test', 'STAFF1234567', NULL, NULL, 'office'),
+(12, '1', '1', 'On Progres', NULL, '1', '60%', '2025-01-08 01:14:19', '2025-01-08 01:14:19', '4a', 'test', 'STAFF1234567', NULL, NULL, 'office'),
+(13, '1', '1', 'On Progres', NULL, '1', '60%', '2025-01-08 01:15:06', '2025-01-08 01:15:06', '4a', 'test', 'STAFF1234567', NULL, NULL, 'office'),
+(14, '1', '1', 'On Progres', NULL, '1', '60%', '2025-01-08 01:15:23', '2025-01-08 01:15:23', '4a', 'test', 'STAFF1234567', NULL, NULL, 'office'),
+(15, '1', '1', 'On Progres', NULL, '1', '60%', '2025-01-08 01:15:30', '2025-01-08 01:15:30', '4a', 'test', 'STAFF1234567', NULL, NULL, 'office'),
+(16, '1', '1', 'On Progres', NULL, '1', '60%', '2025-01-08 01:15:36', '2025-01-08 01:15:36', '4a', 'test', 'STAFF1234567', NULL, NULL, 'office'),
+(17, '1', '1', 'On Progres', NULL, '1', '60%', '2025-01-08 01:15:43', '2025-01-08 01:15:43', '4a', 'test', 'STAFF1234567', NULL, NULL, 'office');
 
 -- --------------------------------------------------------
 
@@ -568,6 +737,34 @@ CREATE TABLE `neracas` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `overberden_coal`
+--
+
+CREATE TABLE `overberden_coal` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `kategori_id` bigint(20) UNSIGNED NOT NULL,
+  `nominalactual` decimal(15,2) DEFAULT NULL,
+  `nominalplan` decimal(15,2) DEFAULT NULL,
+  `tanggal` date NOT NULL,
+  `desc` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `overberden_coal`
+--
+
+INSERT INTO `overberden_coal` (`id`, `kategori_id`, `nominalactual`, `nominalplan`, `tanggal`, `desc`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, 1, 51805400843.00, NULL, '2025-02-12', 'PLAN FR coal', 'STAFF1234567', NULL, NULL, '2025-01-08 08:09:58', '2025-01-08 08:09:58'),
+(2, 1, 2555000000.00, NULL, '2024-02-20', 'actual FR coal', 'STAFF1234567', NULL, NULL, '2025-01-08 08:16:48', '2025-01-08 08:16:48');
 
 -- --------------------------------------------------------
 
@@ -599,15 +796,19 @@ CREATE TABLE `pembebasan_lahans` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` varchar(100) DEFAULT NULL,
   `updated_by` varchar(100) DEFAULT NULL,
-  `deleted_by` varchar(100) DEFAULT NULL
+  `deleted_by` varchar(100) DEFAULT NULL,
+  `targetselesai` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pembebasan_lahans`
 --
 
-INSERT INTO `pembebasan_lahans` (`id`, `NamaPemilik`, `LuasLahan`, `KebutuhanLahan`, `Progress`, `Status`, `Achievement`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`) VALUES
-(3, 'pardi', 4.368, '0.89', 'On progress', NULL, '60%', '2024-12-26 09:32:04', '2024-12-28 05:53:22', 'STAFF1234567', 'STAFF1234567', NULL);
+INSERT INTO `pembebasan_lahans` (`id`, `NamaPemilik`, `LuasLahan`, `KebutuhanLahan`, `Progress`, `Status`, `Achievement`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `targetselesai`) VALUES
+(3, 'pardi', 4.368, '0.89', 'On progress', NULL, '60%', '2024-12-26 09:32:04', '2024-12-28 05:53:22', 'STAFF1234567', 'STAFF1234567', NULL, NULL),
+(4, 'pardi', 4.36, '0.89', 'On progress', '1', '90', '2025-01-08 03:41:09', '2025-01-08 03:41:09', 'STAFF1234567', NULL, NULL, 'besok'),
+(5, 'pardi', 4.36, '0.89', 'On progress', '1', '90%', '2025-01-08 03:45:50', '2025-01-08 03:45:50', 'STAFF1234567', NULL, NULL, 'besok'),
+(6, 'pardi', 4.36, '0.89', 'On progress', '1', '60%', '2025-01-08 03:46:00', '2025-01-08 03:46:00', 'STAFF1234567', NULL, NULL, 'besok');
 
 -- --------------------------------------------------------
 
@@ -662,19 +863,20 @@ CREATE TABLE `people_readinesses` (
   `Fullfillment_actual` int(11) NOT NULL,
   `created_by` varchar(255) DEFAULT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
-  `deleted_by` varchar(255) DEFAULT NULL
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `note` varchar(300) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `people_readinesses`
 --
 
-INSERT INTO `people_readinesses` (`id`, `posisi`, `Fullfillment_plan`, `pou_pou_plan`, `HSE_plan`, `Leadership_plan`, `Improvement_plan`, `Quality_plan`, `Quantity_plan`, `created_at`, `updated_at`, `pou_pou_actual`, `HSE_actual`, `Leadership_actual`, `Improvement_actual`, `Fullfillment_actual`, `created_by`, `updated_by`, `deleted_by`) VALUES
-(2, 'Direktur / KTT', 1, 2, 1, 1, 1, '88%', '100%', '2024-12-25 07:22:01', '2024-12-26 06:56:40', 1, 1, 1, 1, 1, 'STAFF1234567', 'STAFF1234567', NULL),
-(3, 'Manager / Division Head', 4, 4, 4, 4, 4, '50%', '50%', '2024-12-25 09:18:08', '2024-12-25 09:18:08', 2, 2, 2, 2, 2, 'STAFF1234567', NULL, NULL),
-(4, 'supervaisor', 6, 6, 6, 6, 6, '54%', '83%', '2024-12-25 10:46:53', '2024-12-25 10:46:53', 2, 1, 5, 5, 5, 'STAFF1234567', NULL, NULL),
-(5, 'Staff HO', 4, 1, 1, 4, 4, '44%', '100%', '2024-12-25 10:48:11', '2024-12-25 10:48:11', 0, 0, 3, 4, 4, 'STAFF1234567', NULL, NULL),
-(6, 'Staff Site', 12, 1, 1, 1, 6, '75%', '83%', '2024-12-25 10:48:55', '2024-12-25 10:48:55', 0, 1, 1, 6, 10, 'STAFF1234567', NULL, NULL);
+INSERT INTO `people_readinesses` (`id`, `posisi`, `Fullfillment_plan`, `pou_pou_plan`, `HSE_plan`, `Leadership_plan`, `Improvement_plan`, `Quality_plan`, `Quantity_plan`, `created_at`, `updated_at`, `pou_pou_actual`, `HSE_actual`, `Leadership_actual`, `Improvement_actual`, `Fullfillment_actual`, `created_by`, `updated_by`, `deleted_by`, `note`) VALUES
+(2, 'Direktur / KTT', 1, 2, 1, 1, 1, '88%', '100%', '2024-12-25 07:22:01', '2024-12-26 06:56:40', 1, 1, 1, 1, 1, 'STAFF1234567', 'STAFF1234567', NULL, NULL),
+(3, 'Manager / Division Head', 4, 4, 4, 4, 4, '50%', '50%', '2024-12-25 09:18:08', '2024-12-25 09:18:08', 2, 2, 2, 2, 2, 'STAFF1234567', NULL, NULL, NULL),
+(4, 'supervaisor', 6, 6, 6, 6, 6, '54%', '83%', '2024-12-25 10:46:53', '2024-12-25 10:46:53', 2, 1, 5, 5, 5, 'STAFF1234567', NULL, NULL, NULL),
+(5, 'Staff HO', 4, 1, 1, 4, 4, '44%', '100%', '2024-12-25 10:48:11', '2024-12-25 10:48:11', 0, 0, 3, 4, 4, 'STAFF1234567', NULL, NULL, NULL),
+(6, 'Staff Site', 12, 1, 1, 1, 6, '75%', '83%', '2024-12-25 10:48:55', '2024-12-25 10:48:55', 0, 1, 1, 6, 10, 'STAFF1234567', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -730,6 +932,327 @@ INSERT INTO `perusahaans` (`id`, `nama`, `created_at`, `updated_at`, `induk`, `c
 (11, 'Mineral A', '2025-01-05 09:02:48', '2025-01-05 09:02:48', 'Mineral', NULL, NULL, NULL),
 (12, 'Mineral B', '2025-01-05 09:02:54', '2025-01-05 09:02:54', 'Mineral', NULL, NULL, NULL),
 (13, 'Mineral C', '2025-01-05 09:03:01', '2025-01-05 09:03:01', 'Mineral', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `picainfrastrukturs`
+--
+
+CREATE TABLE `picainfrastrukturs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(200) NOT NULL,
+  `corectiveaction` varchar(255) DEFAULT NULL,
+  `duedate` varchar(255) DEFAULT NULL,
+  `pic` varchar(255) DEFAULT NULL,
+  `remerks` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `picainfrastrukturs`
+--
+
+INSERT INTO `picainfrastrukturs` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, '1', 'rgds', '11', '1', '1', '2', '11', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-06 10:00:59', '2025-01-06 10:08:38');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `picai_dealines`
+--
+
+CREATE TABLE `picai_dealines` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(255) NOT NULL,
+  `corectiveaction` varchar(255) NOT NULL,
+  `duedate` varchar(255) NOT NULL,
+  `pic` varchar(255) NOT NULL,
+  `remerks` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `picai_dealines`
+--
+
+INSERT INTO `picai_dealines` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, 'e', '1', '2', '22', '1', '2', '2', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-06 10:24:50', '2025-01-06 10:27:14');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `picalaba_rugis`
+--
+
+CREATE TABLE `picalaba_rugis` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(255) NOT NULL,
+  `corectiveaction` varchar(255) NOT NULL,
+  `duedate` varchar(255) NOT NULL,
+  `pic` varchar(255) NOT NULL,
+  `remerks` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `picalaba_rugis`
+--
+
+INSERT INTO `picalaba_rugis` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, 'r', '6777', 't', 'y', 'u', 'o', 'i', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 12:27:56', '2025-01-08 12:28:08');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `picastockjts`
+--
+
+CREATE TABLE `picastockjts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(255) NOT NULL,
+  `corectiveaction` varchar(255) NOT NULL,
+  `duedate` varchar(255) NOT NULL,
+  `pic` varchar(255) NOT NULL,
+  `remerks` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `picastockjts`
+--
+
+INSERT INTO `picastockjts` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, 'iiopioi', '1', 'g', 'gg', 'gg', 'gg', 'g', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 14:43:44', '2025-01-08 14:43:53');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pica_bargings`
+--
+
+CREATE TABLE `pica_bargings` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(255) NOT NULL,
+  `corectiveaction` varchar(255) NOT NULL,
+  `duedate` varchar(255) NOT NULL,
+  `pic` varchar(255) NOT NULL,
+  `remerks` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pica_bargings`
+--
+
+INSERT INTO `pica_bargings` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, '1', '5', '1', '1', '1', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 10:40:44', '2025-01-07 10:43:17');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pica_hses`
+--
+
+CREATE TABLE `pica_hses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(255) NOT NULL,
+  `corectiveaction` varchar(255) NOT NULL,
+  `duedate` varchar(255) NOT NULL,
+  `pic` varchar(255) NOT NULL,
+  `remerks` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pica_hses`
+--
+
+INSERT INTO `pica_hses` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, '2', '7a', '6', '22', '22', '2', '2', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 10:28:24', '2025-01-08 04:17:24');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pica_minings`
+--
+
+CREATE TABLE `pica_minings` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(255) NOT NULL,
+  `corectiveaction` varchar(255) NOT NULL,
+  `duedate` varchar(255) NOT NULL,
+  `pic` varchar(255) NOT NULL,
+  `remerks` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pica_minings`
+--
+
+INSERT INTO `pica_minings` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, '2', '5', '4', '22', '2', '2', '22', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 02:37:27', '2025-01-07 02:39:48');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pica_over_coal`
+--
+
+CREATE TABLE `pica_over_coal` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(255) NOT NULL,
+  `corectiveaction` varchar(255) NOT NULL,
+  `duedate` varchar(255) NOT NULL,
+  `pic` varchar(255) NOT NULL,
+  `remerks` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pica_over_coal`
+--
+
+INSERT INTO `pica_over_coal` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, '1', '09', '11', '11', '1', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 09:33:59', '2025-01-08 09:34:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pica_pa_uas`
+--
+
+CREATE TABLE `pica_pa_uas` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(255) NOT NULL,
+  `corectiveaction` varchar(255) NOT NULL,
+  `duedate` varchar(255) NOT NULL,
+  `pic` varchar(255) NOT NULL,
+  `remerks` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pica_pa_uas`
+--
+
+INSERT INTO `pica_pa_uas` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, '1', '5', '1', '1', '11', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 02:28:03', '2025-01-07 02:34:31');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pica_people`
+--
+
+CREATE TABLE `pica_people` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` bigint(20) NOT NULL,
+  `corectiveaction` varchar(255) DEFAULT NULL,
+  `duedate` varchar(255) DEFAULT NULL,
+  `pic` varchar(255) DEFAULT NULL,
+  `remerks` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pica_people`
+--
+
+INSERT INTO `pica_people` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, '1', 1, '1', '1', '1', '1', '1', 'STAFF1234567', NULL, NULL, '2025-01-06 09:24:41', '2025-01-06 09:24:41'),
+(2, '1', 2, '1', '1', '2', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-06 09:35:27', '2025-01-06 09:36:38'),
+(3, '1', 1, '11', '1', '1', '2', '11', 'STAFF1234567', NULL, NULL, '2025-01-06 09:59:23', '2025-01-06 09:59:23');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pica_pls`
+--
+
+CREATE TABLE `pica_pls` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cause` varchar(255) NOT NULL,
+  `problem` varchar(255) NOT NULL,
+  `corectiveaction` varchar(255) NOT NULL,
+  `duedate` varchar(255) NOT NULL,
+  `pic` varchar(255) NOT NULL,
+  `remerks` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pica_pls`
+--
+
+INSERT INTO `pica_pls` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, '2a', '1', '2', '22', '22', '2', '2', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 04:07:18', '2025-01-08 04:17:44');
 
 -- --------------------------------------------------------
 
@@ -806,7 +1329,76 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('hicJ8q1tG0XGHVcbX1UuY5c3QVYSz548v2oCTpkB', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYWp1M2hFbkJwS0U0WkhQbEY4UjZvbFdzMks1QW9GNFFGVHpkQTZwcyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbmRleCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1736099642);
+('683R9VIhlnMYZ3rGSXgEXjo6UenLUzY0nEGhoJVD', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiWk9WNXpjdGFrWXNNZlVyNVFSZW1Td1N6MDNFNFd4N1lWaWh4MlN6TCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozNzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2Zvcm1rYXRlZ29yaW9iYyI7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjMzOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvcGljYXN0b2NranQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1736376233);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stock_jts`
+--
+
+CREATE TABLE `stock_jts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `date` varchar(255) NOT NULL,
+  `sotckawal` varchar(255) DEFAULT NULL,
+  `shifpertama` varchar(255) DEFAULT NULL,
+  `shifkedua` varchar(255) DEFAULT NULL,
+  `totalhauling` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `stock_jts`
+--
+
+INSERT INTO `stock_jts` (`id`, `created_by`, `updated_by`, `deleted_by`, `date`, `sotckawal`, `shifpertama`, `shifkedua`, `totalhauling`, `created_at`, `updated_at`) VALUES
+(1, 'STAFF1234567', NULL, NULL, '2025-01-01', '192500', '2', '2', '4', '2025-01-08 14:07:38', '2025-01-08 14:07:38');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subkategori_labarugis`
+--
+
+CREATE TABLE `subkategori_labarugis` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `sub` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sub_labarugis`
+--
+
+CREATE TABLE `sub_labarugis` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `namesub` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `kategori_id` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `sub_labarugis`
+--
+
+INSERT INTO `sub_labarugis` (`id`, `namesub`, `created_by`, `updated_by`, `deleted_by`, `kategori_id`, `created_at`, `updated_at`) VALUES
+(1, 'Penjualan Batu Bara', 'STAFF1234567', NULL, NULL, 1, '2025-01-08 11:11:28', '2025-01-08 11:11:28'),
+(2, 'Penjualan Batu Bara', 'STAFF1234567', NULL, NULL, 1, '2025-01-08 11:35:27', '2025-01-08 11:35:27'),
+(3, 'Over Burden', 'STAFF1234567', NULL, NULL, 2, '2025-01-08 12:14:20', '2025-01-08 12:14:20');
 
 -- --------------------------------------------------------
 
@@ -873,6 +1465,12 @@ ALTER TABLE `bargings`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `category_labarugis`
+--
+ALTER TABLE `category_labarugis`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `cs_mining_readinesses`
 --
 ALTER TABLE `cs_mining_readinesses`
@@ -897,6 +1495,13 @@ ALTER TABLE `deadline_compentsation_cs`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `detailabarugis`
+--
+ALTER TABLE `detailabarugis`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `detailabarugis_sub_id_foreign` (`sub_id`);
+
+--
 -- Indexes for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -908,6 +1513,13 @@ ALTER TABLE `failed_jobs`
 --
 ALTER TABLE `harga_poko_penjualans`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `hses`
+--
+ALTER TABLE `hses`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `hses_kategori_id_foreign` (`kategori_id`);
 
 --
 -- Indexes for table `infrastructure_readinesses`
@@ -922,6 +1534,12 @@ ALTER TABLE `kategori_cs_minings`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `kategori_hses`
+--
+ALTER TABLE `kategori_hses`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `kategori_laba_rugis`
 --
 ALTER TABLE `kategori_laba_rugis`
@@ -931,6 +1549,12 @@ ALTER TABLE `kategori_laba_rugis`
 -- Indexes for table `kategori_mini_r_s`
 --
 ALTER TABLE `kategori_mini_r_s`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `kategori_overcoals`
+--
+ALTER TABLE `kategori_overcoals`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -963,6 +1587,12 @@ ALTER TABLE `mining_readinesses`
 ALTER TABLE `neracas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `neracas_category_id_foreign` (`category_id`);
+
+--
+-- Indexes for table `overberden_coal`
+--
+ALTER TABLE `overberden_coal`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `password_reset_tokens`
@@ -1003,6 +1633,72 @@ ALTER TABLE `perusahaans`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `picainfrastrukturs`
+--
+ALTER TABLE `picainfrastrukturs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `picai_dealines`
+--
+ALTER TABLE `picai_dealines`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `picalaba_rugis`
+--
+ALTER TABLE `picalaba_rugis`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `picastockjts`
+--
+ALTER TABLE `picastockjts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pica_bargings`
+--
+ALTER TABLE `pica_bargings`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pica_hses`
+--
+ALTER TABLE `pica_hses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pica_minings`
+--
+ALTER TABLE `pica_minings`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pica_over_coal`
+--
+ALTER TABLE `pica_over_coal`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pica_pa_uas`
+--
+ALTER TABLE `pica_pa_uas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pica_people`
+--
+ALTER TABLE `pica_people`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pica_pls`
+--
+ALTER TABLE `pica_pls`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `produksis`
 --
 ALTER TABLE `produksis`
@@ -1016,6 +1712,25 @@ ALTER TABLE `sessions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sessions_user_id_index` (`user_id`),
   ADD KEY `sessions_last_activity_index` (`last_activity`);
+
+--
+-- Indexes for table `stock_jts`
+--
+ALTER TABLE `stock_jts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `subkategori_labarugis`
+--
+ALTER TABLE `subkategori_labarugis`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sub_labarugis`
+--
+ALTER TABLE `sub_labarugis`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sub_labarugis_kategori_id_foreign` (`kategori_id`);
 
 --
 -- Indexes for table `units`
@@ -1039,6 +1754,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `bargings`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `category_labarugis`
+--
+ALTER TABLE `category_labarugis`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `cs_mining_readinesses`
@@ -1065,6 +1786,12 @@ ALTER TABLE `deadline_compentsation_cs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `detailabarugis`
+--
+ALTER TABLE `detailabarugis`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -1075,6 +1802,12 @@ ALTER TABLE `failed_jobs`
 --
 ALTER TABLE `harga_poko_penjualans`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `hses`
+--
+ALTER TABLE `hses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `infrastructure_readinesses`
@@ -1089,6 +1822,12 @@ ALTER TABLE `kategori_cs_minings`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `kategori_hses`
+--
+ALTER TABLE `kategori_hses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `kategori_laba_rugis`
 --
 ALTER TABLE `kategori_laba_rugis`
@@ -1098,7 +1837,13 @@ ALTER TABLE `kategori_laba_rugis`
 -- AUTO_INCREMENT for table `kategori_mini_r_s`
 --
 ALTER TABLE `kategori_mini_r_s`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `kategori_overcoals`
+--
+ALTER TABLE `kategori_overcoals`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `kategory_neracas`
@@ -1116,13 +1861,13 @@ ALTER TABLE `laba_rugis`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT for table `mining_readinesses`
 --
 ALTER TABLE `mining_readinesses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `neracas`
@@ -1131,10 +1876,16 @@ ALTER TABLE `neracas`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `overberden_coal`
+--
+ALTER TABLE `overberden_coal`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `pembebasan_lahans`
 --
 ALTER TABLE `pembebasan_lahans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `pembebasan_lahan_cs`
@@ -1161,10 +1912,94 @@ ALTER TABLE `perusahaans`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
+-- AUTO_INCREMENT for table `picainfrastrukturs`
+--
+ALTER TABLE `picainfrastrukturs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `picai_dealines`
+--
+ALTER TABLE `picai_dealines`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `picalaba_rugis`
+--
+ALTER TABLE `picalaba_rugis`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `picastockjts`
+--
+ALTER TABLE `picastockjts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `pica_bargings`
+--
+ALTER TABLE `pica_bargings`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `pica_hses`
+--
+ALTER TABLE `pica_hses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `pica_minings`
+--
+ALTER TABLE `pica_minings`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `pica_over_coal`
+--
+ALTER TABLE `pica_over_coal`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `pica_pa_uas`
+--
+ALTER TABLE `pica_pa_uas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `pica_people`
+--
+ALTER TABLE `pica_people`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `pica_pls`
+--
+ALTER TABLE `pica_pls`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `produksis`
 --
 ALTER TABLE `produksis`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `stock_jts`
+--
+ALTER TABLE `stock_jts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `subkategori_labarugis`
+--
+ALTER TABLE `subkategori_labarugis`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sub_labarugis`
+--
+ALTER TABLE `sub_labarugis`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `units`
@@ -1183,6 +2018,18 @@ ALTER TABLE `users`
 --
 
 --
+-- Constraints for table `detailabarugis`
+--
+ALTER TABLE `detailabarugis`
+  ADD CONSTRAINT `detailabarugis_sub_id_foreign` FOREIGN KEY (`sub_id`) REFERENCES `sub_labarugis` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `hses`
+--
+ALTER TABLE `hses`
+  ADD CONSTRAINT `hses_kategori_id_foreign` FOREIGN KEY (`kategori_id`) REFERENCES `kategori_hses` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `neracas`
 --
 ALTER TABLE `neracas`
@@ -1193,6 +2040,12 @@ ALTER TABLE `neracas`
 --
 ALTER TABLE `produksis`
   ADD CONSTRAINT `produksis_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `units` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `sub_labarugis`
+--
+ALTER TABLE `sub_labarugis`
+  ADD CONSTRAINT `sub_labarugis_kategori_id_foreign` FOREIGN KEY (`kategori_id`) REFERENCES `category_labarugis` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

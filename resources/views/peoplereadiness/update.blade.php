@@ -113,7 +113,10 @@
                             <input type="text" class="form-control" id="quantity-fulfillment" name="Quantity_plan" value="{{ $peopleReadiness->Quantity_plan }}" required  readonly>
                         </div>
                     </div>
-
+                    <div class="form-group">
+                                <label for="note">Catatan:</label>
+                                <textarea class="form-control" rows="10" cols="50" id="note" name="note" rows="5" placeholder="Catatan"  value="{{ $peopleReadiness->note }}"></textarea>
+                            </div>
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn btn-custom">Update</button>
                     </div>
