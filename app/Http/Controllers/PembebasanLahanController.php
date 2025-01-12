@@ -16,6 +16,8 @@ class PembebasanLahanController extends Controller
         public function indexPembebasanLahan(Request $request)
         {
          $data= PembebasanLahan::all();
+         $data= PembebasanLahan::paginate(10)::all();
+
          $averageAchievement = $data->average(function ($item) {
              return (float)str_replace('%', '', $item->Achievement);
             });

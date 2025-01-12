@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\categoryLabarugi;
+use App\Models\JenisLabarugi;
 use App\Models\detailabarugi;
 use App\Models\subkategoriLabarugi;
 use App\Models\PicalabaRugi;
@@ -18,69 +19,181 @@ class DetailabarugiController extends Controller
     {
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
-    
+        $data = detailabarugi::paginate(10);
         $query = DB::table('detailabarugis')
-            ->join('sub_labarugis', 'detailabarugis.sub_id', '=', 'sub_labarugis.id')
-            ->join('category_labarugis', 'sub_labarugis.kategori_id', '=', 'category_labarugis.id')
-            ->select(
-                'category_labarugis.namecategory as kategori_name',
-                'sub_labarugis.namesub as name_sub',
-                'detailabarugis.nominalplan',
-                'detailabarugis.nominalactual',
-                'detailabarugis.tanggal',
-                'detailabarugis.desc',
-                'detailabarugis.id'
-            );
+        ->join('sub_labarugis', 'detailabarugis.sub_id', '=', 'sub_labarugis.id')
+        ->join('category_labarugis', 'sub_labarugis.kategori_id', '=', 'category_labarugis.id')
+        ->join('jenis_labarugis', 'category_labarugis.jenis_id', '=', 'jenis_labarugis.id')
+        ->select(
+            'category_labarugis.namecategory as kategori_name',
+            'jenis_labarugis.name as jenis_name',
+            'jenis_labarugis.name',
+
+            'sub_labarugis.namesub as name_sub',
+            'detailabarugis.nominalplan',
+            'detailabarugis.nominalactual',
+            'detailabarugis.tanggal',
+            'detailabarugis.desc',
+            'detailabarugis.id'
+        );
     
-        if ($startDate && $endDate) {
-            $query->whereBetween('detailabarugis.tanggal', [$startDate, $endDate]);
-        }
+    if ($startDate && $endDate) {
+        $query->whereBetween('detailabarugis.tanggal', [$startDate, $endDate]);
+    }
+    //untuk total laba rugi
+    $data = $query->orderBy('jenis_labarugis.name') 
+        ->orderBy('category_labarugis.namecategory') 
+        ->get()
+        ->groupBy(['jenis_name', 'kategori_name']); 
     
-        $data = $query->orderBy('category_labarugis.namecategory')
-            ->get()
-            ->groupBy('kategori_name');
+    $totalRevenuea = (clone $query)
+        ->where('category_labarugis.namecategory', 'Revenue')
+        ->get()
+        ->sum(function ($item) {
+            return (float)str_replace(',', '', $item->nominalactual ?? 0);
+        });
     
-        // Hitung total per sub-kategori dan kategori
-        $totals = $data->map(function ($categories, $kategoriName) {
-            $categoryTotalPlan = 0;
-            $categoryTotalActual = 0;
+    $totallkactual = (clone $query)
+        ->where('jenis_labarugis.name', 'Laba Kotor')
+        ->get()
+        ->sum(function ($item) {
+            return (float)str_replace(',', '', $item->nominalactual ?? 0);
+        });
     
-            $subCategories = $categories->groupBy('name_sub')->map(function ($items, $subCategory) use (&$categoryTotalPlan, &$categoryTotalActual) {
+    $totallkplan = (clone $query)
+        ->where('jenis_labarugis.name', 'Laba Kotor')
+        ->get()
+        ->sum(function ($item) {
+            return (float)str_replace(',', '', $item->nominalplan ?? 0);
+        });
+    
+        
+    $totalRevenuep = (clone $query)
+        ->where('category_labarugis.namecategory', 'Revenue')
+        ->get()
+        ->sum(function ($item) {
+            return (float)str_replace(',', '', $item->nominalplan ?? 0);
+        });
+        //operasional
+        $planoperasional = (clone $query)
+        ->where('jenis_labarugis.name', 'Laba Operasional')
+        ->get()
+        ->sum(function ($item) {
+            return (float)str_replace(',', '', $item->nominalplan ?? 0);
+        });
+        $actualoperasional = (clone $query)
+        ->where('jenis_labarugis.name', 'Laba Operasional')
+        ->get()
+        ->sum(function ($item) {
+            return (float)str_replace(',', '', $item->nominalactual ?? 0);
+        });
+
+        //lababersih
+        $planlb = (clone $query)
+        ->where('jenis_labarugis.name', 'Laba Bersih')
+        ->get()
+        ->sum(function ($item) {
+            return (float)str_replace(',', '', $item->nominalplan ?? 0);
+        });
+        $actuallb = (clone $query)
+        ->where('jenis_labarugis.name', 'Laba Bersih')
+        ->get()
+        ->sum(function ($item) {
+            return (float)str_replace(',', '', $item->nominalactual ?? 0);
+        });
+        //laba rugi 
+        $totalplanlr = $totalRevenuep-$totallkplan;
+        $totalactuallr = $totalRevenuea-$totallkactual;
+        $totalvertikal = $totalplanlr ? ($totalplanlr / $totalplanlr) * 100 : 0;
+       //operasional
+       $totalplanlp = $planoperasional-$totalplanlr;
+       $totalactual = $actualoperasional-$totalactuallr;
+       $verticallp = $totalRevenuep ? ($totalplanlp / $totalRevenuep) * 100 : 0;
+       //lababersih
+       $totalplanlb = $planlb-$planoperasional;
+       $totalactuallb = $actualoperasional-$actuallb;
+       $verticallb = $totalRevenuep ? ($totalplanlb / $totalRevenuep) * 100 : 0;
+       
+    
+    if ($totalRevenuea === 0 || !$totalRevenuea) {
+        $totalRevenuea = null;
+    }
+    if ($totalRevenuep === 0 || !$totalRevenuep) {
+        $totalRevenuep = null;
+    }
+    
+    $totals = $data->map(function ($categories, $jenisName) use (&$totalRevenuep, &$totalRevenuea) {
+        $categoryTotalPlan = 0;
+        $categoryTotalActual = 0;
+    
+        // Grup berdasarkan kategori (kategori_name)
+        $subCategories = $categories->map(function ($kategori, $kategoriName) use (&$categoryTotalPlan, &$categoryTotalActual, $totalRevenuea, $totalRevenuep) {
+            $subCategoryDetails = $kategori->groupBy('name_sub')->map(function ($items, $subCategory) use (&$categoryTotalPlan, &$categoryTotalActual, $totalRevenuea, $totalRevenuep) {
                 $totalPlan = $items->sum(function ($item) {
                     return (float)str_replace(',', '', $item->nominalplan ?? 0);
                 });
                 $totalActual = $items->sum(function ($item) {
                     return (float)str_replace(',', '', $item->nominalactual ?? 0);
                 });
+                
+                // Menampilkan hasil
+
     
-                // Tambahkan total ke kategori
                 $categoryTotalPlan += $totalPlan;
                 $categoryTotalActual += $totalActual;
+                // dd($totalPlan);
     
+                $deviation = $totalPlan - $totalActual;
+                $percentage = $totalPlan != 0 ? ($totalActual / $totalPlan) * 100 : 0;
+                $vertikalanalisis = $totalRevenuep ? ($totalPlan / $totalRevenuep) * 100 : 0;
+                $vertikalanalisiss = $totalRevenuea ? ($totalPlan / $totalRevenuea) * 100 : 0;
                 return [
                     'name_sub' => $subCategory,
                     'total_plan' => $totalPlan,
                     'total_actual' => $totalActual,
-                    'details' => $items, // Data detail setiap sub-kategori
+                    'vertikal' => $vertikalanalisis,
+                    'deviation' => $deviation,
+                    'percentage' => $totalPlan != 0 ? ($totalActual / $totalPlan) * 100 : 0,
+                    'vertikals' => $vertikalanalisiss,
+                    'details' => $items,
                 ];
             });
     
             return [
                 'kategori_name' => $kategoriName,
+                'sub_categories' => $subCategoryDetails,
                 'total_plan' => $categoryTotalPlan,
                 'total_actual' => $categoryTotalActual,
-                'sub_categories' => $subCategories,
+                'deviation' => $categoryTotalPlan - $categoryTotalActual,                 
+
+                'vertikal' => $totalRevenuep ? ($categoryTotalPlan / $totalRevenuep) * 100 : 0,
+                'vertikals' => $totalRevenuea ? ($categoryTotalPlan / $totalRevenuea) * 100 : 0,
             ];
         });
     
-        return view('labarugi.index', ['totals' => $totals]);
+        return [
+            'jenis_name' => $jenisName,
+            'sub_categories' => $subCategories,
+        ];
+    });
+
+
+        return view('labarugi.index', compact('totals','totalplanlr','totalvertikal','totalactuallr'
+        ,'totalplanlp','verticallp','totalactual'));
     }
-        public function formlabarugi()
+    
+    public function formlabarugi()
     {
         $sub = subkategoriLabarugi::all();
+        $sub = DB::table('sub_labarugis')
+        ->join('category_labarugis', 'sub_labarugis.kategori_id', '=', 'category_labarugis.id')
+        ->select('category_labarugis.namecategory','sub_labarugis.namesub','sub_labarugis.id')
+        ->get();
+        
         return view('labarugi.addData',compact ('sub'));
     }
     public function createlabarugi(Request $request)
+    
     {
         $validatedData = $request->validate([
             'nominalplan' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
@@ -117,12 +230,14 @@ class DetailabarugiController extends Controller
     public function categorylabarugi()
     {
         $user = Auth::user();  
-        return view('labarugi.categoryform');
+        $kat=JenisLabarugi::all();
+        return view('labarugi.categoryform',compact('kat'));
     }
     public function createkatlabarugi (Request $request)
     {
         $validatedData = $request->validate([
             'namecategory' => 'required|string',
+            'jenis_id' => 'required|string',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
         categoryLabarugi::create($validatedData);

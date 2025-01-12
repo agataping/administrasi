@@ -69,48 +69,104 @@
                             <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
                             <th   rowspan="" style="vertical-align: middle;  text-align: center;">Deskripsi</th>
                             <th   colspan=""  style="vertical-align: middle; text-align: center;">Plan</th>
+                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Vertica analisis</th>
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Actual</th>
+                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Vertica analisis</th>
+                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Deviation</th>
+                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Percentage</th>
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Tanggal</th>
                             <th  rowspan="" style="vertical-align: middle; text-align: center;">created_by</th>
                             <th  rowspan="" style="vertical-align: middle; text-align: center;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach ($totals as $total)
+                        
+                    @foreach ($totals as $jenisName => $jenis)
+
+                    @foreach ($jenis['sub_categories'] as $kategoriName => $total)
                     {{-- Tampilkan Kategori --}}
                     <tr>
                         <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
-                        <td colspan=""><strong>{{ $total['kategori_name'] }}</strong></td>
-                        <td><strong>{{ number_format($total['total_plan'], 2) }}</strong></td>
-                        <td><strong>{{ number_format($total['total_actual'], 2) }}</strong></td>
+                        <td colspan=""><strong>{{ $kategoriName}}</strong></td>
+                        <td style="text-align: end;"><strong>{{ number_format($total['total_plan'], 2) }}</strong></td>
+                        <td style="text-align: end;"><strong>{{ number_format($total['vertikal'], 2) }} %</strong></td>
+                        <td style="text-align: end;"><strong>{{ number_format($total['total_actual'], 2) }}</strong></td>
+                        <td style="text-align: end;"><strong>{{ number_format($total['vertikals'], 2) }} %</strong></td>
+                        <td style="text-align: end;"><strong>{{ number_format($total['deviation'], 2) }}</strong></td>
+                        <td style="text-align: end;"><strong>{{ number_format($total['vertikals'], 2) }} %</strong></td>
+
                     </tr>
                     
                     {{-- Tampilkan Sub-Kategori --}}
                     @foreach ($total['sub_categories'] as  $subIndex => $subCategory)
-                    <tr>
-                        <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
-                        <td><strong>{{ $subCategory['name_sub'] }}</strong></td>
-                        <td><strong>{{ number_format($subCategory['total_plan'], 2) }}</strong></td>
-                        <td><strong>{{ number_format($subCategory['total_actual'], 2) }}</strong></td>
+                        
+                    <th style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</th>
+                        <td style="vertical-align: middle;"><strong>{{ $subCategory['name_sub'] }}</strong></td>
+                        <td style="text-align: end;"><strong>{{ number_format($subCategory['total_plan'], 2) }}</strong></td>
+                        <td></td>
+                        <td style="text-align: end;"><strong>{{ number_format($subCategory['total_actual'], 2) }}</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     
                     {{-- Tampilkan Detail dari Sub-Kategori --}}
                     @foreach ($subCategory['details'] as $detailIndex => $detail)
                     <tr>
-                        <th style="vertical-align: middle;">{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $detailIndex + 1 }}</th>
+                    <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
                         <td>{{ $detail->desc }}</td>
-                        <td>{{ number_format($detail->nominalplan, 2) }}</td>
-                        <td>{{ number_format($detail->nominalactual, 2) }}</td>
-                        <td>{{ $detail->tanggal }}</td>
+                        <td style=" text-align: end;">{{ number_format($detail->nominalplan, 2) }}</td>
                         <td></td>
+                        <td style=" text-align: end;">{{ number_format($detail->nominalactual, 2) }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d-m-Y') }}</td>
                     </tr>
                     @endforeach
                     @endforeach
                     @endforeach                        
-                </tbody>
-            </table>                        
+                    <tr>
+                        <th colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">{{ $jenisName}} </th>
+                        @if ($jenis['jenis_name'] == 'Laba Kotor')
+
+                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($totalplanlr, 2) }}
+                        </th>
+
+                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($totalvertikal, 2) }}%
+                        </th>
+
+                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($totalactuallr, 2) }}
+                        </th>
+                        @else  ($jenis['jenis_name'] == 'Laba Operasional')
+                      
+
+                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                            {{ number_format($totalplanlp, 2) }}
+                        </th>
+                        
+                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                            {{ number_format($verticallp, 2) }}%
+                        </th>
+                        
+                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                            {{ number_format($totalactual, 2) }}
+                        </th>
+                        
+                        
+                        @endif  
+
+                        </tr>
+                        @endforeach                        
+                    </tbody>
+                </table>                        
+                
             
-            
+
             
             
             
@@ -144,15 +200,4 @@
 
 @endsection
 @section('scripts')
-<script>
-    document.getElementById('actualBtn').addEventListener('click', function() {
-        document.getElementById('actualInput').style.display = 'block';
-        document.getElementById('planInput').style.display = 'none';
-    });
-
-    document.getElementById('planBtn').addEventListener('click', function() {
-        document.getElementById('planInput').style.display = 'block';
-        document.getElementById('actualInput').style.display = 'none';
-    });
-</script>
 @endsection

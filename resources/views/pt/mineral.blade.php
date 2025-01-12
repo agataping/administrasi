@@ -4,7 +4,8 @@
 @extends('components.style')
 
 <div class="container-fluid mt-4">
-    <div class="card w-100 d-flex align-items-center justify-content-center">
+    <div class="card w-100 d-flex align-items-center justify-content-center"
+    style="border-radius: 12px; overflow: hidden; margin: 2rem auto; height:80vh; ">
         <div class="card-body">
             <div class="col-12">
                 
@@ -24,7 +25,8 @@
                     </ul>
                 </div>
                 @endif
-                
+                <div style="position: relative;" style="width: auto; height: auto; object-fit: cover;">
+
                 <div class="cardcostum">
                     <div class="cardcost">
                         <a href="/dashboard" class="cardcost text-decoration-none">
@@ -54,7 +56,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+            </div>
+            </div>
         
         
                                                  

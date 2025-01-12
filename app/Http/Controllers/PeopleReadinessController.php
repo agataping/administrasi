@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Models\PeopleReadiness;
 use App\Models\picaPeople;
+use App\Models\Gambar;
 
 class PeopleReadinessController extends Controller
 {
@@ -206,4 +207,38 @@ class PeopleReadinessController extends Controller
         return redirect('/indexpicapeople')->with('success', 'Surat berhasil disimpan.');
     }
 
+
+    //gambar atau struktur organisasi
+    public function struktur(){
+        $gambar = Gambar::latest()->first();
+        return view('PeopleReadiness.organisasi.index', compact('gambar'));
+    }
+    public function formbagan(){
+        return view('PeopleReadiness.organisasi.addGambar');
+    }
+    public function createbagan(Request $request)
+    {
+        $request->validate([
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+    
+        // Menangani file gambar
+        if ($request->hasFile('gambar')) {
+            // Ambil file gambar yang diupload
+            $file = $request->file('gambar');
+            
+            // Tentukan path penyimpanan gambar
+            $path = $file->store('gambar', 'public'); // Menyimpan gambar di 'storage/app/public/gambar'
+    
+            // Simpan path gambar ke tabel gambar
+            Gambar::create([
+                'path' => $path,
+            ]);
+        
+                return back()->with('success', 'Image uploaded successfully');
+        }
+
+        return back()->withErrors('Failed to upload image.');
+    }
+    
 }            

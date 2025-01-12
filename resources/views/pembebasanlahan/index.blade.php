@@ -103,6 +103,9 @@
                     
                 </table>                        
                 
+                <div class="pagination justify-content-center">
+                    {{ $data->links() }}
+                </div>
                 
 
                     

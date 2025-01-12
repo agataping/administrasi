@@ -64,11 +64,12 @@
                     <thead>
                         <tr>
                             <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
+                            <th  colspan=""style="vertical-align: middle; text-align: center;">Tanggal</th>
                             <th   rowspan="" style="vertical-align: middle;  text-align: center;">Deskripsi</th>
                             <th   colspan=""  style="vertical-align: middle; text-align: center;">Plan</th>
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Actual</th>
-                            <th  colspan=""style="vertical-align: middle; text-align: center;">Tanggal</th>
-                            <th  rowspan="" style="vertical-align: middle; text-align: center;">created_by</th>
+                            <th  rowspan="" style="vertical-align: middle; text-align: center;">Deviation</th>
+                            <th  rowspan="" style="vertical-align: middle; text-align: center;">Percentage</th>
                             <th  rowspan="" style="vertical-align: middle; text-align: center;">Aksi</th>
                         </tr>
                     </thead>
@@ -76,24 +77,31 @@
                         @foreach ($totals as $total)
                         <tr>
                             <th style="vertical-align: middle; background-color: #f0f0f0;">{{ $loop->iteration }}</th>    
+                            <th style="vertical-align: middle; background-color: #f0f0f0;"></th>
                             <th colspan="" style="text-align: left; background-color: #f0f0f0;">
                                 {{ $total['kategori_name'] }}
                             </th>
-                            <th  style="vertical-align: middle; background-color: #f0f0f0;">
+                            <th  style="vertical-align: middle; background-color: #f0f0f0; text-align: end;" >
                                 {{ number_format($total['total_plan'], 2) }}
                             </th>
-                            <th  colspan="4" style="vertical-align: middle; background-color: #f0f0f0;">
+                            <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                 {{ number_format($total['total_actual'], 2) }}
+                            </th>
+                            <th  style="vertical-align: middle; background-color: #f0f0f0; text-align: end;" >
+                                {{ number_format($total['deviation'], 2) }}
+                            </th>
+                            <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                                {{ number_format($total['percentage'], 2) }}%
                             </th>
 
                         </tr>
-                        @foreach ($total['details'] as $detail)
+                        @foreach ($total['details'] as $subIndex => $detail)
                         <tr>
-                            <td>{{ $detail->id }}</td>
+                        <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
+                            <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d F Y') }}</td>
                             <td>{{ $detail->desc }}</td>
-                            <td>{{ number_format((float)$detail->nominalplan, 2) }}</td>
-                            <td>{{ number_format((float)$detail->nominalactual, 2) }}</td>
-                            <td>{{ $detail->tanggal }}</td>
+                            <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalplan, 2) }}</td>
+                            <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalactual, 2) }}</td>
                         </tr>
                         @endforeach
                     @endforeach

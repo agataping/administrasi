@@ -56,7 +56,7 @@
                             
                         </tr>
                         <tr>
-                            <th colspan="4"  style="text-align: center;">stock awal : {{ $data->first()->sotckawal ?? '-' }}</th>
+                            <th colspan="4"  style="text-align: center;">stock awal : {{ $data->first()->sotckawal  ?? '-' }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,7 +71,7 @@
                             <td  colspan="2" style="text-align: center; vertical-align: middle;">{{ $d->shifpertama}}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->shifkedua}}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->totalhauling }}</td>
-                            <td>{{ number_format($d->sotckawal + $d->totalhauling, 0) }} </td>
+                            <td>{{ number_format($d->akumulasi_stock, 0) }} </td>
                             <td style="text-align: center; vertical-align: middle;" >{{ $d->created_by}}</td>
 
 
@@ -107,8 +107,7 @@
         
 
 
-
-
+<!-- perhitungan stock awal perbaikan -->
 
 
 

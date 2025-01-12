@@ -6,7 +6,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Deskripsi </h2>
+                <h2 class="mb-3">Deskripsi Neraca</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -23,21 +23,12 @@
                 </div>
                 @endif
 
-                <form action="{{ route('createkatlabarugi') }}" method="post">
+                <form action="{{ route('createcategoryneraca') }}" method="post">
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
-                    <div style="margin-bottom: 1rem;">
-                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Pilih Kategori:</label>
-                        <select id="kategori" name="jenis_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                            <option value="" disabled selected>-- Pilih Kategori --</option>
-                            @foreach($kat as $kategori)
-                            <option value="{{ $kategori->id }}">{{ $kategori->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
                     <div class="row g-3">
                         <div class="">
-                            <label for="kategori[]" class="form-label">Deskripsi</label>
+                            <label for="kategori" class="form-label">Deskripsi</label>
                             <input type="text" class="form-control" id="kategori" placeholder="" value="" required name="namecategory">
                         </div>
                     </div>

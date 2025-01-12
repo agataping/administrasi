@@ -34,7 +34,7 @@
                         <select id="kategori" name="sub_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
                             <option value="" disabled selected>-- Pilih Kategori --</option>
                             @foreach($sub as $kategori)
-                            <option value="{{ $kategori->id }}">{{ $kategori->namesub }}</option>
+                            <option value="{{ $kategori->id }}">{{ $kategori->namecategory }} | {{ $kategori->namesub }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -51,12 +51,12 @@
 
                     <!-- Nominal Inputs -->
                     <div id="planInput" style="display: none;" class="form-group">
-                        <label for="plan">Nominal</label>
+                        <label for="plan">Nominal Plan</label>
                         <input type="text" class="form-control" id="plan" name="nominalplan">
                     </div>
 
                     <div id="actualInput" style="display: none;" class="form-group">
-                        <label for="actual">Nominal</label>
+                        <label for="actual">Nominal Actual</label>
                         <input type="text" class="form-control" id="actual" name="nominalactual">
                     </div>
 

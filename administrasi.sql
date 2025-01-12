@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 08, 2025 at 11:44 PM
+-- Generation Time: Jan 12, 2025 at 11:54 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `bargings` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `laycan` varchar(255) NOT NULL,
+  `laycan` varchar(255) DEFAULT NULL,
   `namebarge` varchar(255) NOT NULL,
   `surveyor` varchar(255) NOT NULL,
   `portloading` varchar(255) NOT NULL,
@@ -42,16 +42,19 @@ CREATE TABLE `bargings` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` varchar(255) DEFAULT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
-  `deleted_by` varchar(255) DEFAULT NULL
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `tanggal` date NOT NULL,
+  `plan_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `bargings`
 --
 
-INSERT INTO `bargings` (`id`, `laycan`, `namebarge`, `surveyor`, `portloading`, `portdishcharging`, `notifyaddres`, `initialsurvei`, `finalsurvey`, `quantity`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`) VALUES
-(1, '10-11 Nov 2024', 'TB. TMH 16 / BG ELECTRA 10', 'PT. CARSURIN', 'JETTY JTN', 'GARONGKONG', 'PT.INDOCEMENT TUNGGAL PRAKARSA', '2024-11-12', '2024-11-18', 55623575.00, '2024-12-29 01:15:08', '2024-12-29 02:06:36', 'STAFF1234567', 'STAFF1234567', NULL),
-(2, '21 Nov 2024', 'TB. MITRA CATUR 6 / BG. MANDIRI 273', 'PT. CARSURIN', 'JETTY JTN', 'MV. Best Unity', 'PT. RLK ASIA DEVELOPMENT', '2024-11-23', '2024-12-25', 5110048.00, '2024-12-29 01:17:17', '2024-12-29 01:17:17', 'STAFF1234567', NULL, NULL);
+INSERT INTO `bargings` (`id`, `laycan`, `namebarge`, `surveyor`, `portloading`, `portdishcharging`, `notifyaddres`, `initialsurvei`, `finalsurvey`, `quantity`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `tanggal`, `plan_id`) VALUES
+(1, '10-11 Nov 2024', 'TB. TMH 16 / BG ELECTRA 10', 'PT. CARSURIN', 'JETTY JTN', 'GARONGKONG', 'PT.INDOCEMENT TUNGGAL PRAKARSA', '2024-11-12', '2024-11-18', 55623575.00, '2024-12-29 01:15:08', '2025-01-12 02:07:43', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-09', 1),
+(2, '21 Nov 2024', 'TB. MITRA CATUR 6 / BG. MANDIRI 273', 'PT. CARSURIN', 'JETTY JTN', 'MV. Best Unity', 'PT. RLK ASIA DEVELOPMENT', '2024-11-23', '2024-12-25', 5110048.00, '2024-12-29 01:17:17', '2025-01-12 02:07:53', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-13', 1),
+(3, '1', '11', '1', '1', '1', '1', '2025-01-01', '2025-01-06', 1.00, '2025-01-12 01:01:35', '2025-01-12 02:07:58', 'STAFF1234567', 'STAFF1234567', NULL, '2023-12-12', 1);
 
 -- --------------------------------------------------------
 
@@ -66,18 +69,49 @@ CREATE TABLE `category_labarugis` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `jenis_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `category_labarugis`
 --
 
-INSERT INTO `category_labarugis` (`id`, `namecategory`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, 'Revenue', 'STAFF1234567', NULL, NULL, '2025-01-08 11:06:48', '2025-01-08 11:06:48'),
-(2, 'Cost of Goods Sold (COGS)', 'STAFF1234567', NULL, NULL, '2025-01-08 11:07:11', '2025-01-08 11:07:11'),
-(4, 'Shipping', 'STAFF1234567', NULL, NULL, '2025-01-08 11:08:54', '2025-01-08 11:08:54'),
-(5, 'Royalti', 'STAFF1234567', NULL, NULL, '2025-01-08 11:09:02', '2025-01-08 11:09:02');
+INSERT INTO `category_labarugis` (`id`, `namecategory`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `jenis_id`) VALUES
+(1, 'Revenue', 'STAFF1234567', NULL, NULL, '2025-01-08 11:06:48', '2025-01-08 11:06:48', 1),
+(2, 'Cost of Goods Sold (COGS)', 'STAFF1234567', NULL, NULL, '2025-01-08 11:07:11', '2025-01-08 11:07:11', 1),
+(4, 'Shipping', 'STAFF1234567', NULL, NULL, '2025-01-08 11:08:54', '2025-01-08 11:08:54', 1),
+(5, 'Royalti', 'STAFF1234567', NULL, NULL, '2025-01-08 11:09:02', '2025-01-08 11:09:02', 1),
+(6, 'test', 'STAFF1234567', NULL, NULL, '2025-01-09 03:48:51', '2025-01-09 03:48:51', 2),
+(7, 'Revenue', 'STAFF1234567', NULL, NULL, '2025-01-10 03:53:32', '2025-01-10 03:53:32', 1),
+(8, 'Mandiri 421', 'STAFF1234567', NULL, NULL, '2025-01-10 10:14:35', '2025-01-10 10:14:35', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `category_neracas`
+--
+
+CREATE TABLE `category_neracas` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `namecategory` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `jenis_id` bigint(20) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `category_neracas`
+--
+
+INSERT INTO `category_neracas` (`id`, `namecategory`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `jenis_id`) VALUES
+(6, 'CURRENT ASSETS', 'STAFF1234567', NULL, NULL, '2025-01-09 13:19:12', '2025-01-09 13:19:12', 0),
+(7, 'FIX ASSETS', 'STAFF1234567', NULL, NULL, '2025-01-10 00:17:04', '2025-01-10 00:17:04', 0),
+(8, 'LIABILITIES', 'STAFF1234567', NULL, NULL, '2025-01-10 00:17:17', '2025-01-10 00:17:17', 0),
+(9, 'EQUITY', 'STAFF1234567', NULL, NULL, '2025-01-10 00:17:28', '2025-01-10 00:17:28', 0);
 
 -- --------------------------------------------------------
 
@@ -236,7 +270,45 @@ CREATE TABLE `detailabarugis` (
 
 INSERT INTO `detailabarugis` (`id`, `created_by`, `updated_by`, `deleted_by`, `nominalactual`, `nominalplan`, `tanggal`, `desc`, `sub_id`, `created_at`, `updated_at`) VALUES
 (1, 'STAFF1234567', NULL, NULL, NULL, 5180540084342.00, '2024-12-12', 'abcd', 1, '2025-01-08 11:44:22', '2025-01-08 11:44:22'),
-(2, 'STAFF1234567', NULL, NULL, 5180540084342.00, NULL, '0023-02-12', 'abcd', 3, '2025-01-08 12:15:03', '2025-01-08 12:15:03');
+(2, 'STAFF1234567', NULL, NULL, 5180540084342.00, NULL, '0023-02-12', 'abcd', 3, '2025-01-08 12:15:03', '2025-01-08 12:15:03'),
+(3, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-16', 'test 1234', 4, '2025-01-09 03:50:31', '2025-01-09 03:50:31'),
+(4, 'STAFF1234567', NULL, NULL, NULL, 3000.00, '2025-01-02', 'test12345', 4, '2025-01-09 03:51:44', '2025-01-09 03:51:44'),
+(5, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-30', 'erwe', 3, '2025-01-10 03:16:30', '2025-01-10 03:16:30'),
+(6, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-09', 'QQQ', 3, '2025-01-10 03:28:24', '2025-01-10 03:28:24'),
+(7, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-01', 'QQQ', 8, '2025-01-10 03:54:04', '2025-01-10 03:54:04'),
+(8, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-07', 'QQQ', 8, '2025-01-10 03:55:12', '2025-01-10 03:55:12'),
+(9, 'STAFF1234567', NULL, NULL, 5180540084342.00, NULL, '2025-01-21', 'QQQ', 2, '2025-01-10 04:16:18', '2025-01-10 04:16:18'),
+(10, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-11', 'QQQ', 4, '2025-01-10 14:24:42', '2025-01-10 14:24:42');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `detail_neracas`
+--
+
+CREATE TABLE `detail_neracas` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `tanggal` date NOT NULL,
+  `nominal` decimal(20,2) DEFAULT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `sub_id` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `detail_neracas`
+--
+
+INSERT INTO `detail_neracas` (`id`, `tanggal`, `nominal`, `created_by`, `updated_by`, `deleted_by`, `sub_id`, `created_at`, `updated_at`, `name`) VALUES
+(9, '2025-01-10', 84923727.80, 'STAFF1234567', NULL, NULL, 7, '2025-01-09 13:50:57', '2025-01-09 13:50:57', 'Mandiri 721'),
+(10, '2025-01-09', 5781299239.00, 'STAFF1234567', NULL, NULL, 7, '2025-01-09 13:52:06', '2025-01-09 13:52:06', 'Mandiri 421'),
+(11, '2025-01-22', 2000.00, 'STAFF1234567', NULL, NULL, 9, '2025-01-10 00:18:41', '2025-01-10 00:18:41', 'Account Payable'),
+(12, '2025-01-23', 2000.00, 'STAFF1234567', NULL, NULL, 10, '2025-01-10 00:20:55', '2025-01-10 00:20:55', 'Account Payable'),
+(13, '2023-12-12', 2000.00, 'STAFF1234567', NULL, NULL, 9, '2025-01-10 00:25:22', '2025-01-10 00:25:22', 'Account Payable');
 
 -- --------------------------------------------------------
 
@@ -253,6 +325,26 @@ CREATE TABLE `failed_jobs` (
   `exception` longtext NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gambars`
+--
+
+CREATE TABLE `gambars` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `gambars`
+--
+
+INSERT INTO `gambars` (`id`, `path`, `created_at`, `updated_at`) VALUES
+(3, 'gambar/lZRwwseX3KMfgskelJwOFFtp1HSe4pSTNZUwL4hF.jpg', '2025-01-11 12:12:42', '2025-01-11 12:12:42');
 
 -- --------------------------------------------------------
 
@@ -351,6 +443,28 @@ INSERT INTO `infrastructure_readinesses` (`id`, `ProjectName`, `Preparation`, `C
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `jenis_labarugis`
+--
+
+CREATE TABLE `jenis_labarugis` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `jenis_labarugis`
+--
+
+INSERT INTO `jenis_labarugis` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'Laba Kotor', NULL, NULL),
+(2, 'Laba Operasional', NULL, NULL),
+(3, 'Laba Bersih', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `kategori_cs_minings`
 --
 
@@ -398,77 +512,6 @@ INSERT INTO `kategori_hses` (`id`, `name`, `created_by`, `updated_by`, `deleted_
 (2, 'Leading Indicator', NULL, NULL, NULL, '2025-01-07 09:48:51', '2025-01-07 09:48:51'),
 (3, 'Lagging Indicator', NULL, NULL, NULL, '2025-01-07 09:49:04', '2025-01-07 09:49:04'),
 (4, 'Umum', NULL, NULL, NULL, '2025-01-07 09:49:11', '2025-01-07 09:49:11');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `kategori_laba_rugis`
---
-
-CREATE TABLE `kategori_laba_rugis` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `DescriptionName` varchar(255) NOT NULL,
-  `created_by` varchar(255) DEFAULT NULL,
-  `updated_by` varchar(255) DEFAULT NULL,
-  `deleted_by` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `sub` varchar(50) DEFAULT NULL,
-  `parent_id` bigint(20) UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `kategori_laba_rugis`
---
-
-INSERT INTO `kategori_laba_rugis` (`id`, `DescriptionName`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `sub`, `parent_id`) VALUES
-(3, 'Revenue', 'STAFF1234567', NULL, NULL, '2024-12-30 00:09:43', '2024-12-30 00:09:43', NULL, NULL),
-(4, 'Penjualan Batu Bara', 'STAFF1234567', NULL, NULL, '2024-12-30 00:09:43', '2024-12-30 00:09:43', NULL, 3),
-(5, 'Penjualan Batu Bara (doc)', 'STAFF1234567', NULL, NULL, '2024-12-30 00:09:43', '2024-12-30 00:09:43', NULL, 3),
-(6, 'Cost of Goods Sold (COGS)', 'STAFF1234567', NULL, NULL, '2024-12-30 00:14:05', '2024-12-30 00:14:05', NULL, NULL),
-(7, 'Over Burden', 'STAFF1234567', NULL, NULL, '2024-12-30 00:14:05', '2024-12-30 00:14:05', NULL, 6),
-(8, 'Coal Getting', 'STAFF1234567', NULL, NULL, '2024-12-30 00:14:05', '2024-12-30 00:14:05', NULL, 6),
-(9, 'Rental Heavy Equipment', 'STAFF1234567', NULL, NULL, '2024-12-30 00:14:05', '2024-12-30 00:14:05', NULL, 6),
-(10, 'Hauling', 'STAFF1234567', NULL, NULL, '2024-12-30 00:14:05', '2024-12-30 00:14:05', NULL, 6),
-(11, 'Drilling', 'STAFF1234567', NULL, NULL, '2024-12-30 00:14:05', '2024-12-30 00:14:05', NULL, 6),
-(12, 'Loading', 'STAFF1234567', NULL, NULL, '2024-12-30 00:14:05', '2024-12-30 00:14:05', NULL, 6),
-(13, 'Land Depletion', 'STAFF1234567', NULL, NULL, '2024-12-30 00:14:05', '2024-12-30 00:14:05', NULL, 6),
-(14, 'Etc', 'STAFF1234567', NULL, NULL, '2024-12-30 00:14:05', '2024-12-30 00:14:05', NULL, 6),
-(15, 'Shipping', 'STAFF1234567', NULL, NULL, '2024-12-30 00:16:34', '2024-12-30 00:16:34', NULL, NULL),
-(16, 'Surveyor Cost', 'STAFF1234567', NULL, NULL, '2024-12-30 00:16:34', '2024-12-30 00:16:34', NULL, 15),
-(17, 'Demurrage Cost', 'STAFF1234567', NULL, NULL, '2024-12-30 00:16:34', '2024-12-30 00:16:34', NULL, 15),
-(18, 'Ship Agency (Doc.)', 'STAFF1234567', NULL, NULL, '2024-12-30 00:16:34', '2024-12-30 00:16:34', NULL, 15),
-(19, 'Security (PAM)', 'STAFF1234567', NULL, NULL, '2024-12-30 00:16:34', '2024-12-30 00:16:34', NULL, 15),
-(20, 'Etc', 'STAFF1234567', NULL, NULL, '2024-12-30 00:16:34', '2024-12-30 00:16:34', NULL, 15),
-(22, 'Royalti', 'STAFF1234567', NULL, NULL, '2024-12-30 00:21:11', '2024-12-30 00:21:11', NULL, NULL),
-(23, 'General & Administration', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:13', '2024-12-30 00:23:13', NULL, NULL),
-(24, 'Salary', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:13', '2024-12-30 00:23:13', NULL, 23),
-(25, 'Director', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:13', '2024-12-30 00:23:13', NULL, 23),
-(26, 'Management', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:13', '2024-12-30 00:23:13', NULL, 23),
-(27, 'Site Employee', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:13', '2024-12-30 00:23:13', NULL, 23),
-(28, 'Allowance', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:13', '2024-12-30 00:23:13', NULL, 23),
-(29, 'Inssurance (Health & Employment)', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:13', '2024-12-30 00:23:13', NULL, 23),
-(30, 'Etc', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:13', '2024-12-30 00:23:13', NULL, 23),
-(31, 'Legal & Licenses', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:35', '2024-12-30 00:23:35', NULL, NULL),
-(32, 'Operational Cost (Office & Site)', 'STAFF1234567', NULL, NULL, '2024-12-30 00:23:44', '2024-12-30 00:23:44', NULL, NULL),
-(33, 'ocial & CSR', 'STAFF1234567', NULL, NULL, '2024-12-30 00:24:36', '2024-12-30 00:24:36', NULL, NULL),
-(34, 'Coporate Social Responsibility (CSR)', 'STAFF1234567', NULL, NULL, '2024-12-30 00:24:36', '2024-12-30 00:24:36', NULL, 33),
-(35, 'Compensation', 'STAFF1234567', NULL, NULL, '2024-12-30 00:24:36', '2024-12-30 00:24:36', NULL, 33),
-(36, 'Donation', 'STAFF1234567', NULL, NULL, '2024-12-30 00:24:36', '2024-12-30 00:24:36', NULL, 33),
-(37, 'Rent (General Affair)', 'STAFF1234567', NULL, NULL, '2024-12-30 00:25:25', '2024-12-30 00:25:25', NULL, NULL),
-(38, 'Building', 'STAFF1234567', NULL, NULL, '2024-12-30 00:25:25', '2024-12-30 00:25:25', NULL, 37),
-(39, 'Vehicle', 'STAFF1234567', NULL, NULL, '2024-12-30 00:25:25', '2024-12-30 00:25:25', NULL, 37),
-(40, 'Sevice & Maintenance Assets', 'STAFF1234567', NULL, NULL, '2024-12-30 00:25:46', '2024-12-30 00:25:46', NULL, NULL),
-(41, 'Office Supplys & Equipments', 'STAFF1234567', NULL, NULL, '2024-12-30 00:25:57', '2024-12-30 00:25:57', NULL, NULL),
-(42, 'Tax Fines', 'STAFF1234567', NULL, NULL, '2024-12-30 00:26:10', '2024-12-30 00:26:10', NULL, NULL),
-(43, 'Loan Interest Expense', 'STAFF1234567', NULL, NULL, '2024-12-30 00:26:24', '2024-12-30 00:26:24', NULL, NULL),
-(44, 'Etc', 'STAFF1234567', NULL, NULL, '2024-12-30 00:30:12', '2024-12-30 00:30:12', NULL, NULL),
-(46, 'Others Income & Expanses', 'STAFF1234567', NULL, NULL, '2024-12-30 00:31:47', '2024-12-30 00:31:47', NULL, NULL),
-(47, 'Interest Income', 'STAFF1234567', NULL, NULL, '2024-12-30 00:31:47', '2024-12-30 00:31:47', NULL, 46),
-(48, 'Interest  Ekspense', 'STAFF1234567', NULL, NULL, '2024-12-30 00:31:47', '2024-12-30 00:31:47', NULL, 46),
-(49, 'Total Others Income & Expanses', 'STAFF1234567', NULL, NULL, '2024-12-30 00:31:59', '2024-12-30 00:31:59', NULL, NULL),
-(50, 'Net Profit Before Tax', 'STAFF1234567', NULL, NULL, '2024-12-30 00:32:24', '2024-12-30 00:32:24', NULL, NULL),
-(51, 'Corporate Tax', 'STAFF1234567', NULL, NULL, '2024-12-30 00:32:38', '2024-12-30 00:32:38', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -540,52 +583,6 @@ CREATE TABLE `kategory_neracas` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `laba_rugis`
---
-
-CREATE TABLE `laba_rugis` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `Description` varchar(255) NOT NULL,
-  `PlaYtd` decimal(20,2) DEFAULT NULL,
-  `VerticalAnalisys1` varchar(50) DEFAULT NULL,
-  `VerticalAnalisys` varchar(11) DEFAULT NULL,
-  `Actualytd` decimal(20,2) DEFAULT NULL,
-  `Deviation` decimal(20,2) DEFAULT NULL,
-  `Percentage` varchar(11) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `created_by` varchar(100) DEFAULT NULL,
-  `updated_by` varchar(100) DEFAULT NULL,
-  `deleted_by` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `laba_rugis`
---
-
-INSERT INTO `laba_rugis` (`id`, `Description`, `PlaYtd`, `VerticalAnalisys1`, `VerticalAnalisys`, `Actualytd`, `Deviation`, `Percentage`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`) VALUES
-(104, '3', 51805400843.00, '100.00%', NULL, 3.00, 51805400840.00, '100%', '2025-01-03 08:45:28', '2025-01-04 02:17:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(105, '4', NULL, NULL, NULL, 1.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:16:24', 'STAFF1234567', 'STAFF1234567', NULL),
-(106, '5', NULL, NULL, NULL, 2.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:16:24', 'STAFF1234567', 'STAFF1234567', NULL),
-(107, '6', 68798548396.00, '132.80%', NULL, 12312.00, 68798536084.00, '100%', '2025-01-03 08:45:28', '2025-01-04 02:17:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(108, '7', NULL, NULL, NULL, 13212.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(109, '8', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(110, '9', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(111, '10', NULL, NULL, NULL, 213123.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(112, '11', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(113, '12', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(114, '13', NULL, NULL, NULL, 2131.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(115, '14', NULL, NULL, NULL, 12312.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(116, '15', 51805400843.00, '100.00%', NULL, 234234.00, 51805166609.00, '100%', '2025-01-03 08:45:28', '2025-01-04 02:17:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(117, '16', NULL, NULL, NULL, 2342.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(118, '17', NULL, NULL, NULL, 23423.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(119, '18', NULL, NULL, NULL, 342342.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(120, '19', NULL, NULL, NULL, 234234234.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL),
-(121, '20', NULL, NULL, NULL, 234234.00, NULL, NULL, '2025-01-03 08:45:28', '2025-01-04 02:03:26', 'STAFF1234567', 'STAFF1234567', NULL);
 
 -- --------------------------------------------------------
 
@@ -672,7 +669,16 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (66, '2025_01_08_181445_create_detailabarugis_table', 16),
 (67, '2025_01_08_181717_create_picalaba_rugis_table', 16),
 (68, '2025_01_08_204704_create_stock_jts_table', 17),
-(69, '2025_01_08_204731_create_picastockjts_table', 17);
+(69, '2025_01_08_204731_create_picastockjts_table', 17),
+(70, '2025_01_09_172053_create_category_neracas_table', 18),
+(71, '2025_01_09_172125_create_sub_neracas_table', 18),
+(72, '2025_01_09_172142_create_detail_neracas_table', 18),
+(73, '2025_01_10_175809_create_jenis_labarugis_table', 19),
+(74, '2025_01_10_175833_add_audit_columns_to_category_neracas_table', 20),
+(75, '2025_01_10_180815_add_audit_columns_to_category_labarugis_table', 21),
+(76, '2025_01_11_192156_create_gambars_table', 21),
+(77, '2025_01_12_085303_add_audit_columns_to__bargings_table', 22),
+(78, '2025_01_12_094434_create_plan_bargings_table', 23);
 
 -- --------------------------------------------------------
 
@@ -764,7 +770,12 @@ CREATE TABLE `overberden_coal` (
 
 INSERT INTO `overberden_coal` (`id`, `kategori_id`, `nominalactual`, `nominalplan`, `tanggal`, `desc`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
 (1, 1, 51805400843.00, NULL, '2025-02-12', 'PLAN FR coal', 'STAFF1234567', NULL, NULL, '2025-01-08 08:09:58', '2025-01-08 08:09:58'),
-(2, 1, 2555000000.00, NULL, '2024-02-20', 'actual FR coal', 'STAFF1234567', NULL, NULL, '2025-01-08 08:16:48', '2025-01-08 08:16:48');
+(2, 1, 2555000000.00, NULL, '2024-02-20', 'actual FR coal', 'STAFF1234567', NULL, NULL, '2025-01-08 08:16:48', '2025-01-08 08:16:48'),
+(3, 1, 2000.00, NULL, '2025-01-09', 'kpopkk', 'STAFF1234567', NULL, NULL, '2025-01-09 04:31:23', '2025-01-09 04:31:23'),
+(4, 2, NULL, 2000.00, '2025-01-23', '786860', 'STAFF1234567', NULL, NULL, '2025-01-09 04:38:49', '2025-01-09 04:38:49'),
+(5, 2, 2111.00, NULL, '2025-01-10', 'assx', 'STAFF1234567', NULL, NULL, '2025-01-09 04:39:29', '2025-01-09 04:39:29'),
+(6, 2, 222.00, NULL, '2025-01-11', 'wd', 'STAFF1234567', NULL, NULL, '2025-01-09 04:40:32', '2025-01-09 04:40:32'),
+(7, 2, NULL, 2000.00, '2025-02-01', 'a', 'STAFF1234567', NULL, NULL, '2025-01-09 04:43:59', '2025-01-09 04:43:59');
 
 -- --------------------------------------------------------
 
@@ -1076,7 +1087,8 @@ CREATE TABLE `pica_bargings` (
 --
 
 INSERT INTO `pica_bargings` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '5', '1', '1', '1', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 10:40:44', '2025-01-07 10:43:17');
+(1, '1', '5', '1', '1', '1', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 10:40:44', '2025-01-07 10:43:17'),
+(2, '2', '1', '2', '1', '11', 'gg', '2', 'STAFF1234567', NULL, NULL, '2025-01-09 04:45:31', '2025-01-09 04:45:31');
 
 -- --------------------------------------------------------
 
@@ -1257,6 +1269,29 @@ INSERT INTO `pica_pls` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `plan_bargings`
+--
+
+CREATE TABLE `plan_bargings` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nominal` decimal(20,2) DEFAULT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `plan_bargings`
+--
+
+INSERT INTO `plan_bargings` (`id`, `nominal`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
+(1, 300000.00, NULL, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `produksis`
 --
 
@@ -1329,7 +1364,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('683R9VIhlnMYZ3rGSXgEXjo6UenLUzY0nEGhoJVD', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiWk9WNXpjdGFrWXNNZlVyNVFSZW1Td1N6MDNFNFd4N1lWaWh4MlN6TCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozNzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2Zvcm1rYXRlZ29yaW9iYyI7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjMzOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvcGljYXN0b2NranQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1736376233);
+('Quw8P50iz1Yi2nsYM4TmJue4B0DFFN4oNzpMUVid', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibWJzZjN1bHlrenJBMnBZUXdlcWlDeWJXTnpzMjNQZ01QZ0l1cnBxayI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbmRleGJhcmdpbmciO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1736679244);
 
 -- --------------------------------------------------------
 
@@ -1356,7 +1391,9 @@ CREATE TABLE `stock_jts` (
 --
 
 INSERT INTO `stock_jts` (`id`, `created_by`, `updated_by`, `deleted_by`, `date`, `sotckawal`, `shifpertama`, `shifkedua`, `totalhauling`, `created_at`, `updated_at`) VALUES
-(1, 'STAFF1234567', NULL, NULL, '2025-01-01', '192500', '2', '2', '4', '2025-01-08 14:07:38', '2025-01-08 14:07:38');
+(6, 'STAFF1234567', NULL, NULL, '2023-12-12', '129022', '1', '1', '2', '2025-01-09 14:34:23', '2025-01-09 14:34:23'),
+(7, 'STAFF1234567', NULL, NULL, '2023-02-12', NULL, '2', '-4', '-2', '2025-01-09 14:34:52', '2025-01-09 14:34:52'),
+(8, 'STAFF1234567', NULL, NULL, '3333-03-12', '123', '1', '1', '2', '2025-01-09 14:36:22', '2025-01-09 14:36:22');
 
 -- --------------------------------------------------------
 
@@ -1398,7 +1435,40 @@ CREATE TABLE `sub_labarugis` (
 INSERT INTO `sub_labarugis` (`id`, `namesub`, `created_by`, `updated_by`, `deleted_by`, `kategori_id`, `created_at`, `updated_at`) VALUES
 (1, 'Penjualan Batu Bara', 'STAFF1234567', NULL, NULL, 1, '2025-01-08 11:11:28', '2025-01-08 11:11:28'),
 (2, 'Penjualan Batu Bara', 'STAFF1234567', NULL, NULL, 1, '2025-01-08 11:35:27', '2025-01-08 11:35:27'),
-(3, 'Over Burden', 'STAFF1234567', NULL, NULL, 2, '2025-01-08 12:14:20', '2025-01-08 12:14:20');
+(3, 'Over Burden', 'STAFF1234567', NULL, NULL, 2, '2025-01-08 12:14:20', '2025-01-08 12:14:20'),
+(4, 'test 1', 'STAFF1234567', NULL, NULL, 6, '2025-01-09 03:49:23', '2025-01-09 03:49:23'),
+(5, 'Mandiri 421', 'STAFF1234567', NULL, NULL, 1, '2025-01-09 11:27:20', '2025-01-09 11:27:20'),
+(6, 'Mandiri 421', 'STAFF1234567', NULL, NULL, 1, '2025-01-09 11:29:42', '2025-01-09 11:29:42'),
+(7, 'Mandiri 421', 'STAFF1234567', NULL, NULL, 1, '2025-01-09 11:32:24', '2025-01-09 11:32:24'),
+(8, '4567', 'STAFF1234567', NULL, NULL, 1, '2025-01-10 03:53:45', '2025-01-10 03:53:45');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sub_neracas`
+--
+
+CREATE TABLE `sub_neracas` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `namesub` varchar(255) NOT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `kategori_id` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `id_jenis` bigint(20) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `sub_neracas`
+--
+
+INSERT INTO `sub_neracas` (`id`, `namesub`, `created_by`, `updated_by`, `deleted_by`, `kategori_id`, `created_at`, `updated_at`, `id_jenis`) VALUES
+(7, 'Cash & Cash Equivalents', 'STAFF1234567', NULL, NULL, 6, '2025-01-09 13:19:26', '2025-01-09 13:19:26', 0),
+(8, 'Land', 'STAFF1234567', NULL, NULL, 7, '2025-01-10 00:17:57', '2025-01-10 00:17:57', 0),
+(9, '123', 'STAFF1234567', NULL, NULL, 9, '2025-01-10 00:18:04', '2025-01-10 00:18:04', 0),
+(10, '4567', 'STAFF1234567', NULL, NULL, 8, '2025-01-10 00:18:14', '2025-01-10 00:18:14', 0);
 
 -- --------------------------------------------------------
 
@@ -1471,6 +1541,12 @@ ALTER TABLE `category_labarugis`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `category_neracas`
+--
+ALTER TABLE `category_neracas`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `cs_mining_readinesses`
 --
 ALTER TABLE `cs_mining_readinesses`
@@ -1502,11 +1578,24 @@ ALTER TABLE `detailabarugis`
   ADD KEY `detailabarugis_sub_id_foreign` (`sub_id`);
 
 --
+-- Indexes for table `detail_neracas`
+--
+ALTER TABLE `detail_neracas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `detail_neracas_sub_id_foreign` (`sub_id`);
+
+--
 -- Indexes for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
+
+--
+-- Indexes for table `gambars`
+--
+ALTER TABLE `gambars`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `harga_poko_penjualans`
@@ -1528,6 +1617,12 @@ ALTER TABLE `infrastructure_readinesses`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `jenis_labarugis`
+--
+ALTER TABLE `jenis_labarugis`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `kategori_cs_minings`
 --
 ALTER TABLE `kategori_cs_minings`
@@ -1537,12 +1632,6 @@ ALTER TABLE `kategori_cs_minings`
 -- Indexes for table `kategori_hses`
 --
 ALTER TABLE `kategori_hses`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `kategori_laba_rugis`
---
-ALTER TABLE `kategori_laba_rugis`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1561,12 +1650,6 @@ ALTER TABLE `kategori_overcoals`
 -- Indexes for table `kategory_neracas`
 --
 ALTER TABLE `kategory_neracas`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `laba_rugis`
---
-ALTER TABLE `laba_rugis`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1699,6 +1782,12 @@ ALTER TABLE `pica_pls`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `plan_bargings`
+--
+ALTER TABLE `plan_bargings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `produksis`
 --
 ALTER TABLE `produksis`
@@ -1733,6 +1822,13 @@ ALTER TABLE `sub_labarugis`
   ADD KEY `sub_labarugis_kategori_id_foreign` (`kategori_id`);
 
 --
+-- Indexes for table `sub_neracas`
+--
+ALTER TABLE `sub_neracas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sub_neracas_kategori_id_foreign` (`kategori_id`);
+
+--
 -- Indexes for table `units`
 --
 ALTER TABLE `units`
@@ -1753,13 +1849,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bargings`
 --
 ALTER TABLE `bargings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `category_labarugis`
 --
 ALTER TABLE `category_labarugis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `category_neracas`
+--
+ALTER TABLE `category_neracas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `cs_mining_readinesses`
@@ -1789,13 +1891,25 @@ ALTER TABLE `deadline_compentsation_cs`
 -- AUTO_INCREMENT for table `detailabarugis`
 --
 ALTER TABLE `detailabarugis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `detail_neracas`
+--
+ALTER TABLE `detail_neracas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `gambars`
+--
+ALTER TABLE `gambars`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `harga_poko_penjualans`
@@ -1816,6 +1930,12 @@ ALTER TABLE `infrastructure_readinesses`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `jenis_labarugis`
+--
+ALTER TABLE `jenis_labarugis`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `kategori_cs_minings`
 --
 ALTER TABLE `kategori_cs_minings`
@@ -1826,12 +1946,6 @@ ALTER TABLE `kategori_cs_minings`
 --
 ALTER TABLE `kategori_hses`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `kategori_laba_rugis`
---
-ALTER TABLE `kategori_laba_rugis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `kategori_mini_r_s`
@@ -1852,16 +1966,10 @@ ALTER TABLE `kategory_neracas`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `laba_rugis`
---
-ALTER TABLE `laba_rugis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
-
---
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT for table `mining_readinesses`
@@ -1879,7 +1987,7 @@ ALTER TABLE `neracas`
 -- AUTO_INCREMENT for table `overberden_coal`
 --
 ALTER TABLE `overberden_coal`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `pembebasan_lahans`
@@ -1939,7 +2047,7 @@ ALTER TABLE `picastockjts`
 -- AUTO_INCREMENT for table `pica_bargings`
 --
 ALTER TABLE `pica_bargings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `pica_hses`
@@ -1978,6 +2086,12 @@ ALTER TABLE `pica_pls`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `plan_bargings`
+--
+ALTER TABLE `plan_bargings`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `produksis`
 --
 ALTER TABLE `produksis`
@@ -1987,7 +2101,7 @@ ALTER TABLE `produksis`
 -- AUTO_INCREMENT for table `stock_jts`
 --
 ALTER TABLE `stock_jts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `subkategori_labarugis`
@@ -1999,7 +2113,13 @@ ALTER TABLE `subkategori_labarugis`
 -- AUTO_INCREMENT for table `sub_labarugis`
 --
 ALTER TABLE `sub_labarugis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `sub_neracas`
+--
+ALTER TABLE `sub_neracas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `units`
@@ -2024,6 +2144,12 @@ ALTER TABLE `detailabarugis`
   ADD CONSTRAINT `detailabarugis_sub_id_foreign` FOREIGN KEY (`sub_id`) REFERENCES `sub_labarugis` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `detail_neracas`
+--
+ALTER TABLE `detail_neracas`
+  ADD CONSTRAINT `detail_neracas_sub_id_foreign` FOREIGN KEY (`sub_id`) REFERENCES `sub_neracas` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `hses`
 --
 ALTER TABLE `hses`
@@ -2046,6 +2172,12 @@ ALTER TABLE `produksis`
 --
 ALTER TABLE `sub_labarugis`
   ADD CONSTRAINT `sub_labarugis_kategori_id_foreign` FOREIGN KEY (`kategori_id`) REFERENCES `category_labarugis` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `sub_neracas`
+--
+ALTER TABLE `sub_neracas`
+  ADD CONSTRAINT `sub_neracas_kategori_id_foreign` FOREIGN KEY (`kategori_id`) REFERENCES `category_neracas` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

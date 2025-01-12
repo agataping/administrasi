@@ -20,23 +20,23 @@ class OverberdenCoalController extends Controller
        $endDate = $request->input('end_date');    
        
        $query = DB::table('overberden_coal')
-       ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
-       ->select(
-           'kategori_overcoals.name as kategori_name',
-           'overberden_coal.nominalplan',
-           'overberden_coal.nominalactual',
-           'overberden_coal.tanggal',
-           'overberden_coal.desc',
-           'overberden_coal.id'
-       );
+           ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
+           ->select(
+               'kategori_overcoals.name as kategori_name',
+               'overberden_coal.nominalplan',
+               'overberden_coal.nominalactual',
+               'overberden_coal.tanggal',
+               'overberden_coal.desc',
+               'overberden_coal.id'
+           );
        
        if ($startDate && $endDate) {
            $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
        }
        
        $data = $query->orderBy('kategori_overcoals.name')
-       ->get()
-       ->groupBy('kategori_name');
+           ->get()
+           ->groupBy('kategori_name');
        
        $totals = $data->map(function ($items, $category) {
            $totalPlan = $items->sum(function ($item) {
@@ -45,17 +45,24 @@ class OverberdenCoalController extends Controller
            $totalActual = $items->sum(function ($item) {
                return (float)str_replace(',', '', $item->nominalactual ?? 0);
            });
+   
+           // Hitung deviasi dan persen
+           $deviation = $totalPlan - $totalActual;
+           $percentage = $totalPlan != 0 ? ($totalActual / $totalPlan) * 100 : 0;
+   
            return [
                'kategori_name' => $category,
                'total_plan' => $totalPlan,
                'total_actual' => $totalActual,
+               'deviation' => $deviation,
+               'percentage' => $percentage,
                'details' => $items,
            ];
        });
        
        return view('overbcoal.index', compact('totals', 'data', 'startDate', 'endDate'));
    }
-
+   
 
     public function formovercoal(){
         $data = kategoriOvercoal::all();

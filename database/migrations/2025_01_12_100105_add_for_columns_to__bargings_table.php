@@ -11,22 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('neracas', function (Blueprint $table) {
+        Schema::table('bargings', function (Blueprint $table) {
+            $table->foreignId('plan_id')->constrained('plan_bargings')->onDelete('cascade');
 
-        $table->id();
-        $table->string('description');
-        $table->biginteger('nominal'); 
-        $table->foreignId('category_id')->constrained('Kategory_neracas')->onDelete('cascade');
-        $table->timestamps();
-    });
-
-}
+        });
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        //
+        Schema::table('Bargings', function (Blueprint $table) {
+            //
+        });
     }
 };

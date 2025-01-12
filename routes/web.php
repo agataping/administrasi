@@ -25,6 +25,7 @@ use App\Http\Controllers\HseController;
 use App\Http\Controllers\OverberdenCoalController;
 use App\Http\Controllers\DetailabarugiController;
 use App\Http\Controllers\StockJtController;
+use App\Http\Controllers\DetailNeracaController;
 
 
 
@@ -81,6 +82,10 @@ Route::get('/formpicapeople', [PeopleReadinessController::class, 'formpicapeople
 Route::get('/formupdatepicapeople/{id}', [PeopleReadinessController::class, 'formupdatepicapeople'])->middleware('auth')->name('formupdatepicapeople');
 Route::post('/createpicapeople', [PeopleReadinessController::class, 'createpicapeople'])->middleware('auth')->name('createpicapeople');
 Route::post('/updatepicapeople/{id}', [PeopleReadinessController::class, 'updatepicapeople'])->middleware('auth')->name('updatepicapeople');
+//
+Route::get('/struktur', [PeopleReadinessController::class, 'struktur'])->middleware('auth')->name('struktur');
+Route::get('/formbagan', [PeopleReadinessController::class, 'formbagan'])->middleware('auth')->name('formbagan');
+Route::post('/createbagan', [PeopleReadinessController::class, 'createbagan'])->middleware('auth')->name('createbagan');
 
 
 
@@ -176,6 +181,10 @@ Route::get('/formpicabarging', [BargingController::class, 'formpicabarging'])->m
 Route::get('/updatepicabarging/{id}', [BargingController::class, 'updatepicabarging'])->middleware('auth')->name('updatepicabarging');
 Route::post('/createpicabarging', [BargingController::class, 'createpicabarging'])->middleware('auth')->name('createpicabarging');
 Route::post('/updatedatapicabarging/{id}', [BargingController::class, 'updatedatapicabarging'])->middleware('auth')->name('updatedatapicabarging');
+//plan bargings
+Route::get('/indexPlan', [BargingController::class, 'indexPlan'])->middleware('auth')->name('indexPlan');
+Route::post('/updatePlan', [BargingController::class, 'updatePlan'])->middleware('auth')->name('updatePlan');
+
 //stock jt
 Route::get('/stockjt', [StockJtController::class, 'stockjt'])->middleware('auth')->name('stockjt');
 Route::get('/formstockjt', [StockJtController::class, 'formstockjt'])->middleware('auth')->name('formstockjt');
@@ -241,14 +250,19 @@ Route::get('/formupdatepicalr/{id}', [DetailabarugiController::class, 'formupdat
 Route::post('/createpicalr', [DetailabarugiController::class, 'createpicalr'])->middleware('auth')->name('createpicalr');
 Route::post('/updatepicalr/{id}', [DetailabarugiController::class, 'updatepicalr'])->middleware('auth')->name('updatepicalr');
 
-
-
 //neraca
-Route::get('/indexneraca', [NeracaController::class, 'indexneraca'])->middleware('auth')->name('indexneraca');
-Route::get('/kategorineraca', [NeracaController::class, 'kategorineraca'])->middleware('auth')->name('kategorineraca');
-Route::post('/createkategorineraca', [NeracaController::class, 'createkategorineraca'])->middleware('auth')->name('createkategorineraca');
-Route::get('/neraca', [NeracaController::class, 'neraca'])->middleware('auth')->name('neraca');
-Route::post('/createneraca', [NeracaController::class, 'createneraca'])->middleware('auth')->name('createneraca');
+Route::get('/indexfinancial', [DetailNeracaController::class, 'indexfinancial'])->middleware('auth')->name('indexfinancial');
+Route::get('/formfinanc', [DetailNeracaController::class, 'formfinanc'])->middleware('auth')->name('formfinanc');
+Route::get('/formupdatefinanc/{id}', [DetailNeracaController::class, 'formupdatefinanc'])->middleware('auth')->name('formupdatefinanc');
+Route::post('/createfinanc', [DetailNeracaController::class, 'createfinanc'])->middleware('auth')->name('createfinanc');
+Route::post ('/updatefiananc/{id}', [DetailNeracaController::class, 'updatefiananc'])->middleware('auth')->name('updatefiananc');
+//category
+Route::get('/categoryneraca', [DetailNeracaController::class, 'categoryneraca'])->middleware('auth')->name('categoryneraca');
+Route::post('/createcategoryneraca', [DetailNeracaController::class, 'createcategoryneraca'])->middleware('auth')->name('createcategoryneraca');
+//sub
+Route::get('/subneraca', [DetailNeracaController::class, 'subneraca'])->middleware('auth')->name('subneraca');
+Route::post('/createsubneraca', [DetailNeracaController::class, 'createsubneraca'])->middleware('auth')->name('createsubneraca');
+
 
 //hpp 
 Route::get('/indexhpp', [HPPController::class, 'indexhpp'])->middleware('auth')->name('indexhpp');

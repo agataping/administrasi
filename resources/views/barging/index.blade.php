@@ -25,28 +25,52 @@
                 </div>
                 @endif
                 
-                <div class="row">
-                    <div class="col-sm-">
-                        <a href="/formbarging" class="btn btn-custom">Add Barging</a>
-                    </div>
-                </div> 
 
-                <div class="row">
-                    <div class="col-sm-2">
-                        
-                        <form method="GET" action="{{ url('/indexbarging') }}">
-                            <label for="year">Filter by Year:</label>
-                            <select name="year" id="year" onchange="this.form.submit()">
-                                <option value="">All Years</option>
-                                @foreach ($years as $availableYear)
-                                <option value="{{ $availableYear }}" {{ $year == $availableYear ? 'selected' : '' }}>
-                                    {{ $availableYear }}
-                                </option>
-                                @endforeach
-                            </select>
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <form action="{{ route('formbarging') }}" method="get">
+                            <input type="hidden" name="form_type" value="kategori">
+                            <button type="submit" class="btn btn-custom">Add Barging</button>
                         </form>
-                    </div> 
-                </div> 
+                    </div>
+                    <div class="col-auto">
+                        <form action="{{ route('indexPlan') }}" method="get">
+                            <input type="hidden" name="form_type" value="kategori">
+                            <button type="submit" class="btn btn-custom">Plan</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Bagian Keterangan atau Nilai -->
+                    <div class="col text-end">
+                        <div>
+                            
+                            <strong>Plan:</strong> {{ $plan->first()->nominal ?? '-' }} <span></span>
+                            <strong>Actual:</strong> <span> {{ number_format($quantity, 0, ',', '.') }}</span>
+                            <strong>Deviation:</strong> <span>{{ number_format($deviasi, 0, ',', '.') }}</span>
+                            <strong>Percentage:</strong> <span>{{ number_format($percen, 0, ',', '.') }}%</span>
+                        </div>
+                    </div>
+                </div>
+                
+
+
+                <form method="GET" action="{{ route('indexbarging') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <div >
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
+                        Filter
+                    </button>
+                </form>
 
 
                 <table class="table table-bordered">

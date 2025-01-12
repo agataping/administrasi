@@ -1,5 +1,5 @@
 @extends('template.main')
-@section('title', 'Deskripsi ')
+@section('title', 'Deskripsi Neraca')
 @section('content')
 
 <div class="container-fluid mt-4">
@@ -22,7 +22,7 @@
                     </ul>
                 </div>
                 @endif
-                <form action="{{ route('createsub') }}" method="post">
+                <form action="{{ route('createsubneraca') }}" method="post">
                 @csrf
                 <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                 <div style="margin-bottom: 1rem;">

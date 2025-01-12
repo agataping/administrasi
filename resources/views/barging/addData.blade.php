@@ -28,11 +28,15 @@
                     
                         <form action="{{ route('createbarging') }}" method="post">
                             @csrf
-                            
+                            <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                             <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
-                      
                             <div class="form-group">
-                                <label for="nomor">Layca</label>
+                                <label for="tanggal">Tanggal Data</label>
+                                <input type="date" class="form-control" id="tanggal" name="tanggal" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="nomor">Laycan</label>
                                 <input type="text" class="form-control" id="nomor" name="laycan" required>
                             </div>
                             

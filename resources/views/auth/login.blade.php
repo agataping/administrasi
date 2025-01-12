@@ -28,56 +28,63 @@
           font-size: 3.5rem;
         }
       }
+      .form-floating {
+    margin-bottom: 15px;
+}
+
+.alert {
+    margin-bottom: 20px;
+}
+
     </style>
-<link href="{{asset('css/signin.css')}}" rel="stylesheet">
-@if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+    <link href="{{asset('css/signin.css')}}" rel="stylesheet">
+    
+</head>
+<body style="font-family: 'Arial', sans-serif; background-color: #f9f9f9;">
 
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-  </head>
-  <body class="text-center">
-
-      <main class="form-signin">
-    <div class="card">
+  <main class="form-signin d-flex align-items-center justify-content-center" style="height: 80vh;">
+    <div class="card p-5 border-0 shadow" style="border-radius: 12px; max-width: 400px; width: 100%;">
     
       <form action="{{ url('signin') }}" method="post">
       @csrf
-    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <h1 class="h3 mb-3 fw-normal" style="text-align: center;">Please sign in</h1>
 
-    <div class="form-floating">
-      <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username">
-      <label for="floatingInput">Username</label>
-    </div>
-    <div class="form-floating">
-      <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
-      <label for="floatingPassword">Password</label>
-    </div>
+        <!-- Menampilkan pesan sukses atau error -->
+        @if (session('success'))
+          <div class="alert alert-success">
+            {{ session('success') }}
+          </div>
+        @endif
+        
+        @if ($errors->any())
+          <div class="alert alert-danger">
+            <ul>
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
 
-    <!-- Tombol "Register" di sisi kiri -->
-    <div class="d-flex justify-content-between align-items-center mt-4">
-      <a class="w-10 btn btn-secondary" type="submit" href="{{ route('register') }}">Register</a>
-      <!-- Tombol "Sign in" di sisi kanan -->
-      <button class="w-10 btn  btn-primary" type="submit">Sign in</button>
-    </div>
-  </form>
-    
-    
-    
-  
-</main>
-</div>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username">
+          <label for="floatingInput">Username</label>
+        </div>
+        
+        <div class="form-floating">
+          <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
+          <label for="floatingPassword">Password</label>
+        </div>
 
-    
-  </body>
+        <!-- Tombol "Register" di sisi kiri -->
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <a class="w-10 btn btn-secondary" href="{{ route('register') }}">Register</a>
+          <!-- Tombol "Sign in" di sisi kanan -->
+          <button class="w-10 btn btn-primary" type="submit">Sign in</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+
 </html>

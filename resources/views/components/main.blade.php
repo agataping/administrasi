@@ -3,17 +3,15 @@
 @section('title', 'Dashboard')
 @section('content')
 
-<!-- <div class="card mb-3"> -->
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom" style="background-color: darkblue;">
-        <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-            <div>
-                <h5 style="color: white;">ADMINISTRASI</h5>
-            </div>
-        </a>
+    <header class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color: #07a43b;">
+    <a href="/dashboard" class="d-flex align-items-center text-decoration-none">
+        <div class="ms-3">
+            <h5 style="color: white; margin: 0;">ADMINISTRASI</h5>
+        </div>
+    </a>
+
 
         <ul class="nav nav-pills">
-            <li class="nav-item"><a href="/dashboard" class="nav-link text-white">Home</a></li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Customer Perspective
@@ -33,10 +31,8 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="/labarugi">Profit and Loss</a></li>
+                <li><a class="dropdown-item" href="/indexfinancial">Balance Sheet</a></li>
                 <li><a class="dropdown-item" href="/picalr">PICA Financial</a></li>
-                    <li><a class="dropdown-item" href="#">Work Plan and Budget Income Statement</a></li>
-                    <li><a class="dropdown-item" href="/indexneraca">Balance Sheet</a></li>
-                    <li><a class="dropdown-item" href="#">Work Plan, Budget and Financial Statements</a></li>
                 </ul>
             </li>
             <li class="nav-item dropdown">
@@ -61,6 +57,8 @@
                     Learning & Growth Perspective
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="/struktur">Struktur Organisasi</a></li>
+
                     <li><a class="dropdown-item" href="/indexPeople">People Readiness</a></li>
                     <li><a class="dropdown-item" href="/indexpicapeople">PICA People Readiness</a></li>
                     <li><a class="dropdown-item" href="/indexInfrastructureReadiness">Infrastructure Readiness</a></li>
@@ -76,27 +74,35 @@
             </li>
         </ul>
 
-        <div class="flex-shrink-0 dropdown">
-            <a href="#" class="d-block link-dark text-decoration-none" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false"></a>
-            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                <li>
-                    @auth
-                        <p class="dropdown-item">{{ Auth::user()->username }}</p>
-                    @endauth
+        <div class="flex-shrink-0 dropdown me-3">
+            <a href="#" class="d-block link-light text-decoration-none" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 0.5rem;">
+                <img src="img/profile.png" alt="Profile" width="32" height="32" class="rounded-circle border border-2 border-light">
+                <i class="bi bi-chevron-down text-white"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser2" style="min-width: 200px; border-radius: 8px; overflow: hidden;">
+                <li class="dropdown-item text-muted px-3">
+                    <i class="bi bi-person-circle me-2 text-primary"></i>
+                    {{ Auth::user()->name }}
                 </li>
+                <li><hr class="dropdown-divider"></li>
                 <li>
                     <form action="{{ url('logout') }}" method="POST" id="logout-form">
                         @csrf
-                        <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">Sign out</a>
+                        <button class="dropdown-item text-danger d-flex align-items-center" style="gap: 0.5rem;" type="submit">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Sign out
+                        </button>
                     </form>
                 </li>
             </ul>
         </div>
+        
+
     </header>
-</div>
 
 <body>
-<div class="card mb-3 text-center">
+<div class="card mb-3 text-center align-items-center justify-content-center"  style="border-radius: 12px; overflow: hidden; margin: 2rem auto; height:80vh; ">
+<div style="position: relative;" style="width: auto; height: auto; object-fit: cover;">
     <div class="cardcostum">
         <div class="cardcost">
             <h4><b>Qubah Group</b></h4>
@@ -133,5 +139,6 @@
             </a>
         </div>
     </div>
-</div>
+    </div>
+    </div>
 </body>

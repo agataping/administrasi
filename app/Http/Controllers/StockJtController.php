@@ -15,53 +15,70 @@ class StockJtController extends Controller
     public function stockjt(Request $request)
     {
         $data = StockJt::all();
-        return view('stockjt.index', compact('data'));  
+
+        // Ambil stok awal yang hanya diinput sekali
+        $stokAwal = $data->whereNotNull('sotckawal')->first()->sotckawal ?? 0;
+    
+        // Hitung akumulasi untuk setiap entri
+        $data->map(function ($stock) use ($stokAwal) {
+            $stock->akumulasi_stock = $stokAwal + $stock->totalhauling;
+            return $stock;
+        });        return view('stockjt.index', compact('data'));  
     }
     public function formstockjt(Request $request)
     {
         return view('stockjt.addData');  
     }
+    //save sekali dalam sebulan
+    //hitungan selalu ditambah
+    //stock jetty
     public function createstockjt(Request $request)
     {
-        $request->validate([
-            'date' => 'required|date',
-            'sotckawal' => 'required|numeric|min:0',
-            'shifpertama' => 'nullable|numeric|min:0',
-            'shifkedua' => 'nullable|numeric|min:0',
-            'totalhauling' => 'nullable|numeric|min:0',
-        ]);
+            // Validasi input
+    // Validasi input
+    $request->validate([
+        'date' => 'required|date',
+        'sotckawal' => 'nullable|numeric',
+        'shifpertama' => 'nullable|numeric',
+        'shifkedua' => 'nullable|numeric',
+        'totalhauling' => 'nullable|numeric',
+    ]);
 
-        // Ambil bulan dan tahun dari tanggal
+    // Ambil bulan dan tahun dari tanggal input
     $date = Carbon::parse($request->date);
     $month = $date->month;
     $year = $date->year;
 
-    // Cek apakah stok awal sudah diinput untuk bulan ini
-    $exists = StockJt::whereYear('date', $year)
+    // Cek apakah stok awal sudah ada untuk bulan ini
+    $existingStock = StockJt::whereYear('date', $year)
         ->whereMonth('date', $month)
-        ->exists();
+        ->first();
 
+    if ($existingStock) {
+        // Jika stok awal sudah ada, update data shift dan hauling saja
+        $existingStock->update([
+            'shifpertama' => $request->shifpertama ?? $existingStock->shifpertama,
+            'shifkedua' => $request->shifkedua ?? $existingStock->shifkedua,
+            'totalhauling' => $request->totalhauling ?? $existingStock->totalhauling,
+        ]);
 
-        if ($exists) {
-            // Menampilkan pesan dengan session flash dan redirect
-            return redirect()->back()->with('error', 'Stok awal untuk bulan ini sudah diinput!');
-        }
-        $stock = StockJt::create([
-            'date' => $request->date
-,
+        return redirect('/stockjt')->with('success', 'Data hauling berhasil diperbarui.');
+    } else {
+        // Jika stok awal belum ada, tambahkan data baru
+        StockJt::create([
+            'date' => $request->date,
             'sotckawal' => $request->sotckawal,
             'shifpertama' => $request->shifpertama,
             'shifkedua' => $request->shifkedua,
             'totalhauling' => $request->totalhauling,
             'created_by' => auth()->user()->username,
-            
         ]);
-
-
-        return redirect('/stockjt')->with('success', 'data berhasil disimpan.');
-
     }
-
+        return redirect('/stockjt')->with('success', 'data berhasil disimpan.');
+        
+    }
+    
+    
     
 
     //Pica

@@ -37,12 +37,12 @@
 
                     <div class="form-group">
                         <label for="stock_awal">Stock Awal</label>
-                        <input type="number" class="form-control" id="stock_awal" name="sotckawal" min="0" required>
+                        <input type="number" class="form-control" id="stock_awal" name="sotckawal" min="" >
                     </div>
 
                     <div class="form-group">
                         <label for="shift_pertama">Shift Pertama</label>
-                        <input type="number" class="form-control" id="shift_pertama" name="shifpertama" min="0">
+                        <input type="number" class="form-control" id="shift_pertama" name="shifpertama" min="">
                     </div>
 
                     <div class="form-group">
