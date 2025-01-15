@@ -26,7 +26,10 @@
                 @endif
                 <form action="{{ route('updatedeadline', $deadline->id) }}" method="post">
                     @csrf
-                    
+                    <div class="form-group">
+                                <label for="nomor">Tanggal Data</label>
+                                <input type="text" class="form-control" id="tanggal" name="tanggal"  value="{{ $data->tanggal }}" required>
+                            </div>
                     <div class="form-group">
                         <label for="nomor">Keterangan</label>
                         <input type="text" class="form-control" id="nomor" name="Keterangan" value="{{ $deadline->Keterangan }}" required>

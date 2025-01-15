@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\DeadlineCompensation;
 use App\Models\PicaDeadline;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DeadlineCompensationController extends Controller
 {
@@ -80,20 +82,20 @@ class DeadlineCompensationController extends Controller
 
     public function picadeadline(Request $request)
     {
-        $data = PicaDeadline::all();
-        $year = $request->input('year');
-
-        //filter tahun di laporan
-        $reports = PicaDeadline::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         
-    $years = PicaDeadline::selectRaw('YEAR(created_at) as year')
-    ->distinct()
-    ->orderBy('year', 'desc')
-    ->pluck('year');
-    
-        return view('picadeadline.index', compact('data','reports','years', 'year'));
+        $query = DB::table('picai_dealines') 
+        ->select('*'); // Memilih semua kolom dari tabel
+        
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        }
+        
+        $data = $query->get();
+        
+        
+        return view('picadeadline.index', compact('data'));
     }
 
     
@@ -116,6 +118,7 @@ class DeadlineCompensationController extends Controller
                     'pic' => 'required|string',
                     'status' => 'required|string',
                     'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
                 ]);
                 $validatedData['created_by'] = auth()->user()->username;
                 PicaDeadline::create($validatedData);        
@@ -138,6 +141,7 @@ class DeadlineCompensationController extends Controller
                     'pic' => 'required|string',
                     'status' => 'required|string',
                     'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
                 ]);
                 $validatedData['updated_by'] = auth()->user()->username;
         

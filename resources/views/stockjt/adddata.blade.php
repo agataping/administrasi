@@ -54,6 +54,10 @@
                         <label for="total_hauling">Total Hauling</label>
                         <input type="number" class="form-control" id="total_hauling" name="totalhauling" min="0" readonly>
                     </div>
+                    <div class="form-group">
+                        <label for="Lokasi">Lokasi</label>
+                        <input type="text" class="form-control" id="Lokasi" name="lokasi" >
+                    </div>
 
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>

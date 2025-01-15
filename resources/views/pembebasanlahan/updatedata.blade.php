@@ -29,7 +29,10 @@
                     @csrf
 
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
-                    
+                    <div class="form-group">
+                                <label for="nomor">Tanggal Data</label>
+                                <input type="text" class="form-control" id="tanggal" name="tanggal"  value="{{ $data->tanggal }}" required>
+                            </div>
                     <div class="form-group">
                         <label for="nomor">Nama Pemilik Lahan</label>
                         <input type="text" class="form-control" id="nomor" name="NamaPemilik" value="{{ $pembebasanLahan->NamaPemilik }}" required>

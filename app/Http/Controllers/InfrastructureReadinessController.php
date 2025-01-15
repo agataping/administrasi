@@ -7,37 +7,44 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\InfrastructureReadiness;
 use App\Models\Picainfrastruktur;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
 class InfrastructureReadinessController extends Controller
 {
     public function indexInfrastructureReadiness(Request $request)
     {
-        //  data
-        $data = InfrastructureReadiness::all();
-        $year = $request->input('year');
+        // Mendapatkan tanggal dari input pengguna
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        
+        // Query untuk mengambil data dari tabel infrastructure_readinesses
+        $query = DB::table('infrastructure_readinesses')
+            ->select('*'); // Memilih semua kolom
+        
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Filter berdasarkan rentang tanggal
+        }
+        
+        $data = $query->get();
     
-        // Hitung rata-rata "total" dengan menghapus simbol '%' terlebih dahulu
-        $averagePerformance = InfrastructureReadiness::selectRaw('REPLACE(total, "%", "") as total_numeric')
-            ->when($year, function ($query, $year) {
-                return $query->whereYear('created_at', $year);
+        // Menghitung rata-rata performance berdasarkan kolom 'total'
+        $averagePerformance = DB::table('infrastructure_readinesses')
+            ->selectRaw('REPLACE(total, "%", "") as total_numeric')
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]);
             })
             ->get()
-            ->avg('total_numeric');
+            ->map(function ($item) {
+                // Konversi nilai ke numerik
+                return (float) $item->total_numeric;
+            })
+            ->avg();
     
-        // Filter laporan berdasarkan tahun
-        $reports = InfrastructureReadiness::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
-    
-        $years = InfrastructureReadiness::selectRaw('YEAR(created_at) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
-    
-        return view('InfrastructureReadines.index', compact('data', 'year', 'years', 'reports', 'averagePerformance'));
+        // Mengirim data ke view
+        return view('InfrastructureReadines.index', compact('data', 'averagePerformance'));
     }
-    
-
-    public function fromadd()
+        public function fromadd()
     {
         return view('InfrastructureReadines.addData');
     }
@@ -56,6 +63,8 @@ class InfrastructureReadinessController extends Controller
                 'Kebersihan' => 'required',
                 'total' => 'required',
                 'note' => 'nullable|string',
+                'tanggal' => 'required|date',
+
             ]);
     
             $validatedData['created_by'] = auth()->user()->username;
@@ -83,6 +92,8 @@ class InfrastructureReadinessController extends Controller
             'Kebersihan' => 'required',
             'total' => 'required',
             'note' => 'nullable|string',
+            'tanggal' => 'required|date',
+
     ]);
         
         $validatedData['updated_by'] = auth()->user()->username;
@@ -98,20 +109,20 @@ class InfrastructureReadinessController extends Controller
     public function picainfrastruktur(Request $request)
     {
         $user = Auth::user();  
-        $data = Picainfrastruktur::all();
-        $year = $request->input('year');
-
-        //filter tahun di laporan
-        $reports = Picainfrastruktur::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         
-    $years = Picainfrastruktur::selectRaw('YEAR(created_at) as year')
-    ->distinct()
-    ->orderBy('year', 'desc')
-    ->pluck('year');
+        $query = DB::table('picainfrastrukturs') 
+            ->select('*'); // Memilih semua kolom dari tabel
+        
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        }
+        
+        $data = $query->get();
+        
     
-        return view('picainfra.index', compact('data','reports','years', 'year'));
+        return view('picainfra.index', compact('data'));
     }
 
     
@@ -134,6 +145,7 @@ class InfrastructureReadinessController extends Controller
                     'pic' => 'required|string',
                     'status' => 'required|string',
                     'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
                 ]);
                 $validatedData['created_by'] = auth()->user()->username;
                 Picainfrastruktur::create($validatedData);        
@@ -156,6 +168,7 @@ class InfrastructureReadinessController extends Controller
                     'pic' => 'required|string',
                     'status' => 'required|string',
                     'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
                 ]);
                 $validatedData['updated_by'] = auth()->user()->username;
         

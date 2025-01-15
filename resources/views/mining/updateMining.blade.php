@@ -26,7 +26,7 @@
                 </div>
                 @endif
 
-                <form action="{{ route('UpdateMining', $data->id) }}" method="POST">
+                <form action="{{ route('UpdateMining', $mining->id) }}" method="POST">
                     @csrf
                     @method('POST')
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">

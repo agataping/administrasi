@@ -26,6 +26,13 @@
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
 
+
+
+                    <div class="form-group">
+                        <label for="nomor">Tanggal Data</label>
+                        <input type="text" class="form-control" id="tanggal" name="tanggal" required>
+                    </div>
+                    
                     <div id="input-container">
                         <div class="form-group">
                             <label for="ProjectName">Project Name </label>

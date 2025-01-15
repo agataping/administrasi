@@ -10,17 +10,20 @@ class DeadlineCompentsationCsController extends Controller
 {
     public function indexdeadlineCostumers( Request $request)
     {
-        $data = DeadlineCompentsationCostumers::all();
-        $year = $request->input('year');
-        $reports = DeadlineCompentsationCostumers::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
-       $years = DeadlineCompentsationCostumers::selectRaw('YEAR(created_at) as year')
-           ->distinct()
-           ->orderBy('year', 'desc')
-           ->pluck('year');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        
+        $query = DB::table('deadline_compensation') 
+            ->select('*'); // Memilih semua kolom dari tabel
+        
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        }
+        
+        $data = $query->get();
+        
 
-        return view('deadlinecompensationCs.index', compact ('reports','years','year','data'));
+        return view('deadlinecompensationCs.index', compact ('data'));
     }
 
     public function formDeadlineCs()
@@ -36,6 +39,8 @@ class DeadlineCompentsationCsController extends Controller
             'Nominalsewa' => 'required',
             'ProgresTahun' => 'required',
             'JatuhTempo' => 'required',
+            'tanggal' => 'required|date',
+
 
         ]);
 
@@ -62,6 +67,8 @@ class DeadlineCompentsationCsController extends Controller
                 'Nominalsewa' => 'required',
                 'ProgresTahun' => 'required',
                 'JatuhTempo' => 'required',
+                'tanggal' => 'required|date',
+
     
             ]);
     

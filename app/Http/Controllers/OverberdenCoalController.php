@@ -10,17 +10,71 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\OverbardenCoal;
 use App\Models\PicaOverCoal;
 use App\Models\kategoriOvercoal;
+use Carbon\Carbon;
+
 class OverberdenCoalController extends Controller
 {
 
    //detail
-   public function indexovercoal(Request $request)
+   public function indexcoal(Request $request)
    {
        $startDate = $request->input('start_date'); 
        $endDate = $request->input('end_date');    
        
        $query = DB::table('overberden_coal')
            ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
+           ->where('kategori_overcoals.name', 'Coal Getting')
+           ->select(
+               'kategori_overcoals.name as kategori_name',
+               'overberden_coal.nominalplan',
+               'overberden_coal.nominalactual',
+               'overberden_coal.tanggal',
+               'overberden_coal.desc',
+               'overberden_coal.id'
+               
+           );
+       
+       if ($startDate && $endDate) {
+           $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
+       }
+       
+       $data = $query->orderBy('kategori_overcoals.name')
+           ->get()
+           ->groupBy('kategori_name');
+       
+       $totals = $data->map(function ($items, $category) {
+           $totalPlan = $items->sum(function ($item) {
+               return (float)str_replace(',', '', $item->nominalplan ?? 0);
+           });
+           $totalActual = $items->sum(function ($item) {
+               return (float)str_replace(',', '', $item->nominalactual ?? 0);
+           });
+   
+           // Hitung deviasi dan persen
+           $deviation = $totalPlan - $totalActual;
+           $percentage = $totalPlan != 0 ? ($totalActual / $totalPlan) * 100 : 0;
+   
+           return [
+               'kategori_name' => $category,
+               'total_plan' => $totalPlan,
+               'total_actual' => $totalActual,
+               'deviation' => $deviation,
+               'percentage' => $percentage,
+               'details' => $items,
+           ];
+       });
+       
+       return view('overbcoal.indexcoal', compact('totals', 'data', 'startDate', 'endDate'));
+   }
+   public function indexob(Request $request)
+   {
+       $startDate = $request->input('start_date'); 
+       $endDate = $request->input('end_date');    
+       
+       $query = DB::table('overberden_coal')
+           ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
+           ->where('kategori_overcoals.name', 'Over Burden')
+
            ->select(
                'kategori_overcoals.name as kategori_name',
                'overberden_coal.nominalplan',
@@ -60,14 +114,80 @@ class OverberdenCoalController extends Controller
            ];
        });
        
-       return view('overbcoal.index', compact('totals', 'data', 'startDate', 'endDate'));
+       return view('overbcoal.indexob', compact('totals', 'data', 'startDate', 'endDate'));
    }
+   
+   public function indexovercoal(Request $request)
+   {
+       $query = DB::table('overberden_coal')
+           ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
+           ->select(
+               'kategori_overcoals.name as kategori_name',
+               'overberden_coal.nominalplan',
+               'overberden_coal.nominalactual',
+               'overberden_coal.tanggal'
+           )
+           ->whereBetween('overberden_coal.tanggal', [
+               Carbon::now()->startOfMonth()->toDateString(),
+               Carbon::now()->endOfMonth()->toDateString()
+           ]);
+   
+       // Ambil data dari query
+       $data = $query->get();
+   
+       // Inisialisasi total nilai untuk Coal Getting
+       $totalPlancoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
+           return (float)str_replace(',', '', $item->nominalplan ?? 0);
+       });
+   
+       $totalActualcoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
+           return (float)str_replace(',', '', $item->nominalactual ?? 0);
+       });
+       // Hitung deviasi dan persen untuk Over Burden
+       $deviationactual = $totalPlancoal - $totalActualcoal;
+       $percentageactual = $totalPlancoal != 0 ? ($totalActualcoal / $totalPlancoal) * 100 : 0;
+       
+       
+   
+       // Inisialisasi total nilai untuk Over Burden
+       $totalPlanob = $data->where('kategori_name', 'Over Burden')->sum(function ($item) {
+           return (float)str_replace(',', '', $item->nominalplan ?? 0);
+       });
+   
+       $totalActualob = $data->where('kategori_name', 'Over Burden')->sum(function ($item) {
+           return (float)str_replace(',', '', $item->nominalactual ?? 0);
+       });
+   
+       // Hitung deviasi dan persen untuk Over Burden
+       $deviationob = $totalPlanob - $totalActualob;
+       $percentageob = $totalPlanob != 0 ? ($totalActualob / $totalPlanob) * 100 : 0;
+   
+       // Hitung SR Plan dan SR Actual
+       $srplan = $totalPlanob != 0 ? ($totalActualcoal / $totalPlanob) * 100 : 0;
+       $sractual = $totalActualcoal != 0 ? ($totalActualob / $totalActualcoal) * 100 : 0;
+   
+       return view('overbcoal.index', compact(
+           'totalPlancoal',
+           'totalActualcoal',
+           'totalPlanob',
+           'totalActualob',
+           'deviationob',
+           'percentageob',
+           'srplan',
+           'sractual',
+           'deviationactual',
+           'percentageactual'
+       ));
+   }
+   
+   
    
 
     public function formovercoal(){
         $data = kategoriOvercoal::all();
         return view('overbcoal.addData',compact('data'));
     }
+
     public function formupdateovercoal($id){
         $kat = kategoriOvercoal::all();
         $data = OverbardenCoal::findOrFail($id);
@@ -153,20 +273,20 @@ class OverberdenCoalController extends Controller
     public function picaobc(Request $request)
     {
         $user = Auth::user();  
-        $data = PicaOverCoal::all();
-        $year = $request->input('year');
-
-        //filter tahun di laporan
-        $reports = PicaOverCoal::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         
-    $years = PicaOverCoal::selectRaw('YEAR(created_at) as year')
-    ->distinct()
-    ->orderBy('year', 'desc')
-    ->pluck('year');
+        $query = DB::table('pica_over_coal') 
+            ->select('*'); // Memilih semua kolom dari tabel
+        
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        }
+        
+        $data = $query->get();
+        
     
-        return view('picaobc.index', compact('data','reports','years', 'year'));
+        return view('picaobc.index', compact('data'));
     }
 
     
@@ -189,6 +309,7 @@ class OverberdenCoalController extends Controller
             'pic' => 'required|string',
             'status' => 'required|string',
             'remerks' => 'required|string',
+            'tanggal' => 'required|date',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
         PicaOverCoal::create($validatedData);        
@@ -211,6 +332,7 @@ class OverberdenCoalController extends Controller
             'pic' => 'required|string',
             'status' => 'required|string',
             'remerks' => 'required|string',
+            'tanggal' => 'required|date',
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
         

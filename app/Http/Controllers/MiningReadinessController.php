@@ -16,23 +16,13 @@ class MiningReadinessController extends Controller
     public function indexmining(Request $request)
     {
         //filter data perbaikan pakai tanggal
-        $year = $request->input('year');
-        $reports = MiningReadiness::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
-        
-        $years = MiningReadiness::selectRaw('YEAR(created_at) as year')
-        ->distinct()
-        ->orderBy('year', 'desc')
-        ->pluck('year');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         
         //ngambil data
-        $data = DB::table('mining_readinesses')
+        $query = DB::table('mining_readinesses')
         ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
         ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
-        ->when($year, function ($query, $year) {
-            return $query->whereYear('mining_readinesses.created_at', $year);
-        })
         ->select(
             'kategori_mini_r_s.kategori',
             'mining_readinesses.Description',
@@ -46,8 +36,11 @@ class MiningReadinessController extends Controller
             'mining_readinesses.filling',
             'mining_readinesses.created_by',
             'mining_readinesses.KatgoriDescription'
-            )
-            ->get();
+        );
+            if ($startDate && $endDate) {
+                $query->whereBetween('mining_readinesses.tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            }
+            $data = $query->get();
 
             //hitung achievement, konversi data, kelompok+hitung data by"kategori"
             $data->transform(function ($item) 
@@ -76,7 +69,8 @@ class MiningReadinessController extends Controller
             })->sum(); 
             //hitung tot. aspect 
             $totalCategories = $groupedData->count(); 
-            $totalAspect = round($totalAllCategories / $totalCategories, 2);
+            $totalAspect = $totalCategories > 0 ? round($totalAllCategories / $totalCategories, 2) : 0;
+
             //cek hitungan sesuai gak + cocokin hitungan di excel 
             // dd([
             //     'totalAllCategories' => $totalAllCategories,
@@ -93,7 +87,7 @@ class MiningReadinessController extends Controller
                 }
                 return $items;
             });
-            return view('Mining.index', compact('groupedData', 'reports', 'years', 'year','totalAspect'));
+            return view('Mining.index', compact('groupedData', 'totalAspect'));
         }
         
         public function FormKategori()
@@ -176,19 +170,20 @@ class MiningReadinessController extends Controller
         public function picamining(Request $request)
         {
             $user = Auth::user();
-            $data = PicaMining::all();
-            $year = $request->input('year');
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
             
-            $reports = PicaMining::when($year, function ($query, $year) {
-                return $query->whereYear('created_at', $year);
-            })->get();
+            $query = DB::table('pica_minings') 
+                ->select('*'); // Memilih semua kolom dari tabel
             
-            $years = PicaMining::selectRaw('YEAR(created_at) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            }
             
-            return view('picamining.index', compact('data', 'reports', 'years', 'year',));
+            $data = $query->get();
+            
+            
+            return view('picamining.index', compact('data'));
         }
         
         public function formpicamining()
@@ -207,6 +202,8 @@ class MiningReadinessController extends Controller
                 'pic' => 'required|string',
                 'status' => 'required|string',
                 'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
+
             ]);
             $validatedData['created_by'] = auth()->user()->username;
             PicaMining::create($validatedData);
@@ -230,6 +227,8 @@ class MiningReadinessController extends Controller
                 'pic' => 'required|string',
                 'status' => 'required|string',
                 'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
+
             ]);
             $validatedData['updated_by'] = auth()->user()->username;
             

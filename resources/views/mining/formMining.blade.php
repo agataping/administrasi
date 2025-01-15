@@ -24,13 +24,15 @@
                     </ul>
                 </div>
                 @endif
-                <select id="kategori" name="kategori">
-                        @foreach($kategori as $kategori)
-                        <option value="{{ $kategori->kategori}}">{{ $kategori->kategori }}</option>
 
+                    <select id="kategori" name="kategori" class="form-control">
+                        <option value="" disabled selected>Pilih Kategori</option>
+                        @foreach($kategori as $kategori)
+                        <option value="{{ $kategori->kategori }}">{{ $kategori->kategori }}</option>
                         @endforeach
                     </select>
                     
+
                     <div >
                         <form action="{{ route('CreateMining') }}" method="post">
                             @csrf

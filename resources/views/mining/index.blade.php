@@ -1,14 +1,14 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Maening Readines')
+@section('title', 'Meaning Readines')
 @section('content')
 
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Maening Readines</h2>
+                <h2 class="mb-3">Meaning Readines</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -24,34 +24,40 @@
                     </ul>
                 </div>
                 @endif                
-                <div class="row">
-                    <div class="col-sm-">
-                        <a href="/FormKategori" class="btn btn-custom">Add Kategori</a>
-                    </div>
-                </div> 
-                <div class="row">
-                    <div class="col-sm-">
-                        <a href="/FormMining" class="btn btn-custom">Add Maening Readines</a>
-                    </div>
-                </div> 
-                
-                <div class="row">
-                    <div class="col-sm-2">
-                        
-                        <form method="GET" action="{{ url('/indexmining') }}">
-                            <label for="year">Filter by Year:</label>
-                            <select name="year" id="year" onchange="this.form.submit()">
-                                <option value="">All Years</option>
-                                @foreach ($years as $availableYear)
-                                <option value="{{ $availableYear }}" {{ $year == $availableYear ? 'selected' : '' }}>
-                                    {{ $availableYear }}
-                                </option>
-                                @endforeach
-                            </select>
+                <div class="row justify-content-start">
+                    <div class="col-auto">
+                        <form action="{{ route('FormKategori') }}" method="get">
+                            <input type="hidden" name="form_type" value="kategori">
+                            <button type="submit" class="btn btn-custom">Add Kategori</button>
                         </form>
-                    </div> 
-                </div> 
+                    </div>
+                    <div class="col-auto">
+                        <form action="{{ route('FormMining') }}" method="get">
+                            <input type="hidden" name="form_type" value="subkategori">
+                            <button type="submit" class="btn btn-custom">Add Detail</button>
+                        </form>
+                    </div>
+                </div>
 
+                
+
+                <form method="GET" action="{{ route('indexmining') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <div >
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
+                        Filter
+                    </button>
+                </form>
                 <table class="table table-bordered">
                     <thead style="text-align: end; background-color:rgb(56, 181, 73);">
                         <tr>

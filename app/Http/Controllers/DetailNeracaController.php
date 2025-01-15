@@ -34,11 +34,11 @@ class DetailNeracaController extends Controller
     if ($startDate && $endDate) {
         $query->whereBetween('detail_neracas.tanggal', [$startDate, $endDate]);
     }
-    
-    $data = $query->orderBy('category_neracas.namecategory')
+    $data = $query->orderBy('category_neracas.created_at', 'asc')
     ->get()
     ->groupBy('category');
-    
+
+
     $totalsAssets = $data->only(['CURRENT ASSETS', 'FIX ASSETS'])
     ->map(function ($categories) {
         return $categories->sum('nominal');

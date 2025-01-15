@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 12, 2025 at 11:54 AM
+-- Generation Time: Jan 15, 2025 at 10:12 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -54,7 +54,8 @@ CREATE TABLE `bargings` (
 INSERT INTO `bargings` (`id`, `laycan`, `namebarge`, `surveyor`, `portloading`, `portdishcharging`, `notifyaddres`, `initialsurvei`, `finalsurvey`, `quantity`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `tanggal`, `plan_id`) VALUES
 (1, '10-11 Nov 2024', 'TB. TMH 16 / BG ELECTRA 10', 'PT. CARSURIN', 'JETTY JTN', 'GARONGKONG', 'PT.INDOCEMENT TUNGGAL PRAKARSA', '2024-11-12', '2024-11-18', 55623575.00, '2024-12-29 01:15:08', '2025-01-12 02:07:43', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-09', 1),
 (2, '21 Nov 2024', 'TB. MITRA CATUR 6 / BG. MANDIRI 273', 'PT. CARSURIN', 'JETTY JTN', 'MV. Best Unity', 'PT. RLK ASIA DEVELOPMENT', '2024-11-23', '2024-12-25', 5110048.00, '2024-12-29 01:17:17', '2025-01-12 02:07:53', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-13', 1),
-(3, '1', '11', '1', '1', '1', '1', '2025-01-01', '2025-01-06', 1.00, '2025-01-12 01:01:35', '2025-01-12 02:07:58', 'STAFF1234567', 'STAFF1234567', NULL, '2023-12-12', 1);
+(3, '1', '11', '1', '1', '1', '1', '2025-01-01', '2025-01-06', 1.00, '2025-01-12 01:01:35', '2025-01-12 02:07:58', 'STAFF1234567', 'STAFF1234567', NULL, '2023-12-12', 1),
+(4, '1', '1', '11', 'w', '11', '1', '2024-12-12', '2023-12-12', 1.00, '2025-01-13 09:46:47', '2025-01-13 09:46:47', 'STAFF1234567', NULL, NULL, '2024-11-14', 1);
 
 -- --------------------------------------------------------
 
@@ -78,13 +79,8 @@ CREATE TABLE `category_labarugis` (
 --
 
 INSERT INTO `category_labarugis` (`id`, `namecategory`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `jenis_id`) VALUES
-(1, 'Revenue', 'STAFF1234567', NULL, NULL, '2025-01-08 11:06:48', '2025-01-08 11:06:48', 1),
-(2, 'Cost of Goods Sold (COGS)', 'STAFF1234567', NULL, NULL, '2025-01-08 11:07:11', '2025-01-08 11:07:11', 1),
-(4, 'Shipping', 'STAFF1234567', NULL, NULL, '2025-01-08 11:08:54', '2025-01-08 11:08:54', 1),
-(5, 'Royalti', 'STAFF1234567', NULL, NULL, '2025-01-08 11:09:02', '2025-01-08 11:09:02', 1),
-(6, 'test', 'STAFF1234567', NULL, NULL, '2025-01-09 03:48:51', '2025-01-09 03:48:51', 2),
-(7, 'Revenue', 'STAFF1234567', NULL, NULL, '2025-01-10 03:53:32', '2025-01-10 03:53:32', 1),
-(8, 'Mandiri 421', 'STAFF1234567', NULL, NULL, '2025-01-10 10:14:35', '2025-01-10 10:14:35', 2);
+(9, 'Revenuea', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-14 01:17:06', '2025-01-14 09:40:21', 1),
+(10, 'Cash & Cash Equivalents', 'STAFF1234567', NULL, NULL, '2025-01-14 01:17:44', '2025-01-14 01:17:44', 1);
 
 -- --------------------------------------------------------
 
@@ -207,15 +203,16 @@ CREATE TABLE `deadline_compensation` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_by` varchar(255) DEFAULT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
-  `deleted_by` varchar(255) DEFAULT NULL
+  `deleted_by` varchar(255) DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `deadline_compensation`
 --
 
-INSERT INTO `deadline_compensation` (`id`, `Keterangan`, `MasaSewa`, `Nominalsewa`, `ProgresTahun`, `JatuhTempo`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`) VALUES
-(1, 'Pembayaran Sewa Jalan Hauling', 'pertahun', '5.000/m', 'Telah dibayarkan Juni 2024-Juni 2025', 'Juni 2025', '2024-12-27 07:11:52', '2024-12-29 07:04:20', 'STAFF1234567', 'STAFF1234567', NULL);
+INSERT INTO `deadline_compensation` (`id`, `Keterangan`, `MasaSewa`, `Nominalsewa`, `ProgresTahun`, `JatuhTempo`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `tanggal`) VALUES
+(1, 'Pembayaran Sewa Jalan Hauling', 'pertahun', '5.000/m', 'Telah dibayarkan Juni 2024-Juni 2025', 'Juni 2025', '2024-12-27 07:11:52', '2024-12-29 07:04:20', 'STAFF1234567', 'STAFF1234567', NULL, '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -269,16 +266,8 @@ CREATE TABLE `detailabarugis` (
 --
 
 INSERT INTO `detailabarugis` (`id`, `created_by`, `updated_by`, `deleted_by`, `nominalactual`, `nominalplan`, `tanggal`, `desc`, `sub_id`, `created_at`, `updated_at`) VALUES
-(1, 'STAFF1234567', NULL, NULL, NULL, 5180540084342.00, '2024-12-12', 'abcd', 1, '2025-01-08 11:44:22', '2025-01-08 11:44:22'),
-(2, 'STAFF1234567', NULL, NULL, 5180540084342.00, NULL, '0023-02-12', 'abcd', 3, '2025-01-08 12:15:03', '2025-01-08 12:15:03'),
-(3, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-16', 'test 1234', 4, '2025-01-09 03:50:31', '2025-01-09 03:50:31'),
-(4, 'STAFF1234567', NULL, NULL, NULL, 3000.00, '2025-01-02', 'test12345', 4, '2025-01-09 03:51:44', '2025-01-09 03:51:44'),
-(5, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-30', 'erwe', 3, '2025-01-10 03:16:30', '2025-01-10 03:16:30'),
-(6, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-09', 'QQQ', 3, '2025-01-10 03:28:24', '2025-01-10 03:28:24'),
-(7, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-01', 'QQQ', 8, '2025-01-10 03:54:04', '2025-01-10 03:54:04'),
-(8, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-07', 'QQQ', 8, '2025-01-10 03:55:12', '2025-01-10 03:55:12'),
-(9, 'STAFF1234567', NULL, NULL, 5180540084342.00, NULL, '2025-01-21', 'QQQ', 2, '2025-01-10 04:16:18', '2025-01-10 04:16:18'),
-(10, 'STAFF1234567', NULL, NULL, NULL, 2000.00, '2025-01-11', 'QQQ', 4, '2025-01-10 14:24:42', '2025-01-10 14:24:42');
+(11, 'STAFF1234567', NULL, NULL, 2000.00, NULL, '2024-12-12', '1212', 9, '2025-01-14 01:17:35', '2025-01-14 01:17:35'),
+(12, 'STAFF1234567', 'STAFF1234567', NULL, 2000.00, NULL, '2024-12-12', 'abcde', 10, '2025-01-14 01:18:10', '2025-01-14 05:38:16');
 
 -- --------------------------------------------------------
 
@@ -407,7 +396,8 @@ CREATE TABLE `hses` (
 INSERT INTO `hses` (`id`, `nameindikator`, `target`, `nilai`, `indikator`, `keterangan`, `date`, `created_by`, `updated_by`, `deleted_by`, `kategori_id`, `created_at`, `updated_at`) VALUES
 (1, '1', '1', '1', '1', '1', '0024-02-12', 'STAFF1234567', NULL, NULL, 2, '2025-01-07 10:09:38', '2025-01-07 10:09:38'),
 (2, '1', '1', '1', '1', '1', '2024-02-12', 'STAFF1234567', NULL, NULL, 3, '2025-01-07 10:09:53', '2025-01-07 10:09:53'),
-(3, '4', '1', '1', '1', '1', '2024-03-12', 'STAFF1234567', 'STAFF1234567', NULL, 4, '2025-01-07 10:10:15', '2025-01-07 10:20:03');
+(3, '4', '1', '1', '1', '1', '2024-03-12', 'STAFF1234567', 'STAFF1234567', NULL, 4, '2025-01-07 10:10:15', '2025-01-07 10:20:03'),
+(4, '1', '1', '1', '1', '1', '2025-01-15', 'STAFF1234567', NULL, NULL, 4, '2025-01-14 10:49:27', '2025-01-14 10:49:27');
 
 -- --------------------------------------------------------
 
@@ -430,15 +420,16 @@ CREATE TABLE `infrastructure_readinesses` (
   `created_by` varchar(255) DEFAULT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
-  `note` varchar(300) NOT NULL
+  `note` varchar(300) NOT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `infrastructure_readinesses`
 --
 
-INSERT INTO `infrastructure_readinesses` (`id`, `ProjectName`, `Preparation`, `Construction`, `Commissiong`, `KelayakanBangunan`, `Kelengakapan`, `Kebersihan`, `total`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `note`) VALUES
-(1, 'Kantor', NULL, NULL, '90', 90, 85, 90, '88%', '2024-12-26 08:39:11', '2024-12-28 04:06:37', 'STAFF1234567', 'STAFF1234567', NULL, '');
+INSERT INTO `infrastructure_readinesses` (`id`, `ProjectName`, `Preparation`, `Construction`, `Commissiong`, `KelayakanBangunan`, `Kelengakapan`, `Kebersihan`, `total`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `note`, `tanggal`) VALUES
+(1, 'Kantor', NULL, NULL, '90', 90, 85, 90, '88%', '2024-12-26 08:39:11', '2024-12-28 04:06:37', 'STAFF1234567', 'STAFF1234567', NULL, '', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -808,18 +799,19 @@ CREATE TABLE `pembebasan_lahans` (
   `created_by` varchar(100) DEFAULT NULL,
   `updated_by` varchar(100) DEFAULT NULL,
   `deleted_by` varchar(100) DEFAULT NULL,
-  `targetselesai` varchar(200) DEFAULT NULL
+  `targetselesai` varchar(200) DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pembebasan_lahans`
 --
 
-INSERT INTO `pembebasan_lahans` (`id`, `NamaPemilik`, `LuasLahan`, `KebutuhanLahan`, `Progress`, `Status`, `Achievement`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `targetselesai`) VALUES
-(3, 'pardi', 4.368, '0.89', 'On progress', NULL, '60%', '2024-12-26 09:32:04', '2024-12-28 05:53:22', 'STAFF1234567', 'STAFF1234567', NULL, NULL),
-(4, 'pardi', 4.36, '0.89', 'On progress', '1', '90', '2025-01-08 03:41:09', '2025-01-08 03:41:09', 'STAFF1234567', NULL, NULL, 'besok'),
-(5, 'pardi', 4.36, '0.89', 'On progress', '1', '90%', '2025-01-08 03:45:50', '2025-01-08 03:45:50', 'STAFF1234567', NULL, NULL, 'besok'),
-(6, 'pardi', 4.36, '0.89', 'On progress', '1', '60%', '2025-01-08 03:46:00', '2025-01-08 03:46:00', 'STAFF1234567', NULL, NULL, 'besok');
+INSERT INTO `pembebasan_lahans` (`id`, `NamaPemilik`, `LuasLahan`, `KebutuhanLahan`, `Progress`, `Status`, `Achievement`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `targetselesai`, `tanggal`) VALUES
+(3, 'pardi', 4.368, '0.89', 'On progress', NULL, '60%', '2024-12-26 09:32:04', '2024-12-28 05:53:22', 'STAFF1234567', 'STAFF1234567', NULL, NULL, '0000-00-00'),
+(4, 'pardi', 4.36, '0.89', 'On progress', '1', '90', '2025-01-08 03:41:09', '2025-01-08 03:41:09', 'STAFF1234567', NULL, NULL, 'besok', '0000-00-00'),
+(5, 'pardi', 4.36, '0.89', 'On progress', '1', '90%', '2025-01-08 03:45:50', '2025-01-08 03:45:50', 'STAFF1234567', NULL, NULL, 'besok', '0000-00-00'),
+(6, 'pardi', 4.36, '0.89', 'On progress', '1', '60%', '2025-01-08 03:46:00', '2025-01-08 03:46:00', 'STAFF1234567', NULL, NULL, 'besok', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -875,19 +867,20 @@ CREATE TABLE `people_readinesses` (
   `created_by` varchar(255) DEFAULT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
-  `note` varchar(300) DEFAULT NULL
+  `note` varchar(300) DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `people_readinesses`
 --
 
-INSERT INTO `people_readinesses` (`id`, `posisi`, `Fullfillment_plan`, `pou_pou_plan`, `HSE_plan`, `Leadership_plan`, `Improvement_plan`, `Quality_plan`, `Quantity_plan`, `created_at`, `updated_at`, `pou_pou_actual`, `HSE_actual`, `Leadership_actual`, `Improvement_actual`, `Fullfillment_actual`, `created_by`, `updated_by`, `deleted_by`, `note`) VALUES
-(2, 'Direktur / KTT', 1, 2, 1, 1, 1, '88%', '100%', '2024-12-25 07:22:01', '2024-12-26 06:56:40', 1, 1, 1, 1, 1, 'STAFF1234567', 'STAFF1234567', NULL, NULL),
-(3, 'Manager / Division Head', 4, 4, 4, 4, 4, '50%', '50%', '2024-12-25 09:18:08', '2024-12-25 09:18:08', 2, 2, 2, 2, 2, 'STAFF1234567', NULL, NULL, NULL),
-(4, 'supervaisor', 6, 6, 6, 6, 6, '54%', '83%', '2024-12-25 10:46:53', '2024-12-25 10:46:53', 2, 1, 5, 5, 5, 'STAFF1234567', NULL, NULL, NULL),
-(5, 'Staff HO', 4, 1, 1, 4, 4, '44%', '100%', '2024-12-25 10:48:11', '2024-12-25 10:48:11', 0, 0, 3, 4, 4, 'STAFF1234567', NULL, NULL, NULL),
-(6, 'Staff Site', 12, 1, 1, 1, 6, '75%', '83%', '2024-12-25 10:48:55', '2024-12-25 10:48:55', 0, 1, 1, 6, 10, 'STAFF1234567', NULL, NULL, NULL);
+INSERT INTO `people_readinesses` (`id`, `posisi`, `Fullfillment_plan`, `pou_pou_plan`, `HSE_plan`, `Leadership_plan`, `Improvement_plan`, `Quality_plan`, `Quantity_plan`, `created_at`, `updated_at`, `pou_pou_actual`, `HSE_actual`, `Leadership_actual`, `Improvement_actual`, `Fullfillment_actual`, `created_by`, `updated_by`, `deleted_by`, `note`, `tanggal`) VALUES
+(2, 'Direktur / KTT', 1, 2, 1, 1, 1, '88%', '100%', '2024-12-25 07:22:01', '2024-12-26 06:56:40', 1, 1, 1, 1, 1, 'STAFF1234567', 'STAFF1234567', NULL, NULL, '0000-00-00'),
+(3, 'Manager / Division Head', 4, 4, 4, 4, 4, '50%', '50%', '2024-12-25 09:18:08', '2024-12-25 09:18:08', 2, 2, 2, 2, 2, 'STAFF1234567', NULL, NULL, NULL, '0000-00-00'),
+(4, 'supervaisor', 6, 6, 6, 6, 6, '54%', '83%', '2024-12-25 10:46:53', '2024-12-25 10:46:53', 2, 1, 5, 5, 5, 'STAFF1234567', NULL, NULL, NULL, '0000-00-00'),
+(5, 'Staff HO', 4, 1, 1, 4, 4, '44%', '100%', '2024-12-25 10:48:11', '2024-12-25 10:48:11', 0, 0, 3, 4, 4, 'STAFF1234567', NULL, NULL, NULL, '0000-00-00'),
+(6, 'Staff Site', 12, 1, 1, 1, 6, '75%', '83%', '2024-12-25 10:48:55', '2024-12-25 10:48:55', 0, 1, 1, 6, 10, 'STAFF1234567', NULL, NULL, NULL, '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -963,15 +956,16 @@ CREATE TABLE `picainfrastrukturs` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `picainfrastrukturs`
 --
 
-INSERT INTO `picainfrastrukturs` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, '1', 'rgds', '11', '1', '1', '2', '11', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-06 10:00:59', '2025-01-06 10:08:38');
+INSERT INTO `picainfrastrukturs` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, '1', 'rgds', '11', '1', '1', '2', '11', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-06 10:00:59', '2025-01-06 10:08:38', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -992,15 +986,16 @@ CREATE TABLE `picai_dealines` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `picai_dealines`
 --
 
-INSERT INTO `picai_dealines` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, 'e', '1', '2', '22', '1', '2', '2', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-06 10:24:50', '2025-01-06 10:27:14');
+INSERT INTO `picai_dealines` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, 'e', '1', '2', '22', '1', '2', '2', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-06 10:24:50', '2025-01-06 10:27:14', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -1021,15 +1016,16 @@ CREATE TABLE `picalaba_rugis` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `picalaba_rugis`
 --
 
-INSERT INTO `picalaba_rugis` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, 'r', '6777', 't', 'y', 'u', 'o', 'i', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 12:27:56', '2025-01-08 12:28:08');
+INSERT INTO `picalaba_rugis` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, 'r', '6777', 't', 'y', 'u', 'o', 'i', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 12:27:56', '2025-01-08 12:28:08', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -1050,15 +1046,16 @@ CREATE TABLE `picastockjts` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `picastockjts`
 --
 
-INSERT INTO `picastockjts` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, 'iiopioi', '1', 'g', 'gg', 'gg', 'gg', 'g', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 14:43:44', '2025-01-08 14:43:53');
+INSERT INTO `picastockjts` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, 'iiopioi', '1', 'g', 'gg', 'gg', 'gg', 'g', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 14:43:44', '2025-01-08 14:43:53', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -1079,16 +1076,17 @@ CREATE TABLE `pica_bargings` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pica_bargings`
 --
 
-INSERT INTO `pica_bargings` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '5', '1', '1', '1', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 10:40:44', '2025-01-07 10:43:17'),
-(2, '2', '1', '2', '1', '11', 'gg', '2', 'STAFF1234567', NULL, NULL, '2025-01-09 04:45:31', '2025-01-09 04:45:31');
+INSERT INTO `pica_bargings` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, '1', '5', '1', '1', '1', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 10:40:44', '2025-01-07 10:43:17', '0000-00-00'),
+(2, '2', '1', '2', '1', '11', 'gg', '2', 'STAFF1234567', NULL, NULL, '2025-01-09 04:45:31', '2025-01-09 04:45:31', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -1109,15 +1107,16 @@ CREATE TABLE `pica_hses` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pica_hses`
 --
 
-INSERT INTO `pica_hses` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, '2', '7a', '6', '22', '22', '2', '2', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 10:28:24', '2025-01-08 04:17:24');
+INSERT INTO `pica_hses` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, '2', '7a', '6', '22', '22', '2', '2', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 10:28:24', '2025-01-08 04:17:24', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -1138,15 +1137,16 @@ CREATE TABLE `pica_minings` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pica_minings`
 --
 
-INSERT INTO `pica_minings` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, '2', '5', '4', '22', '2', '2', '22', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 02:37:27', '2025-01-07 02:39:48');
+INSERT INTO `pica_minings` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, '2', '5', '4', '22', '2', '2', '22', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 02:37:27', '2025-01-07 02:39:48', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -1167,15 +1167,16 @@ CREATE TABLE `pica_over_coal` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pica_over_coal`
 --
 
-INSERT INTO `pica_over_coal` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '09', '11', '11', '1', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 09:33:59', '2025-01-08 09:34:13');
+INSERT INTO `pica_over_coal` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, '1', '09', '11', '11', '1', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 09:33:59', '2025-01-14 10:32:37', '2025-01-06');
 
 -- --------------------------------------------------------
 
@@ -1196,15 +1197,16 @@ CREATE TABLE `pica_pa_uas` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pica_pa_uas`
 --
 
-INSERT INTO `pica_pa_uas` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '5', '1', '1', '11', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 02:28:03', '2025-01-07 02:34:31');
+INSERT INTO `pica_pa_uas` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, '1', '5', '1', '1', '11', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-07 02:28:03', '2025-01-07 02:34:31', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -1225,17 +1227,18 @@ CREATE TABLE `pica_people` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pica_people`
 --
 
-INSERT INTO `pica_people` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, '1', 1, '1', '1', '1', '1', '1', 'STAFF1234567', NULL, NULL, '2025-01-06 09:24:41', '2025-01-06 09:24:41'),
-(2, '1', 2, '1', '1', '2', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-06 09:35:27', '2025-01-06 09:36:38'),
-(3, '1', 1, '11', '1', '1', '2', '11', 'STAFF1234567', NULL, NULL, '2025-01-06 09:59:23', '2025-01-06 09:59:23');
+INSERT INTO `pica_people` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, '1', 1, '1', '1', '1', '1', '1', 'STAFF1234567', NULL, NULL, '2025-01-06 09:24:41', '2025-01-06 09:24:41', '0000-00-00'),
+(2, '1', 2, '1', '1', '2', '1', '1', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-06 09:35:27', '2025-01-06 09:36:38', '0000-00-00'),
+(3, '1', 1, '11', '1', '1', '2', '11', 'STAFF1234567', NULL, NULL, '2025-01-06 09:59:23', '2025-01-06 09:59:23', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -1256,15 +1259,16 @@ CREATE TABLE `pica_pls` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pica_pls`
 --
 
-INSERT INTO `pica_pls` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, '2a', '1', '2', '22', '22', '2', '2', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 04:07:18', '2025-01-08 04:17:44');
+INSERT INTO `pica_pls` (`id`, `cause`, `problem`, `corectiveaction`, `duedate`, `pic`, `remerks`, `status`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, '2a', '1', '2', '22', '22', '2', '2', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-08 04:07:18', '2025-01-08 04:17:44', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -1279,15 +1283,17 @@ CREATE TABLE `plan_bargings` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `plan_bargings`
 --
 
-INSERT INTO `plan_bargings` (`id`, `nominal`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`) VALUES
-(1, 300000.00, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `plan_bargings` (`id`, `nominal`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
+(1, 300000.00, NULL, NULL, NULL, NULL, NULL, '2024-11-02'),
+(2, 5781299239.00, 'STAFF1234567', NULL, NULL, '2025-01-13 09:49:28', '2025-01-13 09:49:28', '2025-01-06');
 
 -- --------------------------------------------------------
 
@@ -1364,7 +1370,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('Quw8P50iz1Yi2nsYM4TmJue4B0DFFN4oNzpMUVid', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibWJzZjN1bHlrenJBMnBZUXdlcWlDeWJXTnpzMjNQZ01QZ0l1cnBxayI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbmRleGJhcmdpbmciO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1736679244);
+('m9NsszjPXJEyr79v8nYDtbZklytCdSuVB3MgBems', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZVE2cjRNcmlHU0FHM054Yll3YlJEM3A3UmZjajY1QzN2RzFDRTJwNCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbmRleFBsYW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1736932319);
 
 -- --------------------------------------------------------
 
@@ -1383,17 +1389,19 @@ CREATE TABLE `stock_jts` (
   `shifkedua` varchar(255) DEFAULT NULL,
   `totalhauling` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `lokasi` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `stock_jts`
 --
 
-INSERT INTO `stock_jts` (`id`, `created_by`, `updated_by`, `deleted_by`, `date`, `sotckawal`, `shifpertama`, `shifkedua`, `totalhauling`, `created_at`, `updated_at`) VALUES
-(6, 'STAFF1234567', NULL, NULL, '2023-12-12', '129022', '1', '1', '2', '2025-01-09 14:34:23', '2025-01-09 14:34:23'),
-(7, 'STAFF1234567', NULL, NULL, '2023-02-12', NULL, '2', '-4', '-2', '2025-01-09 14:34:52', '2025-01-09 14:34:52'),
-(8, 'STAFF1234567', NULL, NULL, '3333-03-12', '123', '1', '1', '2', '2025-01-09 14:36:22', '2025-01-09 14:36:22');
+INSERT INTO `stock_jts` (`id`, `created_by`, `updated_by`, `deleted_by`, `date`, `sotckawal`, `shifpertama`, `shifkedua`, `totalhauling`, `created_at`, `updated_at`, `lokasi`) VALUES
+(6, 'STAFF1234567', NULL, NULL, '2023-12-12', '129022', '1', '1', '2', '2025-01-09 14:34:23', '2025-01-09 14:34:23', 'samarinda'),
+(7, 'STAFF1234567', NULL, NULL, '2023-02-12', NULL, '2', '-4', '-2', '2025-01-09 14:34:52', '2025-01-09 14:34:52', 'tenggarong'),
+(8, 'STAFF1234567', NULL, NULL, '3333-03-12', '123', '1', '1', '2', '2025-01-09 14:36:22', '2025-01-09 14:36:22', 'melak'),
+(9, 'STAFF1234567', NULL, NULL, '2025-01-01', '0', '1', '2', '3', '2025-01-15 00:15:26', '2025-01-15 00:15:26', 'Balikpapan');
 
 -- --------------------------------------------------------
 
@@ -1433,14 +1441,8 @@ CREATE TABLE `sub_labarugis` (
 --
 
 INSERT INTO `sub_labarugis` (`id`, `namesub`, `created_by`, `updated_by`, `deleted_by`, `kategori_id`, `created_at`, `updated_at`) VALUES
-(1, 'Penjualan Batu Bara', 'STAFF1234567', NULL, NULL, 1, '2025-01-08 11:11:28', '2025-01-08 11:11:28'),
-(2, 'Penjualan Batu Bara', 'STAFF1234567', NULL, NULL, 1, '2025-01-08 11:35:27', '2025-01-08 11:35:27'),
-(3, 'Over Burden', 'STAFF1234567', NULL, NULL, 2, '2025-01-08 12:14:20', '2025-01-08 12:14:20'),
-(4, 'test 1', 'STAFF1234567', NULL, NULL, 6, '2025-01-09 03:49:23', '2025-01-09 03:49:23'),
-(5, 'Mandiri 421', 'STAFF1234567', NULL, NULL, 1, '2025-01-09 11:27:20', '2025-01-09 11:27:20'),
-(6, 'Mandiri 421', 'STAFF1234567', NULL, NULL, 1, '2025-01-09 11:29:42', '2025-01-09 11:29:42'),
-(7, 'Mandiri 421', 'STAFF1234567', NULL, NULL, 1, '2025-01-09 11:32:24', '2025-01-09 11:32:24'),
-(8, '4567', 'STAFF1234567', NULL, NULL, 1, '2025-01-10 03:53:45', '2025-01-10 03:53:45');
+(9, 'aaaw', 'STAFF1234567', 'STAFF1234567', NULL, 9, '2025-01-14 01:17:14', '2025-01-14 05:39:17'),
+(10, 'q3232eee', 'STAFF1234567', 'STAFF1234567', NULL, 10, '2025-01-14 01:17:51', '2025-01-14 05:39:33');
 
 -- --------------------------------------------------------
 
@@ -1849,13 +1851,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bargings`
 --
 ALTER TABLE `bargings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `category_labarugis`
 --
 ALTER TABLE `category_labarugis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `category_neracas`
@@ -1891,7 +1893,7 @@ ALTER TABLE `deadline_compentsation_cs`
 -- AUTO_INCREMENT for table `detailabarugis`
 --
 ALTER TABLE `detailabarugis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `detail_neracas`
@@ -1921,7 +1923,7 @@ ALTER TABLE `harga_poko_penjualans`
 -- AUTO_INCREMENT for table `hses`
 --
 ALTER TABLE `hses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `infrastructure_readinesses`
@@ -2089,7 +2091,7 @@ ALTER TABLE `pica_pls`
 -- AUTO_INCREMENT for table `plan_bargings`
 --
 ALTER TABLE `plan_bargings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `produksis`
@@ -2101,7 +2103,7 @@ ALTER TABLE `produksis`
 -- AUTO_INCREMENT for table `stock_jts`
 --
 ALTER TABLE `stock_jts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `subkategori_labarugis`
@@ -2113,7 +2115,7 @@ ALTER TABLE `subkategori_labarugis`
 -- AUTO_INCREMENT for table `sub_labarugis`
 --
 ALTER TABLE `sub_labarugis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `sub_neracas`

@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Pica Pembebasan Lahan ')
+@section('title', 'Pica HSE ')
 @section('content')
 
 
@@ -9,7 +9,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica Pembebasan Lahan </h2>
+                <h2 class="mb-3">Pica HSE</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -31,23 +31,24 @@
                         <a href="/formpicahse" class="btn btn-custom">Add Pica </a>
                     </div>
                 </div> 
-                
-                <div class="row">
-                    <div class="col-sm-2">
-                        
-                        <form method="GET" action="{{ url('/picahse') }}">
-                            <label for="year">Filter by Year:</label>
-                            <select name="year" id="year" onchange="this.form.submit()">
-                                <option value="">All Years</option>
-                                @foreach ($years as $availableYear)
-                                <option value="{{ $availableYear }}" {{ $year == $availableYear ? 'selected' : '' }}>
-                                    {{ $availableYear }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </form>
-                    </div> 
-                </div> 
+                 
+                <form method="GET" action="{{ route('picahse') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <div >
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
+                        Filter
+                    </button>
+                </form>
 
                 <table class="table table-bordered">
                     <thead>

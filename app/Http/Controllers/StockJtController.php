@@ -14,34 +14,37 @@ class StockJtController extends Controller
     //detail
     public function stockjt(Request $request)
     {
-        $data = StockJt::all();
-
-        // Ambil stok awal yang hanya diinput sekali
+        $startDate = $request->input('start_date'); 
+        $endDate = $request->input('end_date');  
+        $query = DB::table('stock_jts');
+        if ($startDate && $endDate) {
+            $query->whereBetween('stock_jts.date', [$startDate, $endDate]);
+        }
+        
+        $data = $query->get();
+        
         $stokAwal = $data->whereNotNull('sotckawal')->first()->sotckawal ?? 0;
-    
-        // Hitung akumulasi untuk setiap entri
+
         $data->map(function ($stock) use ($stokAwal) {
             $stock->akumulasi_stock = $stokAwal + $stock->totalhauling;
             return $stock;
-        });        return view('stockjt.index', compact('data'));  
+        });        
+        return view('stockjt.index', compact('data'));  
     }
     public function formstockjt(Request $request)
     {
         return view('stockjt.addData');  
     }
-    //save sekali dalam sebulan
-    //hitungan selalu ditambah
-    //stock jetty
     public function createstockjt(Request $request)
     {
-            // Validasi input
-    // Validasi input
     $request->validate([
         'date' => 'required|date',
         'sotckawal' => 'nullable|numeric',
         'shifpertama' => 'nullable|numeric',
         'shifkedua' => 'nullable|numeric',
         'totalhauling' => 'nullable|numeric',
+        'lokasi' =>'required' ,
+
     ]);
 
     // Ambil bulan dan tahun dari tanggal input
@@ -70,6 +73,7 @@ class StockJtController extends Controller
             'sotckawal' => $request->sotckawal,
             'shifpertama' => $request->shifpertama,
             'shifkedua' => $request->shifkedua,
+            'lokasi' => $request->lokasi,
             'totalhauling' => $request->totalhauling,
             'created_by' => auth()->user()->username,
         ]);
@@ -85,19 +89,20 @@ class StockJtController extends Controller
     public function picastockjt(Request $request)
     {
         $user = Auth::user();
-        $data = Picastockjt::all();
-        $year = $request->input('year');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         
-        $reports = Picastockjt::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
+        $query = DB::table('picastockjts') 
+            ->select('*'); // Memilih semua kolom dari tabel
         
-        $years = Picastockjt::selectRaw('YEAR(created_at) as year')
-        ->distinct()
-        ->orderBy('year', 'desc')
-        ->pluck('year');
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        }
         
-        return view('picastokjt.index', compact('data', 'reports', 'years', 'year',));
+        $data = $query->get();
+        
+        
+        return view('picastokjt.index', compact('data'));
     }
     
     public function formpicasjt()
@@ -116,6 +121,7 @@ class StockJtController extends Controller
             'pic' => 'required|string',
             'status' => 'required|string',
             'remerks' => 'required|string',
+            'tanggal' => 'required|date',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
         Picastockjt::create($validatedData);
@@ -139,6 +145,7 @@ class StockJtController extends Controller
             'pic' => 'required|string',
             'status' => 'required|string',
             'remerks' => 'required|string',
+            'tanggal' => 'required|date',
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
         

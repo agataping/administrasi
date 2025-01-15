@@ -8,13 +8,14 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3"></h2>
+                <h2 class="text-center mb-4">Barging</h2>
+
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
                 @endif
-                
+
                 @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -24,149 +25,126 @@
                     </ul>
                 </div>
                 @endif
-                
 
-                <div class="row align-items-center">
-                    <div class="col-auto">
-                        <form action="{{ route('formbarging') }}" method="get">
-                            <input type="hidden" name="form_type" value="kategori">
-                            <button type="submit" class="btn btn-custom">Add Barging</button>
-                        </form>
-                    </div>
-                    <div class="col-auto">
-                        <form action="{{ route('indexPlan') }}" method="get">
-                            <input type="hidden" name="form_type" value="kategori">
-                            <button type="submit" class="btn btn-custom">Plan</button>
-                        </form>
-                    </div>
-                    
-                    <!-- Bagian Keterangan atau Nilai -->
-                    <div class="col text-end">
-                        <div>
-                            
-                            <strong>Plan:</strong> {{ $plan->first()->nominal ?? '-' }} <span></span>
-                            <strong>Actual:</strong> <span> {{ number_format($quantity, 0, ',', '.') }}</span>
-                            <strong>Deviation:</strong> <span>{{ number_format($deviasi, 0, ',', '.') }}</span>
-                            <strong>Percentage:</strong> <span>{{ number_format($percen, 0, ',', '.') }}%</span>
+                <div class="dashboard-container">
+                    <!-- Over Burden Section -->
+                    <div class="section-card">
+                        <h3 class="section-title">Actual & Plan</h3>
+                        <div class="metrics-grid">
+                            <div class="metric">
+                                <a href="{{ route('indexPlan') }}" class="cardcost text-decoration-none">
+                                <h4>Plan</h4>
+                                    <div class="percentage-box">
+                                        <strong></strong> <span>  {{ number_format($planNominal, 0, ',', '.') }}</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="metric">
+                                <a href="{{ route('indexmenu') }}" class="cardcost text-decoration-none">
+                                <h4>Actual</h4>
+                                <div class="percentage-box">
+                                    <strong></strong> <span> {{ number_format($quantity, 0, ',', '.') }}</span>
+
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="metric">
+                                <h4>Deviasi</h4>
+                                <div class="percentage-box">
+                                    <strong></strong> <span>{{ number_format($deviasi, 0, ',', '.') }}</span>
+
+                                    </div>
+                            </div>
+                            <div class="metric">
+                                <h4>Percentage</h4>
+                                <div class="percentage-box">
+                                    <strong></strong> <span>{{ number_format($percen, 0, ',', '.') }}%</span>
+
+                                    </div>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-                
-
-
-                <form method="GET" action="{{ route('indexbarging') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                    <div >
-                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
-                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
-                    </div>
-                    
-                    <div>
-                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
-                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
-                    </div>
-                    
-                    <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
-                        Filter
-                    </button>
-                </form>
-
-
-                <table class="table table-bordered">
-                    <thead style="background-color:rgb(6, 99, 120)"  class="text-white">
-                        <tr>
-                            <th rowspan="2" style="vertical-align: middle;">No</th>
-                            <th  rowspan="2" style="vertical-align: middle;">LAYCAN </th>
-                            <th rowspan="4" style="text-align: center; vertical-align: middle;">NAME OF BARGE</th>
-                            <th rowspan="2" style="vertical-align: middle;">SURVEYOR</th>
-                            <th rowspan="2" style="vertical-align: middle;">PORT OF LOADING</th>
-                            <th rowspan="2" style="vertical-align: middle;">PORT OF DISCHARGING</th>
-                            <th  rowspan="4"style="text-align: center;">NOTIFY ADDRESS</th>
-                            <th  rowspan="2"style="vertical-align: middle;">INITIAL SURVEY</th>
-                            <th  rowspan="2"style="vertical-align: middle;">FINAL SURVEY</th>
-                            <th  rowspan="2"style="vertical-align: middle;">QUANTITY (MT)</th>
-
-
-                            
-                            <th rowspan="2"style="vertical-align: middle;">created_by</th>
-                            <th rowspan="2"  style="vertical-align: middle;">Aksi</th>
-                        </tr>
-                        
-                    </thead>
-                    <tbody>
-                        
-
-                        @foreach($data as $d)
-                        
-                        <tr>
-                            
-                            <th rowspan="" style="vertical-align: middle;">{{ $loop->iteration }}</th>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->laycan }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->namebarge }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->surveyor }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->portloading }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->portdishcharging }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->notifyaddres }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->initialsurvei }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->finalsurvey }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->quantity }}</td>
-
-
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->created_by }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >
-                                <a href="{{ route('updatebarging', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
-                                    Edit
-                                </a>
-                            </td>
-
-
-                            
-                            
-                        </tr>
-                        @endforeach
-
-                        <tr>
-                            <th  colspan="11" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; " >Total</th>
-                            <th style="background-color:rgb(244, 244, 244); text-align: center;">
-                                {{ number_format($quantity, 0, ',', '.') }}                        
-                            </th>
-                            
-                        </tr>
-                    </tfoot>
-                </tbody>
-                
-                    
-
-
-                </table>                        
-
-
-                
-
-
-
 
                 </div>
             </div>
-            
-      
-        
-
-        
+        </div>
     </div>
 </div>
-        
-        
-        
 
+<style>
+.container-fluid {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+h2 {
+    font-size: 1.8rem;
+    color: #388e3c;
+    font-weight: bold;
+}
 
+.dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
 
+.section-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1 1 45%;
+    max-width: 500px;
+}
 
+.section-title {
+    font-size: 1.5rem;
+    color: #388e3c;
+    text-align: center;
+    margin-bottom: 15px;
+}
 
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    text-align: center;
+}
+
+.metric {
+    background-color: #388e3c;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.metric h4 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.metric p {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .section-card {
+        flex: 1 1 100%;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
 @endsection
 @section('scripts')
-
 @endsection

@@ -28,10 +28,15 @@
                     
                         <form action="{{ route('updatePlan') }}" method="post">
                             @csrf
-                            
+                            <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
+
+                            <div class="form-group">
+                                <label for="tanggal">Tanggal Data</label>
+                                <input type="date" class="form-control" id="tanggal" name="tanggal" required>
+                            </div>
                             <div class="form-group">
                                 <label for="tanggal">Plan</label>
-                                <input type="number" class="form-control" id="tanggal" name="nominal" value="{{ $nominal }}"  required>
+                                <input type="number" class="form-control" id="tanggal" name="nominal" value=""  required>
                             </div>
 
                             <div class="d-flex justify-content-end mt-3">

@@ -29,8 +29,12 @@
                     @csrf
 
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
-
+                    <div class="form-group">
+                        <label for="nomor">Tanggal Data</label>
+                        <input type="text" class="form-control" id="tanggal" name="tanggal"  value="{{ $data->tanggal }}" required>
+                    </div>
                     <div id="input-container">
+                        
                         <div class="form-group">
                             <label for="ProjectName">Project Name</label>
                             <input type="text" class="form-control" id="ProjectName" name="ProjectName" value="{{ $data->ProjectName }}" required>

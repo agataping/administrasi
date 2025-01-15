@@ -14,7 +14,9 @@ class HseController extends Controller
 {
     public function indexhse(Request $request)
     {
-        $data = DB::table('hses')
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $query = DB::table('hses')
         ->join('kategori_hses', 'hses.kategori_id', '=', 'kategori_hses.id')
         ->join('users', 'hses.created_by', '=', 'users.username')
         ->select(
@@ -26,24 +28,15 @@ class HseController extends Controller
             'hses.keterangan',
             'kategori_hses.name as kategori_name',
             'users.username as created_by'
-        )
-        ->orderBy('kategori_hses.name') 
+        );
+        if ($startDate && $endDate) {
+            $query->whereBetween('hses.date', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        }
+        $data = $query->orderBy('kategori_hses.name') 
         ->get()
         ->groupBy('kategori_name'); 
-    
-    
-        
-        //filter tahun di laporan
-        $year = $request->input('year');
-        $reports = Hse::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
 
-       $years = Hse::selectRaw('YEAR(created_at) as year')
-           ->distinct()
-           ->orderBy('year', 'desc')
-           ->pluck('year');
-        return view('hse.index',compact('data','reports','years','year'));
+        return view('hse.index',compact('data'));
     }
 
         public function formkategorihse()
@@ -67,6 +60,7 @@ class HseController extends Controller
                 'nilai' => 'required',
                 'keterangan' => 'nullable',
                 'kategori_id' => 'required',
+
             ]);
     
             $validatedData['created_by'] = auth()->user()->username;
@@ -115,21 +109,19 @@ class HseController extends Controller
 
         public function picahse(Request $request)
         {
-            $user = Auth::user();  
-            $data = PicaHse::all();
-            $year = $request->input('year');
-    
-            //filter tahun di laporan
-            $reports = PicaHse::when($year, function ($query, $year) {
-                return $query->whereYear('created_at', $year);
-            })->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
             
-            $years = PicaHse::selectRaw('YEAR(created_at) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
+            $query = DB::table('pica_hses') 
+                ->select('*'); // Memilih semua kolom dari tabel
             
-            return view('picahse.index', compact('data','reports','years', 'year'));
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            }
+            
+            $data = $query->get();
+            
+            return view('picahse.index', compact('data'));
             
         }
     
@@ -153,6 +145,7 @@ class HseController extends Controller
                         'pic' => 'required|string',
                         'status' => 'required|string',
                         'remerks' => 'required|string',
+                        'tanggal' => 'required|date',
                     ]);
                     $validatedData['created_by'] = auth()->user()->username;
                     PicaHse::create($validatedData);        
@@ -177,6 +170,7 @@ class HseController extends Controller
                         'pic' => 'required|string',
                         'status' => 'required|string',
                         'remerks' => 'required|string',
+                        'tanggal' => 'required|date',
                     ]);
                     $validatedData['updated_by'] = auth()->user()->username;
             

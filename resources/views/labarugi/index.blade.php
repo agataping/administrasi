@@ -75,7 +75,6 @@
                             <th   colspan=""  style="vertical-align: middle; text-align: center;">Deviation</th>
                             <th   colspan=""  style="vertical-align: middle; text-align: center;">Percentage</th>
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Tanggal</th>
-                            <th  rowspan="" style="vertical-align: middle; text-align: center;">created_by</th>
                             <th  rowspan="" style="vertical-align: middle; text-align: center;">Aksi</th>
                         </tr>
                     </thead>
@@ -84,7 +83,8 @@
                     @foreach ($totals as $jenisName => $jenis)
 
                     @foreach ($jenis['sub_categories'] as $kategoriName => $total)
-                    {{-- Tampilkan Kategori --}}
+                    {{-- Tampilkan Kategori                     {{dd($total['sub_categories'])}}
+                    --}}
                     <tr>
                         <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
                         <td colspan=""><strong>{{ $kategoriName}}</strong></td>
@@ -94,8 +94,12 @@
                         <td style="text-align: end;"><strong>{{ number_format($total['vertikals'], 2) }} %</strong></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['deviation'], 2) }}</strong></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['vertikals'], 2) }} %</strong></td>
-
+                        <td></td>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <a href="{{ route('formupdatecategorylr', ['category_id' => $total['category_id']]) }}" class="btn btn-primary">Edit</a>
+                        </td>
                     </tr>
+                    
                     
                     {{-- Tampilkan Sub-Kategori --}}
                     @foreach ($total['sub_categories'] as  $subIndex => $subCategory)
@@ -108,6 +112,15 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
+
+                        <td style="text-align: center; vertical-align: middle;">
+                        <a href="{{ route('formupdatesublr', $subCategory['details'][0]->sub_id) }}" class="btn btn-primary">Edit</a>
+
+                        </td>                        
+ 
+
+
                     </tr>
                     
                     {{-- Tampilkan Detail dari Sub-Kategori --}}
@@ -121,11 +134,23 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
                         <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d-m-Y') }}</td>
+                        
+                        <td style="text-align: center; vertical-align: middle;">
+                        <a href="{{ route('formupdatelabarugi', ['id' => $detail->detail_id]) }}" class="btn btn-primary">Edit</a>
+
+                        
+                        
+                        </td>
+                        
+                        
+
+
                     </tr>
+                    
+
                     @endforeach
-                    @endforeach
+                    @endforeach                        
                     @endforeach                        
                     <tr>
                         <th colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">{{ $jenisName}} </th>
@@ -142,6 +167,8 @@
                         <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalactuallr, 2) }}
                         </th>
+                        <th colspan="5" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        </th>
                         @else  ($jenis['jenis_name'] == 'Laba Operasional')
                       
 
@@ -153,10 +180,12 @@
                             {{ number_format($verticallp, 2) }}%
                         </th>
                         
-                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        <th colspan="6" style="background-color:rgb(244, 244, 244); text-align: end;">
                             {{ number_format($totalactual, 2) }}
                         </th>
-                        
+                        <th colspan="5" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        </th>
+
                         
                         @endif  
 

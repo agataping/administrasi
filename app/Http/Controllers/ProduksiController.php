@@ -172,20 +172,20 @@ class ProduksiController extends Controller
     public function picapaua(Request $request)
     {
         $user = Auth::user();  
-        $data = PicaPaUa::all();
-        $year = $request->input('year');
-
-        //filter tahun di laporan
-        $reports = PicaPaUa::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         
-        $years = PicaPaUa::selectRaw('YEAR(created_at) as year')
-        ->distinct()
-        ->orderBy('year', 'desc')
-        ->pluck('year');
+        $query = DB::table('pica_pa_uas') 
+            ->select('*'); // Memilih semua kolom dari tabel
         
-        return view('picapaua.index', compact('data','reports','years', 'year'));
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        }
+        
+        $data = $query->get();
+        
+        
+        return view('picapaua.index', compact('data'));
         
     }
 
@@ -209,6 +209,7 @@ class ProduksiController extends Controller
                     'pic' => 'required|string',
                     'status' => 'required|string',
                     'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
                 ]);
                 $validatedData['created_by'] = auth()->user()->username;
                 PicaPaUa::create($validatedData);        
@@ -233,6 +234,7 @@ class ProduksiController extends Controller
                     'pic' => 'required|string',
                     'status' => 'required|string',
                     'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
                 ]);
                 $validatedData['updated_by'] = auth()->user()->username;
         

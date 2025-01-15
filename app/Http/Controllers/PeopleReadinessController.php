@@ -25,24 +25,24 @@ class PeopleReadinessController extends Controller
     public function indexPeople(Request $request)
     {
         $user = Auth::user();  
-        $data = PeopleReadiness::all();
-        $year = $request->input('year');
 
-        //filter tahun di laporan
-        $reports = PeopleReadiness::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
-    
-        $years = PeopleReadiness::selectRaw('YEAR(created_at) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
 
         //hitung total quantity dan quality
         $totalQuality = 0;
         $totalQuantity = 0;
         $count = 0; 
-    
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        
+        $query = DB::table('people_readinesses') 
+            ->select('*'); 
+        
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        }
+        
+        $data = $query->get();
+        
         foreach ($data as $d) {
             $qualityPlan = floatval(str_replace('%', '', $d->Quality_plan));
             $quantityPlan = floatval(str_replace('%', '', $d->Quantity_plan));
@@ -63,7 +63,7 @@ class PeopleReadinessController extends Controller
         }
     
         $tot = ($averageQuality + $averageQuantity) / 2;
-        return view('PeopleReadiness.index', compact('data','reports','years', 'year','averageQuality', 'averageQuantity','tot'));
+        return view('PeopleReadiness.index', compact('data','averageQuality', 'averageQuantity','tot'));
     }
 
     public function formPR()
@@ -95,6 +95,8 @@ class PeopleReadinessController extends Controller
             'Quality_plan' => 'required|string',
             'pou_pou_actual' => 'required|integer',
             'note' => 'nullable|string',
+            'tanggal' => 'required|date',
+
         ]);
         
         $validatedData['updated_by'] = auth()->user()->username;
@@ -126,6 +128,8 @@ class PeopleReadinessController extends Controller
                     'Quality_plan' => 'required|string',
                     'pou_pou_actual' => 'required|integer',
                     'note' => 'nullable|string',
+                    'tanggal' => 'required|date',
+
 
                 ]);
                 $validatedData['created_by'] = auth()->user()->username;
@@ -138,20 +142,20 @@ class PeopleReadinessController extends Controller
     public function indexpicapeople(Request $request)
     {
         $user = Auth::user();  
-        $data = picaPeople::all();
-        $year = $request->input('year');
-
-        //filter tahun di laporan
-        $reports = picaPeople::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         
-    $years = picaPeople::selectRaw('YEAR(created_at) as year')
-    ->distinct()
-    ->orderBy('year', 'desc')
-    ->pluck('year');
+        $query = DB::table('pica_people') 
+            ->select('*'); // Memilih semua kolom dari tabel
+        
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        }
+        
+        $data = $query->get();
+        
     
-        return view('picapeople.index', compact('data','reports','years', 'year'));
+        return view('picapeople.index', compact('data'));
     }
 
     
@@ -174,6 +178,7 @@ class PeopleReadinessController extends Controller
                     'pic' => 'required|string',
                     'status' => 'required|string',
                     'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
                 ]);
                 $validatedData['created_by'] = auth()->user()->username;
                 PicaPeople::create($validatedData);        
@@ -198,6 +203,7 @@ class PeopleReadinessController extends Controller
                     'pic' => 'required|string',
                     'status' => 'required|string',
                     'remerks' => 'required|string',
+                    'tanggal' => 'required|date',
                 ]);
                 $validatedData['updated_by'] = auth()->user()->username;
         

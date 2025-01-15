@@ -15,25 +15,28 @@ class PembebasanLahanController extends Controller
         //UNTUK index pembebasan lahan
         public function indexPembebasanLahan(Request $request)
         {
-         $data= PembebasanLahan::all();
-         $data= PembebasanLahan::paginate(10)::all();
-
-         $averageAchievement = $data->average(function ($item) {
-             return (float)str_replace('%', '', $item->Achievement);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            
+            // Query untuk mengambil data dari tabel pembebasan_lahans
+            $query = DB::table('pembebasan_lahans')
+                ->select('*'); // Memilih semua kolom dari tabel
+            
+            // Filter berdasarkan rentang tanggal jika ada
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]);
+            }
+            
+            // Mendapatkan data
+            $data = $query->get();
+        
+            // Menghitung rata-rata achievement dengan mengonversi nilai % menjadi angka
+            $averageAchievement = $data->average(function ($item) {
+                // Menghapus simbol % dan mengubah nilai menjadi float
+                return (float)str_replace('%', '', $item->Achievement);
             });
 
-         $year = $request->input('year');
-
-        //filter tahun di laporan
-        $reports = PembebasanLahan::when($year, function ($query, $year) {
-            return $query->whereYear('created_at', $year);
-        })->get();
-    
-        $years = PembebasanLahan::selectRaw('YEAR(created_at) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
-            return view('pembebasanlahan.index',compact('data','reports','years','year','averageAchievement'));
+            return view('pembebasanlahan.index',compact('data','averageAchievement'));
         }
 
         public function formlahan()
@@ -52,6 +55,8 @@ class PembebasanLahanController extends Controller
                 'Status' => 'nullable',
                 'targetselesai' => 'nullable',
                 'Achievement' => 'required',
+                'tanggal' => 'required|date',
+
                 
 
             ]);
@@ -81,6 +86,7 @@ class PembebasanLahanController extends Controller
                 'Status' => 'nullable',
                 'targetselesai' => 'nullable',
                 'Achievement' => 'required',
+                'tanggal' => 'required|date',
                 
 
             ]);
@@ -96,19 +102,19 @@ class PembebasanLahanController extends Controller
         public function picapl(Request $request)
         {
             $user = Auth::user();
-            $data = PicaPl::all();
-            $year = $request->input('year');
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
             
-            $reports = PicaPl::when($year, function ($query, $year) {
-                return $query->whereYear('created_at', $year);
-            })->get();
+            $query = DB::table('pica_pls') 
+                ->select('*'); // Memilih semua kolom dari tabel
             
-            $years = PicaPl::selectRaw('YEAR(created_at) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            }
             
-            return view('picapl.index', compact('data', 'reports', 'years', 'year',));
+            $data = $query->get();
+                        
+            return view('picapl.index', compact('data'));
         }
         
         public function formpicapl()
@@ -127,6 +133,7 @@ class PembebasanLahanController extends Controller
                 'pic' => 'required|string',
                 'status' => 'required|string',
                 'remerks' => 'required|string',
+                'tanggal' => 'required|date',
             ]);
             $validatedData['created_by'] = auth()->user()->username;
             PicaPl::create($validatedData);
@@ -150,6 +157,7 @@ class PembebasanLahanController extends Controller
                 'pic' => 'required|string',
                 'status' => 'required|string',
                 'remerks' => 'required|string',
+                'tanggal' => 'required|date',
             ]);
             $validatedData['updated_by'] = auth()->user()->username;
             

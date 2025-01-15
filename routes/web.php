@@ -171,6 +171,8 @@ Route::post('/updatepicadealine/{id}', [DeadlineCompensationController::class, '
 //cs perspektif
 //barging
 Route::get('/indexbarging', [BargingController::class, 'indexbarging'])->middleware('auth')->name('indexbarging');
+
+Route::get('/indexmenu', [BargingController::class, 'indexmenu'])->middleware('auth')->name('indexmenu');
 Route::get('/formbarging', [BargingController::class, 'formbarging'])->middleware('auth')->name('formbarging');
 Route::get('/updatebarging/{id}', [BargingController::class, 'updatebarging'])->middleware('auth')->name('updatebarging');
 Route::post('/createbarging', [BargingController::class, 'createbarging'])->middleware('auth')->name('createbarging');
@@ -183,6 +185,7 @@ Route::post('/createpicabarging', [BargingController::class, 'createpicabarging'
 Route::post('/updatedatapicabarging/{id}', [BargingController::class, 'updatedatapicabarging'])->middleware('auth')->name('updatedatapicabarging');
 //plan bargings
 Route::get('/indexPlan', [BargingController::class, 'indexPlan'])->middleware('auth')->name('indexPlan');
+Route::get('/formplan', [BargingController::class, 'formplan'])->middleware('auth')->name('formplan');
 Route::post('/updatePlan', [BargingController::class, 'updatePlan'])->middleware('auth')->name('updatePlan');
 
 //stock jt
@@ -223,7 +226,6 @@ Route::post('/updateCsMining/{id}', [CsMiningReadinessController::class, 'update
 
 //pembebasan lahan cs
 Route::get('/indexPembebasanLahanCs', [PembebasanLahanCsController::class, 'indexPembebasanLahanCs'])->middleware('auth')->name('indexPembebasanLahanCs');
-Route::get('/formlahanCs', [PembebasanLahanCsController::class, 'formlahanCs'])->middleware('auth')->name('formlahan');
 Route::get('/formUpdatelahanCs/{id}', [PembebasanLahanCsController::class, 'formUpdatelahanCs'])->middleware('auth')->name('formUpdatelahanCs');
 Route::post('/createPembebasanLahanCs', [PembebasanLahanCsController::class, 'createPembebasanLahanCs'])->middleware('auth')->name('createPembebasanLahanCs');
 Route::post('/updatePembebasanLahanCs/{id}', [PembebasanLahanCsController::class, 'updatePembebasanLahanCs'])->middleware('auth')->name('updatePembebasanLahanCs');
@@ -240,9 +242,15 @@ Route::post('/createlabarugi', [DetailabarugiController::class, 'createlabarugi'
 //category
 Route::get('/categorylabarugi', [DetailabarugiController::class, 'categorylabarugi'])->middleware('auth')->name('categorylabarugi');
 Route::post('/createkatlabarugi', [DetailabarugiController::class, 'createkatlabarugi'])->middleware('auth')->name('createkatlabarugi');
+Route::get('/formupdatecategorylr/{category_id}', [DetailabarugiController::class, 'formupdatecategorylr'])->middleware('auth')->name('formupdatecategorylr');
+Route::post('/updatecategorylr/{id}', [DetailabarugiController::class, 'updatecategorylr'])->middleware('auth')->name('updatecategorylr');
+
 //sub
 Route::get('/sublr', [DetailabarugiController::class, 'sublr'])->middleware('auth')->name('sublr');
 Route::post('/createsub', [DetailabarugiController::class, 'createsub'])->middleware('auth')->name('createsub');
+Route::get('/formupdatesublr/{id}', [DetailabarugiController::class, 'formupdatesublr'])->middleware('auth')->name('formupdatesublr');
+Route::post('/updatesublr/{id}', [DetailabarugiController::class, 'updatesublr'])->middleware('auth')->name('updatesublr');
+
 //pica
 Route::get('/picalr', [DetailabarugiController::class, 'picalr'])->middleware('auth')->name('picalr');
 Route::get('/formpicalr', [DetailabarugiController::class, 'formpicalr'])->middleware('auth')->name('formpicalr');
@@ -286,6 +294,8 @@ Route::get('/formpicapaua', [ProduksiController::class, 'formpicapaua'])->middle
 Route::get('/formupdatepicapaua/{id}', [ProduksiController::class, 'formupdatepicapaua'])->middleware('auth')->name('formupdatepicapaua');
 Route::post('/updatepicapaua/{id}', [ProduksiController::class, 'updatepicapaua'])->middleware('auth')->name('updatepicapaua');
 //ob coal
+Route::get('/indexob', [OverberdenCoalController::class, 'indexob'])->middleware('auth')->name('indexob');
+Route::get('/indexcoal', [OverberdenCoalController::class, 'indexcoal'])->middleware('auth')->name('indexcoal');
 Route::get('/indexovercoal', [OverberdenCoalController::class, 'indexovercoal'])->middleware('auth')->name('indexovercoal');
 Route::get('/formovercoal', [OverberdenCoalController::class, 'formovercoal'])->middleware('auth')->name('formovercoal');
 Route::post('/createovercoal', [OverberdenCoalController::class, 'createovercoal'])->middleware('auth')->name('createovercoal');

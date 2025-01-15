@@ -29,15 +29,20 @@
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                     
 
-                    <div class="container " style="border-bottom: 1px solid black;">
+                    <div class="container-fluid mt-4"style="border-bottom: 1px solid black;">
                     <span></span> <br>
 
                     </div>
+                    <div class="form-group">
+                        <label for="nomor">Tanggal Data</label>
+                        <input type="date" class="form-control" id="tanggal" name="tanggal" required>
+                    </div>
                     <div class="row g-3">
-                        <div class="col-sm-2">
+                        <div class="col-sm-4">
                             <label for="firstName" class="form-label">Posisi</label>
                             <input type="text" class="form-control" id="firstName" placeholder="" value="" required name="posisi">
                         </div>
+                        
                         
                         <div class="row align-items-center">
                             <div class="col-auto">

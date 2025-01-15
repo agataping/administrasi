@@ -26,11 +26,14 @@
                 @endif
                 <form action="{{ route('updatedata', $peopleReadiness->id) }}" method="POST">
                     @csrf
-                    <div class="container" style="border-bottom: 1px solid black;">
+                    <div class="container-fluid mt-4" style="border-bottom: 1px solid black;">
                         <span></span> <br>
                     </div>
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
-
+                    <div class="form-group">
+                                <label for="nomor">Tanggal Data</label>
+                                <input type="text" class="form-control" id="tanggal" name="tanggal"  value="{{ $data->tanggal }}" required>
+                            </div>
                     <div class="row g-3">
                         <div class="col-sm-2">
                             <label for="posisi" class="form-label">Posisi</label>
