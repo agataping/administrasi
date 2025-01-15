@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 15, 2025 at 10:12 AM
+-- Generation Time: Jan 15, 2025 at 01:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,18 +44,19 @@ CREATE TABLE `bargings` (
   `updated_by` varchar(255) DEFAULT NULL,
   `deleted_by` varchar(255) DEFAULT NULL,
   `tanggal` date NOT NULL,
-  `plan_id` bigint(20) UNSIGNED NOT NULL
+  `plan_id` bigint(20) UNSIGNED NOT NULL,
+  `kuota` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `bargings`
 --
 
-INSERT INTO `bargings` (`id`, `laycan`, `namebarge`, `surveyor`, `portloading`, `portdishcharging`, `notifyaddres`, `initialsurvei`, `finalsurvey`, `quantity`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `tanggal`, `plan_id`) VALUES
-(1, '10-11 Nov 2024', 'TB. TMH 16 / BG ELECTRA 10', 'PT. CARSURIN', 'JETTY JTN', 'GARONGKONG', 'PT.INDOCEMENT TUNGGAL PRAKARSA', '2024-11-12', '2024-11-18', 55623575.00, '2024-12-29 01:15:08', '2025-01-12 02:07:43', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-09', 1),
-(2, '21 Nov 2024', 'TB. MITRA CATUR 6 / BG. MANDIRI 273', 'PT. CARSURIN', 'JETTY JTN', 'MV. Best Unity', 'PT. RLK ASIA DEVELOPMENT', '2024-11-23', '2024-12-25', 5110048.00, '2024-12-29 01:17:17', '2025-01-12 02:07:53', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-13', 1),
-(3, '1', '11', '1', '1', '1', '1', '2025-01-01', '2025-01-06', 1.00, '2025-01-12 01:01:35', '2025-01-12 02:07:58', 'STAFF1234567', 'STAFF1234567', NULL, '2023-12-12', 1),
-(4, '1', '1', '11', 'w', '11', '1', '2024-12-12', '2023-12-12', 1.00, '2025-01-13 09:46:47', '2025-01-13 09:46:47', 'STAFF1234567', NULL, NULL, '2024-11-14', 1);
+INSERT INTO `bargings` (`id`, `laycan`, `namebarge`, `surveyor`, `portloading`, `portdishcharging`, `notifyaddres`, `initialsurvei`, `finalsurvey`, `quantity`, `created_at`, `updated_at`, `created_by`, `updated_by`, `deleted_by`, `tanggal`, `plan_id`, `kuota`) VALUES
+(1, '10-11 Nov 2024', 'TB. TMH 16 / BG ELECTRA 10', 'PT. CARSURIN', 'JETTY JTN', 'GARONGKONG', 'PT.INDOCEMENT TUNGGAL PRAKARSA', '2024-11-12', '2024-11-18', 55623575.00, '2024-12-29 01:15:08', '2025-01-15 04:32:50', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-09', 1, 'Ekspor'),
+(2, '21 Nov 2024', 'TB. MITRA CATUR 6 / BG. MANDIRI 273', 'PT. CARSURIN', 'JETTY JTN', 'MV. Best Unity', 'PT. RLK ASIA DEVELOPMENT', '2024-11-23', '2024-12-25', 5110048.00, '2024-12-29 01:17:17', '2025-01-15 04:33:12', 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-13', 1, 'Domestik'),
+(3, '1', '11', '1', '1', '1', '1', '2025-01-01', '2025-01-06', 1.00, '2025-01-12 01:01:35', '2025-01-12 02:07:58', 'STAFF1234567', 'STAFF1234567', NULL, '2023-12-12', 1, ''),
+(4, '1', '1', '11', 'w', '11', '1', '2024-12-12', '2023-12-12', 1.00, '2025-01-13 09:46:47', '2025-01-13 09:46:47', 'STAFF1234567', NULL, NULL, '2024-11-14', 1, '');
 
 -- --------------------------------------------------------
 
@@ -1284,16 +1285,18 @@ CREATE TABLE `plan_bargings` (
   `deleted_by` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `tanggal` date NOT NULL
+  `tanggal` date NOT NULL,
+  `kuota` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `plan_bargings`
 --
 
-INSERT INTO `plan_bargings` (`id`, `nominal`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`) VALUES
-(1, 300000.00, NULL, NULL, NULL, NULL, NULL, '2024-11-02'),
-(2, 5781299239.00, 'STAFF1234567', NULL, NULL, '2025-01-13 09:49:28', '2025-01-13 09:49:28', '2025-01-06');
+INSERT INTO `plan_bargings` (`id`, `nominal`, `created_by`, `updated_by`, `deleted_by`, `created_at`, `updated_at`, `tanggal`, `kuota`) VALUES
+(1, 180000.00, NULL, 'STAFF1234567', NULL, NULL, '2025-01-15 03:59:20', '2024-01-01', 'Ekspor'),
+(2, 60000.00, 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-13 09:49:28', '2025-01-15 04:00:27', '2025-01-06', 'Domestik'),
+(3, 0.00, 'STAFF1234567', 'STAFF1234567', NULL, '2025-01-15 03:32:14', '2025-01-15 04:01:18', '2025-01-01', 'Ekspor');
 
 -- --------------------------------------------------------
 
@@ -1370,7 +1373,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('m9NsszjPXJEyr79v8nYDtbZklytCdSuVB3MgBems', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZVE2cjRNcmlHU0FHM054Yll3YlJEM3A3UmZjajY1QzN2RzFDRTJwNCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbmRleFBsYW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1736932319);
+('m9NsszjPXJEyr79v8nYDtbZklytCdSuVB3MgBems', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZVE2cjRNcmlHU0FHM054Yll3YlJEM3A3UmZjajY1QzN2RzFDRTJwNCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbmRleFBsYW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1736944748);
 
 -- --------------------------------------------------------
 
@@ -2091,7 +2094,7 @@ ALTER TABLE `pica_pls`
 -- AUTO_INCREMENT for table `plan_bargings`
 --
 ALTER TABLE `plan_bargings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `produksis`
