@@ -67,6 +67,8 @@
                             <th rowspan="2" style="vertical-align: middle;">No</th>
                             <th rowspan="2"style="vertical-align: middle;">Tanggal</th>
                             <th rowspan="2"  style="vertical-align: middle;">Nominal</th>
+                            <th rowspan="2"  style="vertical-align: middle;">Kuota</th>
+                            <th rowspan="2"  style="vertical-align: middle;">Aksi</th>
                         </tr>
                         
                     </thead>
@@ -80,11 +82,12 @@
                             <th rowspan="" style="vertical-align: middle;">{{ $loop->iteration }}</th>
                             <td>{{ \Carbon\Carbon::parse($d->tanggal)->format('d-m-Y') }}</td>
                             <td style="text-align: end;">{{$d->nominal}}</td>
-
-
-
-
-                            
+                            <td style="text-align: end;">{{$d->kuota}}</td>
+                            <td style="text-align: center; vertical-align: middle;" >
+                                <a href="{{ route('formupdateplan', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
+                                    Edit
+                                </a>
+                            </td>
                             
                         </tr>
                         @endforeach

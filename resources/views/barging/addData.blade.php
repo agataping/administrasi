@@ -29,6 +29,15 @@
                                 <label for="tanggal">Tanggal Data</label>
                                 <input type="date" class="form-control" id="tanggal" name="tanggal" required>
                             </div>
+                            <div style="margin-bottom: 1rem;">
+                                <label for="kuota" style="font-weight: bold; font-size: 1rem;">Pilih Kategori:</label>
+                                <select id="kuota" name="kuota" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
+                                    <option value="" disabled selected>-- Pilih Kategori --</option>
+                                    <option value="Ekspor">Ekspor</option>
+                                    <option value="Domestik">Domestik</option>
+                                </select>
+                            </div>
+                            
                             
                             <div class="form-group">
                                 <label for="nomor">Laycan</label>

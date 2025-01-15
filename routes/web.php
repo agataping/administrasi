@@ -187,6 +187,8 @@ Route::post('/updatedatapicabarging/{id}', [BargingController::class, 'updatedat
 Route::get('/indexPlan', [BargingController::class, 'indexPlan'])->middleware('auth')->name('indexPlan');
 Route::get('/formplan', [BargingController::class, 'formplan'])->middleware('auth')->name('formplan');
 Route::post('/updatePlan', [BargingController::class, 'updatePlan'])->middleware('auth')->name('updatePlan');
+Route::get('/formupdateplan/{id}', [BargingController::class, 'formupdateplan'])->middleware('auth')->name('formupdateplan');
+Route::post('/updatedataplan/{id}', [BargingController::class, 'updatedataplan'])->middleware('auth')->name('updatedataplan');
 
 //stock jt
 Route::get('/stockjt', [StockJtController::class, 'stockjt'])->middleware('auth')->name('stockjt');

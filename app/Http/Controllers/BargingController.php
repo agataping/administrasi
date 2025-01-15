@@ -123,6 +123,7 @@ class BargingController extends Controller
                 'initialsurvei' => 'required',
                 'finalsurvey' => 'required',
                 'quantity' => 'required|numeric',
+                'kuota' => 'required|string',
                 'tanggal' => 'required|date',
             ]);
         
@@ -165,6 +166,7 @@ class BargingController extends Controller
             'finalsurvey' => 'required',
             'quantity' => 'required',
             'tanggal' => 'required',
+            'kuota' => 'required|string',
             'plan_id' => 'required|exists:plan_bargings,id',
 
 
@@ -186,7 +188,9 @@ class BargingController extends Controller
         $query = DB::table('plan_bargings') 
         ->select(
             'plan_bargings.nominal',
-            'plan_bargings.tanggal'
+            'plan_bargings.tanggal',
+            'plan_bargings.kuota',
+            'plan_bargings.id'
         );
     if ($startDate && $endDate) {
         $query->whereBetween('plan_bargings.tanggal', [$startDate, $endDate]);
@@ -209,6 +213,8 @@ class BargingController extends Controller
         $validatedData = $request->validate([
             'nominal' => 'required',
             'tanggal' => 'required',
+            'kuota' => 'required|string',
+
           ]);
           $validatedData['created_by'] = auth()->user()->username;
         
@@ -217,7 +223,33 @@ class BargingController extends Controller
           return redirect('/indexbarging')->with('success', 'data berhasil diperbarui.');
 
     }
-    
+    //update
+    public function formupdateplan($id)
+    {
+        $data= planBargings::FindOrFail($id);
+        return view('barging.updateplan',compact('data'));
+    }
+
+    public function updatedataplan(Request $request,$id)
+    {
+        $validatedData = $request->validate([
+            'nominal' => 'required',
+            'tanggal' => 'required',
+            'kuota' => 'required|string',
+
+          ]);
+          $validatedData['updated_by'] = auth()->user()->username;
+            
+          $planBargings = planBargings::findOrFail($id);
+          $planBargings->update($validatedData);
+  
+  
+      
+          return redirect('/indexPlan')->with('success', 'data berhasil diperbarui.');
+
+    }
+
+
     public function indexpicabarging (Request $request)
     {
         $user = Auth::user();  

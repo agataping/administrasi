@@ -68,6 +68,7 @@
                         <tr>
                             <th rowspan="2" style="vertical-align: middle;">No</th>
                             <th  rowspan="2" style="vertical-align: middle;">LAYCAN </th>
+                            <th  rowspan="2" style="vertical-align: middle;">KOUTA </th>
                             <th rowspan="4" style="text-align: center; vertical-align: middle;">NAME OF BARGE</th>
                             <th rowspan="2" style="vertical-align: middle;">SURVEYOR</th>
                             <th rowspan="2" style="vertical-align: middle;">PORT OF LOADING</th>
@@ -93,6 +94,7 @@
                             
                             <th rowspan="" style="vertical-align: middle;">{{ $loop->iteration }}</th>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->laycan }}</td>
+                            <td style="text-align: end;">{{$d->kuota}}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->namebarge }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->surveyor }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->portloading }}</td>

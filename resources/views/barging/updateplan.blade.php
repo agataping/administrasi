@@ -26,13 +26,13 @@
                 @endif
 
                     
-                        <form action="{{ route('updatePlan') }}" method="post">
+                        <form action="{{ route('updatedataplan',$data->id) }}" method="post">
                             @csrf
-                            <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
+                            <input type="hidden" name="updeted_by_name" value="{{ Auth::user()->username }}">
 
                             <div class="form-group">
                                 <label for="tanggal">Tanggal Data</label>
-                                <input type="date" class="form-control" id="tanggal" name="tanggal" required>
+                                <input type="date" class="form-control" value="{{$data->tanggal}}" id="tanggal" name="tanggal" required>
                             </div>
                             <div style="margin-bottom: 1rem;">
                                 <label for="kuota" style="font-weight: bold; font-size: 1rem;">Pilih Kategori:</label>
@@ -44,7 +44,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="tanggal">Plan</label>
-                                <input type="number" class="form-control" id="tanggal" name="nominal" value=""  required>
+                                <input type="number" class="form-control" value="{{$data->nominal}}" id="tanggal" name="nominal" value=""  required>
                             </div>
 
                             <div class="d-flex justify-content-end mt-3">
