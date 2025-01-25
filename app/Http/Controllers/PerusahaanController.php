@@ -58,7 +58,7 @@ class PerusahaanController extends Controller
         }
         public function mineral()
         {
-            $data = DB::table('perusahaans')->where('induk', 'Mineral')->get();
+            $data = DB::table('perusahaans')->where('induk', 'Marketing')->get();
             return view('pt.mineral',compact('data'));
         } 
 

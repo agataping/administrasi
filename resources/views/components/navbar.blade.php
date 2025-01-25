@@ -1,20 +1,28 @@
 @extends('components.header')
 @section('title', '')
 <nav class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color: #07a43b;">
-    <a href="/dashboard" class="d-flex align-items-center text-decoration-none">
+<a href="/dashboard" class="d-flex align-items-center text-decoration-none">
         <div class="ms-3">
-            <h5 style="color: white; margin: 0;">ADMINISTRASI</h5>
+            <h5 style="color: white; margin: 0;">ADMINISTRATION</h5>
         </div>
     </a>
+    
+    <a href="/historylog" class="d-flex align-items-center text-decoration-none ms-auto">
+        <div class="me-3">
+            <h5 style="color: white; margin: 0;">History Log</h5>
+        </div>
+    </a>
+    
 
-    <ul class="nav">
+
+    <!-- <ul class="nav">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Costumer Prespective</a>
             <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item " href="/indexbarging">Barging</a></li>
             <li><a class="dropdown-item " href="/indexpicabarging">PICA Barging</a></li>
-            <li><a class="dropdown-item " href="/stockjt">Stock JT</a></li>
-            <li><a class="dropdown-item " href="/picastockjt">PICA Stock JT</a></li>
+            <li><a class="dropdown-item " href="/stockjt">Stock Jetty</a></li>
+            <li><a class="dropdown-item " href="/picastockjt">PICA Stock Jetty</a></li> -->
             <!-- 
                 <li><a class="dropdown-item " href="/indexmproduction">Monthly Production</a></li>
 
@@ -24,7 +32,7 @@
                 <li><a class="dropdown-item " href="/indexdeadlineCostumers">Deadline Compensations</a></li>
  -->
 
-            </ul>
+            <!-- </ul>
         </li>
 
         <li class="nav-item dropdown">
@@ -73,12 +81,12 @@
         </li>
         
         <li class="nav-item"><a href="/dashboard" class="nav-link text-white">Home</a></li>
-    </ul>
+    </ul> -->
     
     
     <div class="flex-shrink-0 dropdown me-3">
     <a href="#" class="d-block link-light text-decoration-none" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 0.5rem;">
-        <img src="img/profile.png" alt="Profile" width="32" height="32" class="rounded-circle border border-2 border-light">
+        <img src="img/profil.jpg" alt="Profile" width="32" height="32" class="rounded-circle border border-2 border-light">
         <i class="bi bi-chevron-down text-white"></i>
     </a>
     <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser2" style="min-width: 200px; border-radius: 8px; overflow: hidden;">

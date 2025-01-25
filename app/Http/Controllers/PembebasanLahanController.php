@@ -9,163 +9,225 @@ use App\Models\PicaPl;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\HistoryLog;
 
 class PembebasanLahanController extends Controller
 {
-        //UNTUK index pembebasan lahan
-        public function indexPembebasanLahan(Request $request)
-        {
-            $startDate = $request->input('start_date');
-            $endDate = $request->input('end_date');
-            
-            // Query untuk mengambil data dari tabel pembebasan_lahans
-            $query = DB::table('pembebasan_lahans')
-                ->select('*'); // Memilih semua kolom dari tabel
-            
-            // Filter berdasarkan rentang tanggal jika ada
-            if ($startDate && $endDate) {
-                $query->whereBetween('tanggal', [$startDate, $endDate]);
-            }
-            
-            // Mendapatkan data
-            $data = $query->get();
+    //UNTUK index pembebasan lahan
+    public function indexPembebasanLahan(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $query = DB::table('pembebasan_lahans')
+        ->select('*')
+        ->where('pembebasan_lahans.created_by', auth()->user()->username); 
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        }
+       $data = $query->get();
+
+        $averageAchievement = $data->average(function ($item) {
+            return (float)str_replace('%', '', $item->Achievement);
+        });
         
-            // Menghitung rata-rata achievement dengan mengonversi nilai % menjadi angka
-            $averageAchievement = $data->average(function ($item) {
-                // Menghapus simbol % dan mengubah nilai menjadi float
-                return (float)str_replace('%', '', $item->Achievement);
-            });
+        return view('pembebasanlahan.index',compact('data','averageAchievement'));
+    }
 
-            return view('pembebasanlahan.index',compact('data','averageAchievement'));
-        }
+    public function formlahan()
+    {
+        return view('pembebasanlahan.addData');
+    }
 
-        public function formlahan()
-        {
-            return view('pembebasanlahan.addData');
-        }
-        //create data
-        public function createPembebasanLahan(Request $request)
-        {
-            $validatedData = $request->validate([
+    //create data
+    public function createPembebasanLahan(Request $request)
+    {
+        $validatedData = $request->validate([
+            'NamaPemilik' => 'required',
+            'LuasLahan' => 'required',
+            'KebutuhanLahan' => 'required',
+            'Progress' => 'required',
+            'Status' => 'nullable',
+            'targetselesai' => 'nullable',
+            'Achievement' => 'required',
+            'tanggal' => 'required|date',            
+        ]);
+        $validatedData['created_by'] = auth()->user()->username;
+        $data=PembebasanLahan::create($validatedData);
+        HistoryLog::create([
+            'table_name' => 'pembebasan_lahans ', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/indexPembebasanLahan')->with('success', 'data berhasil disimpan.');
+        
+    }
 
-                'NamaPemilik' => 'required',
-                'LuasLahan' => 'required',
-                'KebutuhanLahan' => 'required',
-                'Progress' => 'required',
-                'Status' => 'nullable',
-                'targetselesai' => 'nullable',
-                'Achievement' => 'required',
-                'tanggal' => 'required|date',
-
-                
-
-            ]);
+    //update data
+    public function formUpdatelahan($id)
+    {
+        $pembebasanLahan =PembebasanLahan::findOrFail($id);
+        return view('pembebasanlahan.updatedata',compact('pembebasanLahan'));
+    }
     
-            $validatedData['created_by'] = auth()->user()->username;
-            PembebasanLahan::create($validatedData);
+    public function updatePembebasanLahan(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            
+            'NamaPemilik' => 'required',
+            'LuasLahan' => 'required',
+            'KebutuhanLahan' => 'required',
+            'Progress' => 'required',
+            'Status' => 'nullable',
+            'targetselesai' => 'nullable',
+            'Achievement' => 'required',
+            'tanggal' => 'required|date',
+            
+            
+        ]);
+        $validatedData['updated_by'] = auth()->user()->username;
+        $PembebasanLahan = PembebasanLahan::findOrFail($id);
+        $oldData = $PembebasanLahan->toArray();
+        $PembebasanLahan->update($validatedData);
+        
+        HistoryLog::create([
+            'table_name' => 'pembebasan_lahans ', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/indexPembebasanLahan')->with('success', 'data berhasil disimpan.');
+    }
+    public function deletepembebasanlahan ($id)
+    {
+        $data = pembebasan_lahans ::findOrFail($id);
+        $oldData = $data->toArray();
+        $data->delete();
+        
+        HistoryLog::create([
+            'table_name' => 'pembebasan_lahans ', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/indexPembebasanLahan')->with('success', 'Data  berhasil Dihapus.');
+    }
 
-            return redirect('/indexPembebasanLahan')->with('success', 'data berhasil disimpan.');
+    public function picapl(Request $request)
+    {
+        $user = Auth::user();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        
+        $query = DB::table('pica_pls') 
+        ->select('*')
+        ->where('pica_pls.created_by', auth()->user()->username); 
 
+        
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
-
-        //update data
-        public function formUpdatelahan($id)
-        {
-            $pembebasanLahan =PembebasanLahan::findOrFail($id);
-            return view('pembebasanlahan.updatedata',compact('pembebasanLahan'));
-        }
-
-        public function updatePembebasanLahan(Request $request, $id)
-        {
-            $validatedData = $request->validate([
-
-                'NamaPemilik' => 'required',
-                'LuasLahan' => 'required',
-                'KebutuhanLahan' => 'required',
-                'Progress' => 'required',
-                'Status' => 'nullable',
-                'targetselesai' => 'nullable',
-                'Achievement' => 'required',
-                'tanggal' => 'required|date',
-                
-
-            ]);
+       $data = $query->get();
+        
+        return view('picapl.index', compact('data'));
+    }
     
-            $validatedData['updated_by'] = auth()->user()->username;
-
-            $PembebasanLahan = PembebasanLahan::findOrFail($id);
-            $PembebasanLahan->update($validatedData);
-            return redirect('/indexPembebasanLahan')->with('success', 'data berhasil disimpan.');
-
-        }
-
-        public function picapl(Request $request)
-        {
-            $user = Auth::user();
-            $startDate = $request->input('start_date');
-            $endDate = $request->input('end_date');
-            
-            $query = DB::table('pica_pls') 
-                ->select('*'); // Memilih semua kolom dari tabel
-            
-            if ($startDate && $endDate) {
-                $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
-            }
-            
-            $data = $query->get();
-                        
-            return view('picapl.index', compact('data'));
-        }
+    public function formpicapl()
+    {
+        $user = Auth::user();
+        return view('picapl.addData');
+    }
+    
+    public function createpicapl(Request $request)
+    {
+        $validatedData = $request->validate([
+            'problem' => 'required|string',
+            'corectiveaction' => 'required|string',
+            'cause' => 'required|string',
+            'duedate' => 'required|string',
+            'pic' => 'required|string',
+            'status' => 'required|string',
+            'remerks' => 'required|string',
+            'tanggal' => 'required|date',
+        ]);
+        $validatedData['created_by'] = auth()->user()->username;
+        $data=PicaPl::create($validatedData);
+        HistoryLog::create([
+            'table_name' => 'pica_pls  ', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
         
-        public function formpicapl()
-        {
-            $user = Auth::user();
-            return view('picapl.addData');
-        }
+        return redirect('/picapl')->with('success', 'Data berhasil disimpan.');
+    }
+    
+    public function formupdatepicapl($id)
+    {
+        $data = PicaPl::findOrFail($id);
+        return view('picapl.update', compact('data'));
+    }
+    
+    public function updatepicapl(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'problem' => 'required|string',
+            'corectiveaction' => 'required|string',
+            'cause' => 'required|string',
+            'duedate' => 'required|string',
+            'pic' => 'required|string',
+            'status' => 'required|string',
+            'remerks' => 'required|string',
+            'tanggal' => 'required|date',
+        ]);
+        $validatedData['updated_by'] = auth()->user()->username;
         
-        public function createpicapl(Request $request)
-        {
-            $validatedData = $request->validate([
-                'problem' => 'required|string',
-                'corectiveaction' => 'required|string',
-                'cause' => 'required|string',
-                'duedate' => 'required|string',
-                'pic' => 'required|string',
-                'status' => 'required|string',
-                'remerks' => 'required|string',
-                'tanggal' => 'required|date',
-            ]);
-            $validatedData['created_by'] = auth()->user()->username;
-            PicaPl::create($validatedData);
-            
-            return redirect('/picapl')->with('success', 'Data berhasil disimpan.');
-        }
+        $data = PicaPl::findOrFail($id);
+        $oldData = $data->toArray();
         
-        public function formupdatepicapl($id)
-        {
-            $data = PicaPl::findOrFail($id);
-            return view('picapl.update', compact('data'));
-        }
+        $data->update($validatedData);
         
-        public function updatepicapl(Request $request, $id)
-        {
-            $validatedData = $request->validate([
-                'problem' => 'required|string',
-                'corectiveaction' => 'required|string',
-                'cause' => 'required|string',
-                'duedate' => 'required|string',
-                'pic' => 'required|string',
-                'status' => 'required|string',
-                'remerks' => 'required|string',
-                'tanggal' => 'required|date',
-            ]);
-            $validatedData['updated_by'] = auth()->user()->username;
-            
-            $PicaPeople = PicaPl::findOrFail($id);
-            $PicaPeople->update($validatedData);
-            
-            return redirect('/picapl')->with('success', 'data berhasil disimpan.');
-        }
-
+        HistoryLog::create([
+            'table_name' => 'pica_pls  ', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);        
+        
+        return redirect('/picapl')->with('success', 'data berhasil disimpan.');
+    }
+    
+    public function deletepicapl ($id)
+    {
+        $data = PicaPl::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'pica_pls', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/picapl')->with('success', 'Data  berhasil Dihapus.');
+    }
+    
     
 }

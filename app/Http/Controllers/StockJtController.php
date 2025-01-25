@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Picastockjt;
 use App\Models\StockJt;
+use App\Models\HistoryLog;
+
 class StockJtController extends Controller
 {
     //detail
@@ -16,19 +18,27 @@ class StockJtController extends Controller
     {
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');  
-        $query = DB::table('stock_jts');
+        $query = DB::table('stock_jts')
+        ->where('stock_jts.created_by', auth()->user()->username); 
+
         if ($startDate && $endDate) {
             $query->whereBetween('stock_jts.date', [$startDate, $endDate]);
         }
         
-        $data = $query->get();
+       $data = $query->get();
         
-        $stokAwal = $data->whereNotNull('sotckawal')->first()->sotckawal ?? 0;
 
-        $data->map(function ($stock) use ($stokAwal) {
-            $stock->akumulasi_stock = $stokAwal + $stock->totalhauling;
+        $stokAwal = $data->whereNotNull('sotckawal')->first()->sotckawal ?? 0;
+        
+        $akumulasi = $stokAwal;
+        
+        $data->map(function ($stock) use (&$akumulasi) {
+            
+            $akumulasi += $stock->totalhauling;
+            $stock->akumulasi_stock = $akumulasi; 
+            
             return $stock;
-        });        
+        });
         return view('stockjt.index', compact('data'));  
     }
     public function formstockjt(Request $request)
@@ -37,53 +47,91 @@ class StockJtController extends Controller
     }
     public function createstockjt(Request $request)
     {
-    $request->validate([
-        'date' => 'required|date',
-        'sotckawal' => 'nullable|numeric',
-        'shifpertama' => 'nullable|numeric',
-        'shifkedua' => 'nullable|numeric',
-        'totalhauling' => 'nullable|numeric',
-        'lokasi' =>'required' ,
-
-    ]);
-
-    // Ambil bulan dan tahun dari tanggal input
-    $date = Carbon::parse($request->date);
-    $month = $date->month;
-    $year = $date->year;
-
-    // Cek apakah stok awal sudah ada untuk bulan ini
-    $existingStock = StockJt::whereYear('date', $year)
-        ->whereMonth('date', $month)
-        ->first();
-
-    if ($existingStock) {
-        // Jika stok awal sudah ada, update data shift dan hauling saja
-        $existingStock->update([
-            'shifpertama' => $request->shifpertama ?? $existingStock->shifpertama,
-            'shifkedua' => $request->shifkedua ?? $existingStock->shifkedua,
-            'totalhauling' => $request->totalhauling ?? $existingStock->totalhauling,
+        $request->validate([
+            'date' => 'required|date',
+            'sotckawal' => 'nullable|numeric',
+            'shifpertama' => 'nullable|numeric',
+            'shifkedua' => 'nullable|numeric',
+            'totalhauling' => 'nullable|numeric',
+            'lokasi' =>'required'
+            
         ]);
+        // Cek apakah stok awal sudah ada untuk bulan ini
+        $existingStock = StockJt::whereNotNull('sotckawal')->first();        
 
-        return redirect('/stockjt')->with('success', 'Data hauling berhasil diperbarui.');
-    } else {
-        // Jika stok awal belum ada, tambahkan data baru
-        StockJt::create([
-            'date' => $request->date,
-            'sotckawal' => $request->sotckawal,
-            'shifpertama' => $request->shifpertama,
-            'shifkedua' => $request->shifkedua,
-            'lokasi' => $request->lokasi,
-            'totalhauling' => $request->totalhauling,
-            'created_by' => auth()->user()->username,
-        ]);
-    }
+            $data=StockJt::create([
+                'date' => $request->date,
+                'sotckawal' => $request->sotckawal,
+                'shifpertama' => $request->shifpertama,
+                'shifkedua' => $request->shifkedua,
+                'lokasi' => $request->lokasi,
+                'totalhauling' => $request->totalhauling,
+                'created_by' => auth()->user()->username,
+            ]);
+            HistoryLog::create([
+                'table_name' => '', 
+                'record_id' => $data->id, 
+                'action' => 'create',
+                'old_data' => null, 
+                'new_data' => json_encode($request), 
+                'user_id' => auth()->id(), 
+            ]);
+        
         return redirect('/stockjt')->with('success', 'data berhasil disimpan.');
         
     }
+
+        
+
+    public function updatestockjt(Request $request,$id){
+        $request->validate([
+            'date' => 'required|date',
+            'sotckawal' => 'nullable|numeric',
+            'shifpertama' => 'nullable|numeric',
+            'shifkedua' => 'nullable|numeric',
+            'totalhauling' => 'nullable|numeric',
+            'lokasi' => 'required',
+        ]);
+        $validatedData['updated_by'] = auth()->user()->username;
+        
+        $data =StockJt::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        $data->update($validatedData);
+        
+        HistoryLog::create([
+            'table_name' => 'stock_jts', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);        
+
+        return redirect('/stockjt')->with('success', 'Data berhasil diupdate.');
+    }
     
+    public function deletestockjt ($id)
+    {
+        $data = StockJt::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'stock_jts', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/stockjt')->with('success', 'Data  berhasil Dihapus.');
+    }
     
-    
+
 
     //Pica
     public function picastockjt(Request $request)
@@ -93,13 +141,14 @@ class StockJtController extends Controller
         $endDate = $request->input('end_date');
         
         $query = DB::table('picastockjts') 
-            ->select('*'); // Memilih semua kolom dari tabel
-        
+            ->select('*')
+            ->where('picastockjts.created_by', auth()->user()->username); 
+
         if ($startDate && $endDate) {
-            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         
-        $data = $query->get();
+       $data = $query->get();
         
         
         return view('picastokjt.index', compact('data'));
@@ -124,7 +173,15 @@ class StockJtController extends Controller
             'tanggal' => 'required|date',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
-        Picastockjt::create($validatedData);
+        $data=Picastockjt::create($validatedData);
+        HistoryLog::create([
+            'table_name' => '', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
         
         return redirect('/picastockjt')->with('success', 'Data berhasil disimpan.');
     }
@@ -149,10 +206,40 @@ class StockJtController extends Controller
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
         
-        $PicaPeople = Picastockjt::findOrFail($id);
-        $PicaPeople->update($validatedData);
+        $data = Picastockjt::findOrFail($id);
+        $oldData = $data->toArray();
         
+        $data->update($validatedData);
+        
+        HistoryLog::create([
+            'table_name' => 'picastockjts', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);        
         return redirect('/picastockjt')->with('success', 'data berhasil disimpan.');
+    }
+
+    public function deletepicastockjt ($id)
+    {
+        $data = Picastockjt::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => '', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/picastockjt')->with('success', 'Data  berhasil Dihapus.');
     }
 
 }

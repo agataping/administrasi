@@ -39,74 +39,67 @@
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <div>
                         <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
                         <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
                 </form>
                 <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th  style="vertical-align: middle;">No</th>
-                            <th   style="vertical-align: middle;">Problem</th>
-                            <th  style="text-align: center;">Cause</th>
-                            <th  style="text-align: center;">Corective Action</th>
-                            <th  style="vertical-align: middle;">Due Date</th>
-                            <th  style="vertical-align: middle;">PIC</th>
-                            <th  style="vertical-align: middle;">Status</th>
-                            <th  style="vertical-align: middle;">Remerks</th>
-                            
-                            <th  style="vertical-align: middle;">created_by</th>
-                            <th  style="vertical-align: middle;">Aksi</th>
-                        </tr>
-                        
-
-                    </thead>
-                    <tbody>
-                        @foreach($data as $d)
-                        
-                        <tr>
-                            <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->problem }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->cause }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->corectiveaction }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->duedate }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->pic }}</td>
-                            
+                <thead style="background-color:rgba(9, 220, 37, 0.75);">
+                    <tr>
+                        <th  style="vertical-align: middle; text-align: center;">No</th>
+                        <th   style="vertical-align: middle; text-align: center;">Problem</th>
+                        <th  style="text-align: center; vertical-align: middle;">Cause</th>
+                        <th  style="text-align: center; vertical-align: middle;">Corective Action</th>
+                        <th  style="vertical-align: middle; text-align: center;">Due Date</th>
+                        <th  style="vertical-align: middle; text-align: center;">PIC</th>
+                        <th  style="vertical-align: middle; text-align: center;">Status</th>
+                        <th  style="vertical-align: middle; text-align: center;">Remerks</th>
+                            <th rowspan="2" colspan="2" style="vertical-align: middle; text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($data as $d)
+                    <tr>
+                        <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                        <td style="text-align: center; vertical-align: middle;">{{ $d->problem }}</td>
+                        <td style="text-align: center; vertical-align: middle;">{{ $d->cause }}</td>
+                        <td style="text-align: center; vertical-align: middle;">{{ $d->corectiveaction }}</td>
+                        <td style="text-align: center; vertical-align: middle;">{{ $d->duedate }}</td>
+                        <td style="text-align: center; vertical-align: middle;">{{ $d->pic }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->status }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->remerks }}</td>
-
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->created_by }}</td>
+                        <td style="text-align: center; vertical-align: middle;" >{{ $d->remerks }}</td>
                             <td style="text-align: center; vertical-align: middle;" >
-                                <a href="{{ route('formupdatepicapeople', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
-                                    Edit
-                                </a>
-                            </td>
-                            
+                            <form action="{{ route('formupdatepicapeople', ['id' => $d->id]) }}">
+                                <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                            </form>
+                        </td>
+                            <td style="text-align: center; vertical-align: middle;"  >
+                            <form action="{{ route('deletepicapeole', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
                         </tr>
-                        
-                        @endforeach
-
-                    </tbody>
-                    
-                </table>                        
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="10" style="background-color:rgb(237, 238, 236);"></th>
+                    </tr>
+                </tfoot>
                 
-                
+            </table>                
+            
 
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+
+            
+            
             </div>
         </div>
     </div>

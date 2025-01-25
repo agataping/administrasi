@@ -10,7 +10,7 @@
         <!-- Content Start -->
         <div class="content">
             <!-- Navbar Start -->
-            @include('components.navbar')
+            @include('components.navbaritem')
             <!-- Navbar End -->
 
 

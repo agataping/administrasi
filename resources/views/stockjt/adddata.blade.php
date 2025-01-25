@@ -1,13 +1,13 @@
 @extends('template.main')
 
-@section('title', 'Input Stock JT')
+@section('title', 'Input Stock Jetty')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Input Stock JT</h2>
+                <h2 class="mb-3">Input Stock Jetty</h2>
                 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -31,22 +31,22 @@
                     <input type="hidden" name="created_by" value="{{ Auth::user()->username }}">
 
                     <div class="form-group">
-                        <label for="date">Tanggal</label>
+                        <label for="date">Date</label>
                         <input type="date" class="form-control" id="date" name="date" required>
                     </div>
 
-                    <div class="form-group">
-                        <label for="stock_awal">Stock Awal</label>
-                        <input type="number" class="form-control" id="stock_awal" name="sotckawal" min="" >
+                    <div class="form-group" id="stock" style="display: none;">
+                        <label for="stock">Opening Stock</label>
+                        <input type="number" class="form-control" id="stockawal" name="sotckawal" min="" >
                     </div>
 
                     <div class="form-group">
-                        <label for="shift_pertama">Shift Pertama</label>
+                        <label for="shift_pertama">Shift I</label>
                         <input type="number" class="form-control" id="shift_pertama" name="shifpertama" min="">
                     </div>
 
                     <div class="form-group">
-                        <label for="shift_kedua">Shift Kedua</label>
+                        <label for="shift_kedua">Shift II</label>
                         <input tBZype="number" class="form-control" id="shift_kedua" name="shifkedua" min="0" >
                     </div>
 
@@ -55,12 +55,16 @@
                         <input type="number" class="form-control" id="total_hauling" name="totalhauling" min="0" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="Lokasi">Lokasi</label>
+                        <label for="Lokasi">Location</label>
                         <input type="text" class="form-control" id="Lokasi" name="lokasi" >
+                    </div>
+                    
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="button" id="stockbtn" class="btn btn-custom">Add Opening stock</button>
                     </div>
 
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
                     </div>
                 </form>
             </div>
@@ -85,5 +89,17 @@
         shiftPertama.addEventListener('input', calculateTotal);
         shiftKedua.addEventListener('input', calculateTotal);
     });
+
+    document.getElementById('stockbtn').addEventListener('click', function() {
+        const stockDiv = document.getElementById('stock');
+        if (stockDiv.style.display === 'none' || stockDiv.style.display === '') {
+            stockDiv.style.display = 'block'; 
+            this.textContent = 'Remove Opening Stock'; 
+        } else {
+            stockDiv.style.display = 'none'; 
+            this.textContent = 'Add Opening Stock'; 
+        }
+    });    
+    
 </script>
 @endsection

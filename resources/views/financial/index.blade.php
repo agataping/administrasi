@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Neraca')
+@section('title', 'Balnce sheet')
 @section('content')
 
 
@@ -9,7 +9,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Neraca</h2>
+                <h2 class="mb-3">Balnce sheet</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -52,13 +52,11 @@
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <div>
                         <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
                         <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
@@ -67,11 +65,10 @@
                     <thead style="background-color: #4CAF50; ">
                         <tr>
                             <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
-                            <th   rowspan="" style="vertical-align: middle;  text-align: center;">Deskripsi</th>
+                            <th   rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
                             <th   colspan=""  style="vertical-align: middle; text-align: center;">Nominal</th>
-                            <th   rowspan="" style="vertical-align: middle;  text-align: center;">Tanggal</th>
-
-                            <!-- <th  rowspan="" style="vertical-align: middle; text-align: center;">Aksi</th> -->
+                            <th   rowspan="" style="vertical-align: middle;  text-align: center;">Date</th>
+                            <th   colspan="2"  style="vertical-align: middle; text-align: center;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,86 +77,91 @@
                         <tr>
                             <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
                             <td colspan=""><strong>{{ $total['category_name'] }}</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('formupdatecatneraca', ['id' => $total['category_id']]) }}">
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>
+                            </td>
                         </tr>
-                        
-                        
                         {{-- Tampilkan Sub-Kategori --}}
                         @foreach ($total['sub_categories'] as  $subIndex => $subCategory)
                         <tr>
                             <th style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</th>
                             <td><strong>{{ $subCategory['sub_category'] }}</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('formupdatesubneraca', ['id' => $subCategory['sub_id']]) }}">
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>
+                            </td>
                         </tr>
-                        
-                        {{-- Tampilkan Detail dari Sub-Kategori --}}
-                        
-                        @foreach ($subCategory['details'] ?? [] as $detailIndex => $detail)
-                        
-                        
+                        @foreach ($subCategory['details'] as $detailIndex => $detail)
                         <tr>
                             <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
-                            <td>{{ $detail->name }}</td>
-                            
-                            <td style="text-align: right;">{{ number_format($detail->nominal, 2) }}</td>
-                            <td style="text-align: center;">{{ \Carbon\Carbon::parse($detail->tanggal)->format('d F Y') }}</td>
-                            
+                            <td>{{ $detail['name'] }}</td>
+                            <td style="text-align: right;">{{ number_format($detail['nominal'], 2) }}</td>
+                            <td style="text-align: center;">{{ \Carbon\Carbon::parse($detail['tanggal'])->format('d F Y') }}</td>
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('formupdatefinancial', ['id' => $detail['id']]) }}">      
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('deletefinancial', $detail['id']) }}" method="POST" onsubmit="return confirmDelete(event)">                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
                         </tr>
                         @endforeach
-                        
                         @endforeach
                         <tr>
                             <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</th>
                             <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                                 {{ number_format($total['total'], 2) }}
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-
-                        </tr>
-                        <tr>
-                            @if ($total['category_name'] == 'CURRENT ASSETS')
-                            <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">{{ number_format($totalsAssets, 2) }}</th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                            @endif
-                        </tr>
-                        <tr>
-                            @if ($total['category_name'] == 'EQUITY')
-                            <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL LIABILITIES AND EQUITY  :</th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">{{ number_format($totalLiabilitas, 2) }}</th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                            @endif
-                        </tr>
-                        @endforeach      
-                        <tr>
-                            <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Control :</th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">{{ $note }}</th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                        </tr>
-                    </tbody>
-                </table>                        
-                
-
-                
-            
-            
-            
-            
-            
-            
-            
-            
-            
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                                    </tr>
+                            <tr>
+                                @if ($total['category_name'] == 'CURRENT ASSETS')
+                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">{{ number_format($totalsAssets, 2) }}</th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                @endif
+                            </tr>
+                            <tr>
+                                @if ($total['category_name'] == 'EQUITY')
+                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL LIABILITIES AND EQUITY  :</th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">{{ number_format($totalLiabilitas, 2) }}</th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                @endif
+                            </tr>
+                            @endforeach      
+                            <tr>
+                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Control :</th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">{{ $note }}</th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
-        
+
+    
+    
         
         
 

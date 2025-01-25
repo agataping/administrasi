@@ -28,11 +28,10 @@
                 <form action="{{ route('createovercoal') }}" method="post">
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
-
-                    <div style="margin-bottom: 1rem;">
-                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Pilih Kategori:</label>
+                    <input type="hidden" name="kategori_id" value="{{ old('kategori_id', '2') }}">                    <div style="margin-bottom: 1rem;">
+                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
                         <select id="kategori" name="kategori_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                            <option value="" disabled selected>-- Pilih Kategori --</option>
+                            <option value="" disabled selected>-- Select Category --</option>
                             @foreach($data as $kategori)
                             <option value="{{ $kategori->id }}">{{ $kategori->name }}</option>
                             @endforeach
@@ -40,23 +39,23 @@
                     </div>
 
                     <div style="margin-bottom: 1rem;">
-                        <label for="tanggal" style="font-weight: bold; font-size: 1rem;">Tanggal:</label>
+                        <label for="tanggal" style="font-weight: bold; font-size: 1rem;">Date:</label>
                         <input type="date" id="tanggal" name="tanggal" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="nameindikator">Keterangan </label>
+                        <label for="nameindikator">Description </label>
                         <input type="text" class="form-control" id="nameindikator" name="desc" required>
                     </div>
 
                     <!-- Nominal Inputs -->
                     <div id="planInput" style="display: none;" class="form-group">
-                        <label for="plan">Nominal</label>
+                        <label for="plan">Nominal Plan</label>
                         <input type="text" class="form-control" id="plan" name="nominalplan">
                     </div>
 
                     <div id="actualInput" style="display: none;" class="form-group">
-                        <label for="actual">Nominal</label>
+                        <label for="actual">Nominal Actual</label>
                         <input type="text" class="form-control" id="actual" name="nominalactual">
                     </div>
 
@@ -67,7 +66,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
                     </div>
                 </form>
             </div>

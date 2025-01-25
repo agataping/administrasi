@@ -39,19 +39,17 @@
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <div>
                         <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
                         <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
                 </form>
                 <table class="table table-bordered">
-                    <thead>
+                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                         <tr>
                             <th  style="vertical-align: middle;">No</th>
                             <th   style="vertical-align: middle;">Problem</th>
@@ -61,52 +59,46 @@
                             <th  style="vertical-align: middle;">PIC</th>
                             <th  style="vertical-align: middle;">Status</th>
                             <th  style="vertical-align: middle;">Remerks</th>
-                            
-                            <th  style="vertical-align: middle;">created_by</th>
-                            <th  style="vertical-align: middle;">Aksi</th>
+                                    <th  colspan="2"style="vertical-align: middle;">Aksi</th>
                         </tr>
-                        
-
+    
                     </thead>
                     <tbody>
                         @foreach($data as $d)
-                        
-                        <tr>
+                            <tr>
                             <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->problem }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->cause }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->corectiveaction }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->duedate }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->pic }}</td>
-                            
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->status }}</td>
+                                    <td style="text-align: center; vertical-align: middle;">{{ $d->status }}</td>
                             <td style="text-align: center; vertical-align: middle;" >{{ $d->remerks }}</td>
 
-                            <td style="text-align: center; vertical-align: middle;" >{{ $d->created_by }}</td>
-                            <td style="text-align: center; vertical-align: middle;" >
-                                <a href="{{ route('formupdatesjt', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
-                                    Edit
-                                </a>
+
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('formupdatesjt', ['id' => $d->id]) }}">
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>
                             </td>
-                            
-                        </tr>
-                        
-                        @endforeach
+                                    <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('deletepicastockjt', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                                </tr>
+                            @endforeach
 
                     </tbody>
-                    
-                </table>                        
-                
-                
+                    <tr>
+                            <th colspan="10" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                        </tr>
+                    </tfoot>
+                </table>
 
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+
             </div>
         </div>
     </div>

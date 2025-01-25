@@ -12,6 +12,8 @@ use App\Models\JenisLabarugi;
 use App\Models\detailabarugi;
 use App\Models\subkategoriLabarugi;
 use App\Models\PicalabaRugi;
+use App\Models\HistoryLog;
+
 class DetailabarugiController extends Controller
 {
     //detail
@@ -37,13 +39,15 @@ class DetailabarugiController extends Controller
             'detailabarugis.tanggal',
             'detailabarugis.desc',
             'category_labarugis.id as category_id'
-        );
+        )
+        ->where('detailabarugis.created_by', auth()->user()->username); 
+
         
         if ($startDate && $endDate) {
             $query->whereBetween('detailabarugis.tanggal', [$startDate, $endDate]);
         }
         // $query->orderBy('detailabarugis.tanggal', 'asc');
-        $data = $query->orderBy('detailabarugis.tanggal', 'asc') 
+        $data = $query->orderBy('category_labarugis.created_at', 'asc') 
         ->get()
         ->groupBy(['jenis_name', 'kategori_name']);
     
@@ -176,9 +180,17 @@ class DetailabarugiController extends Controller
             ];
         });
         
-
+        $page = request('page', 1);
+        $perPage = 15;
+        $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
+            $data->forPage($page, $perPage),
+            $data->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
         return view('labarugi.index', compact('totals','totalplanlr','totalvertikal','totalactuallr'
-        ,'totalplanlp','verticallp','totalactual'));
+        ,'totalplanlp','verticallp','totalactual','paginatedData'));
     }
     
     public function formlabarugi()
@@ -221,7 +233,15 @@ class DetailabarugiController extends Controller
         $validatedData['created_by'] = auth()->user()->username;
     
         // Simpan data ke database
-        detailabarugi::create($validatedData);
+        $data=detailabarugi::create($validatedData);
+        HistoryLog::create([
+            'table_name' => 'detailabarugis', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
 
         return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
     }
@@ -239,7 +259,15 @@ class DetailabarugiController extends Controller
             'jenis_id' => 'required|string',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
-        categoryLabarugi::create($validatedData);
+        $data=categoryLabarugi::create($validatedData);
+        HistoryLog::create([
+            'table_name' => 'category_labarugis', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
         return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
     }
 
@@ -258,7 +286,15 @@ class DetailabarugiController extends Controller
             'kategori_id' => 'required|string',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
-        subkategoriLabarugi::create($validatedData);
+        $data=subkategoriLabarugi::create($validatedData);
+        HistoryLog::create([
+            'table_name' => 'sub_labarugis', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
         return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
     }
     
@@ -269,18 +305,17 @@ class DetailabarugiController extends Controller
         $endDate = $request->input('end_date');
         
         $query = DB::table('picalaba_rugis') 
-            ->select('*'); // Memilih semua kolom dari tabel
-        
+            ->select('*')
+            ->where('picalaba_rugis.created_by', auth()->user()->username); 
+
         if ($startDate && $endDate) {
-            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         
         $data = $query->get();
         
         return view ('picakeuangan.index', compact('data'));
     }
-    
-
     
     public function formpicalr()
     {
@@ -304,7 +339,15 @@ class DetailabarugiController extends Controller
             'tanggal' => 'required|date',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
-        PicalabaRugi::create($validatedData);        
+        $data=PicalabaRugi::create($validatedData);  
+        HistoryLog::create([
+            'table_name' => 'picalaba_rugis', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);      
         return redirect('/picalr')->with('success', 'Data berhasil disimpan.');
     }
     
@@ -328,9 +371,19 @@ class DetailabarugiController extends Controller
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
         
-        $PicaPeople = PicalabaRugi::findOrFail($id);
-        $PicaPeople->update($validatedData);
+        $data = PicalabaRugi::findOrFail($id);
+        $oldData = $data->toArray();
         
+        $data->update($validatedData);
+        
+        HistoryLog::create([
+            'table_name' => 'picalaba_rugis', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);        
         return redirect('/picalr')->with('success', 'Data berhasil disimpan.');
     }
 
@@ -344,9 +397,6 @@ class DetailabarugiController extends Controller
         ->get();
         $data = detailabarugi::findOrFail($id); 
         // dd($id);
-
-    
-
         return view('labarugi.update.updatedetail', compact('data','sub'));
     }
     
@@ -379,8 +429,18 @@ class DetailabarugiController extends Controller
         $validatedData['updated_by'] = auth()->user()->username;
             
         $detailabarugi = detailabarugi::findOrFail($id);
+        $oldData = $detailabarugi->toArray();
+        
         $detailabarugi->update($validatedData);
-
+        
+        HistoryLog::create([
+            'table_name' => 'detaillabarugis', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
 
         return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
     }
@@ -403,8 +463,18 @@ class DetailabarugiController extends Controller
         $validatedData['updated_by'] = auth()->user()->username;
             
         $categoryLabarugi = categoryLabarugi::findOrFail($id);
+        $oldData = $categoryLabarugi->toArray();
+        
         $categoryLabarugi->update($validatedData);
-
+        
+        HistoryLog::create([
+            'table_name' => 'category_labarugis', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
         return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
     }
 
@@ -427,9 +497,60 @@ class DetailabarugiController extends Controller
         $validatedData['updated_by'] = auth()->user()->username;
             
         $subkategoriLabarugi = subkategoriLabarugi::findOrFail($id);
+        $oldData = $subkategoriLabarugi->toArray();
+        
         $subkategoriLabarugi->update($validatedData);
-
+        
+        HistoryLog::create([
+            'table_name' => 'sub_labarugis', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
         return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
+    }
+
+    //delete
+    public function deletedetaillr ($id)
+    {
+        $data = detailabarugi::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'detaillabarugis', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/labarugi')->with('success', 'Data  berhasil Dihapus.');
+    }
+
+    public function deletepicalr ($id)
+    {
+        $data = Picalabarugi::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'picalaba_rugis', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/picalr')->with('success', 'Data  berhasil Dihapus.');
     }
 
 

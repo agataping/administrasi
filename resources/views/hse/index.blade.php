@@ -30,7 +30,7 @@
                     <div class="col-auto">
                         <form action="{{ route('formkategorihse') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
-                            <button type="submit" class="btn btn-custom">Add Kategori HSE</button>
+                            <button type="submit" class="btn btn-custom">Add Category HSE</button>
                         </form>
                     </div>
                     <div class="col-auto">
@@ -41,42 +41,34 @@
                     </div>
                 </div>
 
-                
-
                 <form method="GET" action="{{ route('indexhse') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <div>
                         <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
                         <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
                 </form>
 
                 <table class="table table-bordered">
-                    <thead>
+                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"                    >
                         <tr>
                             <th  style="vertical-align: middle;">No</th>
                             <th   style="vertical-align: middle;">Indicator</th>
                             <th  style="text-align: center;">Target</th>
-                            <th  style="text-align: center;">Nilai</th>
+                            <th  style="text-align: center;">Value</th>
                             <th  style="vertical-align: middle;">Indicator</th>
-                            <th  style="vertical-align: middle;">Keterangan</th>
-                            
-                            <th  style="vertical-align: middle;">created_by</th>
-                            <th  style="vertical-align: middle;">Aksi</th>
+                            <th  style="vertical-align: middle;">Description</th>
+                            <th colspan="2" style="vertical-align: middle;">Action</th>
                         </tr>
-                        
-
-                    </thead>
+                        </thead>
                     <tbody>
                         @foreach ($data as $kategori => $items)
                         <tr>
@@ -93,9 +85,17 @@
                             <td style="text-align: center; vertical-align: middle;">{{ $d->nilai ?? '-' }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->indikator ?? '-' }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->keterangan ?? '-' }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->created_by ?? '-' }}</td>
-                            <td style="text-align: center; vertical-align: middle;">
-                                <a href="{{ route('formupdatehse', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">Edit</a>
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('formupdatehse', ['id' => $d->id]) }}">
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('deletehse', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
                             </td>
                         </tr>
                         @endforeach
@@ -103,24 +103,16 @@
                         <tr>
                             <th colspan="7" style="vertical-align: middle; background-color: rgb(244, 244, 244); text-align: end;">Total Nilai</th>
                         </tr>
-                    </tbody>                    
-                </table>                        
-                
-                
-                
+                    </tbody>  
+                </table>                
 
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+
+                
             </div>
         </div>
     </div>
 </div>
+    
         
         
         

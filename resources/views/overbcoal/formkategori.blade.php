@@ -1,12 +1,12 @@
 @extends('template.main')
-@section('title', 'Deskripsi Over Burden & Coal')
+@section('title', 'Description Over Burden & Coal')
 @section('content')
 
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Deskripsi Over Burden & Coal</h2>
+                <h2 class="mb-3">Description Over Burden & Coal</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -28,7 +28,7 @@
 
                     <div class="row g-3">
                         <div class="col-sm-2">
-                            <label for="kategori[]" class="form-label">Deskripsi</label>
+                            <label for="kategori[]" class="form-label">Description</label>
                             <input type="text" class="form-control" id="kategori" placeholder="" value="" required name="name">
                         </div>
                     </div>

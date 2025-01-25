@@ -14,10 +14,12 @@ class DeadlineCompentsationCsController extends Controller
         $endDate = $request->input('end_date');
         
         $query = DB::table('deadline_compensation') 
-            ->select('*'); // Memilih semua kolom dari tabel
+            ->select('*')
+            ->where('pica_bargings.created_by', auth()->user()->username); 
+
         
         if ($startDate && $endDate) {
-            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         
         $data = $query->get();

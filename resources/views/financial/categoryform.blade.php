@@ -6,7 +6,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Deskripsi Neraca</h2>
+                <h2 class="mb-3">Deskripsi Balnce sheet</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}

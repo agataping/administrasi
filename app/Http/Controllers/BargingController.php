@@ -8,6 +8,7 @@ use App\Models\Barging;
 use App\Models\PicaBarging;
 use App\Models\planBargings;
 use Carbon\Carbon;
+use App\Models\HistoryLog;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,18 +18,21 @@ class BargingController extends Controller
 {
     public function indexbarging(Request $request)
     {
+        $startDate = $request->input('start_date'); 
+        $endDate = $request->input('end_date');  
         $plan = planBargings::all(); 
         $planNominal = $plan->isEmpty() ? 0 : $plan->first()->nominal; 
         // dd($planNominal); 
         $query = DB::table('bargings')
             ->join('plan_bargings', 'bargings.plan_id', '=', 'plan_bargings.id')
             ->select('bargings.*', 'plan_bargings.nominal')
-            ->whereBetween('bargings.tanggal', [
-                Carbon::now()->startOfMonth()->toDateString(),
-                Carbon::now()->endOfMonth()->toDateString()
-            ]);
+            ->where('bargings.created_by', auth()->user()->username); 
+            if ($startDate && $endDate) {
+                $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
+            }
+
         
-        $data = $query->get();
+       $data = $query->get();
         
         $totalQuantity = 0;
         $count = 0;
@@ -59,18 +63,28 @@ class BargingController extends Controller
         {
             $plan = planBargings::all(); 
             $startDate = $request->input('start_date'); 
-            $endDate = $request->input('end_date');  
-        
+            $endDate = $request->input('end_date');
+            $kuota = $request->input('kuota'); // Ambil filter kategori dari request
+            
             $query = DB::table('bargings')
                 ->join('plan_bargings', 'bargings.plan_id', '=', 'plan_bargings.id') 
-                ->select('bargings.*', 'plan_bargings.nominal'); 
+                ->select('bargings.*', 'plan_bargings.nominal')
+                ->where('bargings.created_by', auth()->user()->username); 
+
         
+            // Tambahkan filter tanggal jika ada
             if ($startDate && $endDate) {
                 $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
             }
         
-            $data = $query->get();
+            // Tambahkan filter kategori jika ada
+            if ($kuota) {
+                $query->where('bargings.kuota', $kuota);
+            }
         
+           $data = $query->get();
+        
+            // Perhitungan total
             $totalQuantity = 0;
             $count = 0;
         
@@ -85,21 +99,17 @@ class BargingController extends Controller
         
             $quantity = ($count > 0) ? $totalQuantity : 0;
             $planNominal = $plan->isEmpty() ? 0 : $plan->first()->nominal;
-            $deviasi=  $planNominal-$quantity;
+            $deviasi = $planNominal - $quantity;
             $percen = $quantity != 0 ? ($quantity / $planNominal) * 100 : 0;
-    
+        
             $data = $data->map(function ($d) {
                 $d->formatted_quantity = number_format($d->quantity, 0, ',', '.');
                 return $d;
             });
-                    
         
-            
-            return view('barging.indexmenu', compact('data', 'quantity',
-             'deviasi', 'percen'));
+            return view('barging.indexmenu', compact('data', 'quantity', 'deviasi', 'percen'));
         }
-        
-        
+                
 
 
 
@@ -139,8 +149,15 @@ class BargingController extends Controller
             $validatedData['plan_id'] = $plan->id;
             $validatedData['created_by'] = auth()->user()->username;
         
-            Barging::create($validatedData);
-        
+            $data=Barging::create($validatedData);
+            HistoryLog::create([
+                'table_name' => 'bargings', 
+                'record_id' => $data->id, 
+                'action' => 'create',
+                'old_data' => null, 
+                'new_data' => json_encode($validatedData), 
+                'user_id' => auth()->id(), 
+            ]);
             return redirect('/indexbarging')->with('success', 'Data berhasil ditambahkan.');
         }
         
@@ -174,11 +191,43 @@ class BargingController extends Controller
         $validatedData['updated_by'] = auth()->user()->username;
             
         $Barging = Barging::findOrFail($id);
+        $oldData = $Barging->toArray();
+        
         $Barging->update($validatedData);
-
+        
+        HistoryLog::create([
+            'table_name' => 'bargings', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
         return redirect('/indexbarging')->with('success', 'data berhasil diperbarui.');
 
     }
+
+    public function deletebarging ($id)
+    {
+        $data = Barging::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => '', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/indexmenu')->with('success', 'Data  berhasil Dihapus.');
+    }
+
+
 
     //nominal
     public function indexPlan(Request $request)
@@ -191,20 +240,20 @@ class BargingController extends Controller
             'plan_bargings.tanggal',
             'plan_bargings.kuota',
             'plan_bargings.id'
-        );
-    if ($startDate && $endDate) {
-        $query->whereBetween('plan_bargings.tanggal', [$startDate, $endDate]);
-    }
+        )
+        ->where('plan_bargings.created_by', auth()->user()->username); 
 
-
-
-        $data = $query->get();
-
-
+        if ($startDate && $endDate) {
+            $query->whereBetween('plan_bargings.tanggal', [$startDate, $endDate]);
+        }
+       $data = $query->get();
+        
         return view('barging.indexplan',compact('data','startDate','endDate'));
     }
+
     public function formplan()
     {
+        
         return view('barging.planBargings');
     }
 
@@ -218,9 +267,17 @@ class BargingController extends Controller
           ]);
           $validatedData['created_by'] = auth()->user()->username;
         
-          planBargings::create($validatedData);
+          $data=planBargings::create($validatedData);
+          HistoryLog::create([
+            'table_name' => 'plan_bargings', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
       
-          return redirect('/indexbarging')->with('success', 'data berhasil diperbarui.');
+          return redirect('/indexPlan')->with('success', 'data berhasil diperbarui.');
 
     }
     //update
@@ -241,11 +298,43 @@ class BargingController extends Controller
           $validatedData['updated_by'] = auth()->user()->username;
             
           $planBargings = planBargings::findOrFail($id);
+          $oldData = $planBargings->toArray();
+        
           $planBargings->update($validatedData);
-  
+          
+          HistoryLog::create([
+              'table_name' => 'plan_bargings', 
+              'record_id' => $id, 
+              'action' => 'update', 
+              'old_data' => json_encode($oldData), 
+              'new_data' => json_encode($validatedData), 
+              'user_id' => auth()->id(), 
+          ]);  
   
       
           return redirect('/indexPlan')->with('success', 'data berhasil diperbarui.');
+
+    }
+
+    public function deleteplanbarging ($id)
+    {
+        $data = PlanBargings::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => '', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/indexPlan')->with('success', 'Data  berhasil Dihapus.');
+
 
     }
 
@@ -257,18 +346,19 @@ class BargingController extends Controller
         $endDate = $request->input('end_date');
         
         $query = DB::table('pica_bargings') 
-            ->select('*'); // Memilih semua kolom dari tabel
+            ->select('*')
+            ->where('pica_bargings.created_by', auth()->user()->username); 
+
         
         if ($startDate && $endDate) {
-            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         
         $data = $query->get();
         return view('picabarging.index', compact('data'));
         
     }
-
-    
+  
     public function formpicabarging()
     {
         $user = Auth::user();  
@@ -277,9 +367,7 @@ class BargingController extends Controller
 
     public function createpicabarging(Request $request)
     {
-        // dd($request->all());
-        
-        
+        // dd($request->all());       
         $validatedData = $request->validate([
             'problem' => 'required|string',
             'tanggal' => 'required|date',
@@ -291,7 +379,15 @@ class BargingController extends Controller
             'remerks' => 'required|string',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
-        PicaBarging::create($validatedData);        
+        $data=PicaBarging::create($validatedData);  
+        HistoryLog::create([
+            'table_name' => 'pica_bargings', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);   
         return redirect('/indexpicabarging')->with('success', 'Surat berhasil disimpan.');
     }
     
@@ -303,25 +399,53 @@ class BargingController extends Controller
 
     public function updatedatapicabarging(Request $request, $id)
     {
-                // dd($request->all());
-
-
-                $validatedData = $request->validate([
-                    'problem' => 'required|string',
-                    'corectiveaction' => 'required|string',
-                    'cause' => 'required|string',
-                    'duedate' => 'required|string',
-                    'pic' => 'required|string',
-                    'status' => 'required|string',
-                    'remerks' => 'required|string',
-                    'tanggal' => 'required|date',
-
-                ]);
-                $validatedData['updated_by'] = auth()->user()->username;
+        // dd($request->all());
+        $validatedData = $request->validate([
+            'problem' => 'required|string',
+            'corectiveaction' => 'required|string',
+            'cause' => 'required|string',
+            'duedate' => 'required|string',
+            'pic' => 'required|string',
+            'status' => 'required|string',
+            'remerks' => 'required|string',
+            'tanggal' => 'required|date',
+            
+        ]);
+        $validatedData['updated_by'] = auth()->user()->username;
         
-                $PicaPeople =PicaBarging::findOrFail($id);
-                $PicaPeople->update($validatedData);
+        $data =PicaBarging::findOrFail($id);
+        $oldData = $data->toArray();
         
+        $data->update($validatedData);
+        
+        HistoryLog::create([
+            'table_name' => 'pica_bargings', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);        
         return redirect('/indexpicabarging')->with('success', 'data berhasil disimpan.');
+    }
+
+    public function deletepicabarging ($id)
+    {
+        $data = PicaBarging::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => '', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/indexpicabarging')->with('success', 'Data  berhasil Dihapus.');
     }
 }

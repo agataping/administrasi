@@ -248,15 +248,71 @@ function HitungDev(descriptionId) {
         calculatePercentage();
     });
     
+    document.addEventListener('DOMContentLoaded', function () {
+        const textarea = document.getElementById("note");
 
+        // Fungsi untuk menambahkan nomor pada setiap baris
+        function addLineNumbers(text) {
+            const lines = text.split("\n");
+            const numberedLines = lines.map((line, index) => {
+                return `${index + 1}. ${line}`;
+            });
+            return numberedLines.join("\n");
+        }
 
-    const textarea = document.getElementById("note");
+        // Saat halaman dimuat, tambahkan nomor pada textarea jika ada catatan
+        window.addEventListener('load', () => {
+            textarea.value = addLineNumbers(textarea.value); // Menambahkan nomor saat halaman dimuat
+        });
 
-textarea.addEventListener("input", () => {
-  const lines = textarea.value.split("\n"); // Pisahkan berdasarkan baris
-  const numberedLines = lines.map((line, index) => {
-    return `${index + 1}. ${line.replace(/^\d+\.\s*/, "")}`; // Tambahkan nomor urut dan hapus nomor lama
-  });
-  textarea.value = numberedLines.join("\n"); // Gabungkan kembali
-});
+        // Fungsi untuk memperbarui nomor baris saat ada perubahan dalam textarea
+        function updateLineNumbers() {
+            let lines = textarea.value.split("\n");
+            lines = lines.map((line, index) => `${index + 1}. ${line.replace(/^\d+\.\s*/, '')}`); // Menghapus nomor lama dan menambahkan nomor baru
+            textarea.value = lines.join("\n");
+        }
+
+        // Menambahkan nomor setiap kali ada input atau enter
+        textarea.addEventListener('input', updateLineNumbers);
+
+        // Menambahkan nomor baris sebelum form disubmit
+        const form = document.querySelector('form'); // Ambil form
+        form.addEventListener('submit', function(event) {
+            textarea.value = addLineNumbers(textarea.value); // Tambahkan nomor sebelum submit
+        });
+    });
+
+    function confirmDelete(event) {
+        // Tampilkan dialog konfirmasi
+        const confirmation = confirm("Apakah Anda yakin ingin menghapus data ini?");
+        
+        // Jika pengguna memilih Cancel, batalkan pengiriman form
+        if (!confirmation) {
+            event.preventDefault();
+            return false;
+        }
+        
+        // Jika pengguna memilih OK, biarkan form dikirim
+        return true;
+    }
+
+    function filterByLocation() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[5];  // Mengambil kolom lokasi
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
 </script>

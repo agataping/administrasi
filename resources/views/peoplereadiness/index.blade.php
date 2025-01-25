@@ -41,13 +41,11 @@
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <div>
                         <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
                         <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
@@ -57,16 +55,17 @@
 
 
                 <table class="table table-bordered">
-                    <thead>
-                        <tr>
+                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center;">
+                        <tr >
                             <th rowspan="2" style="vertical-align: middle;">No</th>
-                            <th rowspan="2" colspan="2" style="vertical-align: middle;">Posisi</th>
+                            <th rowspan="2" style="vertical-align: middle;">Data Date</th>
+                            <th rowspan="2" colspan="2" style="vertical-align: middle;">Position</th>
                             <th rowspan="2" style="vertical-align: middle;">Fullfillment </th>
-                            <th colspan="4" style="text-align: center;">Training Mandatory</th>
+                            <th colspan="4" style="text-align: center;">Mandatory Training</th>
                             <th rowspan="2" style="vertical-align: middle;">% Quality</th>
                             <th rowspan="2" style="vertical-align: middle;">% Quantity (Fullfillment)</th>
-                            <th rowspan="2" style="vertical-align: middle;">created_by</th>
-                            <th rowspan="2" style="vertical-align: middle;">Aksi</th>
+                            <th rowspan="2" style="vertical-align: middle;">Notes</th>
+                            <th rowspan="2" colspan="2" style="vertical-align: middle;">Action</th>
                         </tr>
 
 
@@ -81,8 +80,12 @@
                     <tbody>
                     @foreach($data as $d)
 
-                        <tr>
+                        <tr >
                             <th rowspan="2" style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                            <td rowspan="2" style="text-align: center; vertical-align: middle;">
+                            {{ \Carbon\Carbon::parse($d->tanggal)->format('d F Y') }}
+                            </td>
+
                             <td rowspan="2" style="text-align: center; vertical-align: middle;">{{ $d->posisi }}</td>
                             <td >Plan</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->Fullfillment_plan }}</td>
@@ -92,86 +95,91 @@
                             <td style="text-align: center; vertical-align: middle;">{{ $d->Improvement_plan }}</td>
                             <td style="text-align: center; vertical-align: middle;" rowspan="2">{{ $d->Quality_plan }}</td>
                             <td style="text-align: center; vertical-align: middle;" rowspan="2">{{ $d->Quantity_plan }}</td>
-                            <td style="text-align: center; vertical-align: middle;" rowspan="2">{{ $d->created_by }}</td>
-                            <td style="text-align: center; vertical-align: middle;"  rowspan="2">
-                                <a href="{{ route('formupdate', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
-                                    Edit
-                                </a>
+                            <td rowspan="2" style="vertical-align: middle; padding: 5px;">
+                                <div style="word-wrap: break-word; max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
+                                {!! nl2br(e($d->note)) !!}
+                                </div>
                             </td>
-
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="2">
+                                <form action="{{ route('formupdate', ['id' => $d->id]) }}">
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>
+                            </td>
+                                    <td style="text-align: center; vertical-align: middle;"  rowspan="2">
+                                <form action="{{ route('deletepeoplereadines', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
                         </tr>
-                        <tr>
+                            <tr>
                             <td>Actual</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->Fullfillment_actual }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->pou_pou_actual }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->Leadership_actual }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->HSE_actual }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->Improvement_actual }}</td>
-
-
-                        </tr>
-                        <tr>
                         </tr>
                         @endforeach
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <th colspan="13" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                        </tr>
+                    </tfoot>
 
-                </table>                        
-                
-                        
-                            
-                <table class="table table-bordered">
+
+                </table>                    
+                            <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th  colspan="4" style="vertical-align: middle; background-color:rgb(47, 136, 59); text-align: center; ">PEOPLE READINESS</th>
+                            <th colspan="3" style="vertical-align: middle; background-color:rgba(9, 220, 37, 0.75); text-align: center;">PEOPLE READINESS</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Quality Aspect -->
+                        <tr>
+                            <th colspan="3" style="text-align: center;  vertical-align: middle;">Quality Aspect</th>
                         </tr>
-                        <th  rowspan="7" style="text-align: center; background-color:rgb(244, 244, 244);  vertical-align: middle;">Quality Aspect</th>
+                        @foreach($data as $d)
                         <tr>
-                    @foreach($data as $d)
-                    <tr>
-                        <td  style=" vertical-align: middle;">{{ $d->posisi }}</td>
-                        <td style="text-align: center; vertical-align: middle;">{{ $d->Quality_plan }}</td>
-                        @if($loop->first) 
-                        <td rowspan="{{ $data->count() }}" style="text-align: center; vertical-align: middle; font-weight: bold;  background-color:rgb(244, 244, 244);">
-                            {{ number_format($averageQuality, 1, ',', '.') }}%
-                        </td>
-                        @endif
-                    </tr>
-                    @endforeach
-            
-
+                            <td style="vertical-align: middle;">{{ $d->posisi }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->Quality_plan }}</td>
+                            @if($loop->first) 
+                            <td rowspan="{{ $data->count() }}" style="text-align: center; vertical-align: middle; font-weight: bold; ">
+                                {{ number_format($averageQuality, 1, ',', '.') }}%
+                            </td>
+                            @endif
+                        </tr>
+                        @endforeach
+                            <!-- Quantity Aspect -->
                         <tr>
-                            <th rowspan="7" style="text-align: center; background-color:rgb(244, 244, 244); vertical-align: middle;">Quantity Aspect</th>
+                            <th colspan="3" style="text-align: center;  vertical-align: middle;">Quantity Aspect</th>
                         </tr>
                         @foreach($data as $d)
                         <tr>
                             <td style="">{{ $d->posisi }}</td>
                             <td style="text-align: center;">{{ $d->Quantity_plan }}</td>
-                        @if($loop->first) 
-                            <td rowspan="{{ $data->count() }}" style="text-align: center; vertical-align: middle; font-weight: bold; background-color:rgb(244, 244, 244);">
-                                {{ number_format($averageQuantity, 1, ',', '.') }}%                        
+                            @if($loop->first) 
+                            <td rowspan="{{ $data->count() }}" style="text-align: center; vertical-align: middle; font-weight: bold;">
+                                {{ number_format($averageQuantity, 1, ',', '.') }}%
                             </td>
-                        @endif
+                            @endif
                         </tr>
                         @endforeach
-
-                    </tbody>
+                        </tbody>
                     <tfoot>
-                    <tr>
-                        <th  colspan="3" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; ">Total</th>
-                        <th style="background-color:rgb(244, 244, 244); text-align: center;">
-                        {{ number_format($tot, 1, ',', '.') }}%</th>
-                    </tr>
+                        <tr>
+                            <th colspan="2" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">Total</th>
+                            <th style=" background-color:rgb(244, 244, 244); text-align: center;">
+                                {{ number_format($tot, 1, ',', '.') }}%
+                            </th>
+                        </tr>
                     </tfoot>
-                </table>                        
+                </table>
                 
                 
-
-
-
-
 
 
             </div>

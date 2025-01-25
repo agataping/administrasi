@@ -32,7 +32,7 @@
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
                     <div class="form-group">
                                 <label for="nomor">Tanggal Data</label>
-                                <input type="text" class="form-control" id="tanggal" name="tanggal"  value="{{ $data->tanggal }}" required>
+                                <input type="date" class="form-control" id="tanggal" name="tanggal"  value="{{ $peopleReadiness->tanggal }}" required>
                             </div>
                     <div class="row g-3">
                         <div class="col-sm-2">
@@ -117,11 +117,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                                <label for="note">Catatan:</label>
-                                <textarea class="form-control" rows="10" cols="50" id="note" name="note" rows="5" placeholder="Catatan"  value="{{ $peopleReadiness->note }}"></textarea>
-                            </div>
+                        <label for="note">Catatan:</label>
+                        <textarea id="note"  class="form-control" rows="10" cols="50" name="note" placeholder="Catatan" >{{ old('note', $peopleReadiness->note) }}</textarea>                    
+                    </div>
+                    
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-custom">Update</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </div>
                 </form>
             </div>
@@ -129,6 +130,42 @@
     </div>
 </div>
 @endsection
-@section('scripts')
 
+@section('scripts')
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const textarea = document.getElementById("note");
+
+        // Fungsi untuk menambahkan nomor pada setiap baris
+        function addLineNumbers(text) {
+            const lines = text.split("\n");
+            const numberedLines = lines.map((line, index) => {
+                return `${index + 1}. ${line}`;
+            });
+            return numberedLines.join("\n");
+        }
+
+        // Saat halaman dimuat, tambahkan nomor pada textarea jika ada catatan
+        window.addEventListener('load', () => {
+            textarea.value = addLineNumbers(textarea.value); // Menambahkan nomor saat halaman dimuat
+        });
+
+        // Fungsi untuk memperbarui nomor baris saat ada perubahan dalam textarea
+        function updateLineNumbers() {
+            let lines = textarea.value.split("\n");
+            lines = lines.map((line, index) => `${index + 1}. ${line.replace(/^\d+\.\s*/, '')}`); // Menghapus nomor lama dan menambahkan nomor baru
+            textarea.value = lines.join("\n");
+        }
+
+        // Menambahkan nomor setiap kali ada input atau enter
+        textarea.addEventListener('input', updateLineNumbers);
+
+        // Menambahkan nomor baris sebelum form disubmit
+        const form = document.querySelector('form'); // Ambil form
+        form.addEventListener('submit', function(event) {
+            textarea.value = addLineNumbers(textarea.value); // Tambahkan nomor sebelum submit
+        });
+    });
+
+</script>
 @endsection

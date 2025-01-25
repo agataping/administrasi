@@ -157,5 +157,40 @@
 
 @endsection
 @section('scripts')
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const textarea = document.getElementById("note");
 
+        // Fungsi untuk menambahkan nomor pada setiap baris
+        function addLineNumbers(text) {
+            const lines = text.split("\n");
+            const numberedLines = lines.map((line, index) => {
+                return `${index + 1}. ${line}`;
+            });
+            return numberedLines.join("\n");
+        }
+
+        // Saat halaman dimuat, tambahkan nomor pada textarea jika ada catatan
+        window.addEventListener('load', () => {
+            textarea.value = addLineNumbers(textarea.value); // Menambahkan nomor saat halaman dimuat
+        });
+
+        // Fungsi untuk memperbarui nomor baris saat ada perubahan dalam textarea
+        function updateLineNumbers() {
+            let lines = textarea.value.split("\n");
+            lines = lines.map((line, index) => `${index + 1}. ${line.replace(/^\d+\.\s*/, '')}`); // Menghapus nomor lama dan menambahkan nomor baru
+            textarea.value = lines.join("\n");
+        }
+
+        // Menambahkan nomor setiap kali ada input atau enter
+        textarea.addEventListener('input', updateLineNumbers);
+
+        // Menambahkan nomor baris sebelum form disubmit
+        const form = document.querySelector('form'); // Ambil form
+        form.addEventListener('submit', function(event) {
+            textarea.value = addLineNumbers(textarea.value); // Tambahkan nomor sebelum submit
+        });
+    });
+
+</script>
 @endsection

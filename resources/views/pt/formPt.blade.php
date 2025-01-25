@@ -25,11 +25,16 @@
                 <form action="{{ route('createperusahaan') }}" method="post">
                 @csrf
                 <div id="">
-                    <div class="row g-3">
-                        <div class="col-sm-2">
-                            <label for="" class="form-label">Induk Perusahaan</label>
-                            <input type="text" class="form-control" id="" placeholder="" value="" required name="induk">
-                        </div>
+                <div style="margin-bottom: 1rem;">
+                  <label for="role" style="font-weight: bold; font-size: 1rem;">Select:</label>
+                  <select id="role" name="role" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
+                    <option value="" disabled selected>-- Select--</option>
+                    <option value="IUP">IUP</option>
+                    <option value="Kontraktor">Kontraktor</option>
+                    <option value="Non Energi">Non Energi</option>
+                    <option value="Marketing">Marketing</option>
+                  </select> 
+                </div>
                         <div class="col-sm-2">
                             <label for="" class="form-label">Anak Perusahaan</label>
                             <input type="text" class="form-control" id="" placeholder="" value="" required name="nama">

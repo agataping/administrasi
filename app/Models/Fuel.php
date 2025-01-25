@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class csMiningReadiness extends Model
+class Fuel extends Model
 {
     use HasFactory;
-    protected $table = 'cs_mining_readinesses';
+    protected $table = 'fuels';
     protected $guarded = ['id'];
 
 }

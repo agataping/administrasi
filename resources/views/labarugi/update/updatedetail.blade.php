@@ -30,9 +30,9 @@
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
                     
                     <div style="margin-bottom: 1rem;">
-                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Pilih Kategori:</label>
+                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
                         <select id="kategori" name="sub_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                            <option value="" disabled selected>-- Pilih Kategori --</option>
+                            <option value="" disabled selected>-- Select Category --</option>
                             
                             @foreach($sub as $kategori)
                             <option value="{{ $kategori->id }}" {{ $kategori->id == $data->sub_id ? 'selected' : '' }}> 
@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Update</button>
                     </div>
                 </form>
             </div>

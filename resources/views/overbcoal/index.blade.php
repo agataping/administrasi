@@ -9,101 +9,107 @@
         <div class="card-body">
             <div class="col-12">
                 <h2 class="text-center mb-4">Over Burden & Coal Dashboard</h2>
-
+                
+                <form method="GET" action="{{ route('indexovercoal') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
+                        Filter
+                    </button>
+                </form>
 
                 <div class="dashboard-container">
-                    <!-- Over Burden Section -->
                     <div class="section-card">
-                    <a href="/indexob" class="cardcost text-decoration-none">
-                        <h3 class="section-title">Over Burden</h3>
-                    </a>
+                        <a href="/indexob" class="cardcost text-decoration-none">
+                            <h3 class="section-title">Over Burden</h3>
+                        </a>
                         <div class="metrics-grid">
                             <div class="metric">
                                 <h4>Plan</h4>
-                                    <div class="percentage-box">
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($totalPlanob, 0, ',', '.') }}</span>
-                                    </div>
+                                </div>
                             </div>
                             <div class="metric">
                                 <h4>Actual</h4>
-                                    <div class="percentage-box">
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($totalActualob, 0, ',', '.') }}</span>
-                                    </div>
+                                </div>
                             </div>
                             <div class="metric">
                                 <h4>Deviasi</h4>
-                                    <div class="percentage-box">
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($deviationob, 0, ',', '.') }}</span>
-                                    </div>
+                                </div>
                             </div>
                             <div class="metric">
                                 <h4>Percentage</h4>
-                                    <div class="percentage-box">
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($percentageob, 0, ',', '.') }}%</span>
-                                    </div>
+                                </div>
                             </div>
-
                         </div>
                     </div>
 
                     <!-- Coal Section -->
                     <div class="section-card">
-                    <a href="/indexcoal" class="cardcost text-decoration-none">
-                        <h3 class="section-title">Coal</h3>
-                    </a>
+                        <a href="/indexcoal" class="cardcost text-decoration-none">
+                            <h3 class="section-title">Coal</h3>
+                        </a>
                         <div class="metrics-grid">
                             <div class="metric">
                                 <h4>Actual</h4>
-                                    <div class="percentage-box">
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($totalActualcoal, 0, ',', '.') }}</span>
-
-
-                                    </div>
+                                </div>
                             </div>
                             <div class="metric">
                                 <h4>Plan</h4>
-                                    <div class="percentage-box">
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($totalPlancoal, 0, ',', '.') }}</span>
- 
-                                    </div>
+                                </div>
                             </div>
                             <div class="metric">
                                 <h4>Deviasi</h4>
-                                    <div class="percentage-box">
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($deviationactual, 0, ',', '.') }}</span>
-
-                                    </div>
+                                </div>
                             </div>
                             <div class="metric">
                                 <h4>Percentage</h4>
-                                    <div class="percentage-box">
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($percentageactual, 0, ',', '.') }}%</span>
-
-                                    </div>
+                                </div>
                             </div>
-
                         </div>
                     </div>
                     <!-- Coal Section -->
                     <div class="section-card">
-                        
                         <div class="metrics-grid">
                             <div class="metric">
-                        <h4>SR Plan</h4>
-
-                                    <div class="percentage-box">
+                                <h4>SR Plan</h4>
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($srplan, 0, ',', '.') }}%</span>
-                                    </div>
+                                </div>
                             </div>
                             <div class="metric">
                                 <h4>SR Actual</h4>
-                                    <div class="percentage-box">
+                                <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($sractual, 0, ',', '.') }}%</span>
-                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
 
                 </div>
             </div>

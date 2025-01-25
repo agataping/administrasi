@@ -52,7 +52,6 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // bedakan setiap rolenya
             switch (Auth::user()->role) {
                 case 'staff':
                     return redirect('/dashboard');

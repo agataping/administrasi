@@ -47,33 +47,30 @@
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <div>
                         <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
                         <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
                 </form>
                 <table class="table table-bordered">
-                    <thead style="text-align: end; background-color:rgb(56, 181, 73);">
+                    <thead style="text-align: end; background-color:rgb(56, 181, 73); text-align: center;">
                         <tr>
                             <th rowspan="2" style="vertical-align: middle;">No</th>
                             <th rowspan="2" style="vertical-align: middle;">Description</th>
-                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Nomer Legalitas</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Legality Number</th>
                             <th rowspan="2" style="vertical-align: middle;">Status</th>
                             <th colspan="3" style="text-align: center;">JTN</th>
                             <th rowspan="2" style="vertical-align: middle;">Achievement</th>
-                            <th rowspan="2" style="vertical-align: middle;">Created By</th>
-                            <th rowspan="2" style="vertical-align: middle;">Aksi</th>
+                            <th rowspan="2" colspan="2" style="vertical-align: middle;">Action</th>
                         </tr>
                         <tr>
-                            <th>Tanggal</th>
-                            <th>Berlaku s/d</th>
-                            <th>Filling / Lokasi dokumen</th>
+                            <th>Date</th>
+                            <th>Valid Until</th>
+                            <th>Filling / Document Location</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,25 +94,27 @@
                             <td style="text-align: center; vertical-align: middle;">{{ $d->berlaku ?? '-' }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->filling ?? '-' }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->Achievement ?? '-' }} </td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->created_by ?? '-' }}</td>
-                            <td style="text-align: center; vertical-align: middle;">
-                                <a href="{{ route('FormMiningUpdate', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">Edit</a>
+
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('FormMiningUpdate', ['id' => $d->id]) }}">
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>
                             </td>
-                            
-                            
-                        </tr>
+                                    <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('deletemining', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                                </tr>
                         @endforeach
-                        
-                        
-                        <tr>
+                                <tr>
                             <th colspan="9" style="text-align: end; background-color:rgb(244, 244, 244);">Total</th>
                             <th style="background-color:rgb(244, 244, 244); text-align: center;">
                                 {{ round($d->average_achievement, 2) }}%
                             </th>
                         </tr>
-
-
-
                         @endforeach
                         <tr>
                             <th colspan="9" style="text-align: end; background-color: rgb(244, 244, 244);">Total Aspect</th>
@@ -123,11 +122,10 @@
                                 {{ round($totalAspect , 2) }}%
                             </th>
                         </tr>
-                        
-
+    
                     </tbody>
                 </table>
-                
+                                
             </div>
         </div>
     </div>

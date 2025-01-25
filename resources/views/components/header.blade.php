@@ -11,7 +11,7 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/headers/">
 
         <!-- Custom styles for this template -->
-        <link href="{{asset ('css/headers.css')}}" rel="stylesheet">
+        <link href="{{ asset ('css/headers.css')}}" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
 <link href="{{asset ('css/bootstrap.min.css')}}" rel="stylesheet">

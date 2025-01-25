@@ -1,5 +1,4 @@
 <style>
-    /* Tambahkan gaya untuk membuat form lebih menarik */
     .row {
         margin: 20px 0;
     }
@@ -40,7 +39,6 @@
     }
       .btn-custom {
         display: block;
-        /* width: 100%; */
         padding: 15px;
         font-size: 18px;
         font-weight: bold;
@@ -64,35 +62,71 @@
     background-color: #000;
     width: 100%;
 }
-.cardcostum {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
-  width: 200px;
-  width: 200px; /* Seragamkan ukuran */
-  background-color: darkgreen;
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 10px;
-  position: relative;
-  z-index: 3;
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 4 kolom */
+        gap: 20px; /* Jarak antar elemen */
+        margin: 20px 0;
+    }
+
+    .grid-item {
+        text-align: center;
+    }
+
+    .cardcostum {
+        transition: 0.3s;
+        width: 300px;
+        background-color:rgb(77, 248, 82); 
+        margin: 40px auto; 
+        padding: 20px;
+        border-radius: 10px;
+        position: relative;
+        z-index: 3;
+        font-size: 15px; 
+    }
+
+    .cardcostum:hover {
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .cardcost {
+        color: black;
+        text-align: center;
+        margin: 0;
+        font-size: 15px; 
+
+    }
+
+    .percentage-box {
+        background-color:rgb(255, 255, 255); 
+        color: black;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-top: auto;
+        align-self: center;
+    }
+    .cardcostum .cardcost h4 {
+    font-size: 12px !important; /* Paksa ukuran teks */
+    font-weight: normal; /* Jika terlalu tebal, atur menjadi normal */
 }
-  .cardcostum:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+.cardcostum .percentage-box {
+    font-size: 12px !important; /* Paksa ukuran teks persentase */
 }
 
-.cardcost {
-  color: white;
-  text-align: center;
-  margin: 0; /* Hilangkan margin ekstra */
+
+.pagination {
+    font-size: 0.900rem; 
 }
 
-.percentage-box {
-  background-color: green;
-  color: white;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 5px;
-  margin-top: auto; 
-  align-self: center; 
+.pagination .page-link {
+    padding: 0.25rem 0.5rem; 
 }
+
+.pagination .page-item.active .page-link {
+    background-color: #4CAF50; 
+    border-color: #4CAF50;
+}
+
 </style>

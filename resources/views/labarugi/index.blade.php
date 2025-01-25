@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'LabaRugi')
+@section('title', 'Profit & Loss')
 @section('content')
 
 
@@ -9,7 +9,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Laba Rugi</h2>
+                <h2 class="mb-3">Profit & Loss</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -52,36 +52,33 @@
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <div>
                         <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
                         <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
                         style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
                     </div>
-                    
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
                 </form>
                 <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
-                            <th   rowspan="" style="vertical-align: middle;  text-align: center;">Deskripsi</th>
-                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Plan</th>
-                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Vertica analisis</th>
-                            <th  colspan=""style="vertical-align: middle; text-align: center;">Actual</th>
-                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Vertica analisis</th>
-                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Deviation</th>
-                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Percentage</th>
-                            <th  colspan=""style="vertical-align: middle; text-align: center;">Tanggal</th>
-                            <th  rowspan="" style="vertical-align: middle; text-align: center;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
+                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
+                    >
+                    <tr>
+                        <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
+                        <th   rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
+                        <th   colspan=""  style="vertical-align: middle; text-align: center;">Plan</th>
+                        <th   colspan=""  style="vertical-align: middle; text-align: center;">Vertical Analysis</th>
+                        <th  colspan=""style="vertical-align: middle; text-align: center;">Actual</th>
+                        <th   colspan=""  style="vertical-align: middle; text-align: center;">Vertical Analysis</th>
+                        <th   colspan=""  style="vertical-align: middle; text-align: center;">Deviation</th>
+                        <th   colspan=""  style="vertical-align: middle; text-align: center;">Percentage</th>
+                        <th  colspan=""style="vertical-align: middle; text-align: center;">Date</th>
+                        <th  colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
                     @foreach ($totals as $jenisName => $jenis)
-
                     @foreach ($jenis['sub_categories'] as $kategoriName => $total)
                     {{-- Tampilkan Kategori                     {{dd($total['sub_categories'])}}
                     --}}
@@ -98,125 +95,100 @@
                         <td style="text-align: center; vertical-align: middle;">
                             <a href="{{ route('formupdatecategorylr', ['category_id' => $total['category_id']]) }}" class="btn btn-primary">Edit</a>
                         </td>
+                        <td></td>
                     </tr>
-                    
-                    
                     {{-- Tampilkan Sub-Kategori --}}
                     @foreach ($total['sub_categories'] as  $subIndex => $subCategory)
-                        
                     <th style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</th>
-                        <td style="vertical-align: middle;"><strong>{{ $subCategory['name_sub'] }}</strong></td>
-                        <td style="text-align: end;"><strong>{{ number_format($subCategory['total_plan'], 2) }}</strong></td>
-                        <td></td>
-                        <td style="text-align: end;"><strong>{{ number_format($subCategory['total_actual'], 2) }}</strong></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                        <td style="text-align: center; vertical-align: middle;">
+                    <td style="vertical-align: middle;"><strong>{{ $subCategory['name_sub'] }}</strong></td>
+                    <td style="text-align: end;"><strong>{{ number_format($subCategory['total_plan'], 2) }}</strong></td>
+                    <td></td>
+                    <td style="text-align: end;"><strong>{{ number_format($subCategory['total_actual'], 2) }}</strong></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan=""style="text-align: center; vertical-align: middle;">
                         <a href="{{ route('formupdatesublr', $subCategory['details'][0]->sub_id) }}" class="btn btn-primary">Edit</a>
-
-                        </td>                        
- 
-
-
-                    </tr>
-                    
-                    {{-- Tampilkan Detail dari Sub-Kategori --}}
-                    @foreach ($subCategory['details'] as $detailIndex => $detail)
-                    <tr>
+                        </td>    
+                    <td></td> 
+                </tr>
+                {{-- Tampilkan Detail dari Sub-Kategori --}}
+                @foreach ($subCategory['details'] as $detailIndex => $detail)
+                <tr>
                     <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
-                        <td>{{ $detail->desc }}</td>
-                        <td style=" text-align: end;">{{ number_format($detail->nominalplan, 2) }}</td>
-                        <td></td>
-                        <td style=" text-align: end;">{{ number_format($detail->nominalactual, 2) }}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d-m-Y') }}</td>
-                        
-                        <td style="text-align: center; vertical-align: middle;">
-                        <a href="{{ route('formupdatelabarugi', ['id' => $detail->detail_id]) }}" class="btn btn-primary">Edit</a>
-
-                        
-                        
-                        </td>
-                        
-                        
-
-
-                    </tr>
-                    
-
-                    @endforeach
-                    @endforeach                        
-                    @endforeach                        
-                    <tr>
-                        <th colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">{{ $jenisName}} </th>
-                        @if ($jenis['jenis_name'] == 'Laba Kotor')
-
-                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                    <td>{{ $detail->desc }}</td>
+                    <td style=" text-align: end;">{{ number_format($detail->nominalplan, 2) }}</td>
+                    <td></td>
+                    <td style=" text-align: end;">{{ number_format($detail->nominalactual, 2) }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d-m-Y') }}</td>
+                    <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                        <form action="{{ route('formupdatelabarugi', ['id' => $detail->detail_id]) }}">
+                            <button type="submit"  class="btn btn-primary ">Edit</button>
+                        </form>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                        <form action="{{ route('deletedetaillr', $detail->detail_id) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                
+                @endforeach
+                @endforeach
+                @endforeach
+                <tr>
+                    <th colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">{{ $jenisName}} </th>
+                    @if ($jenis['jenis_name'] == 'Laba Kotor')
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalplanlr, 2) }}
-                        </th>
-
-                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalvertikal, 2) }}%
-                        </th>
-
-                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalactuallr, 2) }}
-                        </th>
-                        <th colspan="5" style="background-color:rgb(244, 244, 244); text-align: end;">
+                    </th>
+                    <th colspan="5" style="background-color:rgb(244, 244, 244); text-align: end;">
                         </th>
                         @else  ($jenis['jenis_name'] == 'Laba Operasional')
-                      
-
                         <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                             {{ number_format($totalplanlp, 2) }}
                         </th>
-                        
                         <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                             {{ number_format($verticallp, 2) }}%
                         </th>
-                        
                         <th colspan="6" style="background-color:rgb(244, 244, 244); text-align: end;">
                             {{ number_format($totalactual, 2) }}
                         </th>
                         <th colspan="5" style="background-color:rgb(244, 244, 244); text-align: end;">
-                        </th>
-
-                        
-                        @endif  
-
+                            </th>
+                            @endif  
                         </tr>
-                        @endforeach                        
+                        @endforeach 
                     </tbody>
-                </table>                        
+                </table>      
+                <div class="d-flex justify-content-end mt-3">
+                    {{ $paginatedData->onEachSide(1)->links('pagination::bootstrap-4', ['class' => 'pagination-sm']) }}
+                </div>
                 
-            
-
-            
-            
-            
-            
-            
-            
-            
-            
-            
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                
+                
+                
+                
+                
+                
+                
             </div>
         </div>
     </div>
 </div>
+
         
         
         

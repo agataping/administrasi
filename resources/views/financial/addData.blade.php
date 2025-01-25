@@ -1,13 +1,13 @@
 @extends('template.main')
 
-@section('title', 'Neraca')
+@section('title', 'Balnce sheet')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Neraca</h2>
+                <h2 class="mb-3">Balnce sheet</h2>
                 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -34,16 +34,16 @@
                     </div>
 
                     <div style="margin-bottom: 1rem;">
-                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Pilih Kategori:</label>
+                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
                         <select id="kategori" name="sub_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                            <option value="" disabled selected>-- Pilih Kategori --</option>
+                            <option value="" disabled selected>-- Select Category --</option>
                             @foreach($sub as $kategori)
                             <option value="{{ $kategori->id }}">{{ $kategori->namecategory }} | {{ $kategori->namesub }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div style="margin-bottom: 1rem;">
-                        <label for="name" style="font-weight: bold; font-size: 1rem;">Deskripsi:</label>
+                        <label for="name" style="font-weight: bold; font-size: 1rem;">Description:</label>
                         <input type="text" id="name" name="name" plhaceholder="Cth. Mandiri Hauling Dll"style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; " required>
                     </div>
 

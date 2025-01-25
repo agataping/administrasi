@@ -1,5 +1,5 @@
 @extends('template.main')
-@section('title', 'Deskripsi Neraca')
+@section('title', 'Deskripsi Balnce sheet')
 @section('content')
 
 <div class="container-fluid mt-4">

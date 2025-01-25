@@ -40,6 +40,7 @@
     <link href="{{asset('css/signin.css')}}" rel="stylesheet">
     
 </head>
+
 <body style="font-family: 'Arial', sans-serif; background-color: #f9f9f9;">
 
   <main class="form-signin d-flex align-items-center justify-content-center" style="height: 80vh;">
@@ -47,7 +48,7 @@
     
       <form action="{{ url('signin') }}" method="post">
       @csrf
-        <h1 class="h3 mb-3 fw-normal" style="text-align: center;">Please sign in</h1>
+        <h1 class="h3 mb-3 fw-normal" style="text-align: center; ">Please sign in</h1>
 
         <!-- Menampilkan pesan sukses atau error -->
         @if (session('success'))
@@ -66,8 +67,8 @@
           </div>
         @endif
 
-        <div class="form-floating">
-          <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username">
+        <div class="form-floating" >
+          <input type="text"  class="form-control" id="floatingInput" name="username" placeholder="Username">
           <label for="floatingInput">Username</label>
         </div>
         
@@ -77,14 +78,17 @@
         </div>
 
         <!-- Tombol "Register" di sisi kiri -->
-        <div class="d-flex justify-content-between align-items-center mt-4">
+        <!-- <div class="d-flex justify-content-between align-items-center mt-4">
           <a class="w-10 btn btn-secondary" href="{{ route('register') }}">Register</a>
-          <!-- Tombol "Sign in" di sisi kanan -->
-          <button class="w-10 btn btn-primary" type="submit">Sign in</button>
-        </div>
+          Tombol "Sign in" di sisi kanan -->
+          
+          <div class="d-flex justify-content-end">
+            <button class="w-10 btn btn-primary" type="submit">Sign in</button>
+          </div>
       </form>
     </div>
   </main>
+  
 </body>
 
 </html>
