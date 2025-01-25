@@ -13,7 +13,7 @@ class PerusahaanController extends Controller
 
     public function dummy()
     {
-        return view('pt\tmanual');
+        return view('pt.tmanual');
     }
 
         //UNTUK MENAMPILAKN FORM dan ADD DATA NAMA LABA RUGI
