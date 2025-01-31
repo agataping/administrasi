@@ -33,7 +33,7 @@ class RegistrasiController extends Controller
         $userMasuk =  User::create($validate);
 
         if ($userMasuk) {
-            return redirect('/dashboaard')->with('success', 'Registrasi Berhasil');
+            return redirect('/dashboard')->with('success', 'Registrasi Berhasil');
             dd($userMasuk);
 
         } else {

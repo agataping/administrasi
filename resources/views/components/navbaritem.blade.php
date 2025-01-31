@@ -54,6 +54,7 @@
                 <li><a class="dropdown-item " href="/indexpaua">PA & UA</a></li>
                 <li><a class="dropdown-item " href="/picapaua">PICA PA & UA</a></li>
                 <li><a class="dropdown-item " href="/indexewhfuel">EWH & FUEL</a></li>
+                <li><a class="dropdown-item " href="/picaewhfuel">PICA EWH & FUEL</a></li>
                 <li><a class="dropdown-item " href="/indexmining">Mining Readiness</a></li>
                 <li><a class="dropdown-item " href="/picamining">PICA Mining Readiness</a></li>
                 <li><a class="dropdown-item " href="/indexhse">HSE</a></li>

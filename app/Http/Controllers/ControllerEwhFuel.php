@@ -4,40 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Unit;
 use App\Models\ProduksiPa;
 use App\Models\ProduksiUa;
 use App\Models\Ewh;
 use App\Models\Fuel;
 use App\Models\PicaEwhFuel;
-use App\Models\PicaPaUa;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\HistoryLog;
+class ControllerEwhFuel extends Controller
+{
+    public function indexewhfuel(Request $request)
 
-class ProduksiController extends Controller
-{   //inde menu
-    public function indexpaua(Request $request)
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
     
         // Query untuk gabungkan data dari produksi_pas dan produksi_uas
         $query = DB::table('units')
-            ->leftJoin('produksi_pas', 'units.id', '=', 'produksi_pas.unit_id')
-            ->leftJoin('produksi_uas', 'units.id', '=', 'produksi_uas.unit_id')
+            ->leftJoin('ewhs', 'units.id', '=', 'ewhs.unit_id')
+            ->leftJoin('fuels', 'units.id', '=', 'fuels.unit_id')
             ->select(
                 'units.unit as units',
-                'produksi_pas.plan as pas_plan',
-                'produksi_pas.actual as pas_actual',
-                'produksi_uas.plan as uas_plan',
-                'produksi_uas.actual as uas_actual'
+                'ewhs.plan as pas_plan',
+                'ewhs.actual as pas_actual',
+                'fuels.plan as uas_plan',
+                'fuels.actual as uas_actual'
             );
     
         if ($startDate && $endDate) {
             $query->where(function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('produksi_pas.tanggal', [$startDate, $endDate])
-                    ->orWhereBetween('produksi_uas.date', [$startDate, $endDate]);
+                $q->whereBetween('ewhs.tanggal', [$startDate, $endDate])
+                    ->orWhereBetween('fuels.date', [$startDate, $endDate]);
             });
         }
     
@@ -71,22 +69,21 @@ class ProduksiController extends Controller
             ];
         });
     
-        return view('PA_UA.index', compact('data', 'totals', 'startDate', 'endDate'));
+        return view('ewh_fuels.index', compact('data', 'totals', 'startDate', 'endDate'));
     }
-        
-    public function indexproduksiua(Request $request)
+    public function indexewh(Request $request)
     {
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
 
-        $query = DB::table('produksi_uas')
-        ->join('units', 'produksi_uas.unit_id', '=', 'units.id')
-        ->select('produksi_uas.*',
+        $query = DB::table('ewhs')
+        ->join('units', 'ewhs.unit_id', '=', 'units.id')
+        ->select('ewhs.*',
         'units.unit as units')
-        ->where('produksi_uas.created_by', auth()->user()->username); 
+        ->where('ewhs.created_by', auth()->user()->username); 
 
             if ($startDate && $endDate) {
-                $query->whereBetween('produksi_uas.date', [$startDate, $endDate]);
+                $query->whereBetween('ewhs.date', [$startDate, $endDate]);
             }
             
             $data = $query->orderBy('units.unit')
@@ -109,22 +106,23 @@ class ProduksiController extends Controller
                 ];
             });
             // dd($totals);
-                    return view('PA_UA.indexua', compact('data', 'startDate', 'endDate','totals'));
+                    return view('ewh_fuels.indexewh', compact('data', 'startDate', 'endDate','totals'));
     }
 
-    public function indexproduksipa(Request $request)
+
+    public function indexfuel(Request $request)
     {
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
 
-        $query = DB::table('produksi_pas')
-        ->join('units', 'produksi_pas.unit_id', '=', 'units.id')
-        ->select('produksi_pas.*',
+        $query = DB::table('fuels')
+        ->join('units', 'fuels.unit_id', '=', 'units.id')
+        ->select('fuels.*',
         'units.unit as units')
-        ->where('produksi_pas.created_by', auth()->user()->username); 
+        ->where('fuels.created_by', auth()->user()->username); 
 
             if ($startDate && $endDate) {
-                $query->whereBetween('produksi_pas.date', [$startDate, $endDate]);
+                $query->whereBetween('fuels.date', [$startDate, $endDate]);
             }
             
             $data = $query->orderBy('units.unit')
@@ -147,27 +145,30 @@ class ProduksiController extends Controller
                 ];
             });
             // dd($totals);
-            return view('PA_UA.indexpa', compact('data', 'startDate', 'endDate','totals'));
+                    return view('ewh_fuels.indexfuel', compact('data', 'startDate', 'endDate','totals'));
     }
 
-
-    public function unit()
-    {
-        return view('PA_UA.addUnit');
-    }
-    
-    public function formproduksipa()
+    public function formewh()
     {
         $unit= Unit::all();
-        return view('PA_UA.addproduksipa',compact('unit'));
+        return view('ewh_fuels.addewh',compact('unit'));
+        
+    }
+    public function formfuel()
+    {
+        $unit= Unit::all();
+        return view('ewh_fuels.addfuel',compact('unit'));
         
     }
 
+    public function formproduksiua()
+    {
+        $unit= Unit::all();
+        return view('PA_UA.addproduksiua',compact('unit'));
+        
+    }
 
-    
-    
-    //create
-    public function createproduksipa(Request $request) {
+    public function createewh(Request $request) {
         $validatedData = $request->validate([
             'actual' => 'required',  
             'plan' => 'required',  
@@ -178,19 +179,21 @@ class ProduksiController extends Controller
         ]);
         $validatedData['created_by'] = auth()->user()->username;
         
-        $data=ProduksiPa::create($validatedData);        
+        $data=Ewh::create($validatedData);        
         HistoryLog::create([
-            'table_name' => 'produksi_pas', 
+            'table_name' => 'ewhs', 
             'record_id' => $data->id, 
             'action' => 'create',
             'old_data' => null, 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexproduksipa')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indexewh')->with('success', 'Data berhasil disimpan.');
     }
 
-    public function createproduksiua(Request $request) {
+
+    
+    public function createfuel(Request $request) {
         $validatedData = $request->validate([
             'actual' => 'required',  
             'plan' => 'required',  
@@ -201,52 +204,33 @@ class ProduksiController extends Controller
         ]);
         $validatedData['created_by'] = auth()->user()->username;
         
-        $data=ProduksiUa::create($validatedData);        
+        $data=Fuel::create($validatedData);        
         HistoryLog::create([
-            'table_name' => 'produksi_uas', 
+            'table_name' => 'fuels', 
             'record_id' => $data->id, 
             'action' => 'create',
             'old_data' => null, 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexproduksiua')->with('success', 'Data berhasil disimpan.');
+        return redirect('indexfuel')->with('success', 'Data berhasil disimpan.');
     }
 
-    
-    
-    public function createunit(Request $request)
-    {
-        $validatedData = $request->validate([
-            'unit' => 'required|string|max:255',  
-        ]);
-        
-        $validatedData['created_by'] = auth()->user()->username;
-        Unit::create($validatedData);        
-        
-        return redirect('/indexpaua')->with('success', 'Data berhasil disimpan.');
-    }
-    
-    
-    //update
-    public function formupdateproduksipa($id)
+    public function formupdateewh($id)
     {
         
         $unit= Unit::all();
-        $data= ProduksiPa::findOrFail($id);
-        return view('PA_UA.updatedatapa',compact('unit','data'));   
+        $data= Ewh::findOrFail($id);
+        return view('ewh_fuels.updatedataewh',compact('unit','data'));   
     }
-
-    public function formupdateproduksiua($id)
+    public function formupdatefuels($id)
     {
         
         $unit= Unit::all();
-        $data= ProduksiUa::findOrFail($id);
-        return view('PA_UA.updatedataua',compact('unit','data'));   
+        $data= Fuels::findOrFail($id);
+        return view('ewh_fuels.updatedatafuel',compact('unit','data'));   
     }
-
-    
-    public function updateproduksipa(Request $request, $id) {
+    public function updateewh(Request $request, $id) {
         $validatedData = $request->validate([
             'plan' => 'nullable|numeric',
             'actual' => 'nullable|numeric',
@@ -256,23 +240,23 @@ class ProduksiController extends Controller
 
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
-        $Produksi = ProduksiPa::findOrFail($id);
+        $Produksi = Ewh::findOrFail($id);
         $oldData = $Produksi->toArray();
         
         $Produksi->update($validatedData);
         
         HistoryLog::create([
-            'table_name' => 'prpoduksi_pas', 
+            'table_name' => 'ewhs', 
             'record_id' => $id, 
             'action' => 'update', 
             'old_data' => json_encode($oldData), 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/indexpaua')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indeewh')->with('success', 'Data berhasil disimpan.');
     }
 
-    public function updateproduksiua(Request $request, $id) {
+    public function updatefuel(Request $request, $id) {
         $validatedData = $request->validate([
             'plan' => 'nullable|numeric',
             'actual' => 'nullable|numeric',
@@ -282,25 +266,26 @@ class ProduksiController extends Controller
 
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
-        $Produksi = ProduksiUa::findOrFail($id);
+        $Produksi = Fuel::findOrFail($id);
         $oldData = $Produksi->toArray();
         
         $Produksi->update($validatedData);
         
         HistoryLog::create([
-            'table_name' => 'prpoduksi_uas', 
+            'table_name' => 'fuels', 
             'record_id' => $id, 
             'action' => 'update', 
             'old_data' => json_encode($oldData), 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/indexproduksiua')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indexfuel')->with('success', 'Data berhasil disimpan.');
     }
 
-    public function deleteproduksipa ($id)
+    
+    public function deletefuel ($id)
     {
-        $data = ProduksiPa::findOrFail($id);
+        $data = Fuel::findOrFail($id);
         $oldData = $data->toArray();
         
         // Hapus data dari tabel 
@@ -308,26 +293,7 @@ class ProduksiController extends Controller
         
         // Simpan log ke tabel history_logs
         HistoryLog::create([
-            'table_name' => 'produksi_pas', 
-            'record_id' => $id, 
-            'action' => 'delete', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => null, 
-            'user_id' => auth()->id(), 
-        ]);
-        return redirect('/indexpaua')->with('success', 'Data  berhasil Dihapus.');
-    }
-    public function deleteproduksiua ($id)
-    {
-        $data = ProduksiUa::findOrFail($id);
-        $oldData = $data->toArray();
-        
-        // Hapus data dari tabel 
-        $data->delete();
-        
-        // Simpan log ke tabel history_logs
-        HistoryLog::create([
-            'table_name' => 'produksi_uas', 
+            'table_name' => 'fuels', 
             'record_id' => $id, 
             'action' => 'delete', 
             'old_data' => json_encode($oldData), 
@@ -337,13 +303,33 @@ class ProduksiController extends Controller
         return redirect('/indexpaua')->with('success', 'Data  berhasil Dihapus.');
     }
 
-    public function picapaua(Request $request)
+    public function deleteewh ($id)
+    {
+        $data = Ewh::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'ewhs', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect('/indexpaua')->with('success', 'Data  berhasil Dihapus.');
+    }
+
+    public function picaewhfuel(Request $request)
     {
         $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         
-        $query = DB::table('pica_pa_uas') 
+        $query = DB::table('pica_ewh_fuels') 
         ->select('*'); 
         
         if ($startDate && $endDate) {
@@ -353,17 +339,17 @@ class ProduksiController extends Controller
        $data = $query->get();
         
         
-        return view('picapaua.index', compact('data'));
+        return view('picaewhfuel.index', compact('data'));
         
     }
     
-    public function formpicapaua()
+    public function formpicaewhfuel()
     {
         $user = Auth::user();  
-        return view('picapaua.addData');
+        return view('picaewhfuel.addData');
     }
     
-    public function createpicapaua(Request $request)
+    public function createpicaewhfuel(Request $request)
     {
         // dd($request->all());
         
@@ -378,24 +364,24 @@ class ProduksiController extends Controller
             'tanggal' => 'required|date',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
-        $data=PicaPaUa::create($validatedData);   
+        $data=PicaEwhFuel::create($validatedData);   
         HistoryLog::create([
-            'table_name' => 'pica_pa_uas ', 
+            'table_name' => 'pica_ewh_fuels ', 
             'record_id' => $data->id, 
             'action' => 'create',
             'old_data' => null, 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);     
-        return redirect('/picapaua')->with('success', 'Surat berhasil disimpan.');
+        return redirect('/picaewhfuel')->with('success', 'Surat berhasil disimpan.');
     }
     
-    public function formupdatepicapaua($id){
-        $data = PicaPaUa::findOrFail($id);
-        return view('picapaua.update', compact('data'));
+    public function formupdatepicaewhfuel($id){
+        $data = PicaEwhFuel::findOrFail($id);
+        return view('picaewhfuel.update', compact('data'));
     }
     
-    public function updatepicapaua (Request $request, $id)
+    public function updatepicaewhfuel (Request $request, $id)
     {
         // dd($request->all());
         $validatedData = $request->validate([
@@ -410,25 +396,25 @@ class ProduksiController extends Controller
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
         
-        $data =PicaPaUa::findOrFail($id);
+        $data =PicaEwhFuel::findOrFail($id);
         $oldData = $data->toArray();
         
         $data->update($validatedData);
         
         HistoryLog::create([
-            'table_name' => 'pica_pa_uas ', 
+            'table_name' => 'pica_ewh_fuels ', 
             'record_id' => $id, 
             'action' => 'update', 
             'old_data' => json_encode($oldData), 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/picapaua')->with('success', 'Surat berhasil disimpan.');
+        return redirect('/picaewhfuel')->with('success', 'Surat berhasil disimpan.');
     }
     
-    public function deletepicapaua ($id)
+    public function deletepicaewhfuel ($id)
     {
-        $data = PicaPaUa::findOrFail($id);
+        $data = PicaEwhFuel::findOrFail($id);
         $oldData = $data->toArray();
         
         // Hapus data dari tabel 
@@ -436,18 +422,14 @@ class ProduksiController extends Controller
         
         // Simpan log ke tabel history_logs
         HistoryLog::create([
-            'table_name' => 'pica_pa_uas ', 
+            'table_name' => 'pica_ewh_fuels ', 
             'record_id' => $id, 
             'action' => 'delete', 
             'old_data' => json_encode($oldData), 
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/picapaua')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/picaewhfuel')->with('success', 'Data  berhasil Dihapus.');
     }
-    
-}
 
-        
-        
-        
+}

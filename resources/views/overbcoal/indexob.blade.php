@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'OverBurden&Coa')
+@section('title', 'OverBurden&Coal')
 @section('content')
 
 
@@ -9,7 +9,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Over Burden & Coal</h2>
+                <h2 class="mb-3">Over OverBurden</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}

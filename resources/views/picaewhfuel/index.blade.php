@@ -1,14 +1,15 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Barging')
+@section('title', 'PICA EWH & FUEL ')
 @section('content')
+
 
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3"></h2>
+                <h2 class="mb-3">PICA EWH & FUEL</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -23,19 +24,15 @@
                         @endforeach
                     </ul>
                 </div>
+                
                 @endif
-                
-
-                <div class="row align-items-center">
-                    <div class="col-auto">
-                        <form action="{{ route('formplan') }}" method="get">
-                            <input type="hidden" name="form_type" value="kategori">
-                            <button type="submit" class="btn btn-custom">Plan</button>
-                        </form>
+                <div class="row">
+                    <div class="col-sm-">
+                        <a href="/formpicaewhfuel " class="btn btn-custom">Add PICA </a>
                     </div>
-                </div>
-                
-                <form method="GET" action="{{ route('indexPlan') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                </div> 
+                 
+                <form method="GET" action="{{ route('picaewhfuel') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
@@ -54,56 +51,60 @@
                 <table class="table table-bordered">
                     <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                         <tr>
-                            <th rowspan="2" style="vertical-align: middle;">No</th>
-                            <th rowspan="2"style="vertical-align: middle;">Tanggal</th>
-                            <th rowspan="2"  style="vertical-align: middle;">Nominal</th>
-                            <th rowspan="2"  style="vertical-align: middle;">Kuota</th>
-                            <th rowspan="2" colspan="2"  style="vertical-align: middle;">Aksi</th>
+                            <th  style="vertical-align: middle;">No</th>
+                            <th   style="vertical-align: middle;">Problem</th>
+                            <th  style="text-align: center;">Cause</th>
+                            <th  style="text-align: center;">Corective Action</th>
+                            <th  style="vertical-align: middle;">Due Date</th>
+                            <th  style="vertical-align: middle;">PIC</th>
+                            <th  style="vertical-align: middle;">Status</th>
+                            <th  style="vertical-align: middle;">Remerks</th>
+                                    <th colspan="2" style="vertical-align: middle;">Aksi</th>
                         </tr>
+    
                     </thead>
-
                     <tbody>
                         @foreach($data as $d)
-                        <tr>
-                            <th rowspan="" style="vertical-align: middle;">{{ $loop->iteration }}</th>
-                            <td>{{ \Carbon\Carbon::parse($d->tanggal)->format('d-m-Y') }}</td>
-                            <td style="text-align: end;">{{ number_format($d->nominal),2}} </td>
-                            <td style="text-align: end;">{{$d->kuota}}</td>
+                            <tr>
+                            <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->problem }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->cause }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->corectiveaction }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->duedate }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->pic }}</td>
+                                    <td style="text-align: center; vertical-align: middle;">{{ $d->status }}</td>
+                            <td style="text-align: center; vertical-align: middle;" >{{ $d->remerks }}</td>
+
+
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
-                                <form action="{{ route('formupdateplan', ['id' => $d->id]) }}">
+                                <form action="{{ route('formupdatepicaewhfuel', ['id' => $d->id]) }}">
                                     <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
                                 </form>
                             </td>
-                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
-                                <form action="{{ route('deleteplanbarging', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                                    <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('deletepicaewhfuel', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
                             </td>
-                        </tr>
-                        @endforeach
+                                </tr>
+                            @endforeach
+
                     </tbody>
-                    
                     <tfoot>
                         <tr>
                             <th colspan="10" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
                         </tr>
                     </tfoot>
-                </table>   
-                                
-                
+                </table>                    
+
+
             </div>
         </div>
     </div>
 </div>
         
-        
-        
-        
-        
-    
-    
         
         
 

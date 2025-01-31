@@ -37,7 +37,7 @@
                             <div style="margin-bottom: 1rem;">
                                 <label for="kuota" style="font-weight: bold; font-size: 1rem;">Pilih Kategori:</label>
                                 <select id="kuota" name="kuota" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                                    <option value="" disabled selected>-- Pilih Kategori --</option>
+                                    <option value="" disabled selected>-- Select Category --</option>
                                     <option value="Ekspor">Ekspor</option>
                                     <option value="Domestik">Domestik</option>
                                 </select>

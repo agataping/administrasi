@@ -25,6 +25,7 @@ use App\Http\Controllers\DetailabarugiController;
 use App\Http\Controllers\StockJtController;
 use App\Http\Controllers\DetailNeracaController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ControllerEwhFuel;
 
 
 
@@ -298,36 +299,44 @@ Route::post('/addhpp', [HPPController::class, 'addhpp'])->middleware('auth')->na
 
 
 //internal P
-//1. pa ua
-Route::get('/indexewhfuel', [ProduksiController::class, 'indexewhfuel'])->middleware('auth')->name('indexewhfuel');
+//ewh fuel
+Route::get('/indexewhfuel', [ControllerEwhFuel::class, 'indexewhfuel'])->middleware('auth')->name('indexewhfuel');
+Route::get('/formewh', [ControllerEwhFuel::class, 'formewh'])->middleware('auth')->name('formewh');
+Route::get('/formfuel', [ControllerEwhFuel::class, 'formfuel'])->middleware('auth')->name('formfuel');
+Route::get('/indexewh', [ControllerEwhFuel::class, 'indexewh'])->middleware('auth')->name('indexewh');
+Route::get('/indexfuel', [ControllerEwhFuel::class, 'indexfuel'])->middleware('auth')->name('indexfuel');
+Route::post('/createewh', [ControllerEwhFuel::class, 'createewh'])->middleware('auth')->name('createewh');
+Route::post('/createfuel', [ControllerEwhFuel::class, 'createfuel'])->middleware('auth')->name('createfuel');
+Route::get('/formupdateewh/{id}', [ControllerEwhFuel::class, 'formupdateewh'])->middleware('auth')->name('formupdateewh');
+Route::get('/formupdatefuel/{id}', [ControllerEwhFuel::class, 'formupdatefuel'])->middleware('auth')->name('formupdatefuel');
+Route::post('/updateewh/{id}', [ControllerEwhFuel::class, 'updateewh'])->middleware('auth')->name('updateewh');
+Route::post('/updatefuel/{id}', [ControllerEwhFuel::class, 'updatefuel'])->middleware('auth')->name('updatefuel');
+Route::delete('/deleteewh/{id}', [ControllerEwhFuel::class, 'deleteewh'])->middleware('auth')->name('deleteewh');
+Route::delete('/deletefuel/{id}', [ControllerEwhFuel::class, 'deletefuel'])->middleware('auth')->name('deletefuel');
+//picaa ewh fuel
+Route::get('/picaewhfuel', [ControllerEwhFuel::class, 'picaewhfuel'])->middleware('auth')->name('picaewhfuel');
+Route::post('/createpicaewhfuel', [ControllerEwhFuel::class, 'createpicaewhfuel'])->middleware('auth')->name('createpicaewhfuel');
+Route::get('/formpicaewhfuel', [ControllerEwhFuel::class, 'formpicaewhfuel'])->middleware('auth')->name('formpicaewhfuel');
+Route::get('/formupdatepicaewhfuel/{id}', [ControllerEwhFuel::class, 'formupdatepicaewhfuel'])->middleware('auth')->name('formupdatepicaewhfuel');
+Route::post('/updatepicaewhfuel/{id}', [ControllerEwhFuel::class, 'updatepicaewhfuel'])->middleware('auth')->name('updatepicaewhfuel');
+Route::delete('/deletepicaewhfuel/{id}', [ControllerEwhFuel::class, 'deletepicaewhfuel'])->middleware('auth')->name('deletepicaewhfuel');
 
+//. pa ua
 Route::get('/indexpaua', [ProduksiController::class, 'indexpaua'])->middleware('auth')->name('indexpaua');
 Route::get('/indexproduksipa', [ProduksiController::class, 'indexproduksipa'])->middleware('auth')->name('indexproduksipa');
 Route::get('/indexproduksiua', [ProduksiController::class, 'indexproduksiua'])->middleware('auth')->name('indexproduksiua');
-Route::get('/indexewh', [ProduksiController::class, 'indexewh'])->middleware('auth')->name('indexewh');
-Route::get('/indexfuel', [ProduksiController::class, 'indexfuel'])->middleware('auth')->name('indexfuel');
 Route::get('/unit', [ProduksiController::class, 'unit'])->middleware('auth')->name('unit');
 Route::post('/createunit', [ProduksiController::class, 'createunit'])->middleware('auth')->name('createunit');
 Route::get('/formproduksipa', [ProduksiController::class, 'formproduksipa'])->middleware('auth')->name('formproduksipa');
 Route::get('/formproduksiua', [ProduksiController::class, 'formproduksiua'])->middleware('auth')->name('formproduksiua');
-Route::get('/formewh', [ProduksiController::class, 'formewh'])->middleware('auth')->name('formewh');
-Route::get('/formfuel', [ProduksiController::class, 'formfuel'])->middleware('auth')->name('formfuel');
 Route::post('/createproduksiua', [ProduksiController::class, 'createproduksiua'])->middleware('auth')->name('createproduksiua');
 Route::post('/createproduksipa', [ProduksiController::class, 'createproduksipa'])->middleware('auth')->name('createproduksipa');
-Route::post('/createewh', [ProduksiController::class, 'createewh'])->middleware('auth')->name('createewh');
-Route::post('/createfuel', [ProduksiController::class, 'createfuel'])->middleware('auth')->name('createfuel');
 Route::get('/formupdateproduksipa/{id}', [ProduksiController::class, 'formupdateproduksipa'])->middleware('auth')->name('formupdateproduksipa');
 Route::get('/formupdateproduksiua/{id}', [ProduksiController::class, 'formupdateproduksiua'])->middleware('auth')->name('formupdateproduksiua');
-Route::get('/formupdateewh/{id}', [ProduksiController::class, 'formupdateewh'])->middleware('auth')->name('formupdateewh');
-Route::get('/formupdatefuel/{id}', [ProduksiController::class, 'formupdatefuel'])->middleware('auth')->name('formupdatefuel');
 Route::post('/updateproduksipa/{id}', [ProduksiController::class, 'updateproduksipa'])->middleware('auth')->name('updateproduksipa');
 Route::post('/updateproduksiua/{id}', [ProduksiController::class, 'updateproduksiua'])->middleware('auth')->name('updateproduksiua');
-Route::post('/updateewh/{id}', [ProduksiController::class, 'updateewh'])->middleware('auth')->name('updateewh');
-Route::post('/updatefuel/{id}', [ProduksiController::class, 'updatefuel'])->middleware('auth')->name('updatefuel');
 Route::delete('/deleteproduksiua/{id}', [ProduksiController::class, 'deleteproduksiua'])->middleware('auth')->name('deleteproduksiua');
 Route::delete('/deleteproduksipa/{id}', [ProduksiController::class, 'deleteproduksipa'])->middleware('auth')->name('deleteproduksipa');
-Route::delete('/deleteewh/{id}', [ProduksiController::class, 'deleteewh'])->middleware('auth')->name('deleteewh');
-Route::delete('/deletefuel/{id}', [ProduksiController::class, 'deletefuel'])->middleware('auth')->name('deletefuel');
 
 //pica pa ua
 Route::get('/picapaua', [ProduksiController::class, 'picapaua'])->middleware('auth')->name('picapaua');
