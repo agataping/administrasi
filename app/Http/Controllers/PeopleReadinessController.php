@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
-use App\Models\PeopleReadiness;
+use App\Models\Peoplereadiness;
 use App\Models\picaPeople;
 use App\Models\Gambar;
 use App\Models\HistoryLog;
@@ -79,19 +79,19 @@ class PeopleReadinessController extends Controller
             }
             
 
-            return view('PeopleReadiness.index', compact('data','averageQuality', 'averageQuantity','tot'));
+            return view('Peoplereadiness.index', compact('data','averageQuality', 'averageQuantity','tot'));
         }
         
         public function formPR()
         {
             $user = Auth::user();  
-            return view('PeopleReadiness.addData');
+            return view('Peoplereadiness.addData');
         }
         
         public function formupdate($id)
         {
-            $peopleReadiness = PeopleReadiness::findOrFail($id);
-            return view('PeopleReadiness.update', compact('peopleReadiness'));
+            $peopleReadiness = Peoplereadiness::findOrFail($id);
+            return view('Peoplereadiness.update', compact('peopleReadiness'));
         }
         
         public function updatedata(Request $request, $id)
@@ -117,7 +117,7 @@ class PeopleReadinessController extends Controller
             
             $validatedData['updated_by'] = auth()->user()->username;
             
-            $peopleReadiness = PeopleReadiness::findOrFail($id);
+            $peopleReadiness = Peoplereadiness::findOrFail($id);
             $oldData = $peopleReadiness->toArray();
             
             $peopleReadiness->update($validatedData);
@@ -156,7 +156,7 @@ class PeopleReadinessController extends Controller
                 
             ]);
             $validatedData['created_by'] = auth()->user()->username;
-            $peopleReadiness=PeopleReadiness::create($validatedData);    
+            $peopleReadiness=Peoplereadiness::create($validatedData);    
             HistoryLog::create([
                 'table_name' => 'people_readiness', 
                 'record_id' => $peopleReadiness->id, 
@@ -171,7 +171,7 @@ class PeopleReadinessController extends Controller
 
         public function deletepeoplereadines ($id)
         {
-            $peopleReadiness = PeopleReadiness::findOrFail($id);
+            $peopleReadiness = Peoplereadiness::findOrFail($id);
             $oldData = $peopleReadiness->toArray();
             
             // Hapus data dari tabel 
@@ -279,7 +279,7 @@ class PeopleReadinessController extends Controller
 
         public function deletepicapeole ($id)
         {
-            $peopleReadiness = PeopleReadiness::findOrFail($id);
+            $peopleReadiness = Peoplereadiness::findOrFail($id);
             $oldData = $peopleReadiness->toArray();
             
             // Hapus data dari tabel 
@@ -305,11 +305,11 @@ class PeopleReadinessController extends Controller
         public function struktur()
         {
             $gambar = Gambar::latest()->first();
-            return view('PeopleReadiness.organisasi.index', compact('gambar'));
+            return view('Peoplereadiness.organisasi.index', compact('gambar'));
         }
 
         public function formbagan(){
-            return view('PeopleReadiness.organisasi.addGambar');
+            return view('Peoplereadiness.organisasi.addGambar');
         }
 
         public function createbagan(Request $request)
