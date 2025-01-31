@@ -62,7 +62,7 @@
                 
 
 
-                <table class="table table-bordered" id="myTable">
+                <table class="table table-ed" id="myTable">
                     <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
                     >
                         <tr>
