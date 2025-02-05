@@ -27,20 +27,31 @@
                     <div class="col-2 d-flex justify-content-center align-items-center" style="background-color:rgb(221, 255, 0); font-size: 2em; font-weight: bold;">
                         %
                     </div>
-                    <div class="col text-center" style="">
-                        @if(isset($companyName) && $companyName->isNotEmpty())
+                    
+                    <div class="col text-center">
                         <h4>KPI</h4>
-                        <ul> <h4>
+                        
+                        @if($user->role === 'admin')
+                        @if($companyName->isEmpty())
+                        <p>Tidak ada perusahaan yang memiliki laporan.</p>
+                        @else
+                        <ul>
                             @foreach ($companyName as $company)
                             <li>{{ $company->company_name }}</li>
-                            @endforeach </h4>
+                            @endforeach
                         </ul>
-                        @else
-                        <p>Tidak ada perusahaan yang memiliki laporan.</p>
                         @endif
-                        
-                    </div>  
+                        @else
+                        @if($companyName)
+                       <h4> <p> {{ $companyName->company_name }}</p></h4>
+                        @else
+                        <p>Tidak ada perusahaan yang ditemukan.</p>
+                        @endif
+                        @endif
+                    </div>
+                    
                 </div>
+                
                 
 
                 <div class="row mt-1" style="border: 2px solid black;">

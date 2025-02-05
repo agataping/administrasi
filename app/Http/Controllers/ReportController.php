@@ -12,30 +12,34 @@ use Illuminate\Support\Facades\Auth;
 class ReportController extends Controller
 {
     public function reportkpi() {
-
         $user = Auth::user();
-
 
         if ($user->role === 'admin') {
             // Ambil perusahaan dari user yang pernah menginput laporan (created_by)
             $companyName = DB::table('detailabarugis')
-                ->join('users', 'detailabarugis.created_by', '=', 'users.username') // Ambil user yang buat laporan
-                ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id') // Hubungkan dengan perusahaan
+                ->join('users', 'detailabarugis.created_by', '=', 'users.username')
+                ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
                 ->select('perusahaans.nama as company_name')
                 ->distinct() // Hindari duplikasi
                 ->get();
-    // dd($companyName);
+            
             if ($companyName->isEmpty()) {
                 return response()->json(['message' => 'Tidak ada perusahaan yang memiliki laporan'], 404);
             }
-    
         } else {
             // Jika bukan admin, ambil perusahaan user sendiri
             $companyName = DB::table('users')
                 ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
                 ->select('perusahaans.nama as company_name')
                 ->where('users.id', $user->id)
-                ->first();}    
+                ->first();
+            
+            if (!$companyName) {
+                return response()->json(['message' => 'Perusahaan tidak ditemukan'], 404);
+            }
+        }
+        
+               
         $query = DB::table('detailabarugis')
             ->join('sub_labarugis', 'detailabarugis.sub_id', '=', 'sub_labarugis.id')
             ->join('category_labarugis', 'sub_labarugis.kategori_id', '=', 'category_labarugis.id')
@@ -397,6 +401,7 @@ class ReportController extends Controller
         return view('pt.report', compact('totals',
         //nama perusahaan
         'companyName',
+        'user',
         //laba rugi 
         'totalRevenuea', 'totalRevenuep', //revenue 
         'totalvertikal', 'totalvertikals','persenlb', //laba rugi
