@@ -26,6 +26,7 @@ use App\Http\Controllers\StockJtController;
 use App\Http\Controllers\DetailNeracaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ControllerEwhFuel;
+use App\Http\Controllers\ReportController;
 
 
 
@@ -215,7 +216,6 @@ Route::get('/stockjt', [StockJtController::class, 'stockjt'])->middleware('auth'
 Route::get('/formstockjt', [StockJtController::class, 'formstockjt'])->middleware('auth')->name('formstockjt');
 Route::get('/formupdatestockjt/{id}', [StockJtController::class, 'formupdatestockjt'])->middleware('auth')->name('formupdatestockjt');
 Route::post('/createstockjt', [StockJtController::class, 'createstockjt'])->middleware('auth')->name('createstockjt');
-Route::get('/formupatestockjt/{id}', [StockJtController::class, 'formupatestockjt'])->middleware('auth')->name('formupatestockjt');
 Route::post('/updatestockjt/{id}', [StockJtController::class, 'updatestockjt'])->middleware('auth')->name('updatestockjt');
 Route::delete('/deletestockjt/{id}', [StockJtController::class, 'deletestockjt'])->middleware('auth')->name('deletestockjt');
 //pica
@@ -364,7 +364,7 @@ Route::get('/formpicaobc', [OverberdenCoalController::class, 'formpicaobc'])->mi
 Route::post('/createpicaobc', [OverberdenCoalController::class, 'createpicaobc'])->middleware('auth')->name('createpicaobc');
 Route::get('/formupdatepicaobc/{id}', [OverberdenCoalController::class, 'formupdatepicaobc'])->middleware('auth')->name('formupdatepicaobc');
 Route::post('/updatepicaobc/{id}', [OverberdenCoalController::class, 'updatepicaobc'])->middleware('auth')->name('updatepicaobc');
-Route::delete('/deletepica/{id}', [OverberdenCoalController::class, 'deletepica'])->middleware('auth')->name('deletepica');
+Route::delete('/deletepicaobc/{id}', [OverberdenCoalController::class, 'deletepicaobc'])->middleware('auth')->name('deletepicaobc');
 
 
 
@@ -377,3 +377,6 @@ Route::get('/kontraktor', [PerusahaanController::class, 'kontraktor'])->middlewa
 Route::get('/mineral', [PerusahaanController::class, 'mineral'])->middleware('auth')->name('mineral');
 Route::get('/nonenergi', [PerusahaanController::class, 'nonenergi'])->middleware('auth')->name('nonenergi');
 Route::get('/dummy', [PerusahaanController::class, 'dummy'])->middleware('auth')->name('dummy');
+
+//report kpi
+Route::get('/reportkpi', [ReportController::class, 'reportkpi'])->middleware('auth')->name('reportkpi');

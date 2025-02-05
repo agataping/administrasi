@@ -29,11 +29,11 @@
                 </form>
 
      
-
+                <div class="" style="overflow-x:auto;">
                 <div class="dashboard-container">
                     <!-- Over Burden Section -->
                     <div class="section-card">
-                        <h3 class="section-title">Actual & Plan</h3>
+                        <h3 class="section-title">Plan & Actual</h3>
                         <div class="metrics-grid">
                             <div class="metric">
                                 <a href="{{ route('indexPlan') }}" class="cardcost text-decoration-none">
@@ -71,6 +71,8 @@
                     </div>
 
                 </div>
+                </div>
+
             </div>
         </div>
     </div>

@@ -25,7 +25,7 @@
                 </div>
                 @endif
 
-                <form action="{{ route('createstockjt') }}" method="post">
+                <form action="{{ route('createstockjt') }}" method="post" enctype="multipart/form-data">
                     @csrf
 
                     <input type="hidden" name="created_by" value="{{ Auth::user()->username }}">
@@ -39,6 +39,20 @@
                         <label for="stock">Opening Stock</label>
                         <input type="number" class="form-control" id="stockawal" name="sotckawal" min="" >
                     </div>
+
+                    <div class="form-group" id="plan" style="display: none;">
+                        <label for="stock">Plan</label>
+                        <input type="number" class="form-control" id="plan" name="plan" min="" >
+                    </div>
+                    <div class="form-group" id="file" style="display: none;">
+                        <label for="file">File</label>
+                        <input type="file" class="form-control" id="file" name="file" min="" >
+                    </div>
+                    <div class="form-group" id="stockout" style="display: none;">
+                        <label for="stockout">Stock Out</label>
+                        <input type="number" class="form-control" id="stockout" name="stockout" min="" >
+                    </div>
+
 
                     <div class="form-group">
                         <label for="shift_pertama">Shift I</label>
@@ -61,8 +75,10 @@
                     
                     <div class="d-flex justify-content-end mt-3">
                         <button type="button" id="stockbtn" class="btn btn-custom">Add Opening stock</button>
+                        <button type="button" id="planBtn" class="btn btn-custom">Add Plan</button>
+                        <button type="button" id="stockoutBtn" class="btn btn-custom ml-2">Add Stock Out</button>
                     </div>
-
+                    
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
                     </div>
@@ -90,16 +106,30 @@
         shiftKedua.addEventListener('input', calculateTotal);
     });
 
-    document.getElementById('stockbtn').addEventListener('click', function() {
+    document.getElementById('stockbtn').addEventListener('click', function () {
         const stockDiv = document.getElementById('stock');
         if (stockDiv.style.display === 'none' || stockDiv.style.display === '') {
-            stockDiv.style.display = 'block'; 
-            this.textContent = 'Remove Opening Stock'; 
+            stockDiv.style.display = 'block';
+            this.textContent = 'Remove Opening Stock';
         } else {
-            stockDiv.style.display = 'none'; 
-            this.textContent = 'Add Opening Stock'; 
+            stockDiv.style.display = 'none';
+            this.textContent = 'Add Opening Stock';
         }
-    });    
+    });
+
+    document.getElementById('planBtn').addEventListener('click', function() {
+        document.getElementById('plan').style.display = 'block';
+        document.getElementById('file').style.display = 'block';
+        document.getElementById('stockout').style.display = 'none';
+    });
+
+    document.getElementById('stockoutBtn').addEventListener('click', function() {
+        document.getElementById('plan').style.display = 'none';
+        document.getElementById('file').style.display = 'none';
+        document.getElementById('stockout').style.display = 'block';
+    });
+    
+    
     
 </script>
 @endsection

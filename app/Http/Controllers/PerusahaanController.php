@@ -42,10 +42,29 @@ class PerusahaanController extends Controller
         //iup dll
         public function iup()
         {
-            $data = DB::table('perusahaans')->where('induk', 'IUP')->get();
-            return view('pt.iup',compact('data'));
-        }
+            // Ambil data pengguna yang sedang login
+            $user = auth()->user();
+            // Cek apakah user adalah admin
+            if (auth()->user()->role === 'admin') {
+                // Jika admin, ambil semua perusahaan dengan induk 'IUP'
+                $data = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'IUP')
+                ->select('perusahaans.*')
+                ->get();
+            } else {
+                // Jika bukan admin, hanya tampilkan perusahaan terkait user
+                $data = DB::table('perusahaans')
+                ->join('users', 'perusahaans.id', '=', 'users.id_company')
+                ->where('users.id', auth()->id()) 
+                ->where('perusahaans.induk', 'IUP') 
+                ->select('perusahaans.*')
+                ->get();
+            }
+            
 
+            return view('pt.iup', compact('data'));
+        }
+                
         public function nonenergi()
         {
             $data = DB::table('perusahaans')->where('induk', 'Non Energi')->get();

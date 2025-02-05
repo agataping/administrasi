@@ -82,7 +82,7 @@
                                 </form>
                             </td>
                                     <td style="text-align: center; vertical-align: middle;"  rowspan="">
-                                <form action="{{ route('dletepicaobc', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                                <form action="{{ route('deletepicaobc', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>

@@ -46,7 +46,7 @@
                     </div>
 
                     <!-- Grid Container -->
-                    <div >
+                    <div class="grid-container  justify-content-center">
                         @foreach($data as $item)
                         <div class="grid-item">
                             <div class="cardcostum">

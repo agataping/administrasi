@@ -28,17 +28,14 @@ class DetailabarugiController extends Controller
         ->join('jenis_labarugis', 'category_labarugis.jenis_id', '=', 'jenis_labarugis.id')
         ->select(
             'category_labarugis.namecategory as kategori_name',
+            'category_labarugis.id as category_id',
             'jenis_labarugis.name as jenis_name',
             'jenis_labarugis.name',
             'sub_labarugis.id as sub_id',
-            'detailabarugis.id as detail_id',
-
             'sub_labarugis.namesub as name_sub',
-            'detailabarugis.nominalplan',
-            'detailabarugis.nominalactual',
-            'detailabarugis.tanggal',
-            'detailabarugis.desc',
-            'category_labarugis.id as category_id'
+            'detailabarugis.id as detail_id',
+            'detailabarugis.*'
+
         )
         ->where('detailabarugis.created_by', auth()->user()->username); 
 
@@ -50,30 +47,39 @@ class DetailabarugiController extends Controller
         $data = $query->orderBy('category_labarugis.created_at', 'asc') 
         ->get()
         ->groupBy(['jenis_name', 'kategori_name']);
-    
-    $totalRevenuea = (clone $query)
+        
+        $totalRevenuea = (clone $query) 
         ->where('category_labarugis.namecategory', 'Revenue')
         ->get()
         ->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
-    
-    $totallkactual = (clone $query)
-        ->where('jenis_labarugis.name', 'Laba Kotor')
+        
+        $totallkactual = (clone $query)
+        ->join('category_labarugis AS cat1', 'sub_labarugis.kategori_id', '=', 'cat1.id') 
+        ->join('jenis_labarugis AS jenis1', 'cat1.jenis_id', '=', 'jenis1.id') 
+        
+        ->where('jenis1.name', 'Gross Profit') 
+        ->where('cat1.namecategory', '!=', 'Revenue') 
         ->get()
         ->sum(function ($item) {
-            return (float)str_replace(',', '', $item->nominalactual ?? 0);
+            return (float) str_replace(',', '', $item->nominalactual ?? 0);
         });
-    
-    $totallkplan = (clone $query)
-        ->where('jenis_labarugis.name', 'Laba Kotor')
+
+        $totallkplan = (clone $query)
+        ->join('category_labarugis AS cat1', 'sub_labarugis.kategori_id', '=', 'cat1.id') 
+        ->join('jenis_labarugis AS jenis1', 'cat1.jenis_id', '=', 'jenis1.id') 
+        ->where('jenis1.name', 'Gross Profit') 
+        ->where('cat1.namecategory', '!=', 'Revenue') 
         ->get()
         ->sum(function ($item) {
-            return (float)str_replace(',', '', $item->nominalplan ?? 0);
+            return (float) str_replace(',', '', $item->nominalplan ?? 0);
         });
+        
+    
     
         
-    $totalRevenuep = (clone $query)
+        $totalRevenuep = (clone $query)
         ->where('category_labarugis.namecategory', 'Revenue')
         ->get()
         ->sum(function ($item) {
@@ -81,13 +87,13 @@ class DetailabarugiController extends Controller
         });
         //operasional
         $planoperasional = (clone $query)
-        ->where('jenis_labarugis.name', 'Laba Operasional')
+        ->where('jenis_labarugis.name', 'Operating Profit')
         ->get()
         ->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
         });
         $actualoperasional = (clone $query)
-        ->where('jenis_labarugis.name', 'Laba Operasional')
+        ->where('jenis_labarugis.name', 'Operating Profit')
         ->get()
         ->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
@@ -95,31 +101,44 @@ class DetailabarugiController extends Controller
 
         //lababersih
         $planlb = (clone $query)
-        ->where('jenis_labarugis.name', 'Laba Bersih')
+        ->where('jenis_labarugis.name', 'Net Profit')
         ->get()
         ->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
         });
         $actuallb = (clone $query)
-        ->where('jenis_labarugis.name', 'Laba Bersih')
+        ->where('jenis_labarugis.name', 'Net Profit')
         ->get()
         ->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
+                // dd($actuallb );
+
         //laba rugi 
         $totalplanlr = $totalRevenuep-$totallkplan;
         $totalactuallr = $totalRevenuea-$totallkactual;
-        $totalvertikal = $totalplanlr ? ($totalplanlr / $totalplanlr) * 100 : 0;
+        $totalvertikal = $totalplanlr ? ($totalplanlr / $totalRevenuep) * 100 : 0;
+        $totalvertikals = $totalRevenuea ? ($totalactuallr / $totalRevenuea) * 100 : 0;
+        $deviasilr = $totalplanlr-$totalactuallr;
+        $persenlr = $totalplanlr ? ($totalactuallr / $totalplanlr) * 100 : 0;
         //operasional
-        $totalplanlp = $planoperasional-$totalplanlr;
-        $totalactual = $actualoperasional-$totalactuallr;
+        $totalplanlp = $totalplanlr-$planoperasional;
+        $totalactualOp = $actualoperasional-$totalactuallr;
         $verticallp = $totalRevenuep ? ($totalplanlp / $totalRevenuep) * 100 : 0;
+        $verticalsp = $totalRevenuea ? ($totalactualOp / $totalRevenuea) * 100 : 0;
+        $deviasiop = $totalplanlp-$totalactualOp;
+        $persenop = $totalplanlp ? ($totalactualOp / $totalplanlp) * 100 : 0;
         //lababersih
-        $totalplanlb = $planlb-$planoperasional;
+        $totalplanlb = $totalplanlp-$planlb;
         $totalactuallb = $actualoperasional-$actuallb;
+        // dd($totalactuallb );
         $verticallb = $totalRevenuep ? ($totalplanlb / $totalRevenuep) * 100 : 0;
-        
-        
+        $verticalslb = $totalRevenuea ? ($totalactuallb / $totalRevenuea) * 100 : 0;
+        $deviasilb = $totalplanlb-$totalactuallb;
+        $persenlb = $totalplanlb ? ($totalactuallb / $totalplanlb) * 100 : 0;
+   
+        // dd($totalplanlb, $totalactuallb, $verticallb, $verticalslb, $persenlb);
+
         if ($totalRevenuea === 0 || !$totalRevenuea) {
             $totalRevenuea = null;
         }
@@ -130,17 +149,18 @@ class DetailabarugiController extends Controller
         $totals = $data->map(function ($categories, $jenisName) use (&$totalRevenuep, &$totalRevenuea) {
             $categoryTotalPlan = 0;
             $categoryTotalActual = 0;
-            
             // Grup berdasarkan kategori (kategori_name)
-            $subCategories = $categories->map(function ($kategori, $kategoriName) use (&$categoryTotalPlan, &$categoryTotalActual, $totalRevenuea, $totalRevenuep) {
-                $subCategoryDetails = $kategori->groupBy('name_sub')->map(function ($items, $subCategory) use (&$categoryTotalPlan, &$categoryTotalActual, $totalRevenuea, $totalRevenuep) {
+            $subCategories = $categories->map(function ($kategori, $kategoriName) use ($totalRevenuea, $totalRevenuep) {
+            
+                $subCategoryDetails = $kategori->groupBy('name_sub')->map(function ($items, $subCategory) use ($totalRevenuea, $totalRevenuep, &$categoryTotalPlan, &$categoryTotalActual) {
                     $totalPlan = $items->sum(function ($item) {
                         return (float)str_replace(',', '', $item->nominalplan ?? 0);
                     });
                     $totalActual = $items->sum(function ($item) {
                         return (float)str_replace(',', '', $item->nominalactual ?? 0);
                     });
-                    
+
+
                     // Menampilkan hasil
                     $categoryTotalPlan += $totalPlan;
                     $categoryTotalActual += $totalActual;
@@ -180,17 +200,12 @@ class DetailabarugiController extends Controller
             ];
         });
         
-        $page = request('page', 1);
-        $perPage = 15;
-        $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
-            $data->forPage($page, $perPage),
-            $data->count(),
-            $perPage,
-            $page,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+ 
         return view('labarugi.index', compact('totals','totalplanlr','totalvertikal','totalactuallr'
-        ,'totalplanlp','verticallp','totalactual','paginatedData'));
+        ,'totalplanlp','verticallp','totalactualOp','verticalsp','persenlb',
+        'deviasilb','verticalslb', 'deviasiop','persenop', 'deviasilr','persenlr','totalvertikals',
+        'persenlb','deviasilb','verticalslb','verticallb','totalplanlb','totalactuallb'
+            ));
     }
     
     public function formlabarugi()

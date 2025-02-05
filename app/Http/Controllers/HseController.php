@@ -31,7 +31,7 @@ class HseController extends Controller
             'kategori_hses.name as kategori_name',
             'users.username as created_by'
         )
-        ->where('pica_bargings.created_by', auth()->user()->username); 
+        ->where('hses.created_by', auth()->user()->username); 
 
         if ($startDate && $endDate) {
             $query->whereBetween('hses.date', [$startDate, $endDate]); 

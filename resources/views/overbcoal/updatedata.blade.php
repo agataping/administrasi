@@ -25,7 +25,7 @@
                 </div>
                 @endif
 
-                <form action="{{ route('updateovercoal',$data->id) }}" method="post">
+                <form action="{{ route('updateovercoal',$data->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="type" value="{{ $type }}">
 
@@ -58,6 +58,17 @@
                         <label for="plan">Nominal Plan</label>
                         <input type="text" class="form-control" value="{{$data->nominalplan}}" id="plan" name="nominalplan">
                     </div>
+                    <!-- File -->
+                    <div id="fileInput" style="display: none;" class="form-group">
+                        <label for="file">File</label>
+                        <input type="file" class="form-control" id="file" name="file">
+                        
+                        @if($data->file)
+                        <a href="{{ asset('storage/' . $data->file) }}" target="_blank">View File</a>
+                        @endif
+                    </div>
+                    
+
 
                     <div id="actualInput" style="display: none;" class="form-group">
                         <label for="actual">Nominal Actual</label>
@@ -87,6 +98,8 @@
     document.getElementById('planBtn').addEventListener('click', function() {
         // Tampilkan Plan, sembunyikan Actual
         document.getElementById('planInput').style.display = 'block';
+        document.getElementById('fileInput').style.display = 'block';
+
         document.getElementById('actualInput').style.display = 'none';
 
         // Menambahkan class aktif pada tombol
@@ -98,6 +111,8 @@
         // Tampilkan Actual, sembunyikan Plan
         document.getElementById('actualInput').style.display = 'block';
         document.getElementById('planInput').style.display = 'none';
+        document.getElementById('fileInput').style.display = 'none';
+
 
         // Menambahkan class aktif pada tombol
         document.getElementById('actualBtn').classList.add('active');
@@ -106,14 +121,20 @@
 
     // Menentukan input mana yang pertama kali tampil berdasarkan kondisi nilai
     window.onload = function() {
-        const planValue = "{{ $data->nominalplan }}";  // Nilai nominal plan
-        const actualValue = "{{ $data->nominalactual }}";  // Nilai nominal actual
-        
-        if(planValue && !actualValue) {
-            document.getElementById('planBtn').click();  // Jika hanya Plan yang ada, tampilkan Plan
-        } else if(actualValue) {
-            document.getElementById('actualBtn').click();  // Jika Actual ada, tampilkan Actual
+        const planValue = "{{ $data->nominalplan }}";  
+        const actualValue = "{{ $data->nominalactual }}";  
+        const fileValue = "{{ $data->file}}"; // file
+        if (planValue && !actualValue && !fileValue) {
+            document.getElementById('planBtn').click();  
+        } else if (planValue && fileValue && !actualValue) {
+            document.getElementById('planFileBtn').click();  
+        } else if (actualValue) {
+            document.getElementById('actualBtn').click();  
         }
+        
+        
     };
+    
+    
 </script>
 @endsection

@@ -14,34 +14,12 @@
     <!-- Bootstrap core CSS -->
 <link href="{{asset ('style/assets/dist/css/bootstrap.min.css')}}" rel="stylesheet">
 
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-      .form-floating {
-    margin-bottom: 15px;
-}
-
-.alert {
-    margin-bottom: 20px;
-}
-
-    </style>
     <link href="{{asset('css/signin.css')}}" rel="stylesheet">
     
 </head>
 
-<body style="font-family: 'Arial', sans-serif; background-color: #f9f9f9;">
+<body style="font-family: 'Arial', sans-serif;">
 
   <main class="form-signin d-flex align-items-center justify-content-center" style="height: 80vh;">
     <div class="card p-5 border-0 shadow" style="border-radius: 12px; max-width: 400px; width: 100%;">

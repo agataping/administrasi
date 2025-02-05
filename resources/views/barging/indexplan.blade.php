@@ -34,7 +34,7 @@
                         </form>
                     </div>
                 </div>
-                
+                <div class="" style="overflow-x:auto;">
                 <form method="GET" action="{{ route('indexPlan') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
@@ -58,7 +58,8 @@
                             <th rowspan="2"style="vertical-align: middle;">Tanggal</th>
                             <th rowspan="2"  style="vertical-align: middle;">Nominal</th>
                             <th rowspan="2"  style="vertical-align: middle;">Kuota</th>
-                            <th rowspan="2" colspan="2"  style="vertical-align: middle;">Aksi</th>
+                            <th rowspan="2"  style="vertical-align: middle;">file</th>
+                            <th rowspan="2" colspan="3"  style="vertical-align: middle;">Aksi</th>
                         </tr>
                     </thead>
 
@@ -69,12 +70,20 @@
                             <td>{{ \Carbon\Carbon::parse($d->tanggal)->format('d-m-Y') }}</td>
                             <td style="text-align: end;">{{ number_format($d->nominal),2}} </td>
                             <td style="text-align: end;">{{$d->kuota}}</td>
+                            <td>
+                                @php
+                                $fileExtension = $d->file_extension ?? 'unknown';
+                                @endphp
+                                <a href="{{ asset('storage/' . $d->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                            </td> 
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                 <form action="{{ route('formupdateplan', ['id' => $d->id]) }}">
                                     <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
                                 </form>
                             </td>
-                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                       
+                                <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                
                                 <form action="{{ route('deleteplanbarging', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
                                     @csrf
                                     @method('DELETE')
@@ -91,7 +100,8 @@
                         </tr>
                     </tfoot>
                 </table>   
-                                
+                </div>
+         
                 
             </div>
         </div>

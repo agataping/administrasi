@@ -32,8 +32,9 @@ class ProduksiController extends Controller
                 'produksi_pas.actual as pas_actual',
                 'produksi_uas.plan as uas_plan',
                 'produksi_uas.actual as uas_actual'
-            );
-    
+            )
+            ->where('produksi_pas.created_by', auth()->user()->username); 
+
         if ($startDate && $endDate) {
             $query->where(function ($q) use ($startDate, $endDate) {
                 $q->whereBetween('produksi_pas.tanggal', [$startDate, $endDate])

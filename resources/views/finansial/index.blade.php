@@ -63,6 +63,7 @@
                     </div> 
                 </div> 
 
+                <div class="table-responsive">
                 <table class="table table-bordered" >
                     <thead style="background-color:rgb(6, 99, 120)" class="text-white">
                         <tr>
@@ -124,6 +125,7 @@
 
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>

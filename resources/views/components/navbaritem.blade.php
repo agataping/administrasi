@@ -1,5 +1,8 @@
 @extends('components.header')
 @section('title', '')
+<style>
+</style>
+
 <nav class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color: #07a43b;">
     <a href="/dashboard" class="d-flex align-items-center text-decoration-none">
         <div class="ms-3">
@@ -22,15 +25,6 @@
             <li><a class="dropdown-item " href="/indexpicabarging">PICA Barging</a></li>
             <li><a class="dropdown-item " href="/stockjt">Stock Jetty</a></li>
             <li><a class="dropdown-item " href="/picastockjt">PICA Stock Jetty</a></li>
-            <!-- 
-                <li><a class="dropdown-item " href="/indexmproduction">Monthly Production</a></li>
-
-
-                <li><a class="dropdown-item " href="/indexPembebasanLahanCs">Pembebasan Lahan</a></li>
-
-                <li><a class="dropdown-item " href="/indexdeadlineCostumers">Deadline Compensations</a></li>
- -->
-
             </ul>
         </li>
 

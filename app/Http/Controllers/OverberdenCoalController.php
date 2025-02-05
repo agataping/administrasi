@@ -24,18 +24,9 @@ class OverberdenCoalController extends Controller
         $query = DB::table('overberden_coal')
         ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
         ->where('kategori_overcoals.name', 'Coal Getting')
-        ->select(
-            'kategori_overcoals.name as kategori_name',
-            'overberden_coal.nominalplan',
-            'overberden_coal.nominalactual',
-            'overberden_coal.tanggal',
-            'overberden_coal.desc',
-            'overberden_coal.id'
-            
-        )
+        ->select('kategori_overcoals.name as kategori_name','overberden_coal.*')
         ->where('overberden_coal.created_by', auth()->user()->username); 
 
-        
         if ($startDate && $endDate) {
             $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
         }
@@ -43,7 +34,12 @@ class OverberdenCoalController extends Controller
         $data = $query->orderBy('kategori_overcoals.name')
         ->get()
         ->groupBy('kategori_name');
-        
+
+        $data->each(function ($items) {
+            $items->each(function ($item) {
+                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+            });
+        });
         $totals = $data->map(function ($items, $category) {
             $totalPlan = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
@@ -80,13 +76,7 @@ class OverberdenCoalController extends Controller
         ->where('kategori_overcoals.name', 'Over Burden')
         
         ->select(
-            'kategori_overcoals.name as kategori_name',
-            'overberden_coal.nominalplan',
-            'overberden_coal.nominalactual',
-            'overberden_coal.tanggal',
-            'overberden_coal.desc',
-            'overberden_coal.id'
-        )
+            'kategori_overcoals.name as kategori_name','overberden_coal.*')
         ->where('overberden_coal.created_by', auth()->user()->username); 
 
         
@@ -97,7 +87,11 @@ class OverberdenCoalController extends Controller
         $data = $query->orderBy('kategori_overcoals.name')
         ->get()
         ->groupBy('kategori_name');
-        
+        $data->each(function ($items) {
+            $items->each(function ($item) {
+                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+            });
+        });
         $totals = $data->map(function ($items, $category)
         {
             $totalPlan = $items->sum(function ($item) {
@@ -133,10 +127,7 @@ class OverberdenCoalController extends Controller
         $query = DB::table('overberden_coal')
         ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
         ->select(
-            'kategori_overcoals.name as kategori_name',
-            'overberden_coal.nominalplan',
-            'overberden_coal.nominalactual',
-            'overberden_coal.tanggal'
+            'kategori_overcoals.name as kategori_name','overberden_coal.*'
         )
         ->where('overberden_coal.created_by', auth()->user()->username); 
 
@@ -189,9 +180,9 @@ class OverberdenCoalController extends Controller
                 'srplan',
                 'sractual',
                 'deviationactual',
-                'percentageactual'
+                'percentageactual',
+                 'data'
             ));
-        return view('overbcoal.indexcoal', compact('totals', 'data', 'startDate', 'endDate'));
     }
 
     public function formovercoal()
@@ -218,6 +209,8 @@ class OverberdenCoalController extends Controller
             'kategori_id' => 'required|string',
             'desc' => 'required|string',
             'tanggal' => 'required|date',
+            'file' => 'nullable|file',
+
         ]);
         $type = $request->input('kategori_id', '2');
         // Format nominal untuk menghapus koma
@@ -234,7 +227,11 @@ class OverberdenCoalController extends Controller
         } elseif ($request->has('nominalactual') && !$request->has('nominalplan')) {
             $validatedData['nominalplan'] = null;
         }
-        
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         $validatedData['created_by'] = auth()->user()->username;
         $data=OverbardenCoal::create($validatedData);
         HistoryLog::create([
@@ -261,6 +258,8 @@ class OverberdenCoalController extends Controller
             'kategori_id' => 'required|string',
             'desc' => 'required|string',
             'tanggal' => 'required|date',
+            'file' => 'nullable|file',
+
         ]);
         $type = $request->input('type', '2');
         
@@ -271,13 +270,18 @@ class OverberdenCoalController extends Controller
         $validatedData['nominalactual'] = isset($validatedData['nominalactual']) 
         ? str_replace(',', '', $validatedData['nominalactual']) 
         : null;
-        
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         // Tentukan mana yang diset null
         if ($request->has('nominalplan') && !$request->has('nominalactual')) {
             $validatedData['nominalactual'] = null;
         } elseif ($request->has('nominalactual') && !$request->has('nominalplan')) {
             $validatedData['nominalplan'] = null;
         }
+
         $validatedData['updated_by'] = auth()->user()->username;
         
         $OverbardenCoal = OverbardenCoal::findOrFail($id);
@@ -456,7 +460,7 @@ class OverberdenCoalController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/picaobc')->with('success', 'Data  berhasil Dihapus.');
     }
     
         

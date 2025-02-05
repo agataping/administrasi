@@ -117,7 +117,7 @@
                         </tr>
                         @endforeach
                         <tr>
-                            <th colspan="9" style="text-align: end; background-color: rgb(244, 244, 244);">Total Aspect</th>
+                            <th colspan="9" style="text-align: end; background-color: rgb(244, 244, 244);">Legal Aspect</th>
                             <th style="background-color: rgb(244, 244, 244); text-align: center;">
                                 {{ round($totalAspect , 2) }}%
                             </th>

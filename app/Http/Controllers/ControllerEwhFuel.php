@@ -8,6 +8,7 @@ use App\Models\ProduksiPa;
 use App\Models\ProduksiUa;
 use App\Models\Ewh;
 use App\Models\Fuel;
+use App\Models\Unit;
 use App\Models\PicaEwhFuel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;

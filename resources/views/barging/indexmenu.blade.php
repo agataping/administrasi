@@ -35,6 +35,7 @@
                     </div>
                 </div>
                 
+                <div class="" style="overflow-x:auto;">
 
 
                 <form method="GET" action="{{ route('indexmenu') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
@@ -56,7 +57,7 @@
                         Filter
                     </button>
                 </form>
-                
+
                 <table class="table table-bordered" id="myTable">
                     <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
                     >
@@ -113,6 +114,8 @@
                         </tfoot>
                     </tbody>
                 </table>
+                </div>
+
                 
                 
             </div>

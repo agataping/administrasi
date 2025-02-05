@@ -9,7 +9,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Over OverBurden</h2>
+            <a href="/indexovercoal" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Over Burden</h2>
+                </a>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -64,10 +66,11 @@
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Date</th>
                             <th   rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
                             <th   colspan=""  style="vertical-align: middle; text-align: center;">Plan</th>
+                            <th  rowspan="" style="vertical-align: middle; text-align: center;">File</th>
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Actual</th>
                             <th  rowspan="" style="vertical-align: middle; text-align: center;">Deviation</th>
                             <th  rowspan="" style="vertical-align: middle; text-align: center;">Percentage</th>
-                            <th  colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
+                            <th  colspan="3" style="vertical-align: middle; text-align: center;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -82,8 +85,11 @@
                                 {{ number_format($total['total_plan'], 2) }}
                             </th>
                             <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                                </th>
+                            <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                 {{ number_format($total['total_actual'], 2) }}
                             </th>
+
                             <th  style="vertical-align: middle; background-color: #f0f0f0; text-align: end;" >
                                 {{ number_format($total['deviation'], 2) }}
                             </th>
@@ -92,26 +98,38 @@
                             </th>
                             <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                             </th>
-                            <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                            <th  colspan="3" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                             </th>
+                            
 
 
                         </tr>
+                        
                         @foreach ($total['details'] as $subIndex => $detail)
                         <tr>
                         <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
                             <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d F Y') }}</td>
                             <td>{{ $detail->desc }}</td>
-                            <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalplan, 2) }}</td>
+                            <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalplan, 2) }} 
+                            </td>
+                            <td style="vertical-align: middle; text-align: end;"> 
+                            @php
+                                $fileExtension = $detail->file_extension;
+                                @endphp
+                                <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
+
+                            </td>
                             <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalactual, 2) }}</td>
+                            
                             <td></td>
                             <td></td>
-                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                          
+                            <td style="text-align: center; vertical-align: middle;"  colspan="2">
                                 <form action="{{ route('formupdateovercoal', ['id' => $detail->id]) }}">
                                     <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
                                 </form>
                             </td>
-                                    <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                            <td style="text-align: center; vertical-align: middle;"  colspan="2">
                                 <form action="{{ route('deleteovercoal', $detail->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
                                     @csrf
                                     @method('DELETE')

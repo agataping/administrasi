@@ -31,7 +31,7 @@
                         <a href="/fromadd" class="btn btn-custom">Add InfrastructureReadines</a>
                     </div>
                 </div> 
-                
+                <div class="" style="overflow-x:auto;">
                 <form method="GET" action="{{ route('indexInfrastructureReadiness') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
@@ -111,8 +111,9 @@
                 
                 
                 
-            </div>
-        </div>
+                </div>
+                </div>
+                </div>
     </div>
 </div>
     

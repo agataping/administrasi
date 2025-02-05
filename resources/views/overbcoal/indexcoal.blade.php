@@ -9,7 +9,10 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
+            <a href="/indexovercoal" class=" text-decoration-none " style="color: black;">
                 <h2 class="mb-3">COAL</h2>
+                </a>
+                <h2 class="mb-3"></h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -65,10 +68,11 @@
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Date</th>
                             <th   rowspan="" style="vertical-align: middle;  text-align: center;">Deskripsi</th>
                             <th   colspan=""  style="vertical-align: middle; text-align: center;">Plan</th>
+                            <th   colspan=""  style="vertical-align: middle; text-align: center;">File</th>
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Actual</th>
                             <th  rowspan="" style="vertical-align: middle; text-align: center;">Deviation</th>
                             <th  rowspan="" style="vertical-align: middle; text-align: center;">Percentage</th>
-                            <th  colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
+                            <th  colspan="3" style="vertical-align: middle; text-align: center;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,6 +85,9 @@
                             </th>
                             <th  style="vertical-align: middle; background-color: #f0f0f0; text-align: end;" >
                                 {{ number_format($total['total_plan'], 2) }}
+                            </th>
+                            <th  style="vertical-align: middle; background-color: #f0f0f0; text-align: end;" >
+                                
                             </th>
                             <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                 {{ number_format($total['total_actual'], 2) }}
@@ -106,7 +113,13 @@
                             <td>{{ $detail->desc }}</td>
                             <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalplan, 2) }}</td>
                             <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalactual, 2) }}</td>
-                            <td></td>
+                            <td>
+                                @php
+                                $fileExtension = $detail->file_extension;
+                                @endphp
+                                <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                            </td>
+
                             <td></td>
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                 <form action="{{ route('formupdateovercoal', ['id' => $detail->id]) }}">

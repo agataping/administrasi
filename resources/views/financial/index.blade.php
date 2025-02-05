@@ -26,7 +26,7 @@
                 </div>
                 
                 @endif
-                <div class="row justify-content-start">
+                <div class="row justify-content-start" >
                     <div class="col-auto">
                         <form action="{{ route('categoryneraca') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
@@ -46,6 +46,7 @@
                         </form>
                     </div>
                 </div>
+                <div style="overflow-x:auto;">
                 <form method="GET" action="{{ route('indexfinancial') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
@@ -154,6 +155,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -164,8 +166,6 @@
     
         
         
-
-
 
 
 

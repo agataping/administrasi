@@ -89,12 +89,12 @@ class MiningReadinessController extends Controller
                 }
                 return $items;
             });
-            return view('Mining.index', compact('groupedData', 'totalAspect'));
+            return view('mining.index', compact('groupedData', 'totalAspect'));
     }
         
     public function FormKategori()
     {
-        return view('Mining.formKategori');
+        return view('mining.formKategori');
     }
     
         
@@ -123,7 +123,7 @@ class MiningReadinessController extends Controller
     public function FormMining()
     {
         $kategori = KategoriMiniR::all();
-        return view('Mining.formMining', compact('kategori'));
+        return view('mining.formMining', compact('kategori'));
     }
     
     public function CreateMining(Request $request)
@@ -157,7 +157,7 @@ class MiningReadinessController extends Controller
     {
         $kategori = KategoriMiniR::all();
         $mining = MiningReadiness::findOrFail($id);    
-        return view('Mining.updateMining', compact('mining', 'kategori'));
+        return view('mining.updateMining', compact('mining', 'kategori'));
     }
     
     public function UpdateMining(Request $request, $id)

@@ -37,16 +37,18 @@
                     <div class="cardcostum">
                         <div class="cardcost">
                             <a href="/dashboard" class="cardcost text-decoration-none">
-                                <h3><b>IUP</b></h3>
-                                <div class="percentage-box"><h3>
+                                <h3><b>MARKETING</b></h3>
+                                <div class="percentage-box">
+                                    <h3>
                                     98%
-                                </h3></div>
+                                    </h3>
+                                </div>
                             </a>
                         </div>
                     </div>
 
                     <!-- Grid Container -->
-                    <div >
+                    <div class="grid-container  justify-content-center">
                         @foreach($data as $item)
                         <div class="grid-item">
                             <div class="cardcostum">

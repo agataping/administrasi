@@ -1,4 +1,48 @@
 <style>
+    @media (max-width: 768px) {
+    nav {
+        padding: 10px 20px; 
+    }
+
+    .nav-item {
+        margin-right: 10px; 
+    }
+
+    .dropdown-menu {
+        min-width: 150px; 
+    }
+
+    h5 {
+        font-size: 1rem; 
+    }
+
+    .flex-shrink-0 {
+        margin-left: 10px; 
+    }
+
+    .dropdown-menu-end {
+        width: auto; 
+    }
+}
+
+@media (min-width: 769px) {
+    nav {
+        padding: 15px 30px; 
+    }
+
+    .nav-item {
+        margin-right: 20px; 
+
+    }
+
+    .dropdown-menu {
+        min-width: 180px; 
+            h5 {
+        font-size: 1.2rem; 
+    }
+}
+}
+
     .row {
         margin: 20px 0;
     }
@@ -88,6 +132,8 @@
 
     .cardcostum:hover {
         box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        transform: translateY(-10px);
+
     }
 
     .cardcost {
@@ -128,5 +174,23 @@
     background-color: #4CAF50; 
     border-color: #4CAF50;
 }
+
+@media (max-width: 768px) {
+        .cardcost h3, .cardcost h4 {
+            font-size: 1.2rem;
+        }
+        .percentage-box h3 {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .percentage-box h3 {
+            font-size: 1.2rem;
+        }
+        .cardcost h3, .cardcost h4 {
+            font-size: 1rem;
+        }
+    }
 
 </style>

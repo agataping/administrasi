@@ -19,6 +19,8 @@ class StockJtController extends Controller
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');  
         $query = DB::table('stock_jts')
+        ->select('stock_jts.*')
+
         ->where('stock_jts.created_by', auth()->user()->username); 
 
         if ($startDate && $endDate) {
@@ -26,7 +28,9 @@ class StockJtController extends Controller
         }
         
        $data = $query->get();
-        
+       $data->each(function ($item) {
+        $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+     });
 
         $stokAwal = $data->whereNotNull('sotckawal')->first()->sotckawal ?? 0;
         
@@ -50,18 +54,32 @@ class StockJtController extends Controller
         $request->validate([
             'date' => 'required|date',
             'sotckawal' => 'nullable|numeric',
+            'stockout' => 'nullable|numeric',
+            'plan' => 'nullable|numeric',
             'shifpertama' => 'nullable|numeric',
             'shifkedua' => 'nullable|numeric',
             'totalhauling' => 'nullable|numeric',
-            'lokasi' =>'required'
+            'lokasi' =>'required',
+            'file' => 'nullable|file',
+
             
         ]);
-        // Cek apakah stok awal sudah ada untuk bulan ini
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public'); // Simpan ke storage/app/public/uploads
+        } else {
+            $filePath = null; // Jika tidak ada file, set null
+        }
+        
         $existingStock = StockJt::whereNotNull('sotckawal')->first();        
 
+        
             $data=StockJt::create([
                 'date' => $request->date,
                 'sotckawal' => $request->sotckawal,
+                'stockout' => $request->stockout,
+                'plan' => $request->plan,
+                'file' => $filePath,
                 'shifpertama' => $request->shifpertama,
                 'shifkedua' => $request->shifkedua,
                 'lokasi' => $request->lokasi,
@@ -81,36 +99,59 @@ class StockJtController extends Controller
         
     }
 
-        
+        public function formupdatestockjt($id){
+            $data = StockJt::findOrFail($id);
+            return view('stockjt.update', compact('data'));    
+        }
 
-    public function updatestockjt(Request $request,$id){
-        $request->validate([
-            'date' => 'required|date',
-            'sotckawal' => 'nullable|numeric',
-            'shifpertama' => 'nullable|numeric',
-            'shifkedua' => 'nullable|numeric',
-            'totalhauling' => 'nullable|numeric',
-            'lokasi' => 'required',
-        ]);
-        $validatedData['updated_by'] = auth()->user()->username;
+        public function updatestockjt(Request $request, $id) {
+            $request->validate([
+                'date' => 'required|date',
+                'sotckawal' => 'nullable|numeric',
+                'shifpertama' => 'nullable|numeric',
+                'shifkedua' => 'nullable|numeric',
+                'totalhauling' => 'nullable|numeric',
+                'lokasi' => 'required',
+                'stockout' => 'nullable|numeric',
+                'plan' => 'nullable|numeric',
+                'file' => 'nullable|file',
+            ]);
+            
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $filePath = $file->store('uploads', 'public');
+            } else {
+                $filePath = null;
+            }
         
-        $data =StockJt::findOrFail($id);
-        $oldData = $data->toArray();
+            $validatedData = $request->only([
+                'date', 'sotckawal', 'shifpertama', 'shifkedua', 'totalhauling', 
+                'lokasi', 'stockout', 'plan'
+            ]);
         
-        $data->update($validatedData);
+            if ($filePath) {
+                $validatedData['file'] = $filePath;
+            }
         
-        HistoryLog::create([
-            'table_name' => 'stock_jts', 
-            'record_id' => $id, 
-            'action' => 'update', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => json_encode($validatedData), 
-            'user_id' => auth()->id(), 
-        ]);        
-
-        return redirect('/stockjt')->with('success', 'Data berhasil diupdate.');
-    }
-    
+            $validatedData['updated_by'] = auth()->user()->username;
+        
+            $data = StockJt::findOrFail($id);
+            $oldData = $data->toArray();
+        
+            $data->update($validatedData);
+        
+            HistoryLog::create([
+                'table_name' => 'stock_jts',
+                'record_id' => $id,
+                'action' => 'update',
+                'old_data' => json_encode($oldData),
+                'new_data' => json_encode($validatedData),
+                'user_id' => auth()->id(),
+            ]);
+        
+            return redirect('/stockjt')->with('success', 'Data berhasil diupdate.');
+        }
+            
     public function deletestockjt ($id)
     {
         $data = StockJt::findOrFail($id);

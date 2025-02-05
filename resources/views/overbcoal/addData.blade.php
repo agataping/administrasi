@@ -25,7 +25,7 @@
                 </div>
                 @endif
 
-                <form action="{{ route('createovercoal') }}" method="post">
+                <form action="{{ route('createovercoal') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                     <input type="hidden" name="kategori_id" value="{{ old('kategori_id', '2') }}">                    <div style="margin-bottom: 1rem;">
@@ -53,6 +53,12 @@
                         <label for="plan">Nominal Plan</label>
                         <input type="text" class="form-control" id="plan" name="nominalplan">
                     </div>
+                    <!-- File -->
+                    <div id="fileInput" style="display: none;" class="form-group">
+                        <label for="file">File</label>
+                        <input type="file" class="form-control" id="file" name="file">
+                    </div>
+
 
                     <div id="actualInput" style="display: none;" class="form-group">
                         <label for="actual">Nominal Actual</label>
@@ -80,12 +86,14 @@
 <script>
     document.getElementById('planBtn').addEventListener('click', function() {
         document.getElementById('planInput').style.display = 'block';
+        document.getElementById('fileInput').style.display = 'block';
         document.getElementById('actualInput').style.display = 'none';
     });
 
     document.getElementById('actualBtn').addEventListener('click', function() {
         document.getElementById('actualInput').style.display = 'block';
         document.getElementById('planInput').style.display = 'none';
+        document.getElementById('fileInput').style.display = 'none';
     });
 </script>
 @endsection

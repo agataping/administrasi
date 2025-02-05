@@ -46,6 +46,7 @@
                         </form>
                     </div>
                 </div>
+                <div class="" style="overflow-x:auto;">
                 <form method="GET" action="{{ route('labarugi') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
@@ -84,7 +85,7 @@
                     --}}
                     <tr>
                         <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
-                        <td colspan=""><strong>{{ $kategoriName}}</strong></td>
+                        <td colspan=""><strong>{{$kategoriName}}</strong></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['total_plan'], 2) }}</strong></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['vertikal'], 2) }} %</strong></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['total_actual'], 2) }}</strong></td>
@@ -143,39 +144,83 @@
                 @endforeach
                 @endforeach
                 <tr>
+
+
+
                     <th colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">{{ $jenisName}} </th>
-                    @if ($jenis['jenis_name'] == 'Laba Kotor')
+
+                    @if ($jenis['jenis_name'] == 'Gross Profit')
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalplanlr, 2) }}
                     </th>
+
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalvertikal, 2) }}%
                     </th>
+
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalactuallr, 2) }}
                     </th>
-                    <th colspan="5" style="background-color:rgb(244, 244, 244); text-align: end;">
-                        </th>
-                        @else  ($jenis['jenis_name'] == 'Laba Operasional')
-                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
-                            {{ number_format($totalplanlp, 2) }}
-                        </th>
-                        <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
-                            {{ number_format($verticallp, 2) }}%
-                        </th>
-                        <th colspan="6" style="background-color:rgb(244, 244, 244); text-align: end;">
-                            {{ number_format($totalactual, 2) }}
-                        </th>
-                        <th colspan="5" style="background-color:rgb(244, 244, 244); text-align: end;">
-                            </th>
-                            @endif  
-                        </tr>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($totalvertikals, 2) }}%
+                    </th>
+
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($deviasilr, 2) }}
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($persenlr, 2) }}%
+                    </th>
+
+                    <th colspan="5" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                    @elseif($jenis['jenis_name'] == 'Operating Profit')
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($totalplanlp, 2) }}
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($verticallp, 2) }}%
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($totalactualOp, 2) }}
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($verticalsp, 2) }}%
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($deviasiop, 2) }}%
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($persenop, 2) }}%
+                    </th>
+                    <th colspan="5" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                    @elseif (strtolower(trim($jenis['jenis_name'])) == 'net profit')
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($totalplanlb  , 2) }}
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($verticallb , 2) }}%
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($totalactuallb, 2) }}
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($verticalslb , 2) }}%
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($deviasilb, 2) }}
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($persenlb, 2) }}%
+                    </th>
+                    </tr>
+
+                    
+                        @endif 
+                        
                         @endforeach 
                     </tbody>
                 </table>      
-                <div class="d-flex justify-content-end mt-3">
-                    {{ $paginatedData->onEachSide(1)->links('pagination::bootstrap-4', ['class' => 'pagination-sm']) }}
-                </div>
+
                 
                 
                 
@@ -187,7 +232,8 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
+    </div>
 
         
         

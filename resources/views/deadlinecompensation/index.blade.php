@@ -31,6 +31,7 @@
                         <a href="/formaddMR" class="btn btn-custom">Add Deadline Compensation</a>
                     </div>
                 </div> 
+                <div class="" style="overflow-x:auto;">
                 <form method="GET" action="{{ route('indexdeadline') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
@@ -91,6 +92,7 @@
                     </tfoot>
                 </table>  
             </div>
+        </div>
         </div>
     </div>
 </div>

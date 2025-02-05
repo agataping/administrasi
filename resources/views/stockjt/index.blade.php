@@ -62,15 +62,18 @@
                 
 
 
-                <table class="table table-ed" id="myTable">
+                <table class="table table-bordered" id="myTable">
                     <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
                     >
                         <tr>
                             <th rowspan="3" style="vertical-align: middle;">No</th>
-                            <th rowspan="3" colspan="2" style="vertical-align: middle;">Date</th>
+                            <th rowspan="3" colspan="" style="vertical-align: middle;">Date</th>
+                            <th rowspan="3" style="vertical-align: middle;">Plan</th>
+                            <th rowspan="3" style="vertical-align: middle;">File</th>
                             <th colspan="4" style="text-align: center;">HAULING</th>
                             <th rowspan="3" style="vertical-align: middle;">Location</th>
-                            <th rowspan="3" colspan="2"style="vertical-align: middle;">Action</th>
+                            
+                            <th rowspan="3" colspan="3"style="vertical-align: middle;">Action</th>
                         </tr>
 
 
@@ -89,14 +92,22 @@
                             <tr>
                             <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
                             <td style="text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($d->date)->format('d-m-Y') }}</td>
-                            <td  colspan="2" style="text-align: center; vertical-align: middle;">{{ $d->shifpertama}}</td>
+                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->plan, 0) }} </td>
+
+                            <td>
+                                @php
+                                $fileExtension = $d->file_extension ?? 'unknown';
+                                @endphp
+                                <a href="{{ asset('storage/' . $d->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                            </td>
+                            <td  colspan="" style="text-align: center; vertical-align: middle;">{{ $d->shifpertama}}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->shifkedua}}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->totalhauling }}</td>
                             <td style="text-align: end; vertical-align: middle;">{{ number_format($d->akumulasi_stock, 0) }} </td>
                             <td style="text-align: center; vertical-align: middle;" >{{ $d->lokasi}}</td>
 
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
-                                <form action="{{ route('formupatestockjt', ['id' => $d->id]) }}">
+                                <form action="{{ route('formupdatestockjt', ['id' => $d->id]) }}">
                                     <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
                                 </form>
                             </td>

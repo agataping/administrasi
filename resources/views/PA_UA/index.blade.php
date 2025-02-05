@@ -11,34 +11,35 @@
 
                 <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 10px;">
                 <a href="/indexproduksipa" class="cardcost text-decoration-none">
-
-        <h2 class="text-center mb-4">PA</h2>
-    </a> 
-    <h2 class="text-center mb-4">&</h2>
-
-    <a href="/indexproduksiua" class="cardcost text-decoration-none">
-        <h2>UA</h2>
-    </a>
-                </div>
-                <form method="GET" action="{{ route('indexpaua') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
-                    <div>
-                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
-                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
-                    </div>
                     
-                    <div>
-                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
-                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
-                    </div>
-                    
-                    <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
-                        Filter
-                    </button>
-                </form>
+                    <h2 class="text-center mb-4">PA</h2>
+                </a> 
+                <h2 class="text-center mb-4">&</h2>
                 
-                @foreach($totals as $item)
+                <a href="/indexproduksiua" class="cardcost text-decoration-none">
+                    <h2>UA</h2>
+                </a>
+            </div>
+            <form method="GET" action="{{ route('indexpaua') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                    <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
+                    style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                </div>
+                
+                <div>
+                    <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                    <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
+                    style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                </div>
+                
+                <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
+                    Filter
+                </button>
+            </form>
+            
+            @foreach($totals as $item)
+            
                 <div class="dashboard-container">
                 <div class="section-card">
 

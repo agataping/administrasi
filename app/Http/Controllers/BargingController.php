@@ -21,10 +21,10 @@ class BargingController extends Controller
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');  
         $plan = planBargings::all(); 
-        $planNominal = $plan->isEmpty() ? 0 : $plan->first()->nominal; 
+        $planNominal = $plan->sum('nominal');
         // dd($planNominal); 
         $query = DB::table('bargings')
-            ->join('plan_bargings', 'bargings.plan_id', '=', 'plan_bargings.id')
+            ->join('plan_bargings', 'bargings.kuota', '=', 'plan_bargings.kuota')
             ->select('bargings.*', 'plan_bargings.nominal')
             ->where('bargings.created_by', auth()->user()->username); 
             if ($startDate && $endDate) {
@@ -64,10 +64,10 @@ class BargingController extends Controller
             $plan = planBargings::all(); 
             $startDate = $request->input('start_date'); 
             $endDate = $request->input('end_date');
-            $kuota = $request->input('kuota'); // Ambil filter kategori dari request
+            $kuota = $request->input('kuota'); 
             
             $query = DB::table('bargings')
-                ->join('plan_bargings', 'bargings.plan_id', '=', 'plan_bargings.id') 
+                ->join('plan_bargings', 'bargings.kuota', '=', 'plan_bargings.kuota') 
                 ->select('bargings.*', 'plan_bargings.nominal')
                 ->where('bargings.created_by', auth()->user()->username); 
 
@@ -137,16 +137,6 @@ class BargingController extends Controller
                 'tanggal' => 'required|date',
             ]);
         
-            // Cari plan_id berdasarkan bulan dari tanggal
-            $bulan = date('Y-m', strtotime($validatedData['tanggal']));
-            $plan = planBargings::where('tanggal', 'like', "$bulan%")->first();
-        
-            if (!$plan) {
-                return redirect()->back()->with('errors', 'Plan ID tidak ditemukan untuk bulan ini.');
-            }
-        
-            // Tambahkan plan_id dan created_by
-            $validatedData['plan_id'] = $plan->id;
             $validatedData['created_by'] = auth()->user()->username;
         
             $data=Barging::create($validatedData);
@@ -184,7 +174,6 @@ class BargingController extends Controller
             'quantity' => 'required',
             'tanggal' => 'required',
             'kuota' => 'required|string',
-            'plan_id' => 'required|exists:plan_bargings,id',
 
 
         ]);
@@ -235,18 +224,16 @@ class BargingController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date'); 
         $query = DB::table('plan_bargings') 
-        ->select(
-            'plan_bargings.nominal',
-            'plan_bargings.tanggal',
-            'plan_bargings.kuota',
-            'plan_bargings.id'
-        )
+        ->select('plan_bargings.*')
         ->where('plan_bargings.created_by', auth()->user()->username); 
 
         if ($startDate && $endDate) {
             $query->whereBetween('plan_bargings.tanggal', [$startDate, $endDate]);
         }
        $data = $query->get();
+       $data->each(function ($item) {
+           $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+        });
         
         return view('barging.indexplan',compact('data','startDate','endDate'));
     }
@@ -263,8 +250,13 @@ class BargingController extends Controller
             'nominal' => 'required',
             'tanggal' => 'required',
             'kuota' => 'required|string',
-
+            'file' => 'nullable|file',
           ]);
+          if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
           $validatedData['created_by'] = auth()->user()->username;
         
           $data=planBargings::create($validatedData);
@@ -287,35 +279,50 @@ class BargingController extends Controller
         return view('barging.updateplan',compact('data'));
     }
 
-    public function updatedataplan(Request $request,$id)
+    public function updatedataplan(Request $request, $id)
     {
         $validatedData = $request->validate([
             'nominal' => 'required',
             'tanggal' => 'required',
             'kuota' => 'required|string',
-
-          ]);
-          $validatedData['updated_by'] = auth()->user()->username;
-            
-          $planBargings = planBargings::findOrFail($id);
-          $oldData = $planBargings->toArray();
-        
-          $planBargings->update($validatedData);
-          
-          HistoryLog::create([
-              'table_name' => 'plan_bargings', 
-              'record_id' => $id, 
-              'action' => 'update', 
-              'old_data' => json_encode($oldData), 
-              'new_data' => json_encode($validatedData), 
-              'user_id' => auth()->id(), 
-          ]);  
-  
-      
-          return redirect('/indexPlan')->with('success', 'data berhasil diperbarui.');
-
+        ]);
+    
+        $planBargings = PlanBargings::findOrFail($id);
+    
+        // Simpan data lama sebelum update
+        $oldData = $planBargings->toArray();
+    
+        if ($request->hasFile('file')) {
+            // Hapus file lama jika ada
+            if ($planBargings->file) {
+                Storage::disk('public')->delete($planBargings->file);
+            }
+    
+            // Simpan file baru
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
+    
+        // Tambahkan informasi pengguna yang mengupdate
+        $validatedData['updated_by'] = auth()->user()->username;
+    
+        // Update data di database
+        $planBargings->update($validatedData);
+    
+        // Simpan perubahan ke tabel history_log
+        HistoryLog::create([
+            'table_name' => 'plan_bargings',
+            'record_id' => $id,
+            'action' => 'update',
+            'old_data' => json_encode($oldData),
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
+        ]);
+    
+        return redirect('/indexPlan')->with('success', 'Data berhasil diperbarui.');
     }
-
+    
     public function deleteplanbarging ($id)
     {
         $data = PlanBargings::findOrFail($id);

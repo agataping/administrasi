@@ -1,17 +1,16 @@
 html,
+
 body {
   height: 100%;
-}
-
-body {
+  margin: 0;
+  padding: 0;
   display: flex;
   align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #ffffff
-
-}
-
+  justify-content: center;
+  background: url('/storage/gambar/qubahGroup.jpeg') no-repeat center center;
+  background-size: contain; 
+  background-attachment: fixed;
+  }
 .form-signin {
   width: 100%;
   max-width: 330px;
@@ -24,34 +23,32 @@ body {
   z-index: 2;
 }
 
-.form-signin input[type="text"] {
-  opacity: 1;
-  margin-bottom: 10px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
+.form-signin input[type="text"],
 .form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-.form-signin input {
+    margin-bottom: 10px;.form-signin input {
   margin-bottom: 10px;
 }
-
-/* Menambahkan card */
+}
 .card {
-  width: 100%;
+  width: 90%;
   max-width: 400px;
-  margin: auto;
-  background-color: #5aff65;
+  background-color: rgba(90, 255, 101, 0.9);
   border: 1px solid #dddddd;
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(28, 148, 4, 0.1);
+  text-align: center;
 }
+
 
 .card-text {
   color: #ffffff;
+}
+@media (max-width: 576px) {
+  .card {
+      padding: 15px;
+  }
+  .form-signin {
+      max-width: 100%;
+  }
 }

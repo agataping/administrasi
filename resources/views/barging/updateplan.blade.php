@@ -26,7 +26,7 @@
                 @endif
 
                     
-                        <form action="{{ route('updatedataplan',$data->id) }}" method="post">
+                        <form action="{{ route('updatedataplan',$data->id) }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="updeted_by_name" value="{{ Auth::user()->username }}">
 
@@ -46,10 +46,17 @@
                                 <label for="tanggal">Plan</label>
                                 <input type="number" class="form-control" value="{{$data->nominal}}" id="tanggal" name="nominal" value=""  required>
                             </div>
-
+                            <div class="form-group">
+                                <label for="tanggal">File</label>
+                                <input type="file" class="form-control" value="{{$data->file}}" id="tanggal" name="file" value=""  required>
+                                @php
+                                $fileExtension = $d->file_extension ?? 'unknown';
+                                @endphp
+                                <a href="{{ asset('storage/' . $data->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                            </div>
                             <div class="d-flex justify-content-end mt-3">
                                 
-                                <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                                <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Update</button>
                             </div>
                         </form>
                     </div>

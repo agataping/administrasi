@@ -23,7 +23,7 @@
                     
                         <form action="{{ route('createbarging') }}" method="post">
                             @csrf
-                            <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+
                             <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                             <div class="form-group">
                                 <label for="tanggal">Tanggal Data</label>
