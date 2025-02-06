@@ -34,28 +34,28 @@ class BargingController extends Controller
         
        $data = $query->get();
         
-        $totalQuantity = 0;
-        $count = 0;
+        // $totalQuantity = 0;
+        // $count = 0;
         
-        foreach ($data as $d) {
-            $quantity = floatval(str_replace(',', '', $d->quantity));  
+        // foreach ($data as $d) {
+        //     $quantity = floatval(str_replace(',', '', $d->quantity));  
         
-            if (is_numeric($quantity)) {
-                $totalQuantity += $quantity;  
-                $count++;
-            }
-        }
+        //     if (is_numeric($quantity)) {
+        //         $totalQuantity += $quantity;  
+        //         $count++;
+        //     }
+        // }
         
-        $quantity = ($count > 0) ? $totalQuantity : 0;
+        // $quantity = ($count > 0) ? $totalQuantity : 0;
         
-        $deviasi =  $planNominal - $quantity;  
-        $percen = $quantity != 0 ? ($quantity / $planNominal) * 100 : 0;  
-        $data = $data->map(function ($d) {
-            $d->formatted_quantity = number_format($d->quantity, 0, ',', '.');
-            return $d;
-        });
+        // $deviasi =  $planNominal - $quantity;  
+        // $percen = $quantity != 0 ? ($quantity / $planNominal) * 100 : 0;  
+        // $data = $data->map(function ($d) {
+        //     $d->formatted_quantity = number_format($d->quantity, 0, ',', '.');
+        //     return $d;
+        // });
         
-        return view('barging.index', compact('data', 'quantity', 'planNominal', 'deviasi', 'percen','planNominal'));
+        return view('barging.index', compact('data'));
         }
 
 
@@ -85,29 +85,29 @@ class BargingController extends Controller
            $data = $query->get();
         
             // Perhitungan total
-            $totalQuantity = 0;
-            $count = 0;
+            // $totalQuantity = 0;
+            // $count = 0;
         
-            foreach ($data as $d) {
-                $quantity = floatval(str_replace(',', '', $d->quantity));
+            // foreach ($data as $d) {
+            //     $quantity = floatval(str_replace(',', '', $d->quantity));
                 
-                if (is_numeric($quantity)) {
-                    $totalQuantity += $quantity;  
-                    $count++;
-                }
-            }
+            //     if (is_numeric($quantity)) {
+            //         $totalQuantity += $quantity;  
+            //         $count++;
+            //     }
+            // }
         
-            $quantity = ($count > 0) ? $totalQuantity : 0;
-            $planNominal = $plan->isEmpty() ? 0 : $plan->first()->nominal;
-            $deviasi = $planNominal - $quantity;
-            $percen = $quantity != 0 ? ($quantity / $planNominal) * 100 : 0;
+            // $quantity = ($count > 0) ? $totalQuantity : 0;
+            // $planNominal = $plan->isEmpty() ? 0 : $plan->first()->nominal;
+            // $deviasi = $planNominal - $quantity;
+            // $percen = $quantity != 0 ? ($quantity / $planNominal) * 100 : 0;
         
-            $data = $data->map(function ($d) {
-                $d->formatted_quantity = number_format($d->quantity, 0, ',', '.');
-                return $d;
-            });
+            // $data = $data->map(function ($d) {
+            //     $d->formatted_quantity = number_format($d->quantity, 0, ',', '.');
+            //     return $d;
+            // });
         
-            return view('barging.indexmenu', compact('data', 'quantity', 'deviasi', 'percen'));
+            return view('barging.indexmenu', compact('data'));
         }
                 
 

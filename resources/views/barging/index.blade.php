@@ -39,7 +39,7 @@
                                 <a href="{{ route('indexPlan') }}" class="cardcost text-decoration-none">
                                 <h4>Plan</h4>
                                     <div class="percentage-box">
-                                        <strong></strong> <span>  {{ number_format($planNominal, 0, ',', '.') }}</span>
+                                        <strong></strong> <span>  {{ number_format(, 0, ',', '.') }}</span>
                                     </div>
                                 </a>
                             </div>
@@ -47,7 +47,7 @@
                                 <a href="{{ route('indexmenu') }}" class="cardcost text-decoration-none">
                                 <h4>Actual</h4>
                                 <div class="percentage-box">
-                                    <strong></strong> <span> {{ number_format($quantity, 0, ',', '.') }}</span>
+                                    <strong></strong> <span> {{ number_format(, 0, ',', '.') }}</span>
 
                                     </div>
                                 </a>
@@ -55,14 +55,14 @@
                             <div class="metric">
                                 <h4>Deviasi</h4>
                                 <div class="percentage-box">
-                                    <strong></strong> <span>{{ number_format($deviasi, 0, ',', '.') }}</span>
+                                    <strong></strong> <span>{{ number_format( 0, ',', '.') }}</span>
 
                                     </div>
                             </div>
                             <div class="metric">
                                 <h4>Percentage</h4>
                                 <div class="percentage-box">
-                                    <strong></strong> <span>{{ number_format($percen, 0, ',', '.') }}%</span>
+                                    <strong></strong> <span>{{ number_format(, 0, ',', '.') }}%</span>
 
                                     </div>
                             </div>

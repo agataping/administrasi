@@ -89,7 +89,7 @@
                         <td style="text-align: center; vertical-align: middle;">{{ $d->notifyaddres }}</td>
                         <td>{{ \Carbon\Carbon::parse($d->initialsurvei)->format('d-m-Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($d->finalsurvey)->format('d-m-Y') }}</td>
-                        <td style="text-align: end; vertical-align: middle;" >{{number_format($d->quantity),2}}</td>
+                        <td style="text-align: end; vertical-align: middle;" >{{$d->quantity}}</td>
                         <td style="text-align: center; vertical-align: middle;"  rowspan="">
                             <form action="{{ route('updatebarging', ['id' => $d->id]) }}">
                                 <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
@@ -107,7 +107,7 @@
                     <tr>
                         <th  colspan="11" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; " >Total</th>
                         <th style="background-color:rgb(244, 244, 244); text-align: center;">
-                            {{ number_format($quantity, 0, ',', '.') }}                            </th>
+                            </th>
                             <th style="background-color:rgb(244, 244, 244); text-align: center;">
                                 </th>
                             </tr>
