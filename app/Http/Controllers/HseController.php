@@ -156,7 +156,7 @@ class HseController extends Controller
         
         $query = DB::table('pica_hses') 
         ->select('*')
-        ->where('pica_bargings.created_by', auth()->user()->username); 
+        ->where('pica_hses.created_by', auth()->user()->username); 
         
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); 

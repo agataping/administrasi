@@ -52,7 +52,7 @@ class StockJtController extends Controller
     }
     public function formstockjt(Request $request)
     {
-        return view('stockjt.addData');  
+        return view('stockjt.adddata');  
     }
     public function createstockjt(Request $request)
     {

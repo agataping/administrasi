@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\categoryLabarugi;
-use App\Models\JenisLabarugi;
+use App\Models\jenisLabarugi;
 use App\Models\detailabarugi;
 use App\Models\subkategoriLabarugi;
 use App\Models\PicalabaRugi;
@@ -284,7 +284,7 @@ class DetailabarugiController extends Controller
     public function categorylabarugi()
     {
         $user = Auth::user();  
-        $kat=JenisLabarugi::all();
+        $kat=jenisLabarugi::all();
         return view('labarugi.categoryform',compact('kat'));
     }
     public function createkatlabarugi (Request $request)
@@ -492,7 +492,7 @@ class DetailabarugiController extends Controller
     public function formupdatecategorylr($category_id)
     {
         $user = Auth::user();  
-        $kat=JenisLabarugi::all();
+        $kat=jenisLabarugi::all();
         $data=categoryLabarugi::findOrFail($category_id);
 
         return view('labarugi.update.updatecategory',compact('kat','data'));
