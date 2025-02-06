@@ -1,13 +1,15 @@
 @extends('template.main')
 
-@section('title', 'Maening Readines')
+@section('title', 'Meaning Readines')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Maening Readines</h2>
+            <a href="/indexmining" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Add Data Detail Meaning Readines</h2>
+                </a>                
                 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -51,7 +53,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="nomor_legalitas">Nomor Legalitas</label>
+                                <label for="nomor_legalitas">Legality Number</label>
                                 <input type="text" class="form-control" id="nomor_legalitas" name="NomerLegalitas" >
                             </div>
                             
@@ -62,12 +64,12 @@
                             
                             
                             <div class="form-group">
-                                <label for="tanggal_berlaku">Tanggal</label>
+                                <label for="tanggal_berlaku">Date</label>
                                 <input type="date" class="form-control" id="tanggal_berlaku" name="tanggal" >
                             </div>
 
                             <div class="form-group">
-                                <label for="tanggal_berlaku"> Berlaku</label>
+                                <label for="tanggal_berlaku"> Valid Until</label>
                                 <input type="text" class="form-control" id="BERLAKU" name="berlaku" >
                             </div>
 
@@ -86,8 +88,7 @@
                     
                     <div class="d-flex justify-content-end mt-3">
                         
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
-                    </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>                    </div>
                 </form>
             </div>
         </div>

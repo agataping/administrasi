@@ -5,7 +5,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">UPDATE PA</h2>
+            <a href="/indexproduksipa" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Update Data PA</h2>
+                </a>                
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}

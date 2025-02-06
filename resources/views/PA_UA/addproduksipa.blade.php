@@ -1,11 +1,13 @@
 @extends('template.main')
-@section('title', 'MINING')
+@section('title', 'PA UA')
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">PA & UA</h2>
+            <a href="/indexproduksipa" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Add Data PA</h2>
+                </a>                
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -55,7 +57,7 @@
 
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
                 </div>
                 </form>
             </div>

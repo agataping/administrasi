@@ -1,13 +1,15 @@
 @extends('template.main')
 
-@section('title', 'Pica Deadline')
+@section('title', 'PICA Deadline Compensation')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica Deadline</h2>
+            <a href="/picaewhfuel" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Update Data PICA Deadline Compensation</h2>
+                </a>                
                 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -30,8 +32,7 @@
                             
                             <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
                             <div class="form-group">
-                                <label for="nomor">Tanggal Data</label>
-                                <input type="date" class="form-control" id="tanggal" name="tanggal"  value="{{ $data->tanggal }}" required>
+<label for="nomor"> Data Date</label>                                 <input type="date" class="form-control" id="tanggal" name="tanggal"  value="{{ $data->tanggal }}" required>
                             </div>
 
                             <div class="form-group">
@@ -77,8 +78,7 @@
                     
                     <div class="d-flex justify-content-end mt-3">
                         
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
-                    </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Update</button>                    </div>
                 </form>
             </div>
         </div>

@@ -7,7 +7,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Update People Readiness</h2>
+            <a href="/indexpicapeople" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Update Data PICA People Readiness</h2>
+                </a>                
 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -31,8 +33,7 @@
                     </div>
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
                     <div class="form-group">
-                                <label for="nomor">Tanggal Data</label>
-                                <input type="date" class="form-control" id="tanggal" name="tanggal"  value="{{ $peopleReadiness->tanggal }}" required>
+<label for="nomor"> Data Date</label>                                 <input type="date" class="form-control" id="tanggal" name="tanggal"  value="{{ $peopleReadiness->tanggal }}" required>
                             </div>
                     <div class="row g-3">
                         <div class="col-sm-2">

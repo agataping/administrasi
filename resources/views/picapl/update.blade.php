@@ -1,13 +1,15 @@
 @extends('template.main')
 
-@section('title', 'Pica Pembebasan Lahan')
+@section('title', 'PICA Land Acquissition')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica Pembebasan Lahan</h2>
+            <a href="/picapl" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Update Data PICA Land Acquissition</h2>
+                </a>                
                 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -30,8 +32,7 @@
                             
                             <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
                             <div class="form-group">
-                                <label for="nomor">Tanggal Data</label>
-                                <input type="date" class="form-control" id="tanggal" name="tanggal"  value="{{ $data->tanggal }}" required>
+<label for="nomor"> Data Date</label>                                 <input type="date" class="form-control" id="tanggal" name="tanggal"  value="{{ $data->tanggal }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="nomor">Problem</label>
@@ -76,7 +77,7 @@
                     
                     <div class="d-flex justify-content-end mt-3">
                         
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Update</button>
                     </div>
                 </form>
             </div>

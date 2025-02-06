@@ -7,8 +7,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica Keuangan</h2>
-                
+            <a href="/picalr" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Add Data PICA Financial</h2>
+                </a>                
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -30,7 +31,7 @@
                             
                             <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                             <div class="form-group">
-                                <label for="nomor">Tanggal Data</label>
+                                <label for="nomor">Data Date</label>
                                 <input type="date" class="form-control" id="tanggal" name="tanggal" required>
                             </div>
                             <div class="form-group">
@@ -76,8 +77,7 @@
                     
                     <div class="d-flex justify-content-end mt-3">
                         
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
-                    </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>                    </div>
                 </form>
             </div>
         </div>

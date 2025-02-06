@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'OverBurden&Coa')
+@section('title', 'IndexPAUA')
 @section('content')
 
 <div class="container-fluid mt-4">

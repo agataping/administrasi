@@ -8,7 +8,7 @@
         <div class="card-body">
             <div class="col-12">
             <a href="/stockjt" class=" text-decoration-none " style="color: black;">
-                <h2 class="mb-3">Over Burden</h2>
+                <h2 class="mb-3">Add Data Stock Jetty</h2>
                 </a>                
                 @if (session('success'))
                 <div class="alert alert-success">

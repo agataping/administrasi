@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Pica Infrastuctur ')
+@section('title', 'PICA Infrastuctur Readiness')
 @section('content')
 
 
@@ -9,7 +9,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica Infrastuctur </h2>
+                <h2 class="mb-3">PICA Infrastuctur Readiness</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}

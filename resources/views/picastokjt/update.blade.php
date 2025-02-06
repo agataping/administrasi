@@ -78,7 +78,7 @@
                     
                     <div class="d-flex justify-content-end mt-3">
                         
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Update</button>
                     </div>
                 </form>
             </div>

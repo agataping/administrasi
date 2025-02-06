@@ -50,7 +50,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="tanggal">File</label>
-                                <input type="file" class="form-control" id="file" name="file" value=""  required>
+                                <input type="file" class="form-control" id="file" name="file" value="" >
                             </div>
 
                             <div class="d-flex justify-content-end mt-3">

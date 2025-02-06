@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Pica People Readiness ')
+@section('title', 'PICA People Readiness ')
 @section('content')
 
 
@@ -9,7 +9,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica People Readiness </h2>
+                <h2 class="mb-3">PICA People Readiness </h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -28,7 +28,7 @@
                 @endif
                 <div class="row">
                     <div class="col-sm-">
-                        <a href="/formpicapeople" class="btn btn-custom">Add Pica People </a>
+                        <a href="/formpicapeople" class="btn btn-custom">Add PICA</a>
                     </div>
                 </div> 
                 
