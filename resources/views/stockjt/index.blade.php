@@ -84,8 +84,16 @@
                             <th>Accumulation</th>
                         </tr>
                         <tr>
-                            <th colspan="4"  style="text-align: center;">Opening stock : {{ $data->first()->sotckawal  ?? '-' }}</th>
+                            <th colspan="3" style="text-align: start;">
+                                Opening stock : 
+                                {{ \Carbon\Carbon::parse($data->first()->date)->format('d-m-Y') }}
+                            </th>
+                            <th colspan="1" style="text-align: end;">
+                                {{ number_format($data->first()->sotckawal ?? 0) }}
+                            </th>
+                            
                         </tr>
+                        
                     </thead>
                     <tbody>
                     @foreach($data as $d)
@@ -127,8 +135,16 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <th  colspan="7"  style="background-color:rgb(244, 244, 244); text-align: strat;"></th>
-                        </tr>
+                        <th  colspan="6"  style="background-color:rgb(244, 244, 244); text-align: end;">Grand Total</th>
+                        <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: center;">
+                            {{ number_format($totalHauling, 0) }}
+                        </th>
+                        <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: end;">
+                            {{ number_format($grandTotal, 0) }}
+                        </th>
+                        
+                    </tr>
+
                     </tfoot>
                 </table>                    
                 

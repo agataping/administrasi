@@ -6,7 +6,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Deskripsi </h2>
+            <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Add Data sub Balance sheet</h2>
+                </a>                 
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -37,11 +39,11 @@
                     <div class="row g-3">
                         <div class="">
                             <label for="kategori" class="form-label">Deskripsi</label>
-                            <input type="text" class="form-control" id="kategori" placeholder="" value="" required name="namesub">
+                            <input type="text" class="form-control" id="kategori" placeholder="e.g. Cash & Cash Equivalents, Account Payable Etc." value="" required name="namesub">
                         </div>
                     </div>
                 <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
                 </div>
                 
                 

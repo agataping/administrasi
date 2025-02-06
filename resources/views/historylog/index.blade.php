@@ -46,15 +46,14 @@
                     </button>
                 </form>
 
-
+                <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
 
                 <table class="table table-bordered" id="historyTb">
-                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center;" >
-                        <tr>
+                <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">                        <tr>
                             <th  style="vertical-align: middle;">No</th>
                             <th   style="vertical-align: middle;">Action </th>
-                            <th  style="text-align: center;">Data Lama</th>
-                            <th  style="text-align: center;">Data Baru</th>
+                            <th  style="text-align: center;">Old Data</th>
+                            <th  style="text-align: center;">New Data</th>
                             <th  style="text-align: center;">User</th>
                         </tr>
                         
@@ -91,7 +90,7 @@
                 
                 
       
-                    
+                </div>
                     
             </div>
         </div>

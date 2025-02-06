@@ -56,9 +56,10 @@
                         Filter
                     </button>
                 </form>
+
+                <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">                 
                 <table class="table table-bordered">
-                    <thead style="text-align: end; background-color:rgb(56, 181, 73); text-align: center;">
-                        <tr>
+                    <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">                        <tr>
                             <th rowspan="2" style="vertical-align: middle;">No</th>
                             <th rowspan="2" style="vertical-align: middle;">Description</th>
                             <th rowspan="2" style="text-align: center; vertical-align: middle;">Legality Number</th>
@@ -125,7 +126,8 @@
     
                     </tbody>
                 </table>
-                                
+                </div>
+                 
             </div>
         </div>
     </div>

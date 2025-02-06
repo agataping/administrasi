@@ -5,7 +5,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">EWH</h2>
+            <a href="/indexewh" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">ADD DATA EWH</h2>
+                </a>                
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -24,9 +26,9 @@
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                     <div class="form-group">
-                        <label for="unit_id">Unit</label>
+                        <label for="unit_id">Seelect Unit</label>
                         <select name="unit_id" id="unit_id" class="form-control select2" required>
-                            <option value="" disabled selected>Pilih Unit</option>
+                            <option value="" disabled selected>Select Unit</option>
                             @foreach($unit as $u)
                             <option value="{{ $u->id }}">{{$u->unit }}</option>
                             @endforeach
@@ -55,7 +57,7 @@
 
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
                 </div>
                 </form>
             </div>

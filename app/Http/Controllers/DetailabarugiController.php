@@ -47,6 +47,17 @@ class DetailabarugiController extends Controller
         $data = $query->orderBy('category_labarugis.created_at', 'asc') 
         ->get()
         ->groupBy(['jenis_name', 'kategori_name']);
+        $data->each(function ($items) {
+            $items->each(function ($subItems) {
+                $subItems->each(function ($item) {
+                    $item->file_extension = isset($item->file) && $item->file !== null 
+                        ? pathinfo($item->file, PATHINFO_EXTENSION) 
+                        : null;
+                });
+            });
+        });
+        
+        // dd($data);        
         
         $totalRevenuea = (clone $query) 
         ->where('category_labarugis.namecategory', 'Revenue')
@@ -227,6 +238,8 @@ class DetailabarugiController extends Controller
             'sub_id' => 'required|string',
             'desc' => 'required|string',
             'tanggal' => 'required|date',
+            'file' => 'nullable|file',
+
         ]);
     
         // Format nominal untuk menghapus koma
@@ -236,7 +249,13 @@ class DetailabarugiController extends Controller
         $validatedData['nominalactual'] = isset($validatedData['nominalactual']) 
             ? str_replace(',', '', $validatedData['nominalactual']) 
             : null;
-    
+        //file
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
+        
         // Tentukan mana yang diset null
         if ($request->has('nominalplan') && !$request->has('nominalactual')) {
             $validatedData['nominalactual'] = null;
@@ -244,6 +263,7 @@ class DetailabarugiController extends Controller
             $validatedData['nominalplan'] = null;
         }
     
+
         // Tambahkan created_by
         $validatedData['created_by'] = auth()->user()->username;
     
@@ -423,6 +443,8 @@ class DetailabarugiController extends Controller
             'sub_id' => 'required|string',
             'desc' => 'required|string',
             'tanggal' => 'required|date',
+            'file' => 'nullable|file',
+
         ]);
     
         // Format nominal untuk menghapus koma
@@ -433,6 +455,12 @@ class DetailabarugiController extends Controller
             ? str_replace(',', '', $validatedData['nominalactual']) 
             : null;
     
+        //file
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         // Tentukan mana yang diset null
         if ($request->has('nominalplan') && !$request->has('nominalactual')) {
             $validatedData['nominalactual'] = null;

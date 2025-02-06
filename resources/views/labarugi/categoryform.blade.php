@@ -6,7 +6,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Description </h2>
+            <a href="/labarugi" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Description</h2>
+                </a>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -37,8 +39,8 @@
                     </div>
                     <div class="row g-3">
                         <div class="">
-                            <label for="kategori[]" class="form-label">Description</label>
-                            <input type="text" class="form-control" id="kategori" placeholder="" value="" required name="namecategory">
+                            <label for="kategori" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="kategori" placeholder="e.g.  Revenue, Cost of Goods Sold (COGS), Salary Etc." value="" required name="namecategory">
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">

@@ -55,7 +55,7 @@
                             <th rowspan="" style="vertical-align: middle;">No</th>
                             <th rowspan=""  style="vertical-align: middle;">Description </th>
                             <th colspan="" style="text-align: center;">Lease Duration</th>
-                            <th colspan="" style="text-align: center;">Nominal</th>
+                            <th colspan="" style="text-align: center;">Amount</th>
                             <th rowspan="" style="vertical-align: middle;">Annual Progress</th>
                             <th rowspan="" style="vertical-align: middle;">Due Date</th>
                             <th colspan="2" style="vertical-align: middle;">Action</th>

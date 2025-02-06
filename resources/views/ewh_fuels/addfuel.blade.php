@@ -5,7 +5,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">CREATE FUEL</h2>
+            <a href="/indexfuel" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">ADD DATA FUEL</h2>
+                </a>                
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -55,7 +57,7 @@
 
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
                 </div>
                 </form>
             </div>

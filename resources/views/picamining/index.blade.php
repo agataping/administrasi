@@ -47,10 +47,9 @@
                         Filter
                     </button>
                 </form>
-
+                <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
                 <table class="table table-bordered">
-                    <thead>
-                        <tr style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
+                <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">                        <tr style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                             <th  style="vertical-align: middle;">No</th>
                             <th   style="vertical-align: middle;">Problem</th>
                             <th  style="text-align: center;">Cause</th>
@@ -97,7 +96,8 @@
                         </tr>
                     </tfoot>
                 </table>                    
-                
+                </div>
+               
 
             </div>
         </div>

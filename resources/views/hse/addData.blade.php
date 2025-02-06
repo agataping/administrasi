@@ -7,8 +7,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">HSE</h2>
-                
+            <a href="/indexhse" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">ADD DATA HSE</h2>
+                </a>                
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -31,16 +32,16 @@
                             <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
 
                             <div style="margin-bottom: 1rem;">
-                                <label for="kategori" style="font-weight: bold; font-size: 1rem;">Pilih Kategori:</label>
+                                <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
                                 <select id="kategori" name="kategori_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                                    <option value="" disabled selected>-- Pilih Kategori --</option>
+                                    <option value="" disabled selected>-- Select Category --</option>
                                     @foreach($data as $kategori)
                                     <option value="{{ $kategori->id }}">{{ $kategori->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div style="margin-bottom: 1rem;">
-                                <label for="tanggal" style="font-weight: bold; font-size: 1rem;">Tanggal:</label>
+                                <label for="tanggal" style="font-weight: bold; font-size: 1rem;">Date</label>
                                 
                                 <input type="date" 
                                 id="tanggal" 
@@ -51,7 +52,7 @@
 
 
                             <div class="form-group">
-                                <label for="nameindikator">indikator</label>
+                                <label for="nameindikator">Indicator</label>
                                 <input type="text" class="form-control" id="nameindikator" name="nameindikator" required>
                             </div>
                             
@@ -61,18 +62,18 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="nilai">Nilai</label>
+                                <label for="nilai">value</label>
                                 <input type="text" class="form-control" id="nilai" name="nilai" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="indikator">Indikator</label>
+                                <label for="indikator">Indicator</label>
                                 <input type="text" class="form-control" id="indikator" name="indikator" required>
                             </div>
 
 
                             <div class="form-group">
-                                <label for="keterangan">Keterangan</label>
+                                <label for="keterangan">Description </label>
                                 <input type="text" class="form-control" id="keterangan" name="keterangan" >
                             </div>
                             

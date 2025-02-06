@@ -7,7 +7,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Balnce sheet</h2>
+            <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Add Data Detail Balnce sheet</h2>
+                </a>                 
                 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -29,7 +31,7 @@
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                     <div style="margin-bottom: 1rem;">
-                        <label for="tanggal" style="font-weight: bold; font-size: 1rem;">Tanggal:</label>
+                        <label for="tanggal" style="font-weight: bold; font-size: 1rem;">Date</label>
                         <input type="date" id="tanggal" name="tanggal" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;" required>
                     </div>
 
@@ -44,7 +46,7 @@
                     </div>
                     <div style="margin-bottom: 1rem;">
                         <label for="name" style="font-weight: bold; font-size: 1rem;">Description:</label>
-                        <input type="text" id="name" name="name" plhaceholder="Cth. Mandiri Hauling Dll"style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; " required>
+                        <input type="text" id="name" name="name" plhaceholder="e.g. Mandiri, Hauling Etc"style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; " required>
                     </div>
 
 
@@ -58,7 +60,7 @@
 
 
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
                     </div>
                 </form>
             </div>

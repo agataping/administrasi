@@ -48,6 +48,7 @@
                         <label for="file">File</label>
                         <input type="file" class="form-control" id="file" name="file" min="" >
                     </div>
+                    
                     <div class="form-group" id="stockout" style="display: none;">
                         <label for="stockout">Stock Out</label>
                         <input type="number" class="form-control" id="stockout" name="stockout" min="" >

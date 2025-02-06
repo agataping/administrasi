@@ -4,7 +4,6 @@
 @section('title', 'Profit & Loss')
 @section('content')
 
-
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
@@ -62,20 +61,22 @@
                         Filter
                     </button>
                 </form>
+                <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
                 <table class="table table-bordered">
-                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
+                    <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
                     >
                     <tr>
                         <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
                         <th   rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
                         <th   colspan=""  style="vertical-align: middle; text-align: center;">Plan</th>
+                        <th   colspan=""  style="vertical-align: middle; text-align: center;">File</th>
                         <th   colspan=""  style="vertical-align: middle; text-align: center;">Vertical Analysis</th>
                         <th  colspan=""style="vertical-align: middle; text-align: center;">Actual</th>
                         <th   colspan=""  style="vertical-align: middle; text-align: center;">Vertical Analysis</th>
                         <th   colspan=""  style="vertical-align: middle; text-align: center;">Deviation</th>
                         <th   colspan=""  style="vertical-align: middle; text-align: center;">Percentage</th>
                         <th  colspan=""style="vertical-align: middle; text-align: center;">Date</th>
-                        <th  colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
+                        <th  colspan="3" style="vertical-align: middle; text-align: center;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,6 +88,7 @@
                         <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
                         <td colspan=""><strong>{{$kategoriName}}</strong></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['total_plan'], 2) }}</strong></td>
+                        <td></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['vertikal'], 2) }} %</strong></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['total_actual'], 2) }}</strong></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['vertikals'], 2) }} %</strong></td>
@@ -109,6 +111,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                     <td colspan=""style="text-align: center; vertical-align: middle;">
                         <a href="{{ route('formupdatesublr', $subCategory['details'][0]->sub_id) }}" class="btn btn-primary">Edit</a>
                         </td>    
@@ -120,8 +123,15 @@
                     <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
                     <td>{{ $detail->desc }}</td>
                     <td style=" text-align: end;">{{ number_format($detail->nominalplan, 2) }}</td>
-                    <td></td>
+                    <td>
+                        @php
+                        $fileExtension = $detail->file_extension;
+                        @endphp
+                        <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                    </td>
+                    
                     <td style=" text-align: end;">{{ number_format($detail->nominalactual, 2) }}</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -220,7 +230,7 @@
                         @endforeach 
                     </tbody>
                 </table>      
-
+                </div>
                 
                 
                 

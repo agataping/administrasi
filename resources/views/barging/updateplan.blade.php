@@ -1,13 +1,15 @@
 @extends('template.main')
 
-@section('title', 'Barging')
+@section('title', 'UpdatePlanBarging')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Barging</h2>
+            <a href="/indexPlan" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Plan Barging</h2>
+                </a>                
                 
                 @if (session('success'))
                 <div class="alert alert-success">

@@ -15,12 +15,11 @@ class ReportController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'admin') {
-            // Ambil perusahaan dari user yang pernah menginput laporan (created_by)
             $companyName = DB::table('detailabarugis')
                 ->join('users', 'detailabarugis.created_by', '=', 'users.username')
                 ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
                 ->select('perusahaans.nama as company_name')
-                ->distinct() // Hindari duplikasi
+                ->distinct() 
                 ->get();
             
             if ($companyName->isEmpty()) {
@@ -44,6 +43,7 @@ class ReportController extends Controller
             ->join('sub_labarugis', 'detailabarugis.sub_id', '=', 'sub_labarugis.id')
             ->join('category_labarugis', 'sub_labarugis.kategori_id', '=', 'category_labarugis.id')
             ->join('jenis_labarugis', 'category_labarugis.jenis_id', '=', 'jenis_labarugis.id')
+            ->leftJoin('users', 'detailabarugis.created_by', '=', 'users.username') 
             ->select(
                 'category_labarugis.namecategory as kategori_name',
                 'jenis_labarugis.name as jenis_name',
@@ -51,10 +51,15 @@ class ReportController extends Controller
                 'detailabarugis.nominalplan',
                 'detailabarugis.nominalactual'
             )
-            ->where('detailabarugis.created_by', auth()->user()->username);
-    
+
+            ->where(function($query) {
+                if(auth()->user()->role === 'admin') {
+                    $query->where('detailabarugis.created_by', '!=', '');
+                } else {
+                    $query->where('detailabarugis.created_by', auth()->user()->username);
+                }
+            });
         $data = $query->get()->groupBy(['jenis_name', 'kategori_name']);
-    
         // Menghitung Total Revenue untuk actual dan plan
         $totalRevenuea = (clone $query)
             ->where('category_labarugis.namecategory', 'Revenue')
@@ -186,9 +191,16 @@ class ReportController extends Controller
         //Cs barging
         $query = DB::table('bargings')
         ->join('plan_bargings', 'bargings.kuota', '=', 'plan_bargings.kuota')
+        ->leftJoin('users', 'bargings.created_by', '=', 'users.username') 
+
         ->select('bargings.*', 'plan_bargings.nominal', 'bargings.kuota')
-        ->where('bargings.created_by', auth()->user()->username);
-        
+        ->where(function($query) {
+            if(auth()->user()->role === 'admin') {
+                $query->where('bargings.created_by', '!=', '');
+            } else {
+                $query->where('bargings.created_by', auth()->user()->username);
+            }
+        });        
         $data = $query->get();
         
         $categories = ['Ekspor', 'Domestik'];
@@ -228,9 +240,16 @@ class ReportController extends Controller
         //internal proses ob coal
         $query = DB::table('overberden_coal')
         ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
+        ->leftJoin('users', 'overberden_coal.created_by', '=', 'users.username') 
+
         ->select( 'kategori_overcoals.name as kategori_name','overberden_coal.*')
-        ->where('overberden_coal.created_by', auth()->user()->username);
-        $data = $query->get();
+        ->where(function($query) {
+            if(auth()->user()->role === 'admin') {
+                $query->where('overberden_coal.created_by', '!=', '');
+            } else {
+                $query->where('overberden_coal.created_by', auth()->user()->username);
+            }
+        });        $data = $query->get();
         $totalPlancoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
         });
@@ -255,13 +274,19 @@ class ReportController extends Controller
         //PA 
         $query = DB::table('units')
         ->join('produksi_pas', 'units.id', '=', 'produksi_pas.unit_id')
+        ->leftJoin('users', 'units.created_by', '=', 'users.username') 
         ->select(
             'units.unit as units',
             'produksi_pas.plan as pas_plan',
             'produksi_pas.actual as pas_actual',
         )
-        ->where('produksi_pas.created_by', auth()->user()->username);
-    
+        ->where(function($query) {
+            if(auth()->user()->role === 'admin') {
+                $query->where('units.created_by', '!=', '');
+            } else {
+                $query->where('units.created_by', auth()->user()->username);
+            }
+        });    
     $data = $query->get();
     
     // Group the data by 'units'
@@ -290,9 +315,16 @@ class ReportController extends Controller
 
     // Pembebasan Lahan
     $query = DB::table('pembebasan_lahans')
+    ->leftJoin('users', 'pembebasan_lahans.created_by', '=', 'users.username') 
+
     ->select('*')
-    ->where('pembebasan_lahans.created_by', auth()->user()->username);
-    
+    ->where(function($query) {
+        if(auth()->user()->role === 'admin') {
+            $query->where('pembebasan_lahans.created_by', '!=', '');
+        } else {
+            $query->where('pembebasan_lahans.created_by', auth()->user()->username);
+        }
+    });    
     $dataPembebasan = $query->get();
     
     $averageAchievement = $dataPembebasan->average(function ($item) {
@@ -304,8 +336,13 @@ class ReportController extends Controller
     ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
     ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
     ->select('kategori_mini_r_s.kategori', 'mining_readinesses.*')
-    ->where('mining_readinesses.created_by', auth()->user()->username);
-    
+    ->where(function($query) {
+        if(auth()->user()->role === 'admin') {
+            $query->where('mining_readinesses.created_by', '!=', '');
+        } else {
+            $query->where('mining_readinesses.created_by', auth()->user()->username);
+        }
+    });    
     $dataMining = $query->get();
     
     $dataMining->transform(function ($item) {
@@ -346,9 +383,16 @@ class ReportController extends Controller
     $totalQuantity = 0;
     $count = 0; 
     $querypeople = DB::table('people_readinesses') 
+    ->join('users', 'people_readinesses.created_by', '=', 'users.username') 
+
     ->select('*')
-    ->where('people_readinesses.created_by', auth()->user()->username); 
-   $people = $querypeople->get();
+    ->where(function($query) {
+        if(auth()->user()->role === 'admin') {
+            $query->where('people_readinesses.created_by', '!=', '');
+        } else {
+            $query->where('people_readinesses.created_by', auth()->user()->username);
+        }
+    });   $people = $querypeople->get();
     
     $totalQuality = 0;
     $totalQuantity = 0;
@@ -383,9 +427,15 @@ class ReportController extends Controller
 
     //infrastruktur
     $queryinfra = DB::table('infrastructure_readinesses')
+    ->join('users', 'infrastructure_readinesses.created_by', '=', 'users.username') 
     ->select('*')
-    ->where('infrastructure_readinesses.created_by', auth()->user()->username); 
-    $datainfra = $queryinfra->get();
+    ->where(function($query) {
+        if(auth()->user()->role === 'admin') {
+            $query->where('infrastructure_readinesses.created_by', '!=', '');
+        } else {
+            $query->where('infrastructure_readinesses.created_by', auth()->user()->username);
+        }
+    });    $datainfra = $queryinfra->get();
     $averagePerformance = DB::table('infrastructure_readinesses')
     ->selectRaw('REPLACE(total, "%", "") as total_numeric')
     ->get()

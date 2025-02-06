@@ -1,13 +1,13 @@
 @extends('template.main')
 
-@section('title', 'Barging')
+@section('title', 'AddPlanBarging')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-            <a href="/indexbarging" class=" text-decoration-none " style="color: black;">
+            <a href="/indexPlan" class=" text-decoration-none " style="color: black;">
                 <h2 class="mb-3">Plan Barging</h2>
                 </a>
                 
@@ -33,7 +33,7 @@
                             <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
 
                             <div class="form-group">
-                                <label for="tanggal">Tanggal Data</label>
+                                <label for="tanggal">Date Data</label>
                                 <input type="date" class="form-control" id="tanggal" name="tanggal" required>
                             </div>
                             <div style="margin-bottom: 1rem;">

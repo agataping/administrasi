@@ -31,6 +31,9 @@ class StockJtController extends Controller
        $data->each(function ($item) {
         $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
      });
+     $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+
+    // dd($totalHauling);        
 
         $stokAwal = $data->whereNotNull('sotckawal')->first()->sotckawal ?? 0;
         
@@ -43,7 +46,9 @@ class StockJtController extends Controller
             
             return $stock;
         });
-        return view('stockjt.index', compact('data'));  
+        $grandTotal = $akumulasi;
+
+        return view('stockjt.index', compact('data','totalHauling','grandTotal'));  
     }
     public function formstockjt(Request $request)
     {

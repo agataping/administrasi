@@ -56,10 +56,9 @@
                     </button>
                 </form>
 
-
+                <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
                 <table class="table table-bordered">
-                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"                    >
-                        <tr>
+                <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">                        <tr>
                             <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Date</th>
                             <th   rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
@@ -120,6 +119,7 @@
                     </tr>
                 </tfoot>
             </table> 
+            </div>
 
                
         

@@ -323,8 +323,9 @@ class PeopleReadinessController extends Controller
                 $path = $file->store('gambar', 'public');
                 Gambar::create([
                     'path' => $path,
-                ]);              
-                return back()->with('success', 'Image uploaded successfully');
+                ]);  
+                return redirect('/struktur')->with('success', 'Image uploaded successfully.');
+            
             }
             return back()->withErrors('Failed to upload image.');
         }

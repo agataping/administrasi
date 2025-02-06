@@ -6,7 +6,8 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Description </h2>
+            <a href="/labarugi" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Description </h2> </a>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}

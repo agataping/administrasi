@@ -62,9 +62,11 @@
                         Filter
                     </button>
                 </form>
+                
+                <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
                 <table class="table table-bordered" id="myTable">
-                    <thead style="background-color: #4CAF50; ">
-                        <tr>
+                <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
+                <tr>
                             <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
                             <th   rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
                             <th   colspan=""  style="vertical-align: middle; text-align: center;">Nominal</th>
@@ -160,6 +162,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
     

@@ -49,10 +49,9 @@
                 </form>
 
 
-
+                <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
                 <table class="table table-bordered">
-                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
-                        <tr>
+                <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">                        <tr>
                             <th  style="vertical-align: middle;">No</th>
                             <th   style="vertical-align: middle;">Problem</th>
                             <th  style="text-align: center;">Cause</th>
@@ -101,7 +100,7 @@
                     </tfoot>
                 </table>                    
 
-
+                </div>
             </div>
         </div>
     </div>

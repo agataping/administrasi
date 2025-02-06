@@ -42,17 +42,14 @@ class PerusahaanController extends Controller
         //iup dll
         public function iup()
         {
-            // Ambil data pengguna yang sedang login
             $user = auth()->user();
-            // Cek apakah user adalah admin
             if (auth()->user()->role === 'admin') {
-                // Jika admin, ambil semua perusahaan dengan induk 'IUP'
                 $data = DB::table('perusahaans')
+                ->join('users', 'perusahaans.id', '=', 'users.id_company')
                 ->where('perusahaans.induk', 'IUP')
-                ->select('perusahaans.*')
+                ->select('perusahaans.*', 'users.name as staff_name', 'users.id as staff_id')
                 ->get();
             } else {
-                // Jika bukan admin, hanya tampilkan perusahaan terkait user
                 $data = DB::table('perusahaans')
                 ->join('users', 'perusahaans.id', '=', 'users.id_company')
                 ->where('users.id', auth()->id()) 

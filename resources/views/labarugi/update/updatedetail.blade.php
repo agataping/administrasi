@@ -1,13 +1,15 @@
 @extends('template.main')
 
-@section('title', 'Laba Rugi')
+@section('title', 'Profit & Loss')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Laba Rugi</h2>
+            <a href="/labarugi" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Detail Profit & Loss</h2>
+                </a>
                 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -25,7 +27,8 @@
                 </div>
                 @endif
 
-                <form action="{{ route('updatelabarugi',$data->id) }}" method="post">
+                <form action="{{ route('updatelabarugi',$data->id) }}" method="post" enctype="multipart/form-data"
+                >
                 @csrf
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
                     
@@ -48,7 +51,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="nameindikator">Keterangan </label>
+                        <label for="nameindikator">Description </label>
                         <input type="text" class="form-control" value="{{$data->desc }}"id="nameindikator" name="desc" required>
                     </div>
 
@@ -56,6 +59,16 @@
                     <div id="planInput" style="display: none;" class="form-group">
                         <label for="plan">Nominal Plan</label>
                         <input type="text" class="form-control" value="{{$data->nominalplan }}"id="plan" name="nominalplan">
+                    </div>
+
+                    <div class="form-group" id="file" style="display: none;">
+                        <label for="file">File</label>
+                        <input type="file" class="form-control" id="file" name="file" min=""  value="{{$data->file}}">
+                        @php
+                        $fileExtension = $data->file_extension ?? 'unknown';
+                        @endphp
+                        <a href="{{ asset('storage/' . $data->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                        
                     </div>
 
                     <div id="actualInput" style="display: none;" class="form-group">
@@ -85,6 +98,8 @@
     document.getElementById('planBtn').addEventListener('click', function() {
         // Tampilkan Plan, sembunyikan Actual
         document.getElementById('planInput').style.display = 'block';
+        document.getElementById('file').style.display = 'block';
+
         document.getElementById('actualInput').style.display = 'none';
 
         // Menambahkan class aktif pada tombol
@@ -96,6 +111,8 @@
         // Tampilkan Actual, sembunyikan Plan
         document.getElementById('actualInput').style.display = 'block';
         document.getElementById('planInput').style.display = 'none';
+        document.getElementById('file').style.display = 'none';
+
 
         // Menambahkan class aktif pada tombol
         document.getElementById('actualBtn').classList.add('active');
@@ -106,12 +123,16 @@
     window.onload = function() {
         const planValue = "{{ $data->nominalplan }}";  // Nilai nominal plan
         const actualValue = "{{ $data->nominalactual }}";  // Nilai nominal actual
-        
-        if(planValue && !actualValue) {
-            document.getElementById('planBtn').click();  // Jika hanya Plan yang ada, tampilkan Plan
-        } else if(actualValue) {
-            document.getElementById('actualBtn').click();  // Jika Actual ada, tampilkan Actual
+        const fileValue = "{{ $data->file}}"; // file
+
+        if (planValue && !actualValue && !fileValue) {
+            document.getElementById('planBtn').click();  
+        } else if (planValue && fileValue && !actualValue) {
+            document.getElementById('planFileBtn').click();  
+        } else if (actualValue) {
+            document.getElementById('actualBtn').click();  
         }
+
     };
 </script>
 @endsection

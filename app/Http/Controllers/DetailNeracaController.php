@@ -238,7 +238,6 @@ class DetailNeracaController extends Controller
 
  
     }
-
     //sub
     public function subneraca()
     {

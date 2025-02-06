@@ -7,7 +7,8 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Profit & Loss</h2>
+            <a href="/labarugi" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Profit & Loss</h2> </a>
                 
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -25,7 +26,7 @@
                 </div>
                 @endif
 
-                <form action="{{ route('createlabarugi') }}" method="post">
+                <form action="{{ route('createlabarugi') }}" method="post" enctype="multipart/form-data"                >
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
 
@@ -55,6 +56,11 @@
                         <input type="text" class="form-control" id="plan" name="nominalplan">
                     </div>
 
+                    <div class="form-group" id="file" style="display: none;">
+                        <label for="file">File</label>
+                        <input type="file" class="form-control" id="file" name="file" min="" >
+                    </div>
+
                     <div id="actualInput" style="display: none;" class="form-group">
                         <label for="actual">Nominal Actual</label>
                         <input type="text" class="form-control" id="actual" name="nominalactual">
@@ -81,12 +87,15 @@
 <script>
     document.getElementById('planBtn').addEventListener('click', function() {
         document.getElementById('planInput').style.display = 'block';
+        document.getElementById('file').style.display = 'block';
         document.getElementById('actualInput').style.display = 'none';
     });
 
     document.getElementById('actualBtn').addEventListener('click', function() {
         document.getElementById('actualInput').style.display = 'block';
         document.getElementById('planInput').style.display = 'none';
+        document.getElementById('file').style.display = 'none';
+
     });
 </script>
 @endsection

@@ -29,31 +29,27 @@
                     </div>
                     
                     <div class="col text-center">
-                        <h4>KPI</h4>
-                        
+                        <h4>KPI</h4> 
                         @if($user->role === 'admin')
-                        @if($companyName->isEmpty())
-                        <p>Tidak ada perusahaan yang memiliki laporan.</p>
-                        @else
-                        <ul>
-                            @foreach ($companyName as $company)
-                            <li>{{ $company->company_name }}</li>
-                            @endforeach
-                        </ul>
+                            @if($companyName->isEmpty())
+                                 <p>Tidak ada perusahaan yang memiliki laporan.</p>
+                            @else
+                                @foreach ($companyName as $company)
+                                    <h4>{{ $company->company_name }}</h4>
+                                @endforeach
+                            @endif
+                            @else
+                            @if($companyName)
+                                <h4> <p> {{ $companyName->company_name }}</p></h4>
+                            @else
+                            <p>Tidak ada perusahaan yang ditemukan.</p>
+                            @endif
                         @endif
-                        @else
-                        @if($companyName)
-                       <h4> <p> {{ $companyName->company_name }}</p></h4>
-                        @else
-                        <p>Tidak ada perusahaan yang ditemukan.</p>
-                        @endif
-                        @endif
-                    </div>
-                    
+                    </div> 
                 </div>
                 
                 
-
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
                 <div class="row mt-1" style="border: 2px solid black;">
                     
                     <div class="col" style="text-align-end">
@@ -728,7 +724,7 @@
                     </div>
                 </div>
             </div>
-
+@endif
                         
 @endsection
 @section('scripts')

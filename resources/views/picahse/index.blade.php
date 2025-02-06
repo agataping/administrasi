@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Pica HSE ')
+@section('title', 'PICA HSE ')
 @section('content')
 
 
@@ -9,7 +9,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica HSE</h2>
+                <h2 class="mb-3">PICA HSE</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -28,7 +28,7 @@
                 @endif
                 <div class="row">
                     <div class="col-sm-">
-                        <a href="/formpicahse" class="btn btn-custom">Add Pica </a>
+                        <a href="/formpicahse" class="btn btn-custom">Add PICA </a>
                     </div>
                 </div> 
                  
@@ -47,10 +47,10 @@
                         Filter
                     </button>
                 </form>
+                <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
 
-                <table class="table table-bordered">
-                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
-                        <tr>
+                    <table class="table table-bordered">
+                        <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">                            <tr>
                             <th  style="vertical-align: middle;">No</th>
                             <th   style="vertical-align: middle;">Problem</th>
                             <th  style="text-align: center;">Cause</th>
@@ -98,6 +98,7 @@
                         </tr>
                     </tfoot>
                 </table>                    
+                </div>
 
 
             </div>

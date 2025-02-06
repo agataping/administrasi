@@ -47,12 +47,33 @@
 
                     <!-- Grid Container -->
                     <div >
-                        @foreach($data as $item)
+                    @if(auth()->user()->role === 'staff')
+                    @foreach($data as $item)
+                    <div class="grid-item">
+                        <div class="cardcostum">
+                            <div class="cardcost">
+                                <a href="/reportkpi" class="cardcost text-decoration-none">
+                                    <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
+                                    
+                                    <div class="percentage-box">98%</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                
+                @elseif(auth()->user()->role === 'admin')    
+                <div class="grid-container  justify-content-center">
+                    @foreach($data as $item)
                         <div class="grid-item">
                             <div class="cardcostum">
                                 <div class="cardcost">
-                                    <a href="/dummy" class="cardcost text-decoration-none">
-                                        <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
+                                    <a href="/reportkpi" class="cardcost text-decoration-none">
+                                        <h4><b>
+                                        <h4><b>{{ $loop->iteration }}. {{ $item->nama }}. <br> {{ $item->staff_name }}</b></h4>
+
+                                        </b></h4>
                                         <div class="percentage-box">98%</div>
                                     </a>
                                 </div>
@@ -60,6 +81,8 @@
                         </div>
                         @endforeach
                     </div>
+                    @endif
+
                 </div>
             </div>
         </div>

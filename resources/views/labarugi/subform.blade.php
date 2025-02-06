@@ -6,7 +6,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Description </h2>
+            <a href="/labarugi" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Description</h2>
+                </a>                
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -37,7 +39,7 @@
                     <div class="row g-3">
                         <div class="">
                             <label for="kategori" class="form-label">Description</label>
-                            <input type="text" class="form-control" id="kategori" placeholder="" value="" required name="namesub">
+                            <input type="text" class="form-control" id="kategori" placeholder="e.g.  Over Burden,  Penjualan Batu Bara, Demurrage Cost Etc. " value="" required name="namesub">
                         </div>
                     </div>
                 <div class="d-flex justify-content-end mt-3">

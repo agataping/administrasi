@@ -9,7 +9,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
+            <a href="/indexewhfuel" class=" text-decoration-none " style="color: black;">
                 <h2 class="mb-3">FUEL</h2>
+                </a>                 
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -56,9 +58,9 @@
                     </button>
                 </form>
 
-
-                <table class="table table-bordered">
-                    <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"                    >
+                <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
+                    <table class="table table-bordered">
+                    <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                         <tr>
                             <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Date</th>
@@ -117,6 +119,8 @@
                     </tr>
                 </tfoot>
             </table> 
+            </div>
+
 
                
         
