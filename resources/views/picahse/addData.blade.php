@@ -25,12 +25,12 @@
                 </div>
                 @endif
 
-                        <form action="{{ route('createpicaHS') }}" method="post">
+                        <form action="{{ route('createpicahse') }}" method="post">
                             @csrf
                             
                             <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                             <div class="form-group">
-                                <label for="nomor">Tanggal Data</label>
+                                <label for="nomor">Date Data</label>
                                 <input type="date" class="form-control" id="tanggal" name="tanggal" required>
                             </div>
                             <div class="form-group">
