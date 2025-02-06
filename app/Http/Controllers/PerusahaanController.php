@@ -45,9 +45,8 @@ class PerusahaanController extends Controller
             $user = auth()->user();
             if (auth()->user()->role === 'admin') {
                 $data = DB::table('perusahaans')
-                ->join('users', 'perusahaans.id', '=', 'users.id_company')
                 ->where('perusahaans.induk', 'IUP')
-                ->select('perusahaans.*', 'users.name as staff_name', 'users.id as staff_id')
+                ->select('perusahaans.*')
                 ->get();
             } else {
                 $data = DB::table('perusahaans')

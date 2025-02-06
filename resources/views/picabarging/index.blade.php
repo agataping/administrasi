@@ -9,7 +9,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica Barging </h2>
+                <h2 class="mb-3">PICA Barging </h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -60,7 +60,7 @@
                             <th  style="vertical-align: middle;">PIC</th>
                             <th  style="vertical-align: middle;">Status</th>
                             <th  style="vertical-align: middle;">Remerks</th>
-                                    <th colspan="2" style="vertical-align: middle;">Aksi</th>
+                                    <th colspan="2" style="vertical-align: middle;">Action</th>
                         </tr>
     
                     </thead>

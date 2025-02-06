@@ -7,7 +7,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica Barging</h2>
+            <a href="/indexpicabarging" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Update Data PICA Barging</h2>
+                </a>                
                 
                 @if (session('success'))
                 <div class="alert alert-success">

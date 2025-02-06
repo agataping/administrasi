@@ -71,7 +71,7 @@
                                 <div class="cardcost">
                                     <a href="/reportkpi" class="cardcost text-decoration-none">
                                         <h4><b>
-                                        <h4><b>{{ $loop->iteration }}. {{ $item->nama }}. <br> {{ $item->staff_name }}</b></h4>
+                                        <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
 
                                         </b></h4>
                                         <div class="percentage-box">98%</div>
