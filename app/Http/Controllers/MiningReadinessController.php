@@ -117,7 +117,11 @@ class MiningReadinessController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexmining')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexmining')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
     
     public function FormMining()
@@ -150,7 +154,12 @@ class MiningReadinessController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexmining')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexmining')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
+
     }
     
     public function FormMiningUpdate($id) 
@@ -189,7 +198,7 @@ class MiningReadinessController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/indexmining')->with('success', 'Data berhasil diperbarui.');
+        return redirect('/indexmining')->with('success', ' Data saved successfully.');
     }
 
     public function deleteminig ($id)
@@ -209,7 +218,7 @@ class MiningReadinessController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexmining')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexmining')->with('success', 'Data deleted successfully.');
     }
         
     public function picamining(Request $request)
@@ -258,8 +267,11 @@ class MiningReadinessController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        
-        return redirect('/picamining')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/picamining')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
     
     public function formupdatepicamining($id)
@@ -316,7 +328,7 @@ class MiningReadinessController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/')->with('success', 'Data deleted successfully.');
     }
         
         

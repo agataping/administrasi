@@ -165,44 +165,28 @@
                                 </tbody>
                             </table>
                                     
-                                    
-                            @foreach($jenis['categories'] as $kategori)
+                            @endforeach
+  
                             
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead>
                                     <tr>
                                         <th colspan="3" style="text-align: center; vertical-align: middle;">
-                                            {{ $kategori['kategori_name'] }}
+                                            Revenue
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if($kategori['kategori_name'] === 'Revenue')
-                                    <!-- Untuk Revenue, hanya tampilkan Plan dan Actual -->
                                     <tr>
                                          <td colspan="2" style="text-align: start; vertical-align: middle;">
                                             Plan</td>
                                          <td>
-                                            {{ number_format($kategori['total_plan'], 2) }}</td>
+                                            {{ number_format($totalRevenuep, 2) }}</td>
                                     </tr>
                                     <tr>
                                         
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($kategori['total_actual'], 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
-                                        <td></td>
-                                    </tr>
-                                    @else
-                                    <!-- Untuk kategori lain, tampilkan analisis vertikal -->
-                                    <tr>
-                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Plan</td>
-                                        <td>{{ number_format($kategori['vertikalanalisis'], 2) }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($kategori['vertikalanalisiss'], 2) }}%</td>
+                                        <td>{{ number_format($totalRevenuea, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
@@ -217,15 +201,10 @@
                                                     background-color: yellow;
                                                     @elseif ($persenlb > 100 && $persenlb <= 190)
                                                     background-color: green;
-                                                    @endif">
-                                                    @php
-                                                    $index = $kategori['total_plan'] > 0 ? ($kategori['total_actual'] / $kategori['total_plan']) * 100 : 0;
-                                                    @endphp
-                                                    {{ number_format($index, 2) }}%
-                                                    
+                                                    @endif">                                                    
                                         </td>
                                     </tr>
-                                    @endif
+                                    
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
                                         <td class="text-end" style=" vertical-align: middle; color: white;">
@@ -234,8 +213,147 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            @endforeach
-                            @endforeach
+
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">
+                                        Cost of Goods Sold (COGS)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
+                                            Plan</td>
+                                            <td>{{ number_format($plancogs, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
+                                        <td>{{ number_format($actualcogs, 2) }}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
+                                        <td style="vertical-align: middle;
+                                                    vertical-align: middle; color: white; 
+                                                    @if ($persenlb <= 75)
+                                                    background-color: black;
+                                                    @elseif ($persenlb > 75 && $persenlb <= 90)
+                                                    background-color: rgb(206, 24, 24); /* Merah */
+                                                    
+                                                    @elseif ($persenlb > 90 && $persenlb <= 100)
+                                                    background-color: yellow;
+                                                    @elseif ($persenlb > 100 && $persenlb <= 190)
+                                                    background-color: green;
+                                                    @endif">                                                    
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
+                                        <td class="text-end" style=" vertical-align: middle; color: white;">
+                                            75%
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">
+                                        Cost Of Employe
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
+                                            Plan</td>
+                                         <td>
+                                            {{ number_format($plancoe, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
+                                        <td>{{ number_format($actualcoe, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
+                                        <td style="vertical-align: middle;
+                                                    vertical-align: middle; color: white; 
+                                                    @if ($persenlb <= 75)
+                                                    background-color: black;
+                                                    @elseif ($persenlb > 75 && $persenlb <= 90)
+                                                    background-color: rgb(206, 24, 24); /* Merah */
+                                                    
+                                                    @elseif ($persenlb > 90 && $persenlb <= 100)
+                                                    background-color: yellow;
+                                                    @elseif ($persenlb > 100 && $persenlb <= 190)
+                                                    background-color: green;
+                                                    @endif">                                                    
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
+                                        <td class="text-end" style=" vertical-align: middle; color: white;">
+                                            75%
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">
+                                        CSR
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
+                                            Plan</td>
+                                         <td>
+                                            {{ number_format($totplanscsr, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
+                                        <td>{{ number_format($actualcsr, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
+                                        <td style="vertical-align: middle;
+                                                    vertical-align: middle; color: white; 
+                                                    @if ($persenlb <= 75)
+                                                    background-color: black;
+                                                    @elseif ($persenlb > 75 && $persenlb <= 90)
+                                                    background-color: rgb(206, 24, 24); /* Merah */
+                                                    
+                                                    @elseif ($persenlb > 90 && $persenlb <= 100)
+                                                    background-color: yellow;
+                                                    @elseif ($persenlb > 100 && $persenlb <= 190)
+                                                    background-color: green;
+                                                    @endif">                                                    
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
+                                        <td class="text-end" style=" vertical-align: middle; color: white;">
+                                            75%
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+
                         </div>
                     </div>
                 </div>

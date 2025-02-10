@@ -1,6 +1,7 @@
 @extends('template.main')
 
 @section('title', 'Meaning Readines')
+@extends('components.style')
 
 @section('content')
 <div class="container-fluid mt-4">
@@ -86,9 +87,10 @@
 
 
                     
-                    <div class="d-flex justify-content-end mt-3">
-                        
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>                    </div>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
+                                <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
+                            </div>
                 </form>
             </div>
         </div>

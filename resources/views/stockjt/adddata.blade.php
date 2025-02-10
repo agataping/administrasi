@@ -1,6 +1,7 @@
 @extends('template.main')
 
 @section('title', 'Input Stock Jetty')
+@extends('components.style')
 
 @section('content')
 <div class="container-fluid mt-4">
@@ -76,14 +77,16 @@
                     </div>
                     
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="button" id="stockbtn" class="btn btn-custom">Add Opening stock</button>
-                        <button type="button" id="planBtn" class="btn btn-custom">Add Plan</button>
-                        <button type="button" id="stockoutBtn" class="btn btn-custom ml-2">Add Stock Out</button>
+                        <button type="button" id="stockbtn" class="btn ">Add Opening stock</button>
+                        <button type="button" id="planBtn" class="btn ">Add Plan</button>
+                        <button type="button" id="stockoutBtn" class="btn  ml-2">Add Stock Out</button>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
+                        <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
                     </div>
                     
-                    <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
-                    </div>
                 </form>
             </div>
         </div>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Barging;
 use App\Models\PicaBarging;
 use App\Models\planBargings;
+use App\Models\User;
 use Carbon\Carbon;
 use App\Models\HistoryLog;
 
@@ -20,59 +21,102 @@ class BargingController extends Controller
     {
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');  
-        $plan = planBargings::all(); 
-        $planNominal = $plan->sum('nominal');
-        // dd($planNominal); 
-        $query = DB::table('bargings')
-            ->join('plan_bargings', 'bargings.kuota', '=', 'plan_bargings.kuota')
-            ->select('bargings.*', 'plan_bargings.nominal')
-            ->where('bargings.created_by', auth()->user()->username); 
-            if ($startDate && $endDate) {
-                $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
-            }
-
-        
-       $data = $query->get();
-        
-        // $totalQuantity = 0;
-        // $count = 0;
-        
-        // foreach ($data as $d) {
-        //     $quantity = floatval(str_replace(',', '', $d->quantity));  
-        
-        //     if (is_numeric($quantity)) {
-        //         $totalQuantity += $quantity;  
-        //         $count++;
-        //     }
+        $idCompany = auth()->user()->id_company; // Ambil ID perusahaan user login
+    
+        // Ambil semua username dalam perusahaan user yang login
+        $usernames = User::where('id_company', $idCompany)->pluck('username')->toArray();
+    
+        // Pastikan ada username agar tidak error di query
+        // if (empty($usernames)) {
+        //     return view('barging.index', [
+        //         'data' => [],
+        //         'quantity' => 0,
+        //         'planNominal' => 0,
+        //         'deviasi' => 0,
+        //         'percen' => 0
+        //     ]);
         // }
-        
-        // $quantity = ($count > 0) ? $totalQuantity : 0;
-        
-        // $deviasi =  $planNominal - $quantity;  
-        // $percen = $quantity != 0 ? ($quantity / $planNominal) * 100 : 0;  
-        // $data = $data->map(function ($d) {
-        //     $d->formatted_quantity = number_format($d->quantity, 0, ',', '.');
-        //     return $d;
-        // });
-        
-        return view('barging.index', compact('data'));
+    
+        // Convert array ke format string untuk whereRaw
+        $usernameList = "'" . implode("','", $usernames) . "'";
+    
+        // Ambil plan hanya untuk user dalam perusahaan yang sama
+        $plan = planBargings::whereIn('created_by', $usernames)->get();
+    
+        // Hitung total plan nominal
+        $planNominal = $plan->sum(function ($p) {
+            return floatval(str_replace(['.', ','], ['', '.'], $p->nominal));
+        });
+    
+        // Query data barging dengan join ke plan_bargings berdasarkan username dalam perusahaan
+        $query = DB::table('bargings')
+            ->join('users', 'bargings.created_by', '=', 'users.username')
+            ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id') 
+            ->leftJoin('plan_bargings', function ($join) use ($usernameList) {
+                $join->on('bargings.kuota', '=', 'plan_bargings.kuota')
+                    ->whereRaw("plan_bargings.created_by IN ($usernameList)")
+                    ->whereRaw("plan_bargings.id = (
+                        SELECT MIN(id) FROM plan_bargings 
+                        WHERE plan_bargings.kuota = bargings.kuota 
+                        AND plan_bargings.created_by IN ($usernameList)
+                    )");
+            })
+            ->select('bargings.*', 'plan_bargings.nominal')
+            ->whereIn('users.username', $usernames); // Filter data barging sesuai username dalam perusahaan
+    
+        // Filter berdasarkan tanggal jika ada input
+        if ($startDate && $endDate) {
+            $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
         }
+    
+        $data = $query->get();
+    
+        // Hitung total quantity
+        $totalQuantity = 0;
+        $count = 0;
+        
+        foreach ($data as $d) {
+            $quantity = str_replace(['.', ','], ['', '.'], $d->quantity);
+            $quantity = floatval($quantity);
+            
+            if (is_numeric($quantity)) {
+                $totalQuantity += $quantity;
+                $count++;
+            }
+        }
+        
+        $quantity = ($count > 0) ? $totalQuantity : 0;
+        $deviasi = $planNominal - $quantity;
+        $percen = ($planNominal != 0) ? ($quantity / $planNominal) * 100 : 0;
+    
+        // Format quantity
+        $data = $data->map(function ($d) {
+            $d->formatted_quantity = number_format(floatval(str_replace(['.', ','], ['', '.'], $d->quantity)), 0, ',', '.');
+            return $d;
+        });  
+        
+        return view('barging.index', compact('data', 'quantity', 'planNominal', 'deviasi', 'percen'));
+    }
+                
 
 
-        public function indexmenu(Request $request)
-        {
+    public function indexmenu(Request $request)
+    {
             $plan = planBargings::all(); 
             $startDate = $request->input('start_date'); 
             $endDate = $request->input('end_date');
             $kuota = $request->input('kuota'); 
-            
+            $planNominal = $plan->sum(function ($p) {
+                return floatval(str_replace(['.', ','], ['', '.'], $p->nominal));
+            });
             $query = DB::table('bargings')
-                ->join('plan_bargings', 'bargings.kuota', '=', 'plan_bargings.kuota') 
-                ->select('bargings.*', 'plan_bargings.nominal')
-                ->where('bargings.created_by', auth()->user()->username); 
-
-        
-            // Tambahkan filter tanggal jika ada
+            ->leftJoin('plan_bargings', function ($join) {
+                $join->on('bargings.kuota', '=', 'plan_bargings.kuota')
+                     ->whereRaw('plan_bargings.id = (SELECT MIN(id) FROM plan_bargings WHERE plan_bargings.kuota = bargings.kuota)');
+            })
+            ->select('bargings.*', 'plan_bargings.nominal')
+            ->where('bargings.created_by', auth()->user()->username);
+                    // Tambahkan filter tanggal jika ada
             if ($startDate && $endDate) {
                 $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
             }
@@ -83,43 +127,41 @@ class BargingController extends Controller
             }
         
            $data = $query->get();
-        
+           $data->each(function ($item) {
+               $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+            });
             // Perhitungan total
-            // $totalQuantity = 0;
-            // $count = 0;
-        
-            // foreach ($data as $d) {
-            //     $quantity = floatval(str_replace(',', '', $d->quantity));
+            $totalQuantity = 0;
+            $count = 0;
+            
+            foreach ($data as $d) {
+                $quantity = str_replace(['.', ','], ['', '.'], $d->quantity);
+                $quantity = floatval($quantity);
                 
-            //     if (is_numeric($quantity)) {
-            //         $totalQuantity += $quantity;  
-            //         $count++;
-            //     }
-            // }
-        
-            // $quantity = ($count > 0) ? $totalQuantity : 0;
-            // $planNominal = $plan->isEmpty() ? 0 : $plan->first()->nominal;
-            // $deviasi = $planNominal - $quantity;
-            // $percen = $quantity != 0 ? ($quantity / $planNominal) * 100 : 0;
-        
-            // $data = $data->map(function ($d) {
-            //     $d->formatted_quantity = number_format($d->quantity, 0, ',', '.');
-            //     return $d;
-            // });
-        
-            return view('barging.indexmenu', compact('data'));
-        }
+                if (is_numeric($quantity)) {
+                    $totalQuantity += $quantity;
+                    $count++;
+                }
+            }
+            
+            $quantity = ($count > 0) ? $totalQuantity : 0;
+            $deviasi = $planNominal - $quantity;
+            $percen = ($planNominal != 0) ? ($quantity / $planNominal) * 100 : 0;
+            
+            $data = $data->map(function ($d) {
+                $d->formatted_quantity = number_format(floatval(str_replace(['.', ','], ['', '.'], $d->quantity)), 0, ',', '.');
+                return $d;
+            });        
+             
+            return view('barging.indexmenu', compact('data', 'quantity', 'deviasi', 'percen'));
+    }
                 
-
-
-
 
     //create data
 
     public function formbarging()
     {
-        $plan = planBargings::first();
-        return view('barging.addData',compact('plan'));
+        return view('barging.addData');
     }
     public function createbarging(Request $request)
         {
@@ -132,11 +174,18 @@ class BargingController extends Controller
                 'notifyaddres' => 'required',
                 'initialsurvei' => 'required',
                 'finalsurvey' => 'required',
-                'quantity' => 'required|numeric',
+                'quantity' => 'required',
                 'kuota' => 'required|string',
                 'tanggal' => 'required|date',
+                'file' => 'nullable|file',
+
             ]);
-        
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $filePath = $file->store('uploads', 'public');
+                $validatedData['file'] = $filePath;
+            }
+    
             $validatedData['created_by'] = auth()->user()->username;
         
             $data=Barging::create($validatedData);
@@ -148,7 +197,13 @@ class BargingController extends Controller
                 'new_data' => json_encode($validatedData), 
                 'user_id' => auth()->id(), 
             ]);
-            return redirect('/indexbarging')->with('success', 'Data berhasil ditambahkan.');
+            if ($request->input('action') == 'save') {
+                return redirect('/indexbarging')->with('success', 'Data added successfully.');
+            }
+        
+            return redirect()->back()->with('success', 'Data added successfully.');
+    
+            
         }
         
     //update data
@@ -171,12 +226,18 @@ class BargingController extends Controller
             'notifyaddres' => 'required',
             'initialsurvei' => 'required',
             'finalsurvey' => 'required',
-            'quantity' => 'required',
+            'quantity' => 'required|regex:/^[0-9.,]+$/',
             'tanggal' => 'required',
             'kuota' => 'required|string',
+            'file' => 'nullable|file',
 
 
         ]);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         $validatedData['updated_by'] = auth()->user()->username;
             
         $Barging = Barging::findOrFail($id);
@@ -213,7 +274,7 @@ class BargingController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexmenu')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexmenu')->with('success', 'Data deleted successfully.');
     }
 
 
@@ -223,31 +284,35 @@ class BargingController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date'); 
-        $query = DB::table('plan_bargings') 
-        ->select('plan_bargings.*')
-        ->where('plan_bargings.created_by', auth()->user()->username); 
-
-        if ($startDate && $endDate) {
-            $query->whereBetween('plan_bargings.tanggal', [$startDate, $endDate]);
+        $query = DB::table('plan_bargings')
+        ->join('users', 'plan_bargings.created_by', '=', 'users.username')
+        ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id') 
+        ->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
+        if (auth()->user()->role !== 'admin') { 
+            $query->where('users.id_company', auth()->user()->id_company);
         }
-       $data = $query->get();
+               $data = $query->get();
        $data->each(function ($item) {
            $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
         });
-        
-        return view('barging.indexplan',compact('data','startDate','endDate'));
+        $planNominal = $data->sum(function ($p) {
+            return floatval(str_replace(['.', ','], ['', '.'], $p->nominal));
+        });
+
+        return view('barging.indexplan',compact('data','startDate','endDate','planNominal'));
     }
 
     public function formplan()
     {
-        
         return view('barging.planBargings');
     }
 
-    public function updatePlan(Request $request)
+    public function createnominalplan(Request $request)
     {
         $validatedData = $request->validate([
-            'nominal' => 'required',
+            // 'nominal' => 'required',
+            'nominal' => 'required|regex:/^[0-9.,]+$/',
+
             'tanggal' => 'required',
             'kuota' => 'required|string',
             'file' => 'nullable|file',
@@ -269,8 +334,11 @@ class BargingController extends Controller
             'user_id' => auth()->id(), 
         ]);
       
-          return redirect('/indexPlan')->with('success', 'data berhasil diperbarui.');
-
+        if ($request->input('action') == 'save') {
+            return redirect('/indexPlan')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
     //update
     public function formupdateplan($id)
@@ -340,7 +408,7 @@ class BargingController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexPlan')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexPlan')->with('success', 'Data deleted successfully.');
 
 
     }
@@ -394,8 +462,13 @@ class BargingController extends Controller
             'old_data' => null, 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
-        ]);   
-        return redirect('/indexpicabarging')->with('success', 'Surat berhasil disimpan.');
+        ]);  
+        if ($request->input('action') == 'save') {
+            return redirect('/indexpicabarging')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
+ 
     }
     
 
@@ -433,7 +506,7 @@ class BargingController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/indexpicabarging')->with('success', 'data berhasil disimpan.');
+        return redirect('/indexpicabarging')->with('success', 'Data saved successfully.');
     }
 
     public function deletepicabarging ($id)
@@ -453,6 +526,6 @@ class BargingController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexpicabarging')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexpicabarging')->with('success', '');
     }
 }

@@ -39,11 +39,11 @@
 
                     <div class="form-group" id="stock" style="display: none;">
                         <label for="stock">Opening Stock</label>
-                        <input type="number" class="form-control" value="{{$data->sotckawal}}" id="stockawal" name="sotckawal" min="" >
+                        <input type="text" class="form-control" value="{{$data->sotckawal}}" id="stockawal" name="sotckawal" min="" >
                     </div>
                     <div class="form-group" id="plan" style="display: none;">
                         <label for="stock">Plan</label>
-                        <input type="number" class="form-control" id="plan" name="plan" min=""  value="{{$data->plan}}">
+                        <input type="text" class="form-control" id="plan" name="plan" min=""  value="{{$data->plan}}">
                     </div>
                     <div class="form-group" id="file" style="display: none;">
                         <label for="file">File</label>
@@ -58,7 +58,7 @@
                     
                     <div class="form-group" id="stockout" style="display: none;">
                         <label for="stockout">Stock Out</label>
-                        <input type="number" class="form-control" id="stockout" name="stockout" min=""  value="{{$data->stockout}}">
+                        <input type="text" class="form-control" id="stockout" name="stockout" min=""  value="{{$data->stockout}}">
                     </div>
 
                     <div class="form-group">
@@ -87,7 +87,9 @@
                     </div>
 
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Update</button>
+                        <button type="submit" class="btn-block btn-lg gradient-custom-4"
+                        style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
+                            border-radius: 5px; font-weight: bold;"">Update</button>
                     </div>
                 </form>
             </div>

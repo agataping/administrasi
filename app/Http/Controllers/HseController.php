@@ -77,8 +77,12 @@ class HseController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        
-        return redirect('/indexhse')->with('success', 'data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexhse')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
+
     }
     
     public function createkategorihse(Request $request) {
@@ -145,7 +149,7 @@ class HseController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexhse')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexhse')->with('success', 'Data deleted successfully.');
     }
     
     
@@ -234,8 +238,12 @@ class HseController extends Controller
             'old_data' => json_encode($oldData), 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
-        ]);        
-        return redirect('/picahse')->with('success', 'Surat berhasil disimpan.');
+        ]);  
+        if ($request->input('action') == 'save') {
+            return redirect('/picahse')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');      
     }
 
     public function deletepicahse ($id)
@@ -255,7 +263,7 @@ class HseController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/picahse')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/picahse')->with('success', 'Data deleted successfully.');
     }
     
     

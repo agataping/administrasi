@@ -28,7 +28,7 @@
                 @endif
 
                     
-                        <form action="{{ route('updatePlan') }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('createnominalplan') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
 
@@ -54,16 +54,33 @@
                             </div>
 
                             <div class="d-flex justify-content-end mt-3">
-                                
-                                <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
+                                <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
+                                <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
                             </div>
+                            
                         </form>
                     </div>
                 </div>
             </div>
             
+            
             @endsection
             
             @section('scripts')
             @endsection
-            
+<style>
+.button {
+    background-color: rgb(0, 255, 42);
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    font-size: 16px;
+    cursor: pointer; 
+    border-radius: 5px; 
+    font-weight: bold;
+}
+
+.button:hover {
+    background-color: rgb(0, 200, 35); 
+}
+</style>

@@ -128,7 +128,7 @@ class DetailabarugiController extends Controller
         //laba rugi 
         $totalplanlr = $totalRevenuep-$totallkplan;
         $totalactuallr = $totalRevenuea-$totallkactual;
-        $totalvertikal = $totalplanlr ? ($totalplanlr / $totalRevenuep) * 100 : 0;
+        $totalvertikal = ($totalRevenuep && $totalRevenuep != 0) ? ($totalplanlr / $totalRevenuep) * 100 : 0;
         $totalvertikals = $totalRevenuea ? ($totalactuallr / $totalRevenuea) * 100 : 0;
         $deviasilr = $totalplanlr-$totalactuallr;
         $persenlr = $totalplanlr ? ($totalactuallr / $totalplanlr) * 100 : 0;
@@ -229,12 +229,14 @@ class DetailabarugiController extends Controller
         
         return view('labarugi.addData',compact ('sub'));
     }
+
+    //create laab rugi atau detail laba rugi
     public function createlabarugi(Request $request)
     
     {
         $validatedData = $request->validate([
-            'nominalplan' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
-            'nominalactual' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
+            'nominalactual' => 'nullable|regex:/^[0-9.,]+$/',
+            'nominalplan' => 'nullable|regex:/^[0-9.,]+$/',
             'sub_id' => 'required|string',
             'desc' => 'required|string',
             'tanggal' => 'required|date',
@@ -244,11 +246,13 @@ class DetailabarugiController extends Controller
     
         // Format nominal untuk menghapus koma
         $validatedData['nominalplan'] = isset($validatedData['nominalplan']) 
-            ? str_replace(',', '', $validatedData['nominalplan']) 
-            : null;
-        $validatedData['nominalactual'] = isset($validatedData['nominalactual']) 
-            ? str_replace(',', '', $validatedData['nominalactual']) 
-            : null;
+        ? str_replace(',', '.', str_replace('.', '', $validatedData['nominalplan'])) 
+        : null;
+    
+    $validatedData['nominalactual'] = isset($validatedData['nominalactual']) 
+        ? str_replace(',', '.', str_replace('.', '', $validatedData['nominalactual'])) 
+        : null;
+        
         //file
         if ($request->hasFile('file')) {
             $file = $request->file('file');
@@ -277,8 +281,11 @@ class DetailabarugiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-
-        return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/labarugi')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
     //category
     public function categorylabarugi()
@@ -303,7 +310,11 @@ class DetailabarugiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/labarugi')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
 
     //sub
@@ -330,7 +341,12 @@ class DetailabarugiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/labarugi')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
+
     }
     
     //pica
@@ -382,8 +398,12 @@ class DetailabarugiController extends Controller
             'old_data' => null, 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
-        ]);      
-        return redirect('/picalr')->with('success', 'Data berhasil disimpan.');
+        ]);  
+        if ($request->input('action') == 'save') {
+            return redirect('/picalr')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');    
     }
     
     public function formupdatepicalr($id){
@@ -419,12 +439,9 @@ class DetailabarugiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/picalr')->with('success', 'Data berhasil disimpan.');
+        return redirect('/picalr')->with('success', 'Data saved successfully.');
     }
-
-
-
-    //update detail 
+    //update PICA 
     public function formupdatelabarugi($id){
         $sub = DB::table('sub_labarugis')
         ->join('category_labarugis', 'sub_labarugis.kategori_id', '=', 'category_labarugis.id')
@@ -485,7 +502,7 @@ class DetailabarugiController extends Controller
             'user_id' => auth()->id(), 
         ]);
 
-        return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
+        return redirect('/labarugi')->with('success', 'Data saved successfully.');
     }
 
     //updatecategory
@@ -518,7 +535,7 @@ class DetailabarugiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
+        return redirect('/labarugi')->with('success', 'Data saved successfully.');
     }
 
     //sublabarugi
@@ -552,7 +569,7 @@ class DetailabarugiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/labarugi')->with('success', 'Data berhasil disimpan.');
+        return redirect('/labarugi')->with('success', 'Data saved successfully.');
     }
 
     //delete
@@ -573,7 +590,7 @@ class DetailabarugiController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/labarugi')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/labarugi')->with('success', 'Data deleted successfully.');
     }
 
     public function deletepicalr ($id)
@@ -593,7 +610,28 @@ class DetailabarugiController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/picalr')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/picalr')->with('success', 'Data deleted successfully.');
+    }
+
+    public function deletesublr ($id)
+    {
+        $data = categoryLabarugi::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'category_labarugis', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect()->back()->with('success', 'Data deleted successfully.');    
+
     }
 
 

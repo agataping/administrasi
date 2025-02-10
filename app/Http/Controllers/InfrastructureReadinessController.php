@@ -71,7 +71,11 @@ class InfrastructureReadinessController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexInfrastructureReadiness')->with('success', 'data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexInfrastructureReadiness')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
         
     }
     
@@ -181,7 +185,11 @@ class InfrastructureReadinessController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);       
-        return redirect('/picainfrastruktur')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/picainfrastruktur')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
     
     public function formupdatepicainfra($id){

@@ -9,8 +9,10 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
+            <a href="/indexpaua" class=" text-decoration-none " style="color: black;">
                 <h2 class="mb-3">PA</h2>
-                @if (session('success'))
+                </a>               
+                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
@@ -63,6 +65,7 @@
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Date</th>
                             <th   rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
                             <th   colspan=""  style="vertical-align: middle; text-align: center;">Plan</th>
+                            <th   colspan=""  style="vertical-align: middle; text-align: center;">File</th>
                             <th  colspan=""style="vertical-align: middle; text-align: center;">Actual</th>
                             <th  colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
                         </tr>
@@ -70,30 +73,44 @@
                     <tbody>
                         @foreach ($totals as $total)
                         <tr>
+                            
                             <th style="vertical-align: middle; background-color: #f0f0f0;">{{ $loop->iteration }}</th>    
                             <th style="vertical-align: middle; background-color: #f0f0f0;"></th>
                             <th colspan="" style="text-align: left; background-color: #f0f0f0;">
                             {{ $total['units'] }}
                             </th>
-                            <th style="vertical-align: middle; background-color: #f0f0f0;"></th>
 
                             <th  style="vertical-align: middle; background-color: #f0f0f0; text-align: end;" >
                                 {{ number_format($total['total_plan'], 2) }}
                             </th>
+                            <th style="vertical-align: middle; background-color: #f0f0f0;"></th>
+
                             <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                 {{ number_format($total['total_actual'], 2) }}
                             </th>
-                            <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
-                            </th>
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('formupadteunit', $total['details'][0]->unit_id) }}">
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>    
+                            </td>
+                            
+
+
 
 
                         </tr>
                         @foreach ($total['details'] as $subIndex => $detail)
                         <tr>
                         <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
-                            <td>{{ \Carbon\Carbon::parse($detail->date)->format('d F Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($detail->date)->format('d-m-Y') }}</td>
                             <td>{{ $detail->desc }}</td>
                             <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->plan, 2) }}</td>
+                            <td>
+                                @php
+                                $fileExtension = $detail->file_extension;
+                                @endphp
+                                <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                            </td>
                             <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
 
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
@@ -101,7 +118,7 @@
                                     <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
                                 </form>
                             </td>
-                                    <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                 <form action="{{ route('deleteproduksipa', $detail->id) }}" method="POST" onsubmit="return confirmDelete(event)" >
                                     @csrf
                                     @method('DELETE')

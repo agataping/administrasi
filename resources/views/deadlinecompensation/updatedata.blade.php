@@ -57,7 +57,10 @@
                         <input type="text" class="form-control" id="tanggal_berlaku" name="JatuhTempo" value="{{ $deadline->JatuhTempo }}" required>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary btn-lg">Simpan</button>
+                    <div class="d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn-block btn-lg gradient-custom-4"
+                        style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
+                            border-radius: 5px; font-weight: bold;"">Update</button>                    </div>
                 </form>
                 
                 

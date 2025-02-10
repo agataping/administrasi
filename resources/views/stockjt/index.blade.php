@@ -71,6 +71,8 @@
                             <th rowspan="3" style="vertical-align: middle;">Plan</th>
                             <th rowspan="3" style="vertical-align: middle;">File</th>
                             <th colspan="4" style="text-align: center;">HAULING</th>
+                            <th rowspan="3" style="vertical-align: middle;">Stock Out</th>
+                            <th rowspan="3" style="vertical-align: middle;">Ending Stock</th>
                             <th rowspan="3" style="vertical-align: middle;">Location</th>
                             
                             <th rowspan="3" colspan="3"style="vertical-align: middle;">Action</th>
@@ -86,10 +88,16 @@
                         <tr>
                             <th colspan="3" style="text-align: start;">
                                 Opening stock : 
+                                @if ($data->isNotEmpty() && $data->first()->date)
                                 {{ \Carbon\Carbon::parse($data->first()->date)->format('d-m-Y') }}
+                                @else
+                                No data available
+                                @endif
+                                
                             </th>
+                            
                             <th colspan="1" style="text-align: end;">
-                                {{ number_format($data->first()->sotckawal ?? 0) }}
+                            {{ number_format($data->first()->sotckawal,  2, ',', '.') }}
                             </th>
                             
                         </tr>
@@ -100,7 +108,8 @@
                             <tr>
                             <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
                             <td style="text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($d->date)->format('d-m-Y') }}</td>
-                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->plan, 0) }} </td>
+                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->plan,  2, ',', '.') }}    
+                            </td>
 
                             <td>
                                 @php
@@ -111,7 +120,11 @@
                             <td  colspan="" style="text-align: center; vertical-align: middle;">{{ $d->shifpertama}}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->shifkedua}}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->totalhauling }}</td>
-                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->akumulasi_stock, 0) }} </td>
+                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->akumulasi_stock,  3, ',', '.') }} </td>
+                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->stockout,  2, ',', '.') }} </td>
+                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->stock_akhir, 2, ',', '.') }}
+                            </td>
+                                 
                             <td style="text-align: center; vertical-align: middle;" >{{ $d->lokasi}}</td>
 
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
@@ -137,10 +150,10 @@
                     <tr>
                         <th  colspan="6"  style="background-color:rgb(244, 244, 244); text-align: end;">Grand Total</th>
                         <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: center;">
-                            {{ number_format($totalHauling, 0) }}
+                            {{ number_format($totalHauling,  3, ',', '.') }}
                         </th>
                         <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: end;">
-                            {{ number_format($grandTotal, 0) }}
+                            {{ number_format($grandTotal,  3, ',', '.') }}
                         </th>
                         
                     </tr>

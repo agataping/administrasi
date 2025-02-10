@@ -16,6 +16,7 @@ class StockJtController extends Controller
     //detail
     public function stockjt(Request $request)
     {
+        
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');  
         $query = DB::table('stock_jts')
@@ -28,26 +29,39 @@ class StockJtController extends Controller
         }
         
        $data = $query->get();
+       $data->transform(function ($item) {
+        $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
+        return $item;
+    });
+    
        $data->each(function ($item) {
         $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
      });
+    //  dd($data);
      $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+     $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
+     
+     $akumulasi = $stokAwal;
 
-    // dd($totalHauling);        
-
-        $stokAwal = $data->whereNotNull('sotckawal')->first()->sotckawal ?? 0;
-        
-        $akumulasi = $stokAwal;
-        
-        $data->map(function ($stock) use (&$akumulasi) {
-            
-            $akumulasi += $stock->totalhauling;
-            $stock->akumulasi_stock = $akumulasi; 
-            
-            return $stock;
-        });
-        $grandTotal = $akumulasi;
-
+    $data->map(function ($stock, $index) use (&$akumulasi, &$stock_akhir) {
+        $stock->sotckawal = floatval($stock->sotckawal ?? 0);
+        $stock->totalhauling = floatval($stock->totalhauling ?? 0);
+        $stock->stockout = floatval($stock->stockout ?? 0);
+        if ($index === 0) {
+            $akumulasi = $stock->sotckawal; 
+        }
+        $akumulasi += $stock->totalhauling;
+        $stock->akumulasi_stock = $akumulasi;    
+        $akumulasi -= $stock->stockout;
+        $stock->stock_akhir = $akumulasi;
+        $stock_akhir = $stock->stock_akhir;
+        return $stock;
+    });
+    
+    
+    // Total akumulasi keseluruhan
+    $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
+       
         return view('stockjt.index', compact('data','totalHauling','grandTotal'));  
     }
     public function formstockjt(Request $request)
@@ -58,9 +72,9 @@ class StockJtController extends Controller
     {
         $request->validate([
             'date' => 'required|date',
-            'sotckawal' => 'nullable|numeric',
-            'stockout' => 'nullable|numeric',
-            'plan' => 'nullable|numeric',
+            'sotckawal' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
+            'stockout' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
+            'plan' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
             'shifpertama' => 'nullable|numeric',
             'shifkedua' => 'nullable|numeric',
             'totalhauling' => 'nullable|numeric',
@@ -69,16 +83,31 @@ class StockJtController extends Controller
 
             
         ]);
+        // Format nominal untuk menghapus koma
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+    
+            $value = str_replace(',', '.', $value);
+    
+            return floatval(preg_replace('/[^\d.]/', '', $value)); 
+        }
+    
+    
+        // Tentukan mana yang diset null
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
+        $validatedData['sotckawal'] = convertToCorrectNumber($validatedData['sotckawal']);
+        $validatedData['stockout'] = convertToCorrectNumber($validatedData['stockout']);
+
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $filePath = $file->store('uploads', 'public'); // Simpan ke storage/app/public/uploads
+            $filePath = $file->store('uploads', 'public'); 
         } else {
-            $filePath = null; // Jika tidak ada file, set null
+            $filePath = null; 
         }
         
         $existingStock = StockJt::whereNotNull('sotckawal')->first();        
-
-        
             $data=StockJt::create([
                 'date' => $request->date,
                 'sotckawal' => $request->sotckawal,
@@ -99,8 +128,11 @@ class StockJtController extends Controller
                 'new_data' => json_encode($request), 
                 'user_id' => auth()->id(), 
             ]);
+            if ($request->input('action') == 'save') {
+                return redirect('/stockjt')->with('success', 'Data added successfully.');
+            }
         
-        return redirect('/stockjt')->with('success', 'data berhasil disimpan.');
+            return redirect()->back()->with('success', 'Data added successfully.');
         
     }
 
@@ -110,41 +142,55 @@ class StockJtController extends Controller
         }
 
         public function updatestockjt(Request $request, $id) {
+            // Validasi input
             $request->validate([
                 'date' => 'required|date',
-                'sotckawal' => 'nullable|numeric',
-                'shifpertama' => 'nullable|numeric',
+                'sotckawal' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
+                'stockout' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
+                'plan' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
                 'shifkedua' => 'nullable|numeric',
                 'totalhauling' => 'nullable|numeric',
-                'lokasi' => 'required',
-                'stockout' => 'nullable|numeric',
-                'plan' => 'nullable|numeric',
+                'lokasi' => 'required|string',
                 'file' => 'nullable|file',
             ]);
-            
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $filePath = $file->store('uploads', 'public');
-            } else {
-                $filePath = null;
+        
+            function convertToCorrectNumber($value) {
+                if (empty($value)) {
+                    return 0;
+                }
+        
+                $value = str_replace('.', '', $value);
+                $value = str_replace(',', '.', $value);
+        
+                return floatval($value);
             }
         
-            $validatedData = $request->only([
-                'date', 'sotckawal', 'shifpertama', 'shifkedua', 'totalhauling', 
-                'lokasi', 'stockout', 'plan'
-            ]);
+            $validatedData = $request->all();
         
-            if ($filePath) {
-                $validatedData['file'] = $filePath;
-            }
-        
-            $validatedData['updated_by'] = auth()->user()->username;
+            $validatedData['stockawal'] = convertToCorrectNumber($validatedData['stockawal'] ?? 0);
+            $validatedData['plan'] = convertToCorrectNumber($validatedData['plan'] ?? 0);
+            $validatedData['stockout'] = convertToCorrectNumber($validatedData['stockout'] ?? 0);
         
             $data = StockJt::findOrFail($id);
             $oldData = $data->toArray();
         
+            if ($request->hasFile('file')) {
+                if ($data->file) {
+                    Storage::disk('public')->delete($data->file);
+                }
+        
+                $file = $request->file('file');
+                $filePath = $file->store('uploads', 'public');
+                $validatedData['file'] = $filePath;
+            }
+        
+            // Simpan user yang mengupdate
+            $validatedData['updated_by'] = auth()->user()->username;
+        
+            // Update data
             $data->update($validatedData);
         
+            // Simpan log perubahan
             HistoryLog::create([
                 'table_name' => 'stock_jts',
                 'record_id' => $id,
@@ -154,9 +200,9 @@ class StockJtController extends Controller
                 'user_id' => auth()->id(),
             ]);
         
-            return redirect('/stockjt')->with('success', 'Data berhasil diupdate.');
+            return redirect('/stockjt')->with('success', 'Data updated successfully.');
         }
-            
+                            
     public function deletestockjt ($id)
     {
         $data = StockJt::findOrFail($id);
@@ -174,7 +220,7 @@ class StockJtController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/stockjt')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/stockjt')->with('success', 'Data deleted successfully.');
     }
     
 
@@ -228,8 +274,13 @@ class StockJtController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        
-        return redirect('/picastockjt')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/picastockjt')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
+    
+
     }
     
     public function formupdatesjt($id)
@@ -265,7 +316,7 @@ class StockJtController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/picastockjt')->with('success', 'data berhasil disimpan.');
+        return redirect('/picastockjt')->with('success', 'data saved successfully.');
     }
 
     public function deletepicastockjt ($id)
@@ -285,7 +336,7 @@ class StockJtController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/picastockjt')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/picastockjt')->with('success', 'Data deleted successfully.');
     }
 
 }

@@ -304,7 +304,7 @@ function HitungDev(descriptionId) {
     tr = table.getElementsByTagName("tr");
 
     for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[5];  // Mengambil kolom lokasi
+        td = tr[i].getElementsByTagName("td")[9];  // Mengambil kolom lokasi
         if (td) {
             txtValue = td.textContent || td.innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {

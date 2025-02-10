@@ -57,7 +57,11 @@ class DeadlineCompensationController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexdeadline')->with('success', 'data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexdeadline')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
 
     public function formupdateDeadlineCompen($id)
@@ -107,7 +111,7 @@ class DeadlineCompensationController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexdeadline')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexdeadline')->with('success', 'Data deleted successfully.');
     }
 
 
@@ -155,8 +159,12 @@ class DeadlineCompensationController extends Controller
             'old_data' => null, 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
-        ]);     
-        return redirect('/picadeadline')->with('success', 'Surat berhasil disimpan.');
+        ]);    
+        if ($request->input('action') == 'save') {
+            return redirect('/picadeadline')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.'); 
     }
     
     public function formupdatepicadeadline($id){
@@ -210,7 +218,7 @@ class DeadlineCompensationController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/')->with('success', 'Data deleted successfully.');
     }
     
 

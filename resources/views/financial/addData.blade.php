@@ -1,7 +1,6 @@
 @extends('template.main')
-
 @section('title', 'Balnce sheet')
-
+@extends('components.style')
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
@@ -54,13 +53,19 @@
 
 
                     <div id="" class="form-group">
-                        <label for="actual">Nominal</label>
-                        <input type="text" class="form-control" id="actual" name="nominal">
+                        <label for="actual">Debit</label>
+                        <input type="text" class="form-control" id="actual" name="debit">
+                    </div>
+
+                    <div id="" class="form-group">
+                        <label for="actual">Credit</label>
+                        <input type="text" class="form-control" id="actual" name="credit">
                     </div>
 
 
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
+                        <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
+                        <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
                     </div>
                 </form>
             </div>

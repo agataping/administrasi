@@ -16,36 +16,44 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\HistoryLog;
 
 class ProduksiController extends Controller
-{   //inde menu
+{   //index menu
     public function indexpaua(Request $request)
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
     
-        // Query untuk gabungkan data dari produksi_pas dan produksi_uas
-        $query = DB::table('units')
+        // Query produksi_pas
+        $queryPas = DB::table('units')
             ->leftJoin('produksi_pas', 'units.id', '=', 'produksi_pas.unit_id')
-            ->leftJoin('produksi_uas', 'units.id', '=', 'produksi_uas.unit_id')
             ->select(
                 'units.unit as units',
                 'produksi_pas.plan as pas_plan',
-                'produksi_pas.actual as pas_actual',
+                'produksi_pas.actual as pas_actual'
+            )
+            ->where('produksi_pas.created_by', auth()->user()->username);
+    
+        // Query produksi_uas
+        $queryUas = DB::table('units')
+            ->leftJoin('produksi_uas', 'units.id', '=', 'produksi_uas.unit_id')
+            ->select(
+                'units.unit as units',
                 'produksi_uas.plan as uas_plan',
                 'produksi_uas.actual as uas_actual'
             )
-            ->where('produksi_pas.created_by', auth()->user()->username); 
-
+            ->where('produksi_uas.created_by', auth()->user()->username);
+    
+        // Tambahkan filter tanggal jika tersedia
         if ($startDate && $endDate) {
-            $query->where(function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('produksi_pas.tanggal', [$startDate, $endDate])
-                    ->orWhereBetween('produksi_uas.date', [$startDate, $endDate]);
-            });
+            $queryPas->whereBetween('produksi_pas.date', [$startDate, $endDate]);
+            $queryUas->whereBetween('produksi_uas.date', [$startDate, $endDate]);
         }
     
-        $data = $query->orderBy('units.unit')->get()->groupBy('units');
+        // Ambil data produksi_pas dan produksi_uas terpisah
+        $dataPas = $queryPas->orderBy('units.unit')->get()->groupBy('units');
+        $dataUas = $queryUas->orderBy('units.unit')->get()->groupBy('units');
     
-        // Hitung total plan dan actual
-        $totals = $data->map(function ($items, $unit) {
+        // Hitung total untuk produksi_pas
+        $totalsPas = $dataPas->map(function ($items, $unit) {
             $totalPasPlan = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->pas_plan ?? 0);
             });
@@ -54,6 +62,16 @@ class ProduksiController extends Controller
                 return (float)str_replace(',', '', $item->pas_actual ?? 0);
             });
     
+            return [
+                'units' => $unit,
+                'total_pas_plan' => $totalPasPlan,
+                'total_pas_actual' => $totalPasActual,
+                'details' => $items,
+            ];
+        });
+    
+        // Hitung total untuk produksi_uas
+        $totalsUas = $dataUas->map(function ($items, $unit) {
             $totalUasPlan = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->uas_plan ?? 0);
             });
@@ -64,17 +82,15 @@ class ProduksiController extends Controller
     
             return [
                 'units' => $unit,
-                'total_pas_plan' => $totalPasPlan,
-                'total_pas_actual' => $totalPasActual,
                 'total_uas_plan' => $totalUasPlan,
                 'total_uas_actual' => $totalUasActual,
                 'details' => $items,
             ];
         });
     
-        return view('PA_UA.index', compact('data', 'totals', 'startDate', 'endDate'));
+        return view('PA_UA.index', compact('dataPas', 'dataUas', 'totalsPas', 'totalsUas', 'startDate', 'endDate'));
     }
-        
+            
     public function indexproduksiua(Request $request)
     {
         $startDate = $request->input('start_date'); 
@@ -92,7 +108,12 @@ class ProduksiController extends Controller
             
             $data = $query->orderBy('units.unit')
             ->get()
-            ->groupBy('units');            
+            ->groupBy('units');    
+            $data->each(function ($items) {
+                $items->each(function ($item) {
+                    $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+                });
+            });        
             $totals = $data->map(function ($items, $category) {
                 // Hitung total_plan dan total_actual
                 $totalPlan = $items->sum(function ($item) {
@@ -120,7 +141,7 @@ class ProduksiController extends Controller
 
         $query = DB::table('produksi_pas')
         ->join('units', 'produksi_pas.unit_id', '=', 'units.id')
-        ->select('produksi_pas.*',
+        ->select('produksi_pas.*','units.*',
         'units.unit as units')
         ->where('produksi_pas.created_by', auth()->user()->username); 
 
@@ -130,7 +151,12 @@ class ProduksiController extends Controller
             
             $data = $query->orderBy('units.unit')
             ->get()
-            ->groupBy('units');            
+            ->groupBy('units');  
+            $data->each(function ($items) {
+                $items->each(function ($item) {
+                    $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+                });
+            });          
             $totals = $data->map(function ($items, $category) {
                 // Hitung total_plan dan total_actual
                 $totalPlan = $items->sum(function ($item) {
@@ -164,19 +190,44 @@ class ProduksiController extends Controller
         
     }
 
+    public function formproduksiua()
+    {
+        $unit= Unit::all();
+        return view('PA_UA.addproduksiua',compact('unit'));
+        
+    }
 
     
     
     //create
     public function createproduksipa(Request $request) {
         $validatedData = $request->validate([
-            'actual' => 'required',  
-            'plan' => 'required',  
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
             'date' => 'required|date',  
             'desc' => 'required|string|max:255',  
             'unit_id' => 'required',  
+            'file' => 'nullable|file',
+
 
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        // Tentukan mana yang diset null
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         $validatedData['created_by'] = auth()->user()->username;
         
         $data=ProduksiPa::create($validatedData);        
@@ -188,18 +239,42 @@ class ProduksiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexproduksipa')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexproduksipa')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
+
     }
 
     public function createproduksiua(Request $request) {
         $validatedData = $request->validate([
-            'actual' => 'required',  
-            'plan' => 'required',  
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
             'date' => 'required|date',  
             'desc' => 'required|string|max:255',  
             'unit_id' => 'required',  
+            'file' => 'nullable|file',
+
 
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        // Tentukan mana yang diset null
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         $validatedData['created_by'] = auth()->user()->username;
         
         $data=ProduksiUa::create($validatedData);        
@@ -211,24 +286,48 @@ class ProduksiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexproduksiua')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexproduksiua')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
+    
 
-    
-    
+
     public function createunit(Request $request)
     {
         $validatedData = $request->validate([
-            'unit' => 'required|string|max:255',  
+            'unit' => 'required|string|max:255',
         ]);
-        
+    
         $validatedData['created_by'] = auth()->user()->username;
-        Unit::create($validatedData);        
-        
-        return redirect('/indexpaua')->with('success', 'Data berhasil disimpan.');
+        Unit::create($validatedData);
+    
+        $redirectTo = $request->input('redirect_to');
+    
+        // redirect berdasarkan halaman sebelumnya
+        if (!$redirectTo) {
+            if (url()->previous() == route('indexproduksipa')) {
+                $redirectTo = route('indexproduksipa');
+            } elseif (url()->previous() == route('indexproduksiua')) {
+                $redirectTo = route('indexproduksiua');
+            } elseif (url()->previous() == route('indexewh')) {
+                $redirectTo = route('indexewh');
+            } elseif (url()->previous() == route('indexfuel')) {
+                $redirectTo = route('indexfuel');
+            } else {
+                $redirectTo = route('indexproduksipa'); // Default redirect
+            }
+        }
+    
+        if ($request->input('action') == 'save') {
+            return redirect($redirectTo)->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
-    
-    
+        
     //update
     public function formupdateproduksipa($id)
     {
@@ -246,16 +345,80 @@ class ProduksiController extends Controller
         return view('PA_UA.updatedataua',compact('unit','data'));   
     }
 
+    public function formupadteunit($id)
+    { 
+        $data= Unit::findOrFail($id);
+        return view('PA_UA.updateunit',compact('data'));   
+    }
+
+    public function updateunit(Request $request, $id) {
+        $validatedData = $request->validate([
+            'unit' => 'required|string|max:255',
+
+        ]);
+        $validatedData['updated_by'] = auth()->user()->username;
+        $unit = Unit::findOrFail($id);
+        $oldData = $unit->toArray();
+        
+        $unit->update($validatedData);
+        
+        HistoryLog::create([
+            'table_name' => 'units', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
+        $redirectTo = $request->input('redirect_to');        
+        if (!$redirectTo) {
+            if (url()->previous() == route('indexproduksipa')) {
+                $redirectTo = route('indexproduksipa');
+            } elseif (url()->previous() == route('indexproduksiua')) {
+                $redirectTo = route('indexproduksiua');
+            } elseif (url()->previous() == route('indexewh')) {
+                $redirectTo = route('indexewh');
+            } elseif (url()->previous() == route('indexfuel')) {
+                $redirectTo = route('indexfuel');
+            } else {
+                $redirectTo = route('indexproduksipa'); // Default redirect
+            }
+        }
     
+        if ($request->input('action') == 'save') {
+            return redirect($redirectTo)->with('success', 'Data saved successfully.');
+        }
+    
+    }
+
+
     public function updateproduksipa(Request $request, $id) {
         $validatedData = $request->validate([
-            'plan' => 'nullable|numeric',
-            'actual' => 'nullable|numeric',
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
             'date' => 'required',
             'desc' => 'required',
             'unit_id' => 'required',
+            'file' => 'nullable|file',
 
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        // Tentukan mana yang diset null
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         $validatedData['updated_by'] = auth()->user()->username;
         $Produksi = ProduksiPa::findOrFail($id);
         $oldData = $Produksi->toArray();
@@ -270,18 +433,36 @@ class ProduksiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/indexpaua')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indexproduksipa')->with('success', 'Data saved successfully.');
     }
 
     public function updateproduksiua(Request $request, $id) {
         $validatedData = $request->validate([
-            'plan' => 'nullable|numeric',
-            'actual' => 'nullable|numeric',
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
             'date' => 'required',
             'desc' => 'required',
             'unit_id' => 'required',
+            'file' => 'nullable|file',
 
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        // Tentukan mana yang diset null
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         $validatedData['updated_by'] = auth()->user()->username;
         $Produksi = ProduksiUa::findOrFail($id);
         $oldData = $Produksi->toArray();
@@ -296,7 +477,7 @@ class ProduksiController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/indexproduksiua')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indexproduksiua')->with('success', 'Data saved successfully.');
     }
 
     public function deleteproduksipa ($id)
@@ -316,7 +497,7 @@ class ProduksiController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexpaua')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexpaua')->with('success', 'Data deleted successfully.');
     }
     public function deleteproduksiua ($id)
     {
@@ -335,8 +516,28 @@ class ProduksiController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexpaua')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexpaua')->with('success', 'Data deleted successfully.');
     }
+    public function deleteunit($id)
+    {
+        $data = Unit::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'units', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect()->back()->with('success', 'Data deleted successfully.');
+    }
+
 
     public function picapaua(Request $request)
     {
@@ -387,8 +588,12 @@ class ProduksiController extends Controller
             'old_data' => null, 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
-        ]);     
-        return redirect('/picapaua')->with('success', 'Surat berhasil disimpan.');
+        ]);  
+        if ($request->input('action') == 'save') {
+            return redirect('/picapaua')->with('success', 'Data added successfully.');
+        }   
+        return redirect()->back()->with('success', 'Data added successfully.');
+   
     }
     
     public function formupdatepicapaua($id){
@@ -444,7 +649,7 @@ class ProduksiController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/picapaua')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/picapaua')->with('success', 'Data deleted successfully.');
     }
     
 }

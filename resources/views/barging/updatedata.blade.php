@@ -28,7 +28,7 @@
                 @endif
 
                     
-                        <form action="{{ route('updatedatabarging', $data->id) }}" method="POST" >
+                        <form action="{{ route('updatedatabarging', $data->id) }}" method="POST"enctype="multipart/form-data">
 
                             @csrf
                             
@@ -50,7 +50,14 @@
                                 <label for="nomor">Laycan</label>
                                 <input type="text" class="form-control" value="{{$data->laycan}}" id="nomor" name="laycan" required>
                             </div>
-                            
+                            <div class="form-group">
+                                <label for="tanggal">File</label>
+                                <input type="file" class="form-control" value="{{$data->file}}" id="tanggal" name="file" value=""  >
+                                @php
+                                $fileExtension = $d->file_extension ?? 'unknown';
+                                @endphp
+                                <a href="{{ asset('storage/' . $data->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                            </div>
                             <div class="form-group">
                                 <label for="description">Name Of Barge</label>
                                 <input type="text" class="form-control" value="{{$data->namebarge}}" id="description" name="namebarge" required>
@@ -96,7 +103,9 @@
                     
                     <div class="d-flex justify-content-end mt-3">
                         
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Update</button>
+                                               <button type="submit" class="btn-block btn-lg gradient-custom-4"
+                        style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
+                            border-radius: 5px; font-weight: bold;"">Update</button>
                     </div>
                 </form>
             </div>

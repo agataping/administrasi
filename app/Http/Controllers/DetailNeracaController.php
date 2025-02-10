@@ -27,9 +27,7 @@ class DetailNeracaController extends Controller
         ->select(
             'category_neracas.namecategory as category',
             'sub_neracas.namesub as sub_category',
-            'detail_neracas.nominal',
-            'detail_neracas.name',
-            'detail_neracas.tanggal',
+            'detail_neracas.*',
             'sub_neracas.id as sub_id', 
             'category_neracas.id as category_id', 
             'detail_neracas.id as detail_id' 
@@ -45,48 +43,56 @@ class DetailNeracaController extends Controller
         ->groupBy('category');
         
         
-        $totalsAssets = $data->only(['CURRENT ASSETS', 'FIX ASSETS'])
-        ->map(function ($categories) {
-            return $categories->sum('nominal');
-        })
-        ->sum();
-        $totalLiabilitas = $data->only(['EQUITY', 'LIABILITIES'])
-        ->map(function ($categories) {
-            return $categories->sum('nominal');
-        })
-        ->sum();
-        //total control
-        $control= $totalLiabilitas - $totalsAssets;
-        // NILAI BENER JIKA 0
-        if ($control !== 0) {
-            $note = "Salah: $control";
-        } else {
-            $note = "Benar";
-        }
-        
+        // $totalsAssets = $data->only(['CURRENT ASSETS', 'FIX ASSETS'])
+        // ->map(function ($categories) {
+        //     return $categories->sum('nominal');
+        // })
+        // ->sum();
+        // $totalLiabilitas = $data->only(['EQUITY', 'LIABILITIES'])
+        // ->map(function ($categories) {
+        //     return $categories->sum('nominal');
+        // })
+        // ->sum();
+        // //total control
+        // $control= $totalLiabilitas - $totalsAssets;
+        // // NILAI BENER JIKA 0
+        // if ($control !== 0) {
+        //     $note = "Salah: $control";
+        // } else {
+        //     $note = "Benar";
+        // }
         
         $groupedData = $data->map(function ($categories, $categoryName) {
-            $totalJenis = 0;
-            
+            $totalJenis = ['debit' => 0, 'credit' => 0];
+        
             $categoriesGrouped = $categories->groupBy('sub_category')->map(function ($subItems, $subCategoryName) use (&$totalJenis) {
-                $subTotal = $subItems->sum('nominal');
-                $totalJenis += $subTotal;
-                
+                // Konversi nilai debit & credit ke float agar tidak ada kesalahan perhitungan
+                $subTotalDebit = $subItems->sum(function ($item) {
+                    return (float) str_replace(',', '', $item->debit); 
+                });
+                $subTotalCredit = $subItems->sum(function ($item) {
+                    return (float) str_replace(',', '', $item->credit);
+                });
+        
+                // Menambahkan ke total keseluruhan
+                $totalJenis['debit'] += $subTotalDebit;
+                $totalJenis['credit'] += $subTotalCredit;
+        
                 return [
                     'sub_category' => $subCategoryName,
-                    'nominal' => $subTotal,
                     'sub_id' => $subItems->first()->sub_id ?? null, 
                     'details' => $subItems->map(function ($item) {
                         return [
                             'id' => $item->detail_id, 
                             'name' => $item->name,
-                            'nominal' => $item->nominal,
                             'tanggal' => $item->tanggal,
+                            'debit' => (float) str_replace(',', '', $item->debit), 
+                            'credit' => (float) str_replace(',', '', $item->credit), 
                         ];
                     }),
                 ];
             });
-            
+        
             return [
                 'category_name' => $categoryName,
                 'total' => $totalJenis,
@@ -94,20 +100,12 @@ class DetailNeracaController extends Controller
                 'category_id' => $categories->first()->category_id, // Ambil id kategori
             ];
         });
+        
+        // Cek apakah jumlah total benar
         // dd($groupedData);
-
-        $page = request('page', 1);
-        $perPage =1;
-        $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
-            $data->forPage($page, $perPage),
-            $data->count(),
-            $perPage,
-            $page,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );        
-        return view('financial.index', compact('groupedData', 'totalsAssets','totalLiabilitas','control','note','paginatedData'));
-    }
-    
+        
+        return view('financial.index', compact('groupedData'));
+    }            
     public function formfinanc(Request $reques){
         $sub = SubNeraca::all();
         $sub = DB::table('sub_neracas')
@@ -121,17 +119,25 @@ class DetailNeracaController extends Controller
 
     public function createfinanc(Request $request){
         $validatedData = $request->validate([
-            'nominal' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'debit' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'credit' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
             'name' => 'required|string',
             'sub_id' => 'required|string',
             'tanggal' => 'required|date',
         ]);
         
-        // Format nominal untuk menghapus koma
-        $validatedData['nominal'] = isset($validatedData['nominal']) 
-        ? str_replace(',', '', $validatedData['nominal']) 
-        : null; 
-        // Tambahkan created_by
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; // Jika kosong, set ke 0
+            }
+            $value = str_replace('.', '', $value);  // Hapus titik pemisah ribuan
+            $value = str_replace(',', '.', $value); // Ubah koma desimal ke titik (format internasional)
+            return floatval($value); // Pastikan menjadi angka
+        }
+        
+        $validatedData['debit'] = convertToCorrectNumber($validatedData['debit']);
+        $validatedData['credit'] = convertToCorrectNumber($validatedData['credit']);
+                // Tambahkan created_by
         $validatedData['created_by'] = auth()->user()->username;
         // Simpan data ke database
         $data=DetailNeraca::create($validatedData);
@@ -143,7 +149,11 @@ class DetailNeracaController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexfinancial')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexfinancial')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
 
     public function formupdatefinancial($id)
@@ -158,16 +168,25 @@ class DetailNeracaController extends Controller
 
     public function updatedetailfinan(Request $request, $id){
         $validatedData = $request->validate([
-            'nominal' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'debit' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'credit' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
             'name' => 'required|string',
             'sub_id' => 'required|string',
             'tanggal' => 'required|date',
         ]);
         
         // Format nominal untuk menghapus koma
-        $validatedData['nominal'] = isset($validatedData['nominal']) 
-        ? str_replace(',', '', $validatedData['nominal']) 
-        : null; 
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        $validatedData['debit'] = convertToCorrectNumber($validatedData['debit']);
+        $validatedData['credit'] = convertToCorrectNumber($validatedData['credit']);
         $validatedData['updated_by'] = auth()->user()->username;
         $data = DetailNeraca::findOrFail($id);
         $oldData = $data->toArray();
@@ -208,7 +227,11 @@ class DetailNeracaController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexfinancial')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexfinancial')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
 
     public function formupdatecatneraca($id){
@@ -262,7 +285,12 @@ class DetailNeracaController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexfinancial')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexfinancial')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
+
     }
 
     public function formupdatesubneraca($id)
@@ -314,8 +342,29 @@ class DetailNeracaController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexfinancial')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexfinancial')->with('success', 'Data deleted successfully.');
     }
+
+    public function deletesubfinan($id)
+    {
+        $data = SubNeraca::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'sub_neracas', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect()->back()->with('success', 'Data deleted successfully.');
+    }
+
 
 
 

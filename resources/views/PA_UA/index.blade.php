@@ -8,77 +8,90 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-
+                
                 <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 10px;">
-                <a href="/indexproduksipa" class="cardcost text-decoration-none">
+                    <a href="/indexproduksipa" class="cardcost text-decoration-none">
+                        
+                        <h2 class="text-center mb-4">PA</h2>
+                    </a> 
+                    <h2 class="text-center mb-4">&</h2>
                     
-                    <h2 class="text-center mb-4">PA</h2>
-                </a> 
-                <h2 class="text-center mb-4">&</h2>
-                
-                <a href="/indexproduksiua" class="cardcost text-decoration-none">
-                    <h2>UA</h2>
-                </a>
-            </div>
-            <form method="GET" action="{{ route('indexpaua') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
-                <div>
-                    <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                    <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
-                    style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    <a href="/indexproduksiua" class="cardcost text-decoration-none">
+                        <h2>UA</h2>
+                    </a>
                 </div>
+                <form method="GET" action="{{ route('indexpaua') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
+                        style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
+                    </div>
+                    
+                    <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
+                        Filter
+                    </button>
+                </form>
                 
-                <div>
-                    <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                    <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}" 
-                    style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;"/>
-                </div>
+                <div class="dashboard-container grid-3 mt-10">
+                @foreach($totalsPas as $item)
                 
-                <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
-                    Filter
-                </button>
-            </form>
-            
-            @foreach($totals as $item)
-            
-                <div class="dashboard-container">
-                <div class="section-card">
-
-                    <h3 class="section-title">{{ $item['units'] }}</h3>
-                    <div class="metrics-grid">
-                        <div class="metric">
-                            <h4>Plan (PA)</h4>
-                            <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}</span>
+                    <div class="section-card">
+                        
+                        <h3 class="section-title">{{ $item['units'] }} PA</h3>
+                        <div class="metrics-grid">
+                            <div class="metric">
+                                <h4>Plan </h4>
+                                <div class="percentage-box">
+                                    <strong></strong> <span>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="metric">
-                            <h4>Actual (PA)</h4>
-                            <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}</span>
-                            </div>
-                        </div>
-                        <div class="metric">
-                            <h4>Plan (UA)</h4>
-                            <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_uas_plan'], 0, ',', '.') }}</span>
-                            </div>
-                        </div>
-                        <div class="metric">
-                            <h4>Actual (UA)</h4>
-                            <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_uas_actual'], 0, ',', '.') }}</span>
+                            <div class="metric">
+                                <h4>Actual </h4>
+                                <div class="percentage-box">
+                                    <strong></strong> <span>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
-                @endforeach
+                
+                <div class="dashboard-container grid-3 mt-10" >
+                @foreach($totalsUas  as $item)
+                
+                    <div class="section-card">
+                        
+                        <h3 class="section-title">{{ $item['units'] }} UA</h3>
+                        <div class="metrics-grid">
+                            <div class="metric">
+                                <h4>Plan </h4>
+                                <div class="percentage-box">
+                                    <strong></strong> <span>{{ number_format($item['total_uas_plan'], 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <h4>Actual </h4>
+                                <div class="percentage-box">
+                                    <strong></strong> <span>{{ number_format($item['total_uas_actual'], 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>           
             </div>
         </div>
     </div>
-    </div>
-    </div>
+</div>
     
-    <style>
+
+<style>
         .container-fluid {
             background-color: #f8f9fa;
             padding: 20px;
@@ -139,7 +152,14 @@
             font-size: 1.2rem;
             font-weight: bold;
         }
-        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px !important;
+            margin-top: 20px;
+            
+}
+
         @media (max-width: 768px) {
             .section-card {
                 flex: 1 1 100%;

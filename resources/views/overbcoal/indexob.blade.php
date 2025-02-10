@@ -60,7 +60,7 @@
 
                 <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
                 <table class="table table-bordered">
-                    <theadstyle=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
+                <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
                     >
                         <tr>
                             <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
@@ -99,7 +99,7 @@
                             </th>
                             <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                             </th>
-                            <th  colspan="3" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                            <th  colspan="2" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                             </th>
                             
 

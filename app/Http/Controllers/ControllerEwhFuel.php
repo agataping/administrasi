@@ -21,56 +21,67 @@ class ControllerEwhFuel extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
     
-        // Query untuk gabungkan data dari produksi_pas dan produksi_uas
-        $query = DB::table('units')
+        $queryPas = DB::table('units')
             ->leftJoin('ewhs', 'units.id', '=', 'ewhs.unit_id')
+            ->select(
+                'units.unit as units',
+                'ewhs.plan as plan_ewh',
+                'ewhs.actual as actual_ewh'
+            )
+            ->where('ewhs.created_by', auth()->user()->username);
+    
+        $queryUas = DB::table('units')
             ->leftJoin('fuels', 'units.id', '=', 'fuels.unit_id')
             ->select(
                 'units.unit as units',
-                'ewhs.plan as pas_plan',
-                'ewhs.actual as pas_actual',
-                'fuels.plan as uas_plan',
-                'fuels.actual as uas_actual'
-            );
+                'fuels.plan as plan_fuel',
+                'fuels.actual as actual_fuel'
+            )
+            ->where('fuels.created_by', auth()->user()->username);
     
         if ($startDate && $endDate) {
-            $query->where(function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('ewhs.tanggal', [$startDate, $endDate])
-                    ->orWhereBetween('fuels.date', [$startDate, $endDate]);
-            });
+            $queryPas->whereBetween('ewhs.date', [$startDate, $endDate]);
+            $queryUas->whereBetween('fuels.date', [$startDate, $endDate]);
         }
     
-        $data = $query->orderBy('units.unit')->get()->groupBy('units');
+        $dataPas = $queryPas->orderBy('units.unit')->get()->groupBy('units');
+        $dataUas = $queryUas->orderBy('units.unit')->get()->groupBy('units');
     
-        // Hitung total plan dan actual
-        $totals = $data->map(function ($items, $unit) {
+        $totalsPas = $dataPas->map(function ($items, $unit) {
             $totalPasPlan = $items->sum(function ($item) {
-                return (float)str_replace(',', '', $item->pas_plan ?? 0);
+                return (float)str_replace(',', '', $item->plan_ewh ?? 0);
             });
     
             $totalPasActual = $items->sum(function ($item) {
-                return (float)str_replace(',', '', $item->pas_actual ?? 0);
-            });
-    
-            $totalUasPlan = $items->sum(function ($item) {
-                return (float)str_replace(',', '', $item->uas_plan ?? 0);
-            });
-    
-            $totalUasActual = $items->sum(function ($item) {
-                return (float)str_replace(',', '', $item->uas_actual ?? 0);
+                return (float)str_replace(',', '', $item->actual_ewh ?? 0);
             });
     
             return [
                 'units' => $unit,
                 'total_pas_plan' => $totalPasPlan,
                 'total_pas_actual' => $totalPasActual,
+                'details' => $items,
+            ];
+        });
+    
+        $totalsUas = $dataUas->map(function ($items, $unit) {
+            $totalUasPlan = $items->sum(function ($item) {
+                return (float)str_replace(',', '', $item->plan_fuel ?? 0);
+            });
+    
+            $totalUasActual = $items->sum(function ($item) {
+                return (float)str_replace(',', '', $item->actual_fuel ?? 0);
+            });
+    
+            return [
+                'units' => $unit,
                 'total_uas_plan' => $totalUasPlan,
                 'total_uas_actual' => $totalUasActual,
                 'details' => $items,
             ];
         });
     
-        return view('ewh_fuels.index', compact('data', 'totals', 'startDate', 'endDate'));
+        return view('ewh_fuels.index', compact('dataPas', 'dataUas', 'totalsPas', 'totalsUas', 'startDate', 'endDate'));
     }
     public function indexewh(Request $request)
     {
@@ -89,7 +100,13 @@ class ControllerEwhFuel extends Controller
             
             $data = $query->orderBy('units.unit')
             ->get()
-            ->groupBy('units');            
+            ->groupBy('units');   
+            $data->each(function ($items) {
+                $items->each(function ($item) {
+                    $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+                });
+            });        
+         
             $totals = $data->map(function ($items, $category) {
                 // Hitung total_plan dan total_actual
                 $totalPlan = $items->sum(function ($item) {
@@ -128,7 +145,13 @@ class ControllerEwhFuel extends Controller
             
             $data = $query->orderBy('units.unit')
             ->get()
-            ->groupBy('units');            
+            ->groupBy('units');    
+            $data->each(function ($items) {
+                $items->each(function ($item) {
+                    $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+                });
+            });        
+        
             $totals = $data->map(function ($items, $category) {
                 // Hitung total_plan dan total_actual
                 $totalPlan = $items->sum(function ($item) {
@@ -162,22 +185,37 @@ class ControllerEwhFuel extends Controller
         
     }
 
-    public function formproduksiua()
-    {
-        $unit= Unit::all();
-        return view('PA_UA.addproduksiua',compact('unit'));
-        
-    }
+
 
     public function createewh(Request $request) {
         $validatedData = $request->validate([
-            'actual' => 'required',  
-            'plan' => 'required',  
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
             'date' => 'required|date',  
             'desc' => 'required|string|max:255',  
-            'unit_id' => 'required',  
+            'unit_id' => 'required',
+            'file' => 'nullable|file',
+  
 
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        // Tentukan mana yang diset null
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
+
         $validatedData['created_by'] = auth()->user()->username;
         
         $data=Ewh::create($validatedData);        
@@ -189,20 +227,44 @@ class ControllerEwhFuel extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexewh')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexewh')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
 
 
     
     public function createfuel(Request $request) {
         $validatedData = $request->validate([
-            'actual' => 'required',  
-            'plan' => 'required',  
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
             'date' => 'required|date',  
             'desc' => 'required|string|max:255',  
-            'unit_id' => 'required',  
+            'unit_id' => 'required',
+            'file' => 'nullable|file',
+  
 
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        // Tentukan mana yang diset null
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
+
         $validatedData['created_by'] = auth()->user()->username;
         
         $data=Fuel::create($validatedData);        
@@ -214,7 +276,11 @@ class ControllerEwhFuel extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('indexfuel')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexfuel')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
 
     public function formupdateewh($id)
@@ -233,13 +299,33 @@ class ControllerEwhFuel extends Controller
     }
     public function updateewh(Request $request, $id) {
         $validatedData = $request->validate([
-            'plan' => 'nullable|numeric',
-            'actual' => 'nullable|numeric',
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
             'date' => 'required',
             'desc' => 'required',
             'unit_id' => 'required',
+            'file' => 'nullable|file',
+
 
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        // Tentukan mana yang diset null
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
+
         $validatedData['updated_by'] = auth()->user()->username;
         $Produksi = Ewh::findOrFail($id);
         $oldData = $Produksi->toArray();
@@ -259,13 +345,33 @@ class ControllerEwhFuel extends Controller
 
     public function updatefuel(Request $request, $id) {
         $validatedData = $request->validate([
-            'plan' => 'nullable|numeric',
-            'actual' => 'nullable|numeric',
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
             'date' => 'required',
             'desc' => 'required',
             'unit_id' => 'required',
+            'file' => 'nullable|file',
+
 
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        // Tentukan mana yang diset null
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
+
         $validatedData['updated_by'] = auth()->user()->username;
         $Produksi = Fuel::findOrFail($id);
         $oldData = $Produksi->toArray();
@@ -301,7 +407,7 @@ class ControllerEwhFuel extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexpaua')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexpaua')->with('success', 'Data deleted successfully.');
     }
 
     public function deleteewh ($id)
@@ -321,7 +427,7 @@ class ControllerEwhFuel extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexpaua')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexpaua')->with('success', 'Data deleted successfully.');
     }
 
     public function picaewhfuel(Request $request)
@@ -373,8 +479,11 @@ class ControllerEwhFuel extends Controller
             'old_data' => null, 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
-        ]);     
-        return redirect('/picaewhfuel')->with('success', 'Surat berhasil disimpan.');
+        ]);  
+        if ($request->input('action') == 'save') {
+            return redirect('/picaewhfuel')->with('success', 'Data added successfully.');
+        }
+        return redirect()->back()->with('success', 'Data added successfully.');   
     }
     
     public function formupdatepicaewhfuel($id){
@@ -430,7 +539,7 @@ class ControllerEwhFuel extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/picaewhfuel')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/picaewhfuel')->with('success', 'Data deleted successfully.');
     }
 
 }

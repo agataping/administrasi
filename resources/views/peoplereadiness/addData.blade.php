@@ -1,13 +1,13 @@
 @extends('template.main')
-@section('title', 'PICA People Readiness')
+@section('title', 'People Readiness')
 @section('content')
 
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-            <a href="/indexpicapeople" class=" text-decoration-none " style="color: black;">
-                <h2 class="mb-3">Add Data PICA People Readiness</h2>
+            <a href="/indexPeople" class=" text-decoration-none " style="color: black;">
+                <h2 class="mb-3">Add Data People Readiness</h2>
                 </a>                
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -127,10 +127,9 @@
                                 <textarea class="form-control" rows="10" cols="50" id="note" name="note" rows="5" placeholder="Catatan"></textarea>
                             </div>
                             
-                            <div class="d-flex justify-content-end  mt-3">
-                                <button type="submit"
-                                
-                                class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
+                                <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
                             </div>
                             
 
@@ -158,6 +157,22 @@
 
 
 @endsection
+<style>
+        .button {
+    background-color: rgb(0, 255, 42);
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    font-size: 16px;
+    cursor: pointer; 
+    border-radius: 5px; 
+    font-weight: bold;
+}
+
+.button:hover {
+    background-color: rgb(0, 200, 35); 
+
+</style>
 @section('scripts')
 <script>
         document.addEventListener('DOMContentLoaded', function () {

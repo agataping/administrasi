@@ -1,6 +1,8 @@
 @extends('template.main')
 @section('title', 'UA')
 @section('content')
+@extends('components.style')
+
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
@@ -22,7 +24,8 @@
                     </ul>
                 </div>
                 @endif
-                <form action="{{ route('createproduksiua') }}" method="post">
+                <form action="{{ route('createproduksiua') }}" method="post" enctype="multipart/form-data"
+                >
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                     <div class="form-group">
@@ -30,7 +33,7 @@
                         <select name="unit_id" id="unit_id" class="form-control select2" required>
                             <option value="" disabled selected>Pilih Unit</option>
                             @foreach($unit as $u)
-                            <option value="{{ $u->id }}">{{ $u->code_number . ' | ' . $u->unit }}</option>
+                            <option value="{{ $u->id }}">{{ $u->unit }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -49,16 +52,20 @@
                         <label for="plan">Nominal Plan</label>
                         <input type="text" class="form-control" id="plan" name="plan">
                     </div>
-
                     <div id="planInput"  class="form-group">
-                        <label for="plan">Nominal Plan</label>
+                        <label for="plan">File</label>
+                        <input type="file" class="form-control" id="plan" name="file">
+                    </div>
+                    <div id="planInput"  class="form-group">
+                        <label for="plan">Nominal Actual</label>
                         <input type="text" class="form-control" id="plan" name="actual">
                     </div>
 
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
-                </div>
+                        <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
+                        <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
+                    </div>
                 </form>
             </div>
         </div>

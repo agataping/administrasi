@@ -1,6 +1,5 @@
 @extends('template.main')
 @extends('components.style')
-
 @section('title', 'Profit & Loss')
 @section('content')
 
@@ -63,6 +62,20 @@
                 </form>
                 <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
                 <table class="table table-bordered">
+                <colgroup>
+        <col style="width: 5%;">
+        <col style="width: 20%;">
+        <col style="width: 15%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 15%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 20%;">
+        <col style="width: 15%;">
+        <col style="width: 15%;">
+    </colgroup>
                     <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
                     >
                     <tr>
@@ -82,9 +95,9 @@
                 <tbody>
                     @foreach ($totals as $jenisName => $jenis)
                     @foreach ($jenis['sub_categories'] as $kategoriName => $total)
-                    {{-- Tampilkan Kategori                     {{dd($total['sub_categories'])}}
-                    --}}
+                    {{-- Tampilkan Kategori--}}
                     <tr>
+                        
                         <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
                         <td colspan=""><strong>{{$kategoriName}}</strong></td>
                         <td style="text-align: end;"><strong>{{ number_format($total['total_plan'], 2) }}</strong></td>
@@ -102,24 +115,51 @@
                     </tr>
                     {{-- Tampilkan Sub-Kategori --}}
                     @foreach ($total['sub_categories'] as  $subIndex => $subCategory)
+                    <tr data-toggle="collapse" data-target="#detail-{{ Str::slug($subCategory['name_sub'], '-') }}" style="cursor: pointer;">
                     <th style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</th>
                     <td style="vertical-align: middle;"><strong>{{ $subCategory['name_sub'] }}</strong></td>
                     <td style="text-align: end;"><strong>{{ number_format($subCategory['total_plan'], 2) }}</strong></td>
+                    <td></td>
                     <td></td>
                     <td style="text-align: end;"><strong>{{ number_format($subCategory['total_actual'], 2) }}</strong></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    
                     <td colspan=""style="text-align: center; vertical-align: middle;">
                         <a href="{{ route('formupdatesublr', $subCategory['details'][0]->sub_id) }}" class="btn btn-primary">Edit</a>
-                        </td>    
-                    <td></td> 
+                    </td>    
+                    <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                        <form action="{{ route('deletesublr',$subCategory['details'][0]->sub_id) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>                    
                 </tr>
                 {{-- Tampilkan Detail dari Sub-Kategori --}}
-                @foreach ($subCategory['details'] as $detailIndex => $detail)
-                <tr>
+               
+                <tr id="detail-{{ Str::slug($subCategory['name_sub'], '-') }}" class="d-none">
+                    <td colspan="12">
+                    <table class="table table-bordered" style=" width: 100%; border-collapse: collapse;">
+                    <colgroup>
+                        <col style="width: %;">
+                        <col style="width: 14%;">
+                        <col style="width: 14%;">
+                        <col style="width: 9%;">
+                        <col style="width: 14%;">
+                        <col style="width: 15%;">
+                        <col style="width: 13%;">
+                        <col style="width: 13%;">
+                        <col style="width: 13%;">
+                        <col style="width: %;">
+                        <col style="width: 15%;">
+                        <col style="width: 15%;">
+                    </colgroup>
+                    <tbody>
+                        @foreach ($subCategory['details'] as $detailIndex => $detail)
+                        <tr>
                     <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
                     <td>{{ $detail->desc }}</td>
                     <td style=" text-align: end;">{{ number_format($detail->nominalplan, 2) }}</td>
@@ -129,13 +169,14 @@
                         @endphp
                         <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
                     </td>
-                    
+                    <td style="text-align: center; vertical-align: middle;"></td>
                     <td style=" text-align: end;">{{ number_format($detail->nominalactual, 2) }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d-m-Y') }}</td>
+                    <td style="text-align: center; vertical-align: middle;"></td>
+                    <td style="text-align: center; vertical-align: middle;"></td>
+                    <td style="text-align: center; vertical-align: middle;"></td>
+
+                    <td style="text-align: center;"> {{ \Carbon\Carbon::parse($detail->tanggal)->format('d/m/y') }}</td>
+
                     <td style="text-align: center; vertical-align: middle;"  rowspan="">
                         <form action="{{ route('formupdatelabarugi', ['id' => $detail->detail_id]) }}">
                             <button type="submit"  class="btn btn-primary ">Edit</button>
@@ -148,9 +189,12 @@
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
+                        </tr>
+                        @endforeach
+</tbody>
+                    </table>
+                    </td>
                 </tr>
-                
-                @endforeach
                 @endforeach
                 @endforeach
                 <tr>
@@ -163,7 +207,9 @@
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalplanlr, 2) }}
                     </th>
-
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        
+                    </th>
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalvertikal, 2) }}%
                     </th>
@@ -188,6 +234,9 @@
                         {{ number_format($totalplanlp, 2) }}
                     </th>
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        
+                        </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($verticallp, 2) }}%
                     </th>
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
@@ -207,6 +256,9 @@
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalplanlb  , 2) }}
                     </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        
+                        </th>
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($verticallb , 2) }}%
                     </th>
@@ -257,4 +309,20 @@
 
 @endsection
 @section('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("tr[data-toggle='collapse']").forEach(function (row) {
+        row.addEventListener("click", function () {
+            let targetId = this.getAttribute("data-target");
+            let targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                // Toggle visibility
+                targetElement.classList.toggle("d-none");
+            }
+        });
+    });
+});
+</script>
+
 @endsection

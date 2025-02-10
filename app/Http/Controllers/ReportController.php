@@ -74,27 +74,80 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
+        //cogs
+        $totalactualcogas = (clone $query)
+            ->where('category_labarugis.namecategory', 'Cost of Goods Sold (COGS)')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalactual ?? 0);
+        });
+        $totalplancogas = (clone $query)
+            ->where('category_labarugis.namecategory', 'Cost of Goods Sold (COGS)')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalplan ?? 0);
+        });
+        $actualcogs = $totalRevenuea ? ($totalactualcogas /$totalRevenuea ) * 100 : 0;
+        $plancogs = $totalRevenuep ? ($totalplancogas / $totalRevenuep) * 100 : 0;
+
+
+        //cos of employe
+        $totactualsalary = (clone $query)
+            ->where('category_labarugis.namecategory', 'Salary')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalactual ?? 0);
+        });
+
+        $totplansalary = (clone $query)
+            ->where('category_labarugis.namecategory', 'Salary')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalplan ?? 0);
+        });
+        $actualcoe = $totalRevenuea ? ($totactualsalary /$totalRevenuea ) * 100 : 0;
+        $plancoe = $totalRevenuep ? ($totplansalary / $totalRevenuep) * 100 : 0;
+
+
+        //csr
+        $totactualscsr = (clone $query)
+            ->where('category_labarugis.namecategory', 'Social & CSR')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalactual ?? 0);
+        });
+
+        $totplanscsr = (clone $query)
+            ->where('category_labarugis.namecategory', 'Social & CSR')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalplan ?? 0);
+        });
+        $actualcsr = $totalRevenuea ? ($totactualscsr /$totalRevenuea ) * 100 : 0;
+        $plancsr = $totalRevenuep ? ($totplanscsr / $totalRevenuep) * 100 : 0;
+
+
     
         // Menghitung Profit Margin (Laba Kotor)
         $totallkactual = (clone $query)
-        ->join('category_labarugis AS cat1', 'sub_labarugis.kategori_id', '=', 'cat1.id') 
-        ->join('jenis_labarugis AS jenis1', 'cat1.jenis_id', '=', 'jenis1.id') 
-        
-        ->where('jenis1.name', 'Gross Profit') 
-        ->where('cat1.namecategory', '!=', 'Revenue') 
-        ->get()
-        ->sum(function ($item) {
-            return (float) str_replace(',', '', $item->nominalactual ?? 0);
+            ->join('category_labarugis AS cat1', 'sub_labarugis.kategori_id', '=', 'cat1.id') 
+            ->join('jenis_labarugis AS jenis1', 'cat1.jenis_id', '=', 'jenis1.id') 
+            
+            ->where('jenis1.name', 'Gross Profit') 
+            ->where('cat1.namecategory', '!=', 'Revenue') 
+            ->get()
+            ->sum(function ($item) {
+                return (float) str_replace(',', '', $item->nominalactual ?? 0);
         });
 
         $totallkplan = (clone $query)
-        ->join('category_labarugis AS cat1', 'sub_labarugis.kategori_id', '=', 'cat1.id') 
-        ->join('jenis_labarugis AS jenis1', 'cat1.jenis_id', '=', 'jenis1.id') 
-        ->where('jenis1.name', 'Gross Profit') 
-        ->where('cat1.namecategory', '!=', 'Revenue') 
-        ->get()
-        ->sum(function ($item) {
-            return (float) str_replace(',', '', $item->nominalplan ?? 0);
+            ->join('category_labarugis AS cat1', 'sub_labarugis.kategori_id', '=', 'cat1.id') 
+            ->join('jenis_labarugis AS jenis1', 'cat1.jenis_id', '=', 'jenis1.id') 
+            ->where('jenis1.name', 'Gross Profit') 
+            ->where('cat1.namecategory', '!=', 'Revenue') 
+            ->get()
+            ->sum(function ($item) {
+                return (float) str_replace(',', '', $item->nominalplan ?? 0);
         });
 
     
@@ -176,12 +229,15 @@ class ReportController extends Controller
                         'category_id' => $kategori->first()->category_id,
                         'total_plan' => $totalPlan,
                         'total_actual' => $totalActual,
-                        'deviation' => $deviation,  // Added deviation
-                        'percentage' => $percentage,  // Added percentage
-                        'vertikalanalisis' => $vertikalanalisis,  // Added vertikalanalisis
-                        'vertikalanalisiss' => $vertikalanalisiss,  // Added vertikalanalisiss
+                        'deviation' => $deviation,  
+                        'percentage' => $percentage,  
+                        'vertikalanalisis' => $vertikalanalisis,  
+                        'vertikalanalisiss' => $vertikalanalisiss,  
                         'totalRevenuea' => $totalRevenuea,
                         'totalRevenuep' => $totalRevenuep,
+
+
+
                     ];
                 })
             ];
@@ -458,6 +514,16 @@ class ReportController extends Controller
         'verticalop','verticallp', 'persenop', //laba operasional
         'verticalslb','deviasilb','persenlr', //net profit
         'data','results',
+        //cogs
+        'actualcogs',
+        'plancogs',
+        //cos of employe
+        'actualcoe',
+        'plancoe',
+        //salary atau csr
+        'actualcsr',
+        'totplanscsr',
+
         //over burden dan coal
         'totalPlancoal',
         'totalActualcoal',

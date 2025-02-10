@@ -205,7 +205,7 @@ Route::delete('/deletepicabarging/{id}', [BargingController::class, 'deletepicab
 //plan bargings
 Route::get('/indexPlan', [BargingController::class, 'indexPlan'])->middleware('auth')->name('indexPlan');
 Route::get('/formplan', [BargingController::class, 'formplan'])->middleware('auth')->name('formplan');
-Route::post('/updatePlan', [BargingController::class, 'updatePlan'])->middleware('auth')->name('updatePlan');
+Route::post('/createnominalplan', [BargingController::class, 'createnominalplan'])->middleware('auth')->name('createnominalplan');
 Route::get('/formupdateplan/{id}', [BargingController::class, 'formupdateplan'])->middleware('auth')->name('formupdateplan');
 Route::post('/updatedataplan/{id}', [BargingController::class, 'updatedataplan'])->middleware('auth')->name('updatedataplan');
 Route::delete('/deleteplanbarging/{id}', [BargingController::class, 'deleteplanbarging'])->middleware('auth')->name('deleteplanbarging');
@@ -262,6 +262,7 @@ Route::get('/sublr', [DetailabarugiController::class, 'sublr'])->middleware('aut
 Route::post('/createsub', [DetailabarugiController::class, 'createsub'])->middleware('auth')->name('createsub');
 Route::get('/formupdatesublr/{id}', [DetailabarugiController::class, 'formupdatesublr'])->middleware('auth')->name('formupdatesublr');
 Route::post('/updatesublr/{id}', [DetailabarugiController::class, 'updatesublr'])->middleware('auth')->name('updatesublr');
+Route::delete('/deletesublr/{id}', [DetailabarugiController::class, 'deletesublr'])->middleware('auth')->name('deletesublr');
 
 //pica
 Route::get('/picalr', [DetailabarugiController::class, 'picalr'])->middleware('auth')->name('picalr');
@@ -290,6 +291,7 @@ Route::get('/subneraca', [DetailNeracaController::class, 'subneraca'])->middlewa
 Route::post('/createsubneraca', [DetailNeracaController::class, 'createsubneraca'])->middleware('auth')->name('createsubneraca');
 Route::get ('/formupdatesubneraca/{id}', [DetailNeracaController::class, 'formupdatesubneraca'])->middleware('auth')->name('formupdatesubneraca');
 Route::post ('/updatesubneraca/{id}', [DetailNeracaController::class, 'updatesubneraca'])->middleware('auth')->name('updatesubneraca');
+Route::delete ('/deletesubfinan/{id}', [DetailNeracaController::class, 'deletesubfinan'])->middleware('auth')->name('deletesubfinan');
 
 
 //hpp 
@@ -325,8 +327,6 @@ Route::delete('/deletepicaewhfuel/{id}', [ControllerEwhFuel::class, 'deletepicae
 Route::get('/indexpaua', [ProduksiController::class, 'indexpaua'])->middleware('auth')->name('indexpaua');
 Route::get('/indexproduksipa', [ProduksiController::class, 'indexproduksipa'])->middleware('auth')->name('indexproduksipa');
 Route::get('/indexproduksiua', [ProduksiController::class, 'indexproduksiua'])->middleware('auth')->name('indexproduksiua');
-Route::get('/unit', [ProduksiController::class, 'unit'])->middleware('auth')->name('unit');
-Route::post('/createunit', [ProduksiController::class, 'createunit'])->middleware('auth')->name('createunit');
 Route::get('/formproduksipa', [ProduksiController::class, 'formproduksipa'])->middleware('auth')->name('formproduksipa');
 Route::get('/formproduksiua', [ProduksiController::class, 'formproduksiua'])->middleware('auth')->name('formproduksiua');
 Route::post('/createproduksiua', [ProduksiController::class, 'createproduksiua'])->middleware('auth')->name('createproduksiua');
@@ -337,6 +337,12 @@ Route::post('/updateproduksipa/{id}', [ProduksiController::class, 'updateproduks
 Route::post('/updateproduksiua/{id}', [ProduksiController::class, 'updateproduksiua'])->middleware('auth')->name('updateproduksiua');
 Route::delete('/deleteproduksiua/{id}', [ProduksiController::class, 'deleteproduksiua'])->middleware('auth')->name('deleteproduksiua');
 Route::delete('/deleteproduksipa/{id}', [ProduksiController::class, 'deleteproduksipa'])->middleware('auth')->name('deleteproduksipa');
+//unit
+Route::get('/unit', [ProduksiController::class, 'unit'])->middleware('auth')->name('unit');
+Route::post('/createunit', [ProduksiController::class, 'createunit'])->middleware('auth')->name('createunit');
+Route::get('/formupadteunit/{id}', [ProduksiController::class, 'formupadteunit'])->middleware('auth')->name('formupadteunit');
+Route::post('/updateunit/{id}', [ProduksiController::class, 'updateunit'])->middleware('auth')->name('updateunit');
+Route::delete('/deleteunit/{id}', [ProduksiController::class, 'deleteunit'])->middleware('auth')->name('deleteunit');
 
 //pica pa ua
 Route::get('/picapaua', [ProduksiController::class, 'picapaua'])->middleware('auth')->name('picapaua');

@@ -1,5 +1,5 @@
 @extends('template.main')
-@section('title', 'Category Meaning Readiness')
+@section('title', 'Unit')
 @section('content')
 @extends('components.style')
 
@@ -7,11 +7,7 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                
-                <a href="/indexmining" class=" text-decoration-none " style="color: black;">
-                <h2 class="mb-3">Add Data Category Meaning Readines</h2>
-                </a>                
-
+            <h2 class="mb-3" onclick="window.history.back()" style="cursor: pointer;">Update Data Unit</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -27,22 +23,25 @@
                     </ul>
                 </div>
                 @endif
-                <form action="{{ route('createKatgori') }}" method="post">
+                <form action="{{ route('updateunit',$data->id) }}" method="post">
                 @csrf
-                <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
+                <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
+                <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
 
                 <div id="">
                     <div class="row g-3">
+
                         <div class="">
-                            <label for="[]" class="form-label">Category Meaning</label>
-                            <input type="text" class="form-control" id="kategori" placeholder="e.g. Legalitas, Lingkungan Penjualan Etc." value="" required name="kategori[]">
+                            <label for="" class="form-label">Unit Name</label>
+                            <input type="text" class="form-control" id="" placeholder="e.g. Hauler Etc." value="{{$data->unit}}" required name="unit">
                         </div>
+
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-3">
-                                <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
-                                <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
-                            </div>
+                    <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
+                </div>
+                
                 
                 </form>
                     

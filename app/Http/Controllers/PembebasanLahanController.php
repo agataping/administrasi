@@ -63,7 +63,11 @@ class PembebasanLahanController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexPembebasanLahan')->with('success', 'data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexPembebasanLahan')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
         
     }
 
@@ -118,7 +122,7 @@ class PembebasanLahanController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexPembebasanLahan')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/indexPembebasanLahan')->with('success', 'Data deleted successfully.');
     }
 
     public function picapl(Request $request)
@@ -168,8 +172,11 @@ class PembebasanLahanController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        
-        return redirect('/picapl')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/picapl')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
     
     public function formupdatepicapl($id)
@@ -226,7 +233,7 @@ class PembebasanLahanController extends Controller
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/picapl')->with('success', 'Data  berhasil Dihapus.');
+        return redirect('/picapl')->with('success', 'Data deleted successfully.');
     }
     
     

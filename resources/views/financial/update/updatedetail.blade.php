@@ -56,8 +56,12 @@
 
 
                     <div id="" class="form-group">
-                        <label for="actual">Nominal</label>
-                        <input type="text" class="form-control" id="actual" name="nominal" value="{{$data->nominal}}"> 
+                        <label for="actual">Debit</label>
+                        <input type="text" class="form-control" id="actual" name="debit" value="{{$data->debit}}"> 
+                    </div>    
+                    <div id="" class="form-group">
+                        <label for="actual">Credit</label>
+                        <input type="text" class="form-control" id="actual" name="credit" value="{{$data->credit}}"> 
                     </div>
 
 

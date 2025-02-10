@@ -164,8 +164,13 @@ class PeopleReadinessController extends Controller
                 'old_data' => null, 
                 'new_data' => json_encode($validatedData), 
                 'user_id' => auth()->id(), 
-            ]);    
-            return redirect('/indexPeople')->with('success', 'Data  berhasil disimpan.');
+            ]); 
+            if ($request->input('action') == 'save') {
+                return redirect('/indexPeople')->with('success', 'Data added successfully.');
+            }
+        
+            return redirect()->back()->with('success', 'Data added successfully.');
+       
         }
         
 
@@ -187,7 +192,7 @@ class PeopleReadinessController extends Controller
                 'user_id' => auth()->id(), 
             ]);
             
-            return redirect('/indexPeople')->with('success', 'Data  berhasil Dihapus.');
+            return redirect('/indexPeople')->with('success', 'Data deleted successfully.');
         }
         
         //PICA 
@@ -244,7 +249,11 @@ class PeopleReadinessController extends Controller
                 'new_data' => json_encode($validatedData), 
                 'user_id' => auth()->id(), 
             ]);
-            return redirect('/indexpicapeople')->with('success', 'Data  berhasil disimpan.');
+            if ($request->input('action') == 'save') {
+                return redirect('/indexpicapeople')->with('success', 'Data added successfully.');
+            }
+        
+            return redirect()->back()->with('success', 'Data added successfully.');
         }
 
         public function updatepicapeople(Request $request, $id)
@@ -295,7 +304,7 @@ class PeopleReadinessController extends Controller
                 'user_id' => auth()->id(), 
             ]);
             
-            return redirect('/indexpicapeople')->with('success', 'Data  berhasil Dihapus.');
+            return redirect('/indexpicapeople')->with('success', 'Data deleted successfully.');
         }
 
 

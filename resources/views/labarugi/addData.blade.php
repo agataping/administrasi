@@ -1,7 +1,7 @@
 @extends('template.main')
 
 @section('title', 'Profit & Loss')
-
+@extends('components.style')
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
@@ -68,12 +68,13 @@
 
                     <!-- Buttons for Plan and Actual -->
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="button" id="planBtn" class="btn btn-custom">Add Plan</button>
-                        <button type="button" id="actualBtn" class="btn btn-custom ml-2">Add Actual</button>
+                        <button type="button" id="planBtn" class="btn">Add Plan</button>
+                        <button type="button" id="actualBtn" class="btn ml-2">Add Actual</button>
                     </div>
 
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
+                        <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
+                        <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
                     </div>
                 </form>
             </div>

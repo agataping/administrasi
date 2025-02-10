@@ -98,10 +98,9 @@
                             <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                 {{ number_format($total['percentage'], 2) }}%
                             </th>
-                            <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                            <th  colspan="2" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                             </th>
-                            <th  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
-                            </th>
+
 
 
 
@@ -112,14 +111,14 @@
                             <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d F Y') }}</td>
                             <td>{{ $detail->desc }}</td>
                             <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalplan, 2) }}</td>
-                            <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalactual, 2) }}</td>
                             <td>
                                 @php
                                 $fileExtension = $detail->file_extension;
                                 @endphp
                                 <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
                             </td>
-
+                            <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->nominalactual, 2) }}</td>
+                            <td></td>
                             <td></td>
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                 <form action="{{ route('formupdateovercoal', ['id' => $detail->id]) }}">

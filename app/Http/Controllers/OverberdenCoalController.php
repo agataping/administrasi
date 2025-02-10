@@ -18,6 +18,7 @@ class OverberdenCoalController extends Controller
     //detail
     public function indexcoal(Request $request)
     {
+        
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
         
@@ -204,8 +205,8 @@ class OverberdenCoalController extends Controller
     public function createovercoal(Request $request)
     {
         $validatedData = $request->validate([
-            'nominalplan' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
-            'nominalactual' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
+            'nominalplan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'nominalactual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
             'kategori_id' => 'required|string',
             'desc' => 'required|string',
             'tanggal' => 'required|date',
@@ -214,19 +215,18 @@ class OverberdenCoalController extends Controller
         ]);
         $type = $request->input('kategori_id', '2');
         // Format nominal untuk menghapus koma
-        $validatedData['nominalplan'] = isset($validatedData['nominalplan']) 
-        ? str_replace(',', '', $validatedData['nominalplan']) 
-        : null;
-        $validatedData['nominalactual'] = isset($validatedData['nominalactual']) 
-        ? str_replace(',', '', $validatedData['nominalactual']) 
-        : null;
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
         
         // Tentukan mana yang diset null
-        if ($request->has('nominalplan') && !$request->has('nominalactual')) {
-            $validatedData['nominalactual'] = null;
-        } elseif ($request->has('nominalactual') && !$request->has('nominalplan')) {
-            $validatedData['nominalplan'] = null;
-        }
+        $validatedData['nominalplan'] = convertToCorrectNumber($validatedData['nominalplan']);
+        $validatedData['nominalactual'] = convertToCorrectNumber($validatedData['nominalactual']);
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filePath = $file->store('uploads', 'public');
@@ -242,19 +242,26 @@ class OverberdenCoalController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        $type = $request->input('kategori_id', '2');
-        if ($type === '2') {
-            return redirect('/indexcoal')->with('success', 'Data berhasil diperbarui.');
-        } else {
-            return redirect('/indexob')->with('success', 'Data berhasil diperbarui.');
+        $type = $request->input('kategori_id', '2'); 
+        $action = $request->input('action'); 
+        
+        if ($action == 'save') {
+            if ($type == '2') {
+                return redirect('/indexcoal')->with('success', 'Data added successfully.');
+            } else {
+                return redirect('/indexob')->with('success', 'Data added successfully.');
+            }
+        } elseif ($action == 'add') {
+            return redirect()->back()->with('success', 'Data added successfully.');
         }
+                
     }
     
     public function updateovercoal(Request $request, $id){
         // dd($request->all());
         $validatedData = $request->validate([
-            'nominalplan' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
-            'nominalactual' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
+            'nominalplan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'nominalactual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
             'kategori_id' => 'required|string',
             'desc' => 'required|string',
             'tanggal' => 'required|date',
@@ -264,22 +271,21 @@ class OverberdenCoalController extends Controller
         $type = $request->input('type', '2');
         
         // Format nominal untuk menghapus koma
-        $validatedData['nominalplan'] = isset($validatedData['nominalplan']) 
-        ? str_replace(',', '', $validatedData['nominalplan']) 
-        : null;
-        $validatedData['nominalactual'] = isset($validatedData['nominalactual']) 
-        ? str_replace(',', '', $validatedData['nominalactual']) 
-        : null;
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        // Tentukan mana yang diset null
+        $validatedData['nominalplan'] = convertToCorrectNumber($validatedData['nominalplan']);
+        $validatedData['nominalactual'] = convertToCorrectNumber($validatedData['nominalactual']);
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filePath = $file->store('uploads', 'public');
             $validatedData['file'] = $filePath;
-        }
-        // Tentukan mana yang diset null
-        if ($request->has('nominalplan') && !$request->has('nominalactual')) {
-            $validatedData['nominalactual'] = null;
-        } elseif ($request->has('nominalactual') && !$request->has('nominalplan')) {
-            $validatedData['nominalplan'] = null;
         }
 
         $validatedData['updated_by'] = auth()->user()->username;
@@ -350,7 +356,11 @@ class OverberdenCoalController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexovercoal')->with('success', 'Data berhasil disimpan.');
+        if ($request->input('action') == 'save') {
+            return redirect('/indexovercoal')->with('success', 'Data added successfully.');
+        }
+        return redirect()->back()->with('success', 'Data added successfully.');
+
     }
         
         
@@ -403,9 +413,13 @@ class OverberdenCoalController extends Controller
             'old_data' => null, 
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
-        ]); 
-        return redirect('/picaobc')->with('success', 'Data berhasil disimpan.');
-    }
+        ]);
+        if ($request->input('action') == 'save') {
+            return redirect('/picaobc')->with('success', 'Data added successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Data added successfully.');
+     }
     
     public function formupdatepicaobc($id){
         $data = PicaOverCoal::findOrFail($id);

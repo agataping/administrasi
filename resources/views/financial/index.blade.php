@@ -69,7 +69,8 @@
                 <tr>
                             <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
                             <th   rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
-                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Nominal</th>
+                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Debit</th>
+                            <th   colspan=""  style="vertical-align: middle; text-align: center;">Credit</th>
                             <th   rowspan="" style="vertical-align: middle;  text-align: center;">Date</th>
                             <th   colspan="2"  style="vertical-align: middle; text-align: center;">Action</th>
                         </tr>
@@ -82,11 +83,13 @@
                             <td colspan=""><strong>{{ $total['category_name'] }}</strong></td>
                             <td></td>
                             <td></td>
+                            <td></td>
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                 <form action="{{ route('formupdatecatneraca', ['id' => $total['category_id']]) }}">
                                     <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
                                 </form>
                             </td>
+                            <td></td>
                         </tr>
                         {{-- Tampilkan Sub-Kategori --}}
                         @foreach ($total['sub_categories'] as  $subIndex => $subCategory)
@@ -95,9 +98,16 @@
                             <td><strong>{{ $subCategory['sub_category'] }}</strong></td>
                             <td></td>
                             <td></td>
+                            <td></td>
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                 <form action="{{ route('formupdatesubneraca', ['id' => $subCategory['sub_id']]) }}">
                                     <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;"  rowspan="">
+                                <form action="{{ route('deletesubfinan', ['id' => $subCategory['sub_id']]) }}" method="POST" onsubmit="return confirmDelete(event)">                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -105,8 +115,9 @@
                         <tr>
                             <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
                             <td>{{ $detail['name'] }}</td>
-                            <td style="text-align: right;">{{ number_format($detail['nominal'], 2) }}</td>
-                            <td style="text-align: center;">{{ \Carbon\Carbon::parse($detail['tanggal'])->format('d F Y') }}</td>
+                            <td style="text-align: right;">{{ number_format($detail['debit'], ) }}</td>
+                            <td style="text-align: right;">{{ number_format($detail['credit'], ) }}</td>
+                            <td style="text-align: center;">{{ \Carbon\Carbon::parse($detail['tanggal'])->format('d-m-Y') }}</td>
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                 <form action="{{ route('formupdatefinancial', ['id' => $detail['id']]) }}">      
                                     <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
@@ -124,15 +135,19 @@
                         <tr>
                             <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</th>
                             <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
-                                {{ number_format($total['total'], 2) }}
+                            {{ number_format($total['total']['debit'] ?? 0, 2) }}
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['total']['credit'] ?? 0, 2) }}</th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                                    </tr>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                            </tr>
                             <tr>
                                 @if ($total['category_name'] == 'CURRENT ASSETS')
                                 <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">{{ number_format($totalsAssets, 2) }}</th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
@@ -141,7 +156,9 @@
                             <tr>
                                 @if ($total['category_name'] == 'EQUITY')
                                 <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL LIABILITIES AND EQUITY  :</th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">{{ number_format($totalLiabilitas, 2) }}</th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
@@ -150,7 +167,9 @@
                             @endforeach      
                             <tr>
                                 <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Control :</th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">{{ $note }}</th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>

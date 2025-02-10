@@ -1,13 +1,14 @@
 @extends('template.main')
 
 @section('title', 'PICA Mining Readiness')
+@extends('components.style')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-            <a href="/picaobc" class=" text-decoration-none " style="color: black;">
+            <a href="/picamining" class=" text-decoration-none " style="color: black;">
                 <h2 class="mb-3">Add Data PICA Mining Readiness</h2>
                 </a>                
                 
@@ -75,9 +76,10 @@
 
 
                     
-                    <div class="d-flex justify-content-end mt-3">
-                        
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>                    </div>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
+                                <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
+                            </div>
                 </form>
             </div>
         </div>
