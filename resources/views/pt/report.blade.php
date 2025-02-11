@@ -31,13 +31,10 @@
                     <div class="col text-center">
                         <h4>KPI</h4> 
                         @if($user->role === 'admin')
-                            @if($companyName->isEmpty())
-                                 <p>Tidak ada perusahaan yang memiliki laporan.</p>
-                            @else
+
                                 @foreach ($companyName as $company)
                                     <h4>{{ $company->company_name }}</h4>
                                 @endforeach
-                            @endif
                             @else
                             @if($companyName)
                                 <h4> <p> {{ $companyName->company_name }}</p></h4>

@@ -22,9 +22,7 @@ class ReportController extends Controller
                 ->distinct() 
                 ->get();
             
-            if ($companyName->isEmpty()) {
-                return response()->json(['message' => 'Tidak ada perusahaan yang memiliki laporan'], 404);
-            }
+
         } else {
             // Jika bukan admin, ambil perusahaan user sendiri
             $companyName = DB::table('users')
