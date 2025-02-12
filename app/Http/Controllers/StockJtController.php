@@ -150,7 +150,7 @@ class StockJtController extends Controller
     }
     public function createstockjt(Request $request)
     {
-        $request->validate([
+        $validatedData=$request->validate([
             'date' => 'required|date',
             'sotckawal' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
             'stockout' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',

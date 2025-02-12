@@ -45,15 +45,6 @@
                         <label for="stock">Plan</label>
                         <input type="text" class="form-control" id="plan" name="plan" min=""  value="{{$data->plan}}">
                     </div>
-                    <div class="form-group" id="file" style="display: none;">
-                        <label for="file">File</label>
-                        <input type="file" class="form-control" id="file" name="file" min=""  value="{{$data->file}}">
-                        @php
-                        $fileExtension = $data->file_extension ?? 'unknown';
-                        @endphp
-                        <a href="{{ asset('storage/' . $data->file) }}" class="text-decoration-none" target="_blank">View File</a>
-                        
-                    </div>
                     
                     
                     <div class="form-group" id="stockout" style="display: none;">
@@ -79,7 +70,16 @@
                         <label for="Lokasi">Location</label>
                         <input type="text" class="form-control" value="{{$data->lokasi}}" id="Lokasi" name="lokasi" >
                     </div>
-                    
+                    <div class="form-group">
+                        <label for="file">File</label>
+                        <input type="file" class="form-control" id="file" name="file" min=""  value="{{$data->file}}">
+                        @php
+                        $fileExtension = $data->file_extension ?? 'unknown';
+                        @endphp
+                        <a href="{{ asset('storage/' . $data->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                        
+                    </div>
+
                     <div class="d-flex justify-content-end mt-3">
                         <button type="button" id="stockbtn" class="btn btn-custom">Add Opening stock</button>
                         <button type="button" id="planBtn" class="btn btn-custom">Add Plan</button>
@@ -135,7 +135,6 @@
     
     document.getElementById('stockoutBtn').addEventListener('click', function() {
         document.getElementById('plan').style.display = 'none';
-        document.getElementById('file').style.display = 'none';
         document.getElementById('stockout').style.display = 'block';
     });
 

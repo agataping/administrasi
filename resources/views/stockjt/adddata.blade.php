@@ -39,21 +39,18 @@
 
                     <div class="form-group" id="stock" style="display: none;">
                         <label for="stock">Opening Stock</label>
-                        <input type="number" class="form-control" id="stockawal" name="sotckawal" min="" >
+                        <input type="text" class="form-control" id="stockawal" name="sotckawal" min="" >
                     </div>
 
                     <div class="form-group" id="plan" style="display: none;">
                         <label for="stock">Plan</label>
-                        <input type="number" class="form-control" id="plan" name="plan" min="" >
+                        <input type="text" class="form-control" id="plan" name="plan" min="" >
                     </div>
-                    <div class="form-group" id="file" style="display: none;">
-                        <label for="file">File</label>
-                        <input type="file" class="form-control" id="file" name="file" min="" >
-                    </div>
+
                     
                     <div class="form-group" id="stockout" style="display: none;">
                         <label for="stockout">Stock Out</label>
-                        <input type="number" class="form-control" id="stockout" name="stockout" min="" >
+                        <input type="text" class="form-control" id="stockout" name="stockout" min="" >
                     </div>
 
 
@@ -75,7 +72,10 @@
                         <label for="Lokasi">Location</label>
                         <input type="text" class="form-control" id="Lokasi" name="lokasi" >
                     </div>
-                    
+                    <div class="form-group">
+                        <label for="file">File</label>
+                        <input type="file" class="form-control" id="file" name="file" min="" >
+                    </div>
                     <div class="d-flex justify-content-end mt-3">
                         <button type="button" id="stockbtn" class="btn ">Add Opening stock</button>
                         <button type="button" id="planBtn" class="btn ">Add Plan</button>
@@ -130,7 +130,6 @@
 
     document.getElementById('stockoutBtn').addEventListener('click', function() {
         document.getElementById('plan').style.display = 'none';
-        document.getElementById('file').style.display = 'none';
         document.getElementById('stockout').style.display = 'block';
     });
     
