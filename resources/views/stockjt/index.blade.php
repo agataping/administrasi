@@ -108,7 +108,7 @@
                             <th colspan="3" style="text-align: start;">
                                 Opening stock : 
                                 @if ($data->isNotEmpty() && $data->first()->date)
-                                {{ \Carbon\Carbon::parse($data->first()->date)->format('d-m-Y') }}
+                                {{ \Carbon\Carbon::parse($data->first()->date)->format('d-m-Y' ?? 0) }}
                                 @else
                                 No data available
                                 @endif

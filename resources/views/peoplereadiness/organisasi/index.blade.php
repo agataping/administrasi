@@ -39,13 +39,20 @@
                 <body style="font-family: 'Arial', sans-serif; background-color: #f9f9f9; width: auto; height: auto; object-fit: cover;">
                     <div class="card mb-3 text-center border-0 shadow-sm" style="border-radius: 12px; overflow: hidden; margin: 2rem auto;">
                         <div style="position: relative;">
-                            
-                            <img src="{{ asset('storage/' . $gambar->path) }}"  class="card-img-top" alt="Administrasi" style="width: auto; height: auto; object-fit: cover;">
-                                </div>
-                            </div>
-                        </div>
+                        @if ($gambar)
+                        <img src="{{ asset('storage/' . $gambar->path) ?? 0 }}"  class="card-img-top" alt="Administrasi" style="width: auto; height: auto; object-fit: cover;">
+
+                        @else
+                        <p>You haven't uploaded any images yet.</p>
+                        @endif
+                        
+                        
                     </div>
-                </body>
+                </div>
+            </div>
+        </div>
+    </body>
+    
                 
                 
                 
