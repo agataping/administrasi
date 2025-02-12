@@ -16,19 +16,33 @@ class DeadlineCompensationController extends Controller
 {
     public function indexdeadline(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         $query = DB::table('deadline_compensation') 
-            ->select('*')
-            ->where('deadline_compensation.created_by', auth()->user()->username); 
- 
+            ->select('deadline_compensation.*')
+            ->join('users', 'deadline_compensation.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        
+        if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $query->where('users.id_company', $companyId);
+                } else {
+                    $query->whereRaw('1 = 0');             
+                }
+            } 
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]);
         }
         
        $data = $query->get();
-        return view('deadlinecompensation.index',compact('data'));
+        return view('deadlinecompensation.index',compact('data','perusahaans', 'companyId'));
     }
 
     public function formaddMR()
@@ -118,17 +132,33 @@ class DeadlineCompensationController extends Controller
     //PICA
     public function picadeadline(Request $request)
     {
+        $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         $query = DB::table('picai_dealines') 
-        ->select('*')
-        ->where('picai_dealines.created_by', auth()->user()->username); 
+        ->select('picai_dealines.*')
+        ->join('users', 'picai_dealines.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
+
 
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
        $data = $query->get();
-        return view('picadeadline.index', compact('data'));
+        return view('picadeadline.index', compact('data','perusahaans', 'companyId'));
     }
 
     public function formpicadeadline()

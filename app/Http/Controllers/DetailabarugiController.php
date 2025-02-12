@@ -19,13 +19,21 @@ class DetailabarugiController extends Controller
     //detail
     public function labarugi(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date'); 
-        $endDate = $request->input('end_date');    
+        $endDate = $request->input('end_date');
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+            
         $data = detailabarugi::paginate(10);
         $query = DB::table('detailabarugis')
         ->join('sub_labarugis', 'detailabarugis.sub_id', '=', 'sub_labarugis.id')
         ->join('category_labarugis', 'sub_labarugis.kategori_id', '=', 'category_labarugis.id')
         ->join('jenis_labarugis', 'category_labarugis.jenis_id', '=', 'jenis_labarugis.id')
+        ->join('users', 'detailabarugis.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+
         ->select(
             'category_labarugis.namecategory as kategori_name',
             'category_labarugis.id as category_id',
@@ -36,9 +44,16 @@ class DetailabarugiController extends Controller
             'detailabarugis.id as detail_id',
             'detailabarugis.*'
 
-        )
-        ->where('detailabarugis.created_by', auth()->user()->username); 
-
+        );
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
         
         if ($startDate && $endDate) {
             $query->whereBetween('detailabarugis.tanggal', [$startDate, $endDate]);
@@ -216,7 +231,7 @@ class DetailabarugiController extends Controller
         ,'totalplanlp','verticallp','totalactualOp','verticalsp','persenlb',
         'deviasilb','verticalslb', 'deviasiop','persenop', 'deviasilr','persenlr','totalvertikals',
         'persenlb','deviasilb','verticalslb','verticallb','totalplanlb','totalactuallb'
-            ));
+        ,'perusahaans', 'companyId'));
     }
     
     public function formlabarugi()
@@ -352,20 +367,33 @@ class DetailabarugiController extends Controller
     //pica
     public function picalr(Request $request)
     {
+        $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
-        $query = DB::table('picalaba_rugis') 
-            ->select('*')
-            ->where('picalaba_rugis.created_by', auth()->user()->username); 
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
+        $query = DB::table('picalaba_rugis') 
+            ->select('picalaba_rugis.*')
+            ->join('users', 'picalaba_rugis.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0'); 
+            }
+        }
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         
         $data = $query->get();
         
-        return view ('picakeuangan.index', compact('data'));
+        return view ('picakeuangan.index', compact('data','perusahaans', 'companyId'));
     }
     
     public function formpicalr()

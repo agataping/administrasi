@@ -36,7 +36,22 @@
                         </form>
                     </div>
                 </div>
-                
+                                @if(auth()->user()->role === 'admin')    
+
+                <form method="GET" action="{{ route('indexmenu') }}" id="filterForm">
+                                   <label for="id_company">Select Company:
+                    <br>
+                        <small><em>To view company data, please select a company from the list.</em></small></label>
+                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                        <option value="">-- Select Company --</option>
+                        @foreach ($perusahaans as $company)
+                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                            {{ $company->nama }}
+                        </option>
+                        @endforeach
+                    </select>
+                </form>
+                @endif
                 <div class="" style="overflow-x:auto;">
 
 

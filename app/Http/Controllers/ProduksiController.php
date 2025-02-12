@@ -19,29 +19,54 @@ class ProduksiController extends Controller
 {   //index menu
     public function indexpaua(Request $request)
     {
+        $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-    
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         // Query produksi_pas
         $queryPas = DB::table('units')
+            ->join('users', 'units.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+        
+
             ->leftJoin('produksi_pas', 'units.id', '=', 'produksi_pas.unit_id')
             ->select(
                 'units.unit as units',
                 'produksi_pas.plan as pas_plan',
                 'produksi_pas.actual as pas_actual'
-            )
-            ->where('produksi_pas.created_by', auth()->user()->username);
-    
+            );
+            if ($user->role !== 'admin') {
+                $queryPas->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $queryPas->where('users.id_company', $companyId);
+                } else {
+                    $queryPas->whereRaw('1 = 0');             
+                }
+            }    
+            
         // Query produksi_uas
         $queryUas = DB::table('units')
+            ->join('users', 'units.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+
             ->leftJoin('produksi_uas', 'units.id', '=', 'produksi_uas.unit_id')
             ->select(
                 'units.unit as units',
                 'produksi_uas.plan as uas_plan',
                 'produksi_uas.actual as uas_actual'
-            )
-            ->where('produksi_uas.created_by', auth()->user()->username);
-    
+            );
+            if ($user->role !== 'admin') {
+                $queryUas->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $queryUas->where('users.id_company', $companyId);
+                } else {
+                    $queryUas->whereRaw('1 = 0');             
+                }
+            }    
         // Tambahkan filter tanggal jika tersedia
         if ($startDate && $endDate) {
             $queryPas->whereBetween('produksi_pas.date', [$startDate, $endDate]);
@@ -88,20 +113,32 @@ class ProduksiController extends Controller
             ];
         });
     
-        return view('PA_UA.index', compact('dataPas', 'dataUas', 'totalsPas', 'totalsUas', 'startDate', 'endDate'));
+        return view('PA_UA.index', compact('dataPas', 'dataUas', 'totalsPas', 'totalsUas', 'startDate', 'endDate','perusahaans', 'companyId'));
     }
             
     public function indexproduksiua(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
-
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('produksi_uas')
         ->join('units', 'produksi_uas.unit_id', '=', 'units.id')
+        ->join('users', 'produksi_uas.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
         ->select('produksi_uas.*',
-        'units.unit as units')
-        ->where('produksi_uas.created_by', auth()->user()->username); 
-
+        'units.unit as units');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
             if ($startDate && $endDate) {
                 $query->whereBetween('produksi_uas.date', [$startDate, $endDate]);
             }
@@ -131,20 +168,33 @@ class ProduksiController extends Controller
                 ];
             });
             // dd($totals);
-                    return view('PA_UA.indexua', compact('data', 'startDate', 'endDate','totals'));
+                    return view('PA_UA.indexua', compact('data', 'startDate', 'endDate','totals','perusahaans', 'companyId'));
     }
 
     public function indexproduksipa(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
         $query = DB::table('produksi_pas')
         ->join('units', 'produksi_pas.unit_id', '=', 'units.id')
+        ->join('users', 'produksi_pas.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
         ->select('produksi_pas.*','units.*',
-        'units.unit as units')
-        ->where('produksi_pas.created_by', auth()->user()->username); 
-
+        'units.unit as units');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
             if ($startDate && $endDate) {
                 $query->whereBetween('produksi_pas.date', [$startDate, $endDate]);
             }
@@ -174,7 +224,7 @@ class ProduksiController extends Controller
                 ];
             });
             // dd($totals);
-            return view('PA_UA.indexpa', compact('data', 'startDate', 'endDate','totals'));
+            return view('PA_UA.indexpa', compact('data', 'startDate', 'endDate','totals','perusahaans', 'companyId'));
     }
 
 
@@ -544,10 +594,23 @@ class ProduksiController extends Controller
         $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         $query = DB::table('pica_pa_uas') 
-        ->select('*'); 
-        
+        ->select('pica_pa_uas.*')
+        ->join('users', 'pica_pa_uas.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
         }
@@ -555,7 +618,7 @@ class ProduksiController extends Controller
        $data = $query->get();
         
         
-        return view('picapaua.index', compact('data'));
+        return view('picapaua.index', compact('data','perusahaans', 'companyId'));
         
     }
     

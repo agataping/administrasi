@@ -16,12 +16,26 @@ class InfrastructureReadinessController extends Controller
     //InfrastructureReadiness
     public function indexInfrastructureReadiness(Request $request)
     {
+        $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         $query = DB::table('infrastructure_readinesses')
-        ->select('*')
-        ->where('infrastructure_readinesses.created_by', auth()->user()->username); 
-        
+        ->select('infrastructure_readinesses.*')
+        ->join('users', 'infrastructure_readinesses.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
+
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
@@ -37,7 +51,7 @@ class InfrastructureReadinessController extends Controller
             return (float) $item->total_numeric;
         })
         ->avg();
-        return view('InfrastructureReadines.index', compact('data', 'averagePerformance'));
+        return view('InfrastructureReadines.index', compact('data', 'averagePerformance','perusahaans', 'companyId'));
     }
 
     public function fromadd()
@@ -144,15 +158,28 @@ class InfrastructureReadinessController extends Controller
         $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         $query = DB::table('picainfrastrukturs') 
-        ->select('*')
-        ->where('picainfrastrukturs.created_by', auth()->user()->username); 
+        ->select('picainfrastrukturs.*')
+        ->join('users', 'picainfrastrukturs.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $query->where('users.id_company', $companyId);
+                } else {
+                    $query->whereRaw('1 = 0');             
+                }
+            }
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         $data = $query->get();        
-        return view('picainfra.index', compact('data'));
+        return view('picainfra.index', compact('data','perusahaans', 'companyId'));
     }
     
     

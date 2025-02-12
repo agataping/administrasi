@@ -109,8 +109,8 @@
 
     .grid-container {
         display: grid;
-        grid-template-columns: repeat(4, 1fr); /* 4 kolom */
-        gap: 20px; /* Jarak antar elemen */
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px; 
         margin: 20px 0;
     }
 
@@ -154,8 +154,8 @@
         align-self: center;
     }
     .cardcostum .cardcost h4 {
-    font-size: 12px !important; /* Paksa ukuran teks */
-    font-weight: normal; /* Jika terlalu tebal, atur menjadi normal */
+    font-size: 12px !important; /
+    font-weight: normal; 
 }
 .cardcostum .percentage-box {
     font-size: 12px !important; /* Paksa ukuran teks persentase */
@@ -207,4 +207,102 @@
 .button:hover {
     background-color: rgb(0, 200, 35); 
 }
+
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.11);
+    border-radius: 10px;
+    background: #fff;
+    max-width: 500px;
+    margin: auto;
+}
+
+.filter-form label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.filter-form select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.filter-form select:focus {
+    border-color: #388e3c;
+    box-shadow: 0 0 5px rgba(56, 142, 60, 0.5);
+}
+
+.filter-form button {
+    background-color: #388e3c;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+.filter-form button:hover {
+    background-color: #2e7d32;
+}
+
+
+.filter-date {
+    background: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    max-width: 650px;
+    padding: 15px 20px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-date label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.filter-date input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.filter-date input:focus {
+    border-color: #388e3c;
+    box-shadow: 0 0 5px rgba(56, 142, 60, 0.5);
+}
+
+.filter-date button {
+    background-color: #388e3c;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+.filter-date button:hover {
+    background-color: #2e7d32;
+}
+
 </style>

@@ -19,51 +19,53 @@ class BargingController extends Controller
 {
     public function indexbarging(Request $request)
     {
+        $user = Auth::user();  
         $startDate = $request->input('start_date'); 
-        $endDate = $request->input('end_date');  
-        $idCompany = auth()->user()->id_company; // Ambil ID perusahaan user login
-    
-        // Ambil semua username dalam perusahaan user yang login
-        $usernames = User::where('id_company', $idCompany)->pluck('username')->toArray();
-    
-        // Pastikan ada username agar tidak error di query
-        // if (empty($usernames)) {
-        //     return view('barging.index', [
-        //         'data' => [],
-        //         'quantity' => 0,
-        //         'planNominal' => 0,
-        //         'deviasi' => 0,
-        //         'percen' => 0
-        //     ]);
-        // }
-    
-        // Convert array ke format string untuk whereRaw
-        $usernameList = "'" . implode("','", $usernames) . "'";
-    
-        // Ambil plan hanya untuk user dalam perusahaan yang sama
-        $plan = planBargings::whereIn('created_by', $usernames)->get();
-    
-        // Hitung total plan nominal
-        $planNominal = $plan->sum(function ($p) {
-            return floatval(str_replace(['.', ','], ['', '.'], $p->nominal));
-        });
-    
-        // Query data barging dengan join ke plan_bargings berdasarkan username dalam perusahaan
+        $endDate = $request->input('end_date');
+        $companyId = $user->role !== 'admin' ? $user->id_company : $request->input('id_company');
+
+        
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+        
+        // Hitung nominal plan 
+        $planNominal = null;
+        if ($companyId) {
+            $planNominal = DB::table('plan_bargings')
+            ->whereIn('created_by', function ($query) use ($companyId) {
+                $query->select('username')->from('users')->whereNotNull('id_company')->where('id_company', $companyId);
+            })
+            ->sum(DB::raw("CAST(REPLACE(REPLACE(nominal, '.', ''), ',', '.') AS DECIMAL(15,2))"));
+           
+            }
+        // dd([
+        //     'role' => Auth::user()->role,
+        //     'companyId' => $companyId,
+        // ]);
+        
+       
+        
         $query = DB::table('bargings')
             ->join('users', 'bargings.created_by', '=', 'users.username')
-            ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id') 
-            ->leftJoin('plan_bargings', function ($join) use ($usernameList) {
-                $join->on('bargings.kuota', '=', 'plan_bargings.kuota')
-                    ->whereRaw("plan_bargings.created_by IN ($usernameList)")
-                    ->whereRaw("plan_bargings.id = (
-                        SELECT MIN(id) FROM plan_bargings 
-                        WHERE plan_bargings.kuota = bargings.kuota 
-                        AND plan_bargings.created_by IN ($usernameList)
-                    )");
-            })
-            ->select('bargings.*', 'plan_bargings.nominal')
-            ->whereIn('users.username', $usernames); // Filter data barging sesuai username dalam perusahaan
-    
+            ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->leftJoin(DB::raw('(SELECT pb1.* FROM plan_bargings pb1 
+                WHERE pb1.id = (SELECT MIN(id) FROM plan_bargings 
+                    WHERE kuota = pb1.kuota 
+                    AND created_by = pb1.created_by) ) as plan_bargings'),
+                function ($join) {
+                    $join->on('bargings.kuota', '=', 'plan_bargings.kuota');
+                    $join->on('users.username', '=', 'plan_bargings.created_by');
+                })
+            ->select('bargings.*', 'plan_bargings.nominal');
+            if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $query->where('users.id_company', $companyId);
+                } else {
+                    $query->whereRaw('1 = 0');             
+                }
+            }
+            
         // Filter berdasarkan tanggal jika ada input
         if ($startDate && $endDate) {
             $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
@@ -88,35 +90,48 @@ class BargingController extends Controller
         $quantity = ($count > 0) ? $totalQuantity : 0;
         $deviasi = $planNominal - $quantity;
         $percen = ($planNominal != 0) ? ($quantity / $planNominal) * 100 : 0;
-    
         // Format quantity
         $data = $data->map(function ($d) {
             $d->formatted_quantity = number_format(floatval(str_replace(['.', ','], ['', '.'], $d->quantity)), 0, ',', '.');
             return $d;
         });  
         
-        return view('barging.index', compact('data', 'quantity', 'planNominal', 'deviasi', 'percen'));
+        
+        return view('barging.index', compact('data', 'quantity', 'planNominal', 'deviasi', 'percen','perusahaans', 'companyId'));
     }
                 
 
 
     public function indexmenu(Request $request)
     {
+        $user = Auth::user();  
+
             $plan = planBargings::all(); 
             $startDate = $request->input('start_date'); 
             $endDate = $request->input('end_date');
+            $companyId = $request->input('id_company');
+            $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
             $kuota = $request->input('kuota'); 
             $planNominal = $plan->sum(function ($p) {
                 return floatval(str_replace(['.', ','], ['', '.'], $p->nominal));
             });
             $query = DB::table('bargings')
+            ->join('users', 'bargings.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
             ->leftJoin('plan_bargings', function ($join) {
                 $join->on('bargings.kuota', '=', 'plan_bargings.kuota')
                      ->whereRaw('plan_bargings.id = (SELECT MIN(id) FROM plan_bargings WHERE plan_bargings.kuota = bargings.kuota)');
             })
-            ->select('bargings.*', 'plan_bargings.nominal')
-            ->where('bargings.created_by', auth()->user()->username);
-                    // Tambahkan filter tanggal jika ada
+            ->select('bargings.*', 'plan_bargings.nominal');
+            if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $query->where('users.id_company', $companyId);
+                } else {
+                    $query->whereRaw('1 = 0');             
+                }
+            }                    
             if ($startDate && $endDate) {
                 $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
             }
@@ -153,7 +168,7 @@ class BargingController extends Controller
                 return $d;
             });        
              
-            return view('barging.indexmenu', compact('data', 'quantity', 'deviasi', 'percen'));
+            return view('barging.indexmenu', compact('data','perusahaans', 'companyId', 'quantity', 'deviasi', 'percen'));
     }
                 
 
@@ -282,24 +297,35 @@ class BargingController extends Controller
     //nominal
     public function indexPlan(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date'); 
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('plan_bargings')
         ->join('users', 'plan_bargings.created_by', '=', 'users.username')
-        ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id') 
-        ->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
-        if (auth()->user()->role !== 'admin') { 
-            $query->where('users.id_company', auth()->user()->id_company);
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')        ->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
+        
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
         }
-               $data = $query->get();
-       $data->each(function ($item) {
-           $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+        $data = $query->get();
+        $data->each(function ($item) {
+            $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
         });
         $planNominal = $data->sum(function ($p) {
             return floatval(str_replace(['.', ','], ['', '.'], $p->nominal));
         });
-
-        return view('barging.indexplan',compact('data','startDate','endDate','planNominal'));
+        
+        
+        return view('barging.indexplan',compact('data','startDate','endDate','planNominal','perusahaans', 'companyId'));
     }
 
     public function formplan()
@@ -414,27 +440,38 @@ class BargingController extends Controller
     }
 
 
-    public function indexpicabarging (Request $request)
+    public function indexpicabarging(Request $request)
     {
         $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $companyId = $request->input('id_company');
         
-        $query = DB::table('pica_bargings') 
-            ->select('*')
-            ->where('pica_bargings.created_by', auth()->user()->username); 
-
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+    
+        $query = DB::table('pica_bargings')
+            ->select('pica_bargings.*')
+            ->join('users', 'pica_bargings.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0'); // Mencegah admin melihat semua data secara default
+            }
+        }
         
         if ($startDate && $endDate) {
-            $query->whereBetween('tanggal', [$startDate, $endDate]); 
+            $query->whereBetween('pica_bargings.tanggal', [$startDate, $endDate]); 
         }
         
         $data = $query->get();
-        return view('picabarging.index', compact('data'));
-        
+        return view('picabarging.index', compact('data', 'perusahaans', 'companyId'));
     }
-  
-    public function formpicabarging()
+            public function formpicabarging()
     {
         $user = Auth::user();  
         return view('picabarging.addData');

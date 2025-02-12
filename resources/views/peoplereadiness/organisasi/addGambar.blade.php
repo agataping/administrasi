@@ -28,6 +28,7 @@
 
                 
                     @csrf
+                    <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
 
                     <div class="row g-3">
                         <div class="col-sm-2">

@@ -33,6 +33,8 @@
                             <button type="submit" class="btn btn-custom">Add Category HSE</button>
                         </form>
                     </div>
+                    @if(auth()->user()->role === 'admin')    
+
                     <div class="col-auto">
                         <form action="{{ route('formhse') }}" method="get">
                             <input type="hidden" name="form_type" value="subkategori">
@@ -40,6 +42,20 @@
                         </form>
                     </div>
                 </div>
+                <form method="GET" action="{{ route('indexhse') }}" id="filterForm">
+                                   <label for="id_company">Select Company:
+                    <br>
+                        <small><em>To view company data, please select a company from the list.</em></small></label>
+                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                        <option value="">-- Select Company --</option>
+                        @foreach ($perusahaans as $company)
+                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                            {{ $company->nama }}
+                        </option>
+                        @endforeach
+                    </select>
+                </form>
+                @endif
                 <div class="" style="overflow-x:auto;">
                 <form method="GET" action="{{ route('indexhse') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >

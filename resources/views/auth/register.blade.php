@@ -93,9 +93,9 @@
                     @csrf
                     
                     <div style="margin-bottom: 1rem;">
-                      <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Company:</label>
+                      <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Companyy:</label>
                       <select id="kategori" name="id_company" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                        <option value="" disabled selected>-- Select Company--</option>
+                        <option value="" disabled selected>-- Select Companyy--</option>
                         <option value="direksi">Direksi</option>
                         <option value="pimpinan">Pimpinan</option>
                         <option value="admin">Admin</option>

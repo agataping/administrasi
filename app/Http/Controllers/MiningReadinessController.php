@@ -16,35 +16,34 @@ class MiningReadinessController extends Controller
 {
     public function indexmining(Request $request)
     {
-        //filter data perbaikan pakai tanggal
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
-        //ngambil data
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         $query = DB::table('mining_readinesses')
         ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
         ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
-        ->select(
-            'kategori_mini_r_s.kategori',
-            'mining_readinesses.Description',
-            'mining_readinesses.NomerLegalitas',
-            'mining_readinesses.tanggal',
-            'mining_readinesses.status',
-            'mining_readinesses.berlaku',
-            'mining_readinesses.nomor',
-            'mining_readinesses.id',
-            'mining_readinesses.Achievement',
-            'mining_readinesses.filling',
-            'mining_readinesses.created_by',
-            'mining_readinesses.KatgoriDescription'
-        )
-        ->where('mining_readinesses.created_by', auth()->user()->username); 
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+        ->select('kategori_mini_r_s.kategori','mining_readinesses.*');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }         
+        
         if ($startDate && $endDate) {
-            $query->whereBetween('mining_readinesses.tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            $query->whereBetween('mining_readinesses.tanggal', [$startDate, $endDate]); 
         }
        $data = $query->get();
         
-        //hitung achievement, konversi data, kelompok+hitung data by"kategori"
+        
         $data->transform(function ($item) 
         {
             $achievement = str_replace('%', '', $item->Achievement);
@@ -89,7 +88,7 @@ class MiningReadinessController extends Controller
                 }
                 return $items;
             });
-            return view('mining.index', compact('groupedData', 'totalAspect'));
+            return view('mining.index', compact('groupedData', 'totalAspect','perusahaans', 'companyId'));
     }
         
     public function FormKategori()
@@ -226,16 +225,30 @@ class MiningReadinessController extends Controller
         $user = Auth::user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         
         $query = DB::table('pica_minings') 
-        ->select('*')
-        ->where('pica_minings.created_by', auth()->user()->username); 
+        ->select('pica_minings.*')
+        ->join('users', 'pica_minings.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $query->where('users.id_company', $companyId);
+                } else {
+                    $query->whereRaw('1 = 0');             
+                }
+        }
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
        $data = $query->get();
         
-        return view('picamining.index', compact('data'));
+        return view('picamining.index', compact('data','perusahaans', 'companyId'));
     }
     
     public function formpicamining()

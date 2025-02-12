@@ -64,106 +64,7 @@
                     </div>
                     <div class="col">
                         <!-- Grid layout untuk tabel yang disusun secara horizontal -->
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                            @foreach($totals as $jenis)
-                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th colspan="3" style="text-align: center; vertical-align: middle;">{{ $jenis['jenis_name'] }}</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if ($jenis['jenis_name'] == 'Gross Profit')
-                                    <tr>
-                                        <td colspan="2" style="text-align: ; vertical-align: middle;">Plan</td>
-                                        <td>{{ number_format($totalvertikal, 2) }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" style="text-align: ; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($totalvertikals, 2) }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" >Index</td>
-                                        <td style="text-align: ; vertical-align: middle;
-                                            vertical-align: middle; color: white; 
-                                            @if ($persenlr <= 75)
-                                            background-color: black;
-                                            @elseif ($persenlr > 75 && $persenlr <= 90)
-                                            background-color: rgb(206, 24, 24); /* Merah */                 
-                                            @elseif ($persenlr > 90 && $persenlr <= 100)
-                                            background-color: yellow;
-                                            @elseif ($persenlr > 100 && $persenlr <= 190)
-                                            background-color: green;
-                                            @endif">{{ number_format($persenlr, 2) }}%
-                                        </td>
-                                    </tr>
-                                    @elseif ($jenis['jenis_name'] == 'Operating Profit')
-                                    <tr>
-                                        <td colspan="2" style="text-align: ; vertical-align: middle;">Plan</td>
-                                        
-                                        <td>{{ number_format($verticallp, 2) }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" style="text-align: ; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($verticalop, 2) }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" >Index</td>
-                                        <td style="text-align: ; vertical-align: middle;
-                                        
-                                            vertical-align: middle; color: white; 
-                                            @if ($persenop <= 75)
-                                            background-color: black;
-                                            @elseif ($persenop > 75 && $persenop <= 90)
-                                            background-color: rgb(206, 24, 24); /* Merah */
-                                                  
-                                            @elseif ($persenop > 90 && $persenop <= 100)
-                                            background-color: yellow;
-                                            @elseif ($persenop > 100 && $persenop <= 190)
-                                            background-color: green;
-                                            @endif">{{ number_format($persenop, 2) }}%
-                                        </td>
-                                    </tr>
-                                    @elseif ($jenis['jenis_name'] == 'Net Profit')
-                                    <tr>
-                                        <td colspan="2" style="text-align: ; vertical-align: middle;">Plan</td>
-                                        <td>{{ number_format($deviasilb, 2) }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" style="text-align: ; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($verticalslb, 2) }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" style="text-align: ; ">Index</td>
-                                        <td style="vertical-align: middle;
-                                           vertical-align: middle; color: white; 
-                                           @if ($persenlb <= 75)
-                                           background-color: black;
-                                           @elseif ($persenlb > 75 && $persenlb <= 90)
-                                           
-                                           background-color: rgb(206, 24, 24); /* Merah */
-                                           
-                                           @elseif ($persenlb > 90 && $persenlb <= 100)
-                                           background-color: yellow;
-                                           @elseif ($persenlb > 100 && $persenlb <= 190)
-                                           background-color: green;
-                                           @endif"
-                                           >{{ number_format($persenlb, 2) }}%
-                                        </td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                        <td colspan="2" style="text-align: ; vertical-align: middle;">Weight</td>
-                                        <td>
-                                            %
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                                    
-                            @endforeach
-  
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">  
                             
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead>
@@ -349,6 +250,189 @@
                                 </tbody>
                             </table>
 
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Gross Profit (gp) Margin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan</td>
+                                        <td class="text-end">{{ number_format($totalvertikal, 2) }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual</td>
+                                        <td class="text-end">{{ number_format($verticalop, 2) }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Index</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Operasional Cost </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan</td>
+                                        <td class="text-end">{{ number_format($planoppersen, 2) }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual</td>
+                                        <td class="text-end">{{ number_format($actualoppersen, 2) }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Index</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Operating Profit Margin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan</td>
+                                        <td class="text-end">{{ number_format($totalvertikal, 2) }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual</td>
+                                        <td class="text-end">{{number_format($verticalop, 2) }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Index</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Net Profit Margin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan</td>
+                                        <td class="text-end">{{ number_format($verticallp, 2) }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual</td>
+                                        <td class="text-end">{{ number_format($verticalslb, 2) }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Index</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Return On Asset</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Index</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Return On Equity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Index</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">lavarge</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Index</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td class="text-end">%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+
+
+
+
+
+
 
 
                         </div>
@@ -428,7 +512,53 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        
+                            <!-- Tabel tock jetty -->
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead style="background-color: rgb(107, 255, 149);">
+                                    <tr>
+                                        <th colspan="2" style="text-align: center; vertical-align: middle;">stock jetty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan</td>
+                                        <td>{{ number_format($planNominalsj, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual</td>
+                                        <td>{{ number_format($grandTotal, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Index</td>
+                                        <td class="text-end" style="vertical-align: middle; 
+                                            @if ($indexstockjetty<= 75)
+                                                            
+                                            background-color: black; color: white;
+                                            @elseif ($indexstockjetty> 75 && $indexstockjetty<= 90)
+                                                            
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
+                                                            
+                                            @elseif ($indexstockjetty> 90 && $indexstockjetty<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexstockjetty> 100 && $indexstockjetty<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexstockjetty> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif
+                                        ">
+                                            {{ $indexstockjetty }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td class="text-end" style=" vertical-align: middle; color: white;">
+                                            5,00%
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+
                             <!-- Tabel Barging -->
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead style="background-color: rgb(107, 255, 149);">
@@ -468,8 +598,8 @@
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end" style="background-color: rgb(246, 255, 0); vertical-align: middle; color: white;">
-                                            90,1%
+                                        <td class="text-end" style=" vertical-align: middle; color: white;">
+                                            5,00%
                                         </td>
                                     </tr>
                                 </tbody>
@@ -516,8 +646,8 @@
                                     
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end" style="background-color: rgb(246, 255, 0); vertical-align: middle; color: white;">
-                                            90,1%
+                                        <td class="text-end" style=" vertical-align: middle; color: white;">
+                                            5,00%
                                             
                                         </td>
                                     </tr>
@@ -553,11 +683,11 @@
                                             background-color: rgb(0, 255, 72); color: white; /* Hijau */
                                             @endif
                                                                 
-                                        ">{{ $results['Ekspor']['Index'] }}% </td>
+                                        ">{{ $results['Ekspor']['Index']}}% </td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end" ">90,1%</td>
+                                        <td class="text-end" ">5,00%</td>
                                     </tr>
                                 </tbody>
                             </table>

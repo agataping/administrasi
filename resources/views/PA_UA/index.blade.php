@@ -20,7 +20,25 @@
                         <h2>UA</h2>
                     </a>
                 </div>
-                <form method="GET" action="{{ route('indexpaua') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                @if(auth()->user()->role === 'admin')    
+
+                <form method="GET" action="{{ route('indexpaua') }}" id="filterForm" class="filter-form">
+                <label for="id_company">Select Company:
+                    <br>
+                        <small><em>To view company data, please select a company from the list.</em></small>
+
+                </label>
+                    <select list="id_company" name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">-- Select Company --</option>
+                        @foreach ($perusahaans as $company)
+                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                            {{ $company->nama }}
+                        </option>
+                        @endforeach
+                    </select>
+                </form>
+                @endif
+                <form method="GET" class="mt-3 filter-date" action="{{ route('indexpaua') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
                     <div>
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
@@ -60,9 +78,9 @@
                         </div>
                     </div>
                     @endforeach
-                </div>
+              
                 
-                <div class="dashboard-container grid-3 mt-10" >
+               
                 @foreach($totalsUas  as $item)
                 
                     <div class="section-card">
@@ -92,84 +110,89 @@
     
 
 <style>
-        .container-fluid {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    .container-fluid {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-height: 80vh; 
+        overflow-y: auto; 
+        overflow-x: auto; 
         
-        h2 {
-            font-size: 1.8rem;
-            color: #388e3c;
-            font-weight: bold;
-        }
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+        color: #388e3c;
+        font-weight: bold;
+    }
+    
+    .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+    
+    .section-card {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        flex: 1 1 45%;
+        max-width: 500px;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        color: #388e3c;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .metric {
+        background-color: #388e3c;
+        color: #ffffff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .metric h4 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+    
+    .metric p {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+    .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px !important;
+        margin-top: 20px;
         
-        .dashboard-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        
+    }
+    
+    @media (max-width: 768px) {
         .section-card {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            flex: 1 1 45%;
-            max-width: 500px;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            color: #388e3c;
-            text-align: center;
-            margin-bottom: 15px;
+            flex: 1 1 100%;
         }
         
         .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            text-align: center;
+            grid-template-columns: 1fr;
         }
-        
-        .metric {
-            background-color: #388e3c;
-            color: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .metric h4 {
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-        
-        .metric p {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px !important;
-            margin-top: 20px;
-            
-}
-
-        @media (max-width: 768px) {
-            .section-card {
-                flex: 1 1 100%;
-            }
-            
-            .metrics-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        </style>
+    }
+    </style>
 @endsection
+
 @section('scripts')
 @endsection

@@ -16,12 +16,27 @@ class PembebasanLahanController extends Controller
     //UNTUK index pembebasan lahan
     public function indexPembebasanLahan(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
         $query = DB::table('pembebasan_lahans')
-        ->select('*')
-        ->where('pembebasan_lahans.created_by', auth()->user()->username); 
+        ->select('pembebasan_lahans.*')
+        ->join('users', 'pembebasan_lahans.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
+
 
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]);
@@ -32,7 +47,7 @@ class PembebasanLahanController extends Controller
             return (float)str_replace('%', '', $item->Achievement);
         });
         
-        return view('pembebasanlahan.index',compact('data','averageAchievement'));
+        return view('pembebasanlahan.index',compact('data','averageAchievement','perusahaans', 'companyId'));
     }
 
     public function formlahan()
@@ -130,10 +145,24 @@ class PembebasanLahanController extends Controller
         $user = Auth::user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         $query = DB::table('pica_pls') 
-        ->select('*')
-        ->where('pica_pls.created_by', auth()->user()->username); 
+        ->select('pica_pls.*')
+        ->join('users', 'pica_pls.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $query->where('users.id_company', $companyId);
+                } else {
+                    $query->whereRaw('1 = 0');             
+                }
+            }
+
 
         
         if ($startDate && $endDate) {
@@ -141,7 +170,7 @@ class PembebasanLahanController extends Controller
         }
        $data = $query->get();
         
-        return view('picapl.index', compact('data'));
+        return view('picapl.index', compact('data','perusahaans', 'companyId'));
     }
     
     public function formpicapl()

@@ -18,34 +18,58 @@ class ControllerEwhFuel extends Controller
     public function indexewhfuel(Request $request)
 
     {
+        $user = Auth::user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
     
-        $queryPas = DB::table('units')
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+        $queryEwh = DB::table('units')
+            ->join('users', 'units.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
             ->leftJoin('ewhs', 'units.id', '=', 'ewhs.unit_id')
             ->select(
                 'units.unit as units',
                 'ewhs.plan as plan_ewh',
                 'ewhs.actual as actual_ewh'
-            )
-            ->where('ewhs.created_by', auth()->user()->username);
-    
-        $queryUas = DB::table('units')
+            );
+            if ($user->role !== 'admin') {
+                $queryEwh->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $queryEwh->where('users.id_company', $companyId);
+                } else {
+                    $queryEwh->whereRaw('1 = 0');             
+                }
+            }    
+            
+        $queryFuel = DB::table('units')
+            ->join('users', 'units.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+
             ->leftJoin('fuels', 'units.id', '=', 'fuels.unit_id')
             ->select(
                 'units.unit as units',
                 'fuels.plan as plan_fuel',
                 'fuels.actual as actual_fuel'
-            )
-            ->where('fuels.created_by', auth()->user()->username);
-    
+            );
+            if ($user->role !== 'admin') {
+                $queryFuel->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $queryFuel->where('users.id_company', $companyId);
+                } else {
+                    $queryFuel->whereRaw('1 = 0');             
+                }
+            }      
         if ($startDate && $endDate) {
-            $queryPas->whereBetween('ewhs.date', [$startDate, $endDate]);
-            $queryUas->whereBetween('fuels.date', [$startDate, $endDate]);
+            $queryEwh->whereBetween('ewhs.date', [$startDate, $endDate]);
+            $queryFuel->whereBetween('fuels.date', [$startDate, $endDate]);
         }
     
-        $dataPas = $queryPas->orderBy('units.unit')->get()->groupBy('units');
-        $dataUas = $queryUas->orderBy('units.unit')->get()->groupBy('units');
+        $dataPas = $queryEwh->orderBy('units.unit')->get()->groupBy('units');
+        $dataUas = $queryFuel->orderBy('units.unit')->get()->groupBy('units');
     
         $totalsPas = $dataPas->map(function ($items, $unit) {
             $totalPasPlan = $items->sum(function ($item) {
@@ -81,24 +105,36 @@ class ControllerEwhFuel extends Controller
             ];
         });
     
-        return view('ewh_fuels.index', compact('dataPas', 'dataUas', 'totalsPas', 'totalsUas', 'startDate', 'endDate'));
+        return view('ewh_fuels.index', compact('dataPas', 'dataUas', 'totalsPas', 'totalsUas', 'startDate', 'endDate','perusahaans', 'companyId'
+    ));
     }
     public function indexewh(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
-
-        $query = DB::table('ewhs')
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+        $queryewh = DB::table('ewhs')
         ->join('units', 'ewhs.unit_id', '=', 'units.id')
-        ->select('ewhs.*',
-        'units.unit as units')
-        ->where('ewhs.created_by', auth()->user()->username); 
-
+        ->join('users', 'ewhs.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+        ->select('ewhs.*','units.unit as units');
+        if ($user->role !== 'admin') {
+            $queryewh->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $queryewh->where('users.id_company', $companyId);
+            } else {
+                $queryewh->whereRaw('1 = 0');             
+            }
+        }
             if ($startDate && $endDate) {
-                $query->whereBetween('ewhs.date', [$startDate, $endDate]);
+                $queryewh->whereBetween('ewhs.date', [$startDate, $endDate]);
             }
             
-            $data = $query->orderBy('units.unit')
+            $data = $queryewh->orderBy('units.unit')
             ->get()
             ->groupBy('units');   
             $data->each(function ($items) {
@@ -124,26 +160,40 @@ class ControllerEwhFuel extends Controller
                 ];
             });
             // dd($totals);
-                    return view('ewh_fuels.indexewh', compact('data', 'startDate', 'endDate','totals'));
+                    return view('ewh_fuels.indexewh', compact('data', 'startDate', 'endDate','totals','perusahaans', 'companyId'));
     }
 
 
     public function indexfuel(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
 
-        $query = DB::table('fuels')
-        ->join('units', 'fuels.unit_id', '=', 'units.id')
-        ->select('fuels.*',
-        'units.unit as units')
-        ->where('fuels.created_by', auth()->user()->username); 
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
+        $queryewh = DB::table('fuels')
+        ->join('units', 'fuels.unit_id', '=', 'units.id')
+        ->join('users', 'fuels.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+        ->select('fuels.*',
+        'units.unit as units');
+        if ($user->role !== 'admin') {
+            $queryewh->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $queryewh->where('users.id_company', $companyId);
+            } else {
+                $queryewh->whereRaw('1 = 0');             
+            }
+        }
             if ($startDate && $endDate) {
-                $query->whereBetween('fuels.date', [$startDate, $endDate]);
+                $queryewh->whereBetween('fuels.date', [$startDate, $endDate]);
             }
             
-            $data = $query->orderBy('units.unit')
+            $data = $queryewh->orderBy('units.unit')
             ->get()
             ->groupBy('units');    
             $data->each(function ($items) {
@@ -169,7 +219,7 @@ class ControllerEwhFuel extends Controller
                 ];
             });
             // dd($totals);
-                    return view('ewh_fuels.indexfuel', compact('data', 'startDate', 'endDate','totals'));
+                    return view('ewh_fuels.indexfuel', compact('data', 'startDate', 'endDate','totals','perusahaans', 'companyId'));
     }
 
     public function formewh()
@@ -435,18 +485,33 @@ class ControllerEwhFuel extends Controller
         $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
-        $query = DB::table('pica_ewh_fuels') 
-        ->select('*'); 
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+        $queryewh = DB::table('pica_ewh_fuels') 
+        ->select('pica_ewh_fuels.*')
+        ->join('users', 'pica_ewh_fuels.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+                $queryewh->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $queryewh->where('users.id_company', $companyId);
+                } else {
+                    $queryewh->whereRaw('1 = 0');             
+                }
+            }
+
         
         if ($startDate && $endDate) {
-            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+            $queryewh->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
         }
         
-       $data = $query->get();
+       $data = $queryewh->get();
         
         
-        return view('picaewhfuel.index', compact('data'));
+        return view('picaewhfuel.index', compact('data','perusahaans', 'companyId'));
         
     }
     

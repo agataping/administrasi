@@ -23,7 +23,7 @@
             <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item " href="/indexbarging">Barging</a></li>
             <li><a class="dropdown-item " href="/indexpicabarging">PICA Barging</a></li>
-            <li><a class="dropdown-item " href="/stockjt">Stock Jetty</a></li>
+            <li><a class="dropdown-item " href="/dashboardstockjt">Stock Jetty</a></li>
             <li><a class="dropdown-item " href="/picastockjt">PICA Stock Jetty</a></li>
             </ul>
         </li>

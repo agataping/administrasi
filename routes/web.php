@@ -213,6 +213,7 @@ Route::delete('/deleteplanbarging/{id}', [BargingController::class, 'deleteplanb
 
 //stock jt
 Route::get('/stockjt', [StockJtController::class, 'stockjt'])->middleware('auth')->name('stockjt');
+Route::get('/dashboardstockjt', [StockJtController::class, 'dashboardstockjt'])->middleware('auth')->name('dashboardstockjt');
 Route::get('/formstockjt', [StockJtController::class, 'formstockjt'])->middleware('auth')->name('formstockjt');
 Route::get('/formupdatestockjt/{id}', [StockJtController::class, 'formupdatestockjt'])->middleware('auth')->name('formupdatestockjt');
 Route::post('/createstockjt', [StockJtController::class, 'createstockjt'])->middleware('auth')->name('createstockjt');

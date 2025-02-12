@@ -9,8 +9,25 @@
         <div class="card-body">
             <div class="col-12">
                 <h2 class="text-center mb-4">Barging</h2>
+                   @if(auth()->user()->role === 'admin')    
 
-                <form method="GET" action="{{ route('indexbarging') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                <form method="GET" action="{{ route('indexbarging') }}" id="filterForm" class="filter-form">
+                <label for="id_company">Select Company:
+                    <br>
+                        <small><em>To view company data, please select a company from the list.</em></small></label>
+
+                </label>
+                    <select list="id_company" name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">-- Select Company --</option>
+                        @foreach ($perusahaans as $company)
+                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                            {{ $company->nama }}
+                        </option>
+                        @endforeach
+                    </select>
+                </form>
+                @endif
+                <form method="GET" class="mt-3 filter-date" action="{{ route('indexbarging') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
                     <div>
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}" 
@@ -29,12 +46,12 @@
                 </form>
 
      
-                <div class="" style="overflow-x:auto;">
                 <div class="dashboard-container">
                     <!-- Over Burden Section -->
                     <div class="section-card">
                         <h3 class="section-title">Plan & Actual</h3>
                         <div class="metrics-grid">
+                            
                             <div class="metric">
                                 <a href="{{ route('indexPlan') }}" class="cardcost text-decoration-none">
                                 <h4>Plan</h4>
@@ -71,7 +88,7 @@
                     </div>
 
                 </div>
-                </div>
+               
 
             </div>
         </div>
@@ -84,6 +101,9 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 80vh; 
+        overflow-y: auto; 
+        overflow-x: auto; 
 }
 
 h2 {

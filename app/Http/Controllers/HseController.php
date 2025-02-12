@@ -16,23 +16,26 @@ class HseController extends Controller
 {
     public function indexhse(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('hses')
         ->join('kategori_hses', 'hses.kategori_id', '=', 'kategori_hses.id')
         ->join('users', 'hses.created_by', '=', 'users.username')
-        ->select(
-            'hses.id',
-            'hses.nameindikator',
-            'hses.target',
-            'hses.nilai',
-            'hses.indikator',
-            'hses.keterangan',
-            'kategori_hses.name as kategori_name',
-            'users.username as created_by'
-        )
-        ->where('hses.created_by', auth()->user()->username); 
-
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+        ->select('hses.*','kategori_hses.name as kategori_name','users.username as created_by');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
         if ($startDate && $endDate) {
             $query->whereBetween('hses.date', [$startDate, $endDate]); 
         }
@@ -40,7 +43,7 @@ class HseController extends Controller
         ->get()
         ->groupBy('kategori_name'); 
 
-        return view('hse.index',compact('data'));
+        return view('hse.index',compact('data','perusahaans', 'companyId'));
     }
 
     public function formkategorihse()
@@ -155,20 +158,35 @@ class HseController extends Controller
     
     public function picahse(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         $query = DB::table('pica_hses') 
-        ->select('*')
-        ->where('pica_hses.created_by', auth()->user()->username); 
-        
+        ->select('pica_hses.*')
+        ->join('users', 'pica_hses.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $query->where('users.id_company', $companyId);
+                } else {
+                    $query->whereRaw('1 = 0');             
+                }
+            }
+    
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         
         $data = $query->get();
         
-        return view('picahse.index', compact('data'));
+        return view('picahse.index', compact('data','perusahaans', 'companyId'));
         
     }
     

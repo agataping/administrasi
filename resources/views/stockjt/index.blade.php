@@ -9,7 +9,9 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
+            <a href="{{ route('dashboardstockjt') }}" class="text-decoration-none" style="color: black;">
                 <h2 class="mb-3">Stock Jetty</h2>
+            </a>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -34,6 +36,23 @@
                         <a href="/formstockjt" class="btn btn-custom">Add Stock Jetty</a>
                     </div>
                 </div> 
+                
+                @if(auth()->user()->role === 'admin')    
+
+                <form method="GET" action="{{ route('stockjt') }}" id="filterForm">
+                                   <label for="id_company">Select Company:
+                    <br>
+                        <small><em>To view company data, please select a company from the list.</em></small></label>
+                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                        <option value="">-- Select Company --</option>
+                        @foreach ($perusahaans as $company)
+                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                            {{ $company->nama }}
+                        </option>
+                        @endforeach
+                    </select>
+                </form>
+                @endif
                 <form method="GET" action="{{ route('stockjt') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
@@ -97,7 +116,7 @@
                             </th>
                             
                             <th colspan="1" style="text-align: end;">
-                            {{ number_format($data->first()->sotckawal,  2, ',', '.') }}
+                            {{ number_format($data->first()->sotckawal ?? 0,  2, ',', '.') }}
                             </th>
                             
                         </tr>
@@ -107,8 +126,9 @@
                     @foreach($data as $d)
                             <tr>
                             <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
-                            <td style="text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($d->date)->format('d-m-Y') }}</td>
-                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->plan,  2, ',', '.') }}    
+                            <td style="text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($d->date)->format('d-m-Y' ?? 0) }}</td>
+                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->plan,  2, ',', '.') }}
+    
                             </td>
 
                             <td>
@@ -148,12 +168,26 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <th  colspan="6"  style="background-color:rgb(244, 244, 244); text-align: end;">Grand Total</th>
+                        <th  colspan="2"  style="background-color:rgb(244, 244, 244); text-align: end;">Grand Total</th>
+                        <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: center;">
+                            {{ number_format($planNominal,  2, ',', '.') }}
+                        </th>
+                        <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: center;">
+                        </th>
+                        <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: center;">
+                        </th>
+                        <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: center;">
+                        </th>
                         <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: center;">
                             {{ number_format($totalHauling,  3, ',', '.') }}
                         </th>
                         <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: end;">
                             {{ number_format($grandTotal,  3, ',', '.') }}
+                        </th>
+                        <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: end;">
+                        </th>
+                        <th  colspan=""  style="background-color:rgb(244, 244, 244); text-align: end;">
+                            {{ number_format($grandTotalstockakhir,  3, ',', '.') }}
                         </th>
                         
                     </tr>

@@ -18,16 +18,29 @@ class OverberdenCoalController extends Controller
     //detail
     public function indexcoal(Request $request)
     {
+        $user = Auth::user();  
+
         
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
-        
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('overberden_coal')
         ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
+        ->join('users', 'overberden_coal.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
         ->where('kategori_overcoals.name', 'Coal Getting')
-        ->select('kategori_overcoals.name as kategori_name','overberden_coal.*')
-        ->where('overberden_coal.created_by', auth()->user()->username); 
-
+        ->select('kategori_overcoals.name as kategori_name','overberden_coal.*');
+        
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
         if ($startDate && $endDate) {
             $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
         }
@@ -64,22 +77,33 @@ class OverberdenCoalController extends Controller
         });
         // dd($totals);
 
-        return view('overbcoal.indexcoal', compact('totals'));
+        return view('overbcoal.indexcoal', compact('totals','perusahaans', 'companyId'));
     }
 
     public function indexob(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
-        
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('overberden_coal')
         ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
+        ->join('users', 'overberden_coal.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
         ->where('kategori_overcoals.name', 'Over Burden')
-        
         ->select(
-            'kategori_overcoals.name as kategori_name','overberden_coal.*')
-        ->where('overberden_coal.created_by', auth()->user()->username); 
-
+        'kategori_overcoals.name as kategori_name','overberden_coal.*');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
         
         if ($startDate && $endDate) {
             $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
@@ -117,21 +141,35 @@ class OverberdenCoalController extends Controller
             ];
         });
         
-        return view('overbcoal.indexob', compact('totals', 'data', 'startDate', 'endDate'));
+        return view('overbcoal.indexob', compact('totals', 'data', 'startDate', 'endDate','perusahaans', 'companyId'));
     }
     
     public function indexovercoal(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
         $query = DB::table('overberden_coal')
         ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
+        ->join('users', 'overberden_coal.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+
         ->select(
             'kategori_overcoals.name as kategori_name','overberden_coal.*'
-        )
-        ->where('overberden_coal.created_by', auth()->user()->username); 
-
+        );
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
             if ($startDate && $endDate) {
                 $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
             }
@@ -182,7 +220,8 @@ class OverberdenCoalController extends Controller
                 'sractual',
                 'deviationactual',
                 'percentageactual',
-                 'data'
+                 'data','perusahaans', 'companyId'
+
             ));
     }
 
@@ -372,17 +411,30 @@ class OverberdenCoalController extends Controller
         $user = Auth::user();  
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
         
         $query = DB::table('pica_over_coal') 
-        ->select('*')
-        ->where('pica_over_coal.created_by', auth()->user()->username); 
-
+        ->select('pica_over_coal.*')
+        ->join('users', 'pica_over_coal.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
        $data = $query->get();
         
-        return view('picaobc.index', compact('data'));
+        return view('picaobc.index', compact('data','perusahaans', 'companyId'));
     }
     
     public function formpicaobc()

@@ -37,11 +37,22 @@ class PeopleReadinessController extends Controller
             $count = 0; 
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
-            
+            $companyId = $request->input('id_company');
+            $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+    
             $query = DB::table('people_readinesses') 
-            ->select('*')
-            ->where('people_readinesses.created_by', auth()->user()->username); 
-
+            ->select('people_readinesses.*')
+            ->join('users', 'people_readinesses.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+            if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $query->where('users.id_company', $companyId);
+                } else {
+                    $query->whereRaw('1 = 0');             
+                }
+            }
             
             if ($startDate && $endDate) {
                 $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
@@ -79,7 +90,7 @@ class PeopleReadinessController extends Controller
             }
             
 
-            return view('peoplereadiness.index', compact('data','averageQuality', 'averageQuantity','tot'));
+            return view('peoplereadiness.index', compact('data','averageQuality', 'averageQuantity','tot','perusahaans', 'companyId'));
         }
         
         public function formPR()
@@ -201,17 +212,29 @@ class PeopleReadinessController extends Controller
             $user = Auth::user();  
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
-            
+            $companyId = $request->input('id_company');
+            $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+    
             $query = DB::table('pica_people') 
-            ->select('*')
-            ->where('pica_people.created_by', auth()->user()->username); 
-
+            ->select('pica_people.*')
+            ->join('users', 'pica_people.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        
+            if ($user->role !== 'admin') {
+                    $query->where('users.id_company', $user->id_company);
+                } else {
+                    if ($companyId) {
+                        $query->where('users.id_company', $companyId);
+                    } else {
+                        $query->whereRaw('1 = 0');             
+                    }
+                }
             
             if ($startDate && $endDate) {
                 $query->whereBetween('tanggal', [$startDate, $endDate]); 
             }
            $data = $query->get();
-            return view('picapeople.index', compact('data'));
+            return view('picapeople.index', compact('data','perusahaans', 'companyId'));
         }
         
         public function formpicapeople()
@@ -313,7 +336,25 @@ class PeopleReadinessController extends Controller
         //gambar       
         public function struktur()
         {
-            $gambar = Gambar::latest()->first();
+            $user = Auth::user();
+            $companyId = request()->input('id_company'); // Menangkap request id_company
+        
+            $query = DB::table('gambars')
+                ->select('gambars.*')
+                ->leftJoin('users', 'gambars.created_by', '=', 'users.username')
+                ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        
+            if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if (!empty($companyId)) {
+                    $query->where('users.id_company', $companyId);
+                } else {
+                    $query->whereRaw('1 = 0');
+                }
+            }
+        
+            $gambar = $query->latest()->first();            
             return view('peoplereadiness.organisasi.index', compact('gambar'));
         }
 
@@ -332,7 +373,9 @@ class PeopleReadinessController extends Controller
                 $path = $file->store('gambar', 'public');
                 Gambar::create([
                     'path' => $path,
+                    'created_by' => auth()->user()->username, 
                 ]);  
+
                 return redirect('/struktur')->with('success', 'Image uploaded successfully.');
             
             }

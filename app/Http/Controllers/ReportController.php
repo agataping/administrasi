@@ -187,6 +187,10 @@ class ReportController extends Controller
             // dd($totalactuallr);
             $persenlr = $totalplanlr ? ($totalactuallr / $totalplanlr) * 100 : 0;
             //operasional
+            $planoppersen = $totalRevenuep ? ($planoperasional / $totalRevenuep) * 100 : 0;
+            $actualoppersen = $totalRevenuep ? ($totalactualOp / $totalRevenuea) * 100 : 0;
+            // dd($actualoppersen);
+            //operating profit
             $totalplanlp = $totalplanlr-$planoperasional;
             $totalactualOp = $actualoperasional-$totalactuallr;
             $verticallp = $totalRevenuep ? ($totalplanlp / $totalRevenuep) * 100 : 0;
@@ -196,8 +200,8 @@ class ReportController extends Controller
             //lababersih
             $totalplanlb = $planlb-$planoperasional;
             $totalactuallb = $actualoperasional-$actuallb;
-            $verticallb = $totalRevenuep ? ($totalplanlb / $totalRevenuep) * 100 : 0;
-            $verticalslb = $totalRevenuea ? ($totalactuallb / $totalRevenuea) * 100 : 0;
+            $verticallb = $totalRevenuep ? ($totalplanlb / $totalRevenuep) * 100 : 0;//plan
+            $verticalslb = $totalRevenuea ? ($totalactuallb / $totalRevenuea) * 100 : 0;//actual
             $deviasilb = $totalplanlb-$totalactuallb;
             $persenlb = $totalplanlb ? ($totalactuallb / $totalplanlb) * 100 : 0;
             // Mengatur nilai null jika total revenue adalah 0 atau null
@@ -499,6 +503,50 @@ class ReportController extends Controller
     ->avg();
 
     $indexinfra = $averagePerformance != 0 ? ($averagePerformance * 100) / 100 : 0;
+    //stock jetty
+    $query = DB::table('stock_jts')
+    ->select('stock_jts.*')
+    ->join('users', 'stock_jts.created_by', '=', 'users.username')
+    ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+    ->where('stock_jts.created_by', auth()->user()->username);
+    $data = $query->get();
+    $planNominalsj = $data->sum(function ($p) {
+        return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
+    });
+    $data->transform(function ($item) {
+    $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
+    return $item;
+    });
+    
+    $data->each(function ($item) {
+        $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+    });
+    //  dd($data);
+    $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+    $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
+    
+    $akumulasi = $stokAwal;
+
+    $data->map(function ($stock, $index) use (&$akumulasi, &$stock_akhir) {
+        $stock->sotckawal = floatval($stock->sotckawal ?? 0);
+        $stock->totalhauling = floatval($stock->totalhauling ?? 0);
+        $stock->stockout = floatval($stock->stockout ?? 0);
+        if ($index === 0) {
+            $akumulasi = $stock->sotckawal; 
+        }
+        $akumulasi += $stock->totalhauling;
+        $stock->akumulasi_stock = $akumulasi;    
+        $akumulasi -= $stock->stockout;
+        $stock->stock_akhir = $akumulasi;
+        $stock_akhir = $stock->stock_akhir;
+        return $stock;
+    });
+    $grandTotal = optional($data->last())->stock_akhir ?? 0;
+    $indexstockjetty= $planNominalsj? ($grandTotal/$planNominalsj)* 100 : 0;
+
+
+
+
 
 
 
@@ -506,12 +554,15 @@ class ReportController extends Controller
         //nama perusahaan
         'companyName',
         'user',
+        //stock jetty
+        'grandTotal','planNominalsj','indexstockjetty',
         //laba rugi 
         'totalRevenuea', 'totalRevenuep', //revenue 
         'totalvertikal', 'totalvertikals','persenlb', //laba rugi
-        'verticalop','verticallp', 'persenop', //laba operasional
+        'verticalop','verticallp', 'persenop', //Operating Profit Margin
         'verticalslb','deviasilb','persenlr', //net profit
         'data','results',
+        'planoppersen','actualoppersen', //Operasional Cost 
         //cogs
         'actualcogs',
         'plancogs',

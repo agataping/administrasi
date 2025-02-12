@@ -50,7 +50,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="tanggal">File</label>
-                                <input type="file" class="form-control" value="{{$data->file}}" id="tanggal" name="file" value=""  required>
+                                <input type="file" class="form-control" value="{{$data->file}}" id="tanggal" name="file" value="" >
                                 @php
                                 $fileExtension = $d->file_extension ?? 'unknown';
                                 @endphp
@@ -58,7 +58,7 @@
                             </div>
                             <div class="d-flex justify-content-end mt-3">
                                 
-                                                       <button type="submit" class="btn-block btn-lg gradient-custom-4"
+                                <button type="submit" class="btn-block btn-lg gradient-custom-4"
                         style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
                             border-radius: 5px; font-weight: bold;"">Update</button>
                             </div>

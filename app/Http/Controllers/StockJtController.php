@@ -14,21 +14,98 @@ use App\Models\HistoryLog;
 class StockJtController extends Controller
 {
     //detail
-    public function stockjt(Request $request)
-    {
-        
+    public function dashboardstockjt(Request $request){
+        $user = Auth::user();  
         $startDate = $request->input('start_date'); 
-        $endDate = $request->input('end_date');  
+        $endDate = $request->input('end_date'); 
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get(); 
         $query = DB::table('stock_jts')
         ->select('stock_jts.*')
-
-        ->where('stock_jts.created_by', auth()->user()->username); 
-
+        ->join('users', 'stock_jts.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
         if ($startDate && $endDate) {
             $query->whereBetween('stock_jts.date', [$startDate, $endDate]);
         }
         
        $data = $query->get();
+       $planNominal = $data->sum(function ($p) {
+        return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
+        });
+       $data->transform(function ($item) {
+        $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
+        return $item;
+        });
+        
+        $data->each(function ($item) {
+            $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+        });
+        //  dd($data);
+        $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
+        
+        $akumulasi = $stokAwal;
+
+        $data->map(function ($stock, $index) use (&$akumulasi, &$stock_akhir) {
+            $stock->sotckawal = floatval($stock->sotckawal ?? 0);
+            $stock->totalhauling = floatval($stock->totalhauling ?? 0);
+            $stock->stockout = floatval($stock->stockout ?? 0);
+            if ($index === 0) {
+                $akumulasi = $stock->sotckawal; 
+            }
+            $akumulasi += $stock->totalhauling;
+            $stock->akumulasi_stock = $akumulasi;    
+            $akumulasi -= $stock->stockout;
+            $stock->stock_akhir = $akumulasi;
+            $stock_akhir = $stock->stock_akhir;
+            return $stock;
+        });
+    
+        $deviasi = $planNominal - $stock_akhir;
+        $percen = ($planNominal != 0) ? ($stock_akhir / $planNominal) * 100 : 0;
+        $grandTotal = optional($data->last())->stock_akhir ?? 0;
+        return view('stockjt.indexmenu', compact('data','totalHauling','grandTotal','perusahaans', 'companyId','planNominal','deviasi','percen'));  
+    }
+
+
+    public function stockjt(Request $request)
+    {
+
+        $user = Auth::user();  
+        $startDate = $request->input('start_date'); 
+        $endDate = $request->input('end_date'); 
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get(); 
+        $query = DB::table('stock_jts')
+        ->select('stock_jts.*')
+        ->join('users', 'stock_jts.created_by', '=', 'users.username')
+        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
+        if ($startDate && $endDate) {
+            $query->whereBetween('stock_jts.date', [$startDate, $endDate]);
+        }
+        
+       $data = $query->get();
+       $planNominal = $data->sum(function ($p) {
+        return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
+        });
        $data->transform(function ($item) {
         $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
         return $item;
@@ -59,11 +136,14 @@ class StockJtController extends Controller
     });
     
     
-    // Total akumulasi keseluruhan
     $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
-       
-        return view('stockjt.index', compact('data','totalHauling','grandTotal'));  
+    $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
+
+        return view('stockjt.index', compact('data','totalHauling','grandTotal','perusahaans', 'companyId','planNominal','grandTotalstockakhir'));  
     }
+
+
+
     public function formstockjt(Request $request)
     {
         return view('stockjt.adddata');  
@@ -231,11 +311,24 @@ class StockJtController extends Controller
         $user = Auth::user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
-        $query = DB::table('picastockjts') 
-            ->select('*')
-            ->where('picastockjts.created_by', auth()->user()->username); 
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
+        $query = DB::table('picastockjts') 
+            ->select('picastockjts.*')
+            ->join('users', 'picastockjts.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+         
+
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0'); // Mencegah admin melihat semua data secara default
+            }
+        }
         if ($startDate && $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
@@ -243,7 +336,7 @@ class StockJtController extends Controller
        $data = $query->get();
         
         
-        return view('picastokjt.index', compact('data'));
+        return view('picastokjt.index', compact('data','perusahaans', 'companyId'));
     }
     
     public function formpicasjt()

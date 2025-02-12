@@ -17,13 +17,18 @@ class DetailNeracaController extends Controller
     //detail
     public function indexfinancial(Request $request)
     {
+        $user = Auth::user();  
+
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');    
-        
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         // Query data
         $query = DB::table('detail_neracas')
         ->join('sub_neracas', 'detail_neracas.sub_id', '=', 'sub_neracas.id')
         ->join('category_neracas', 'sub_neracas.kategori_id', '=', 'category_neracas.id')
+        ->join('users', 'detail_neracas.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
         ->select(
             'category_neracas.namecategory as category',
             'sub_neracas.namesub as sub_category',
@@ -31,9 +36,16 @@ class DetailNeracaController extends Controller
             'sub_neracas.id as sub_id', 
             'category_neracas.id as category_id', 
             'detail_neracas.id as detail_id' 
-        )
-        ->where('detail_neracas.created_by', auth()->user()->username); 
-     
+        );
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }     
         
         if ($startDate && $endDate) {
             $query->whereBetween('detail_neracas.tanggal', [$startDate, $endDate]);
@@ -104,7 +116,7 @@ class DetailNeracaController extends Controller
         // Cek apakah jumlah total benar
         // dd($groupedData);
         
-        return view('financial.index', compact('groupedData'));
+        return view('financial.index', compact('groupedData','perusahaans', 'companyId'));
     }            
     public function formfinanc(Request $reques){
         $sub = SubNeraca::all();
