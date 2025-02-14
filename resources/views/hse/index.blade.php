@@ -33,8 +33,7 @@
                             <button type="submit" class="btn btn-custom">Add Category HSE</button>
                         </form>
                     </div>
-                    @if(auth()->user()->role === 'admin')    
-
+                    
                     <div class="col-auto">
                         <form action="{{ route('formhse') }}" method="get">
                             <input type="hidden" name="form_type" value="subkategori">
@@ -42,6 +41,7 @@
                         </form>
                     </div>
                 </div>
+                @if(auth()->user()->role === 'admin')    
                 <form method="GET" action="{{ route('indexhse') }}" id="filterForm">
                                    <label for="id_company">Select Company:
                     <br>
