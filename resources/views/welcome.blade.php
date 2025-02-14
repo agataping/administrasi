@@ -10,7 +10,6 @@
             <h5 style="color: white; margin: 0;">ADMINISTRATION</h5>
         </div>
     </a>
-    <link href="{{asset ('style/assets/dist/css/bootstrap.min.css')}}" rel="stylesheet">
 
 
     <link href="{{asset('css/signin.css')}}" rel="stylesheet">
