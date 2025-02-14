@@ -25,10 +25,10 @@
                 </div>
                 @endif
 
-                        <form action="{{ route('createhse') }}" method="post">
+                        <form action="{{ route('createhse') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             
-                            <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}"  enctype="multipart/form-data">
+                            <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}"  >
 
                             <div style="margin-bottom: 1rem;">
                                 <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Category:</label>

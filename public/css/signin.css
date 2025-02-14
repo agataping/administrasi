@@ -6,9 +6,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* background: url('/storage/gambar/alatberat.jpg') no-repeat center center; */
-  background-size: contain; 
-  background-attachment: fixed;
   }
 .form-signin {
   width: 100%;
@@ -27,16 +24,6 @@ body {
     margin-bottom: 10px;.form-signin input {
   margin-bottom: 10px;
 }
-}
-.cardlogin {
-  width: 90%;
-  max-width: 400px;
-  background-color: rgba(90, 255, 101, 0.9);
-  border: 1px solid #dddddd;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(28, 148, 4, 0.1);
-  text-align: center;
 }
 
 
