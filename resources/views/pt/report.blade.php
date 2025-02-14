@@ -4,7 +4,7 @@
 @extends('components.style')
 
 <div class="container-fluid mt-4">
-    <div class="card w-100" style=" background-color:rgba(134, 247, 138, 0.98); ">
+    <div class="card w-100" >
         <div class="card-body">
             <div class="col-12">
                 @if(auth()->user()->role === 'admin')    
@@ -643,7 +643,7 @@
                                             background-color: blue; color: white; /* Hijau */
                                             @endif
                                         ">
-                                            {{ $indexstockjetty }}
+                                            {{ $indexstockjetty }}%
                                         </td>
                                     </tr>
                                     <tr>

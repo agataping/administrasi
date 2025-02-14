@@ -1,6 +1,10 @@
 @extends('components.header')
 @section('title', '')
 <style>
+.nav-item:hover .dropdown-menu {
+    display: block;
+}
+
 </style>
 
 <nav class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color: #07a43b;">
@@ -19,7 +23,7 @@
 
     <ul class="nav">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Costumer Prespective</a>
+            <a a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" aria-expanded="false">Costumer Prespective</a>
             <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item " href="/indexbarging">Barging</a></li>
             <li><a class="dropdown-item " href="/indexpicabarging">PICA Barging</a></li>
@@ -29,7 +33,7 @@
         </li>
 
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Finansial Perspektif</a>
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" aria-expanded="false">Finansial Perspektif</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="/labarugi">Profit and Loss</a></li>
                 <li><a class="dropdown-item" href="/indexfinancial">Balance Sheet </a></li>
@@ -41,7 +45,7 @@
         </li>
 
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Internal Process Perspective</a>
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" aria-expanded="false">Internal Process Perspective</a>
             <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="/indexovercoal">Over Barden & Coal </a></li>
                 <li><a class="dropdown-item" href="/picaobc">PICA Over Barden & Coal </a></li>
@@ -59,7 +63,7 @@
         
 
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Learning & Growth Perspective</a>
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" aria-expanded="false">Learning & Growth Perspective</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="/struktur">Struktur Organisasi</a></li>
             <li><a class="dropdown-item" href="/indexPeople">People Readiness</a></li>

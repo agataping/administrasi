@@ -26,7 +26,8 @@
                 </div>
                 @endif
 
-                        <form action="{{ route('updatehse', $hse->id) }}" method="post">
+                        <form action="{{ route('updatehse', $hse->id) }}" method="post" enctype="multipart/form-data"
+                        >
                             @csrf
                             
                             <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
@@ -52,31 +53,30 @@
                             
                             
                             
-                            <div class="form-group">
-                                <label for="nameindikator">Indicator</label>
-                                <input type="text" class="form-control" value="{{ $hse->nameindikator }}" id="nameindikator" name="nameindikator" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="target">Target</label>
-                                <input type="text" class="form-control" value="{{ $hse->target }}" id="target" name="target" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="nilai">value</label>
-                                <input type="text" class="form-control" value="{{ $hse->nilai }}" id="nilai" name="nilai" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="indikator">Indicator</label>
-                                <input type="text" class="form-control" value="{{ $hse->indikator }}" id="indikator" name="indikator" required>
-                            </div>
-
 
                             <div class="form-group">
                                 <label for="keterangan">Description</label>
                                 <input type="text" class="form-control" value="{{ $hse->keterangan }}" id="keterangan" name="keterangan" >
                             </div>
+                            <div class="form-group">
+                                <label for="nameindikator">Plan</label>
+                                <input type="text" class="form-control" id="nameindikator" name="plan" value="{{ $hse->plan }}" >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nameindikator">Actual</label>
+                                <input type="text" class="form-control" id="nameindikator" name="actual" value="{{ $hse->actual }}" >
+                            </div>
+                            <div class="form-group">
+                                <label for="tanggal">File</label>
+                                <input type="file" class="form-control" value="{{$hse->file}}" id="tanggal" name="file" value=""  >
+                                @php
+                                $fileExtension = $d->file_extension ?? 'unknown';
+                                @endphp
+                                <a href="{{ asset('storage/' . $hse->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                            </div>
+                    
+
                             
 
                     

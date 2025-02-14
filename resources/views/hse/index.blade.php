@@ -76,11 +76,11 @@
                 <table class="table table-bordered">
                 <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">                        <tr>
                             <th  style="vertical-align: middle;">No</th>
-                            <th   style="vertical-align: middle;">Indicator</th>
-                            <th  style="text-align: center;">Target</th>
-                            <th  style="text-align: center;">Value</th>
+                            <th  style="vertical-align: middle;">Date</th>
+                            <th   style="vertical-align: middle;">Description</th>
+                            <th  style="text-align: center;">Plan</th>
+                            <th  style="text-align: center;">Actual</th>
                             <th  style="vertical-align: middle;">Indicator</th>
-                            <th  style="vertical-align: middle;">Description</th>
                             <th colspan="2" style="vertical-align: middle;">Action</th>
                         </tr>
                         </thead>
@@ -101,11 +101,17 @@
                         @foreach ($items as $d)
                         <tr>
                             <th style="vertical-align: middle;">{{ $loop->iteration }}</th>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->nameindikator ?? '-' }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->target ?? '-' }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->nilai ?? '-' }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->indikator ?? '-' }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($d->date)->format('d-m-Y') }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->keterangan ?? '-' }}</td>
+
+                            <td style="text-align: center; vertical-align: middle;">{{ number_format($d->plan), 2, ',', '.' ?? '-' }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ number_format($d->actual), 2, ',', '.' ?? '-' }}</td>
+                            <td>
+                            @php
+                            $fileExtension = $d->file_extension ?? 'unknown';
+                            @endphp
+                            <a href="{{ asset('storage/' . $d->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                        </td> 
                             <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                 <form action="{{ route('formupdatehse', ['id' => $d->id]) }}">
                                     <button type="submit"  class="btn btn-primary btn-sm">Edit</button>

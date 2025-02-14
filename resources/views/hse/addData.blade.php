@@ -28,7 +28,7 @@
                         <form action="{{ route('createhse') }}" method="post">
                             @csrf
                             
-                            <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
+                            <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}"  enctype="multipart/form-data">
 
                             <div style="margin-bottom: 1rem;">
                                 <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
@@ -48,35 +48,24 @@
                                 style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
                             </div>
                             
-
-
-                            <div class="form-group">
-                                <label for="nameindikator">Indicator</label>
-                                <input type="text" class="form-control" id="nameindikator" name="nameindikator" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="target">Target</label>
-                                <input type="text" class="form-control" id="target" name="target" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="nilai">value</label>
-                                <input type="text" class="form-control" id="nilai" name="nilai" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="indikator">Indicator</label>
-                                <input type="text" class="form-control" id="indikator" name="indikator" required>
-                            </div>
-
-
                             <div class="form-group">
                                 <label for="keterangan">Description </label>
                                 <input type="text" class="form-control" id="keterangan" name="keterangan" >
                             </div>
-                            
 
+                            <div class="form-group">
+                                <label for="nameindikator">Plan</label>
+                                <input type="text" class="form-control" id="nameindikator" name="plan" >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nameindikator">Actual</label>
+                                <input type="text" class="form-control" id="nameindikator" name="actual" >
+                            </div>
+                            <div class="form-group">
+                                <label for="nameindikator">File</label>
+                                <input type="file" class="form-control" id="nameindikator" name="file" >
+                            </div>
                     
                             <div class="d-flex justify-content-end mt-3">
                                 <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>

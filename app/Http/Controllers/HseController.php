@@ -39,9 +39,15 @@ class HseController extends Controller
         if ($startDate && $endDate) {
             $query->whereBetween('hses.date', [$startDate, $endDate]); 
         }
+
         $data = $query->orderBy('kategori_hses.name') 
         ->get()
         ->groupBy('kategori_name'); 
+        $data->each(function ($items) {
+            $items->each(function ($item) {
+                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+            });
+        });
                return view('hse.index',compact('data','perusahaans', 'companyId'));
     }
 
@@ -59,15 +65,31 @@ class HseController extends Controller
     public function createhse(Request $request)
     {
         $validatedData = $request->validate([
-            'nameindikator' => 'required',
             'date' => 'required',
-            'indikator' => 'nullable',
-            'target' => 'nullable',
-            'nilai' => 'required',
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'file' => 'nullable|file',
             'keterangan' => 'nullable',
             'kategori_id' => 'required',
             
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
+        
+        // Tentukan mana yang diset null
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         
         $validatedData['created_by'] = auth()->user()->username;
         $data=Hse::create($validatedData);
@@ -137,16 +159,30 @@ class HseController extends Controller
     public function updatehse(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'nameindikator' => 'required',
-            'indikator' => 'nullable',
-            'target' => 'nullable',
-            'nilai' => 'required',
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'file' => 'nullable|file',
             'date' => 'required',
-            
             'keterangan' => 'nullable',
             'kategori_id' => 'required',
         ]);
+        function convertToCorrectNumber($value) {
+            if ($value === '' || $value === null) {
+                return 0; 
+            }
+            $value = str_replace('.', '', $value);  
+            $value = str_replace(',', '.', $value); 
+            return floatval($value); 
+        }
         
+        // Tentukan mana yang diset null
+        $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
+        $validatedData['plan'] = convertToCorrectNumber($validatedData['actual']);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+        }
         $validatedData['updated_by'] = auth()->user()->username;
         
         $hse = Hse::findOrFail($id);

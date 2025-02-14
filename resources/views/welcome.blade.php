@@ -10,28 +10,45 @@
             <h5 style="color: white; margin: 0;">ADMINISTRATION</h5>
         </div>
     </a>
+    <link href="{{asset ('style/assets/dist/css/bootstrap.min.css')}}" rel="stylesheet">
+
+
+    <link href="{{asset('css/signin.css')}}" rel="stylesheet">
+    
+
 </header>
 
 <body style="font-family: 'Arial', sans-serif; background-color: rgba(116, 199, 101, 0.06); min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
 
-<div class="d-flex justify-content-center w-100">
-    <div class="card text-center border-0 shadow-lg p-3 w-100" style="border-radius: 16px; background: white;">
-        <div style="position: relative;">
-            <img src="{{ asset('storage/gambar/qubahGroup.jpeg') }}" class="card-img-top img-fluid" alt="Administrasi" style="border-radius: 12px; width: 420px; height: auto; object-fit: cover">
-        </div>
-        <div class="card-body">
-            <h5 class="card-title text-success fw-bold">Welcome to Administration Qubah Group</h5>
-            <p class="card-text text-muted">Manage everything efficiently with our system.</p>
+<div class="d-flex justify-content-center position-relative" style="width: 100%;">
+    <div class="card text-center border-0 shadow-lg p-3 position-relative" style="border-radius: 16px; background: white; width: 1500px;">
+        
+        <!-- Gambar Latar -->
+        <img src="{{ asset('img/alatberat.jpg') }}" class="card-img-top img-fluid" alt="Administrasi" style="border-radius: 12px; width: 100%; height: auto; object-fit: cover;">
+        
+        <!-- Form Login di Tengah Gambar -->
+        <div class="position-absolute top-50 start-50 translate-middle p-4 rounded shadow"
+     style="width: 400px; background-color: rgba(122, 129, 122, 0.79);">
+
+            <h3 class="text-center" style="color:white;"><strong>WELCOME TO <br> QUBAH GROUP</strong></h3>
+            <form action="{{ url('signin') }}" method="post">
+                @csrf
+                <div class="mb-3 form-floating">
+                <input type="text"  class="form-control" id="floatingInput" name="username" placeholder="Username">
+          <label for="floatingInput">Username</label>
+                </div>
+                <div class="mb-3 form-floating">
+                <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
+          <label for="floatingPassword">Password</label>
+                </div>
+                <div class="d-flex justify-content-end">
+            <button class="w-10 btn btn-primary" type="submit">Sign in</button>
+          </div>
+            </form>
         </div>
     </div>
 </div>
 
-
-    <div class="d-flex align-items-center justify-content-center mt-3">
-        <a href="/login" class="btn btn-lg text-white shadow-lg border-0 " style="background-color: #07a43b; padding: 0.75rem 2rem; border-radius: 30px;">
-            Login
-        </a>
-    </div>
 
 </body>
 <style>
