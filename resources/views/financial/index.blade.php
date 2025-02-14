@@ -156,12 +156,10 @@
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                             </tr>
                             <tr>
                                 @if ($total['category_name'] == 'CURRENT ASSETS')
                                 <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
@@ -177,13 +175,11 @@
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 @endif
                             </tr>
                             @endforeach      
                             <tr>
                                 <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Control :</th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
                                 <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>

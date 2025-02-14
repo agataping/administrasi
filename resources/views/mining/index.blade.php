@@ -96,9 +96,15 @@
                         <tr>
                         <th style="vertical-align: middle; background-color: #f0f0f0;">{{ $loop->iteration }}</th>
 
-                            <th colspan="10" style="text-align: left; background-color: #f0f0f0;">
+                            <th colspan="7" style="text-align: left; background-color: #f0f0f0;">
                                 {{ $kategori ?? '-' }}
                             </th>
+                            <td>
+                            <form action="{{ route('formupdatecategorymining', ['id' => $items->first()->id ?? '']) }}">
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>                            
+                            </td>
+                            </td>
                         </tr>
 
                         @foreach ($items as $d)

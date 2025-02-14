@@ -97,13 +97,17 @@ Route::post('/createbagan', [PeopleReadinessController::class, 'createbagan'])->
 
 //mining
 Route::get('/indexmining', [MiningReadinessController::class, 'indexmining'])->middleware('auth')->name('indexmining');
-Route::get('/FormKategori', [MiningReadinessController::class, 'FormKategori'])->middleware('auth')->name('FormKategori');
-Route::post('/createKatgori', [MiningReadinessController::class, 'createKatgori'])->middleware('auth')->name('createKatgori');
 Route::get('/FormMining', [MiningReadinessController::class, 'FormMining'])->middleware('auth')->name('FormMining');
 Route::post('/CreateMining', [MiningReadinessController::class, 'CreateMining'])->middleware('auth')->name('CreateMining');
 Route::get('/FormMiningUpdate/{id}', [MiningReadinessController::class, 'FormMiningUpdate'])->middleware('auth')->name('FormMiningUpdate');
 Route::post('/UpdateMining/{id}', [MiningReadinessController::class, 'UpdateMining'])->middleware('auth')->name('UpdateMining');
 Route::delete('/deletemining/{id}', [MiningReadinessController::class, 'deletemining'])->middleware('auth')->name('deletemining');
+//kategori
+Route::get('/FormKategori', [MiningReadinessController::class, 'FormKategori'])->middleware('auth')->name('FormKategori');
+Route::post('/createKatgori', [MiningReadinessController::class, 'createKatgori'])->middleware('auth')->name('createKatgori');
+Route::get('/formupdatecategorymining/{id}', [MiningReadinessController::class, 'formupdatecategorymining'])->middleware('auth')->name('formupdatecategorymining');
+Route::post('/updatecategorymining/{id}', [MiningReadinessController::class, 'updatecategorymining'])->middleware('auth')->name('updatecategorymining');
+
 //picamining
 Route::get('/picamining', [MiningReadinessController::class, 'picamining'])->middleware('auth')->name('picamining');
 Route::get('/formpicamining', [MiningReadinessController::class, 'formpicamining'])->middleware('auth')->name('formpicamining');
@@ -122,6 +126,8 @@ Route::get('/formupdatehse/{id}', [HseController::class, 'formupdatehse'])->midd
 Route::post('/updatehse/{id}', [HseController::class, 'updatehse'])->middleware('auth')->name('updatehse');
 Route::delete('/deletehse/{id}', [HseController::class, 'deletehse'])->middleware('auth')->name('deletehse');
 //kategorihse
+Route::get('/formupdatecategoryhse/{id}', [HseController::class, 'formupdatecategoryhse'])->middleware('auth')->name('formupdatecategoryhse');
+Route::post('/updatecategoryhse/{id}', [HseController::class, 'updatecategoryhse'])->middleware('auth')->name('updatecategoryhse');
 Route::get('/formkategorihse', [HseController::class, 'formkategorihse'])->middleware('auth')->name('formkategorihse');
 Route::post('/createkategorihse', [HseController::class, 'createkategorihse'])->middleware('auth')->name('createkategorihse');
 //picahse

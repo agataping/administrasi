@@ -11,20 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
-    public function reportkpi() {
+    public function reportkpi(Request $request) {
         $user = Auth::user();
-
-        if ($user->role === 'admin') {
-            $companyName = DB::table('detailabarugis')
-                ->join('users', 'detailabarugis.created_by', '=', 'users.username')
-                ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-                ->select('perusahaans.nama as company_name')
-                ->distinct() 
-                ->get();
-            
-
-        } else {
-            // Jika bukan admin, ambil perusahaan user sendiri
             $companyName = DB::table('users')
                 ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
                 ->select('perusahaans.nama as company_name')
@@ -32,11 +20,13 @@ class ReportController extends Controller
                 ->first();
             
             if (!$companyName) {
-                return response()->json(['message' => 'Perusahaan tidak ditemukan'], 404);
+                // return response()->json(['message' => 'Perusahaan tidak ditemukan'], 404);
             }
-        }
         
-               
+        
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+     
         $query = DB::table('detailabarugis')
             ->join('sub_labarugis', 'detailabarugis.sub_id', '=', 'sub_labarugis.id')
             ->join('category_labarugis', 'sub_labarugis.kategori_id', '=', 'category_labarugis.id')
@@ -48,15 +38,17 @@ class ReportController extends Controller
                 'category_labarugis.id as category_id',
                 'detailabarugis.nominalplan',
                 'detailabarugis.nominalactual'
-            )
+            );
 
-            ->where(function($query) {
-                if(auth()->user()->role === 'admin') {
-                    $query->where('detailabarugis.created_by', '!=', '');
+            if ($user->role !== 'admin') {
+                $query->where('users.id_company', $user->id_company);
+            } else {
+                if ($companyId) {
+                    $query->where('users.id_company', $companyId);
                 } else {
-                    $query->where('detailabarugis.created_by', auth()->user()->username);
+                    $query->whereRaw('1 = 0');             
                 }
-            });
+            }
         $data = $query->get()->groupBy(['jenis_name', 'kategori_name']);
         // Menghitung Total Revenue untuk actual dan plan
         $totalRevenuea = (clone $query)
@@ -87,8 +79,6 @@ class ReportController extends Controller
         });
         $actualcogs = $totalRevenuea ? ($totalactualcogas /$totalRevenuea ) * 100 : 0;
         $plancogs = $totalRevenuep ? ($totalplancogas / $totalRevenuep) * 100 : 0;
-
-
         //cos of employe
         $totactualsalary = (clone $query)
             ->where('category_labarugis.namecategory', 'Salary')
@@ -106,7 +96,6 @@ class ReportController extends Controller
         $actualcoe = $totalRevenuea ? ($totactualsalary /$totalRevenuea ) * 100 : 0;
         $plancoe = $totalRevenuep ? ($totplansalary / $totalRevenuep) * 100 : 0;
 
-
         //csr
         $totactualscsr = (clone $query)
             ->where('category_labarugis.namecategory', 'Social & CSR')
@@ -114,7 +103,6 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
-
         $totplanscsr = (clone $query)
             ->where('category_labarugis.namecategory', 'Social & CSR')
             ->get()
@@ -122,10 +110,7 @@ class ReportController extends Controller
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
         });
         $actualcsr = $totalRevenuea ? ($totactualscsr /$totalRevenuea ) * 100 : 0;
-        $plancsr = $totalRevenuep ? ($totplanscsr / $totalRevenuep) * 100 : 0;
-
-
-    
+        $plancsr = $totalRevenuep ? ($totplanscsr / $totalRevenuep) * 100 : 0;    
         // Menghitung Profit Margin (Laba Kotor)
         $totallkactual = (clone $query)
             ->join('category_labarugis AS cat1', 'sub_labarugis.kategori_id', '=', 'cat1.id') 
@@ -137,7 +122,6 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float) str_replace(',', '', $item->nominalactual ?? 0);
         });
-
         $totallkplan = (clone $query)
             ->join('category_labarugis AS cat1', 'sub_labarugis.kategori_id', '=', 'cat1.id') 
             ->join('jenis_labarugis AS jenis1', 'cat1.jenis_id', '=', 'jenis1.id') 
@@ -147,8 +131,6 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float) str_replace(',', '', $item->nominalplan ?? 0);
         });
-
-    
         // Menghitung Operating Profit (Laba Operasional)
         $planoperasional = (clone $query)
             ->where('jenis_labarugis.name', 'Operating Profit')
@@ -186,9 +168,6 @@ class ReportController extends Controller
             $deviasilr = $totalplanlr-$totalactuallr;
             // dd($totalactuallr);
             $persenlr = $totalplanlr ? ($totalactuallr / $totalplanlr) * 100 : 0;
-            //operasional
-            $planoppersen = $totalRevenuep ? ($planoperasional / $totalRevenuep) * 100 : 0;
-            $actualoppersen = $totalRevenuep ? ($totalactualOp / $totalRevenuea) * 100 : 0;
             // dd($actualoppersen);
             //operating profit
             $totalplanlp = $totalplanlr-$planoperasional;
@@ -197,6 +176,9 @@ class ReportController extends Controller
             $verticalop = $totalRevenuea ? ($totalactualOp / $totalRevenuea) * 100 : 0;
             $deviasiop = $totalplanlp-$totalactualOp;
             $persenop = $totalplanlp ? ($totalactualOp / $totalplanlp) * 100 : 0;
+            //operasional
+            $planoppersen = $totalRevenuep ? ($planoperasional / $totalRevenuep) * 100 : 0;
+            $actualoppersen = $totalRevenuep ? ($totalactualOp / $totalRevenuea) * 100 : 0;
             //lababersih
             $totalplanlb = $planlb-$planoperasional;
             $totalactuallb = $actualoperasional-$actuallb;
@@ -211,6 +193,30 @@ class ReportController extends Controller
         if ($totalRevenuep === 0 || !$totalRevenuep) {
             $totalRevenuep = null;
         }
+    //kpi jtn & pengukuran 
+    //total ongkosplan dan ongkos actual financial
+    $ongkosactual= $totalRevenuea + $totalactualcogas + $totallkactual + $totactualsalary + $totactualscsr + $actualoperasional + $totalactualOp + $actuallb; // (total seluruh plan) yang belum - Return On Assets - Return On Equity 
+    $ongkosplan= $totalRevenuep + $totalplancogas + $totallkplan + $totplansalary + $totplanscsr + $planoperasional + $totalplanlp + $planlb; // (total seluruh plan) yang belum - Return On Assets - Return On Equity 
+    //persen plan financial
+    
+    // Perhitungan persen revenue dan weight
+    $persenrevenue = ($ongkosplan != 0) ? ($totalRevenuep / $ongkosplan) * 100 : 0;/* revenue*/ $weightrevenue = round(($persenrevenue / 35.00) * 100, 2);
+    $persencogs = ($ongkosplan != 0) ? ($totalplancogas / $ongkosplan) * 100 : 0;/* cogs*/$weightcogs = round(($persencogs / 35.00) * 100, 2);
+    $persenprofitmargin = ($ongkosplan != 0) ? ($totallkplan / $ongkosplan) * 100 : 0;/* profit margin*/$weightprofitmargin = round(($persenprofitmargin / 35.00) * 100, 2);
+    $persencostemploye = ($ongkosplan != 0) ? ($totplansalary / $ongkosplan) * 100 : 0;/* saleri cost employe*/$weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
+    $persencsr = ($ongkosplan != 0) ? ($totplanscsr / $ongkosplan) * 100 : 0;/* csr*/$weightcsr = round(($persencsr / 35.00) * 100, 2);
+    $persenopratingcost = ($ongkosplan != 0) ? ($totplanscsr / $ongkosplan) * 100 : 0;/*operasional cost*/$weightopratingcost = round(($persenopratingcost / 35.00) * 100, 2);
+    $persenoperatingprofitmargin = ($ongkosplan != 0) ? ($totalplanlp / $ongkosplan) * 100 : 0;/* opersional profit mg*/$weightopratingmg = round(($persenoperatingprofitmargin / 35.00) * 100, 2);
+    $persennetprofitmargin = ($ongkosplan != 0) ? ($planlb / $ongkosplan) * 100 : 0;/*net profit*/$weightnetprofitmargin = round(($persennetprofitmargin / 35.00) * 100, 2);
+    // Perhitungan persen actual dan index
+    $persenactualrevenue = ($ongkosactual != 0) ? ($totalRevenuea / $ongkosactual) * 100 : 0; /* revenue*/ $indexrevenue = ($persenrevenue != 0) ? round(($persenactualrevenue / $persenrevenue) * 100, 2) : 0;
+    $persenactualcogs = ($ongkosactual != 0) ? ($totalactualcogas / $ongkosactual) * 100 : 0;/* cogs*/$indexcogs = ($persencogs != 0) ? round(($persenactualcogs / $persencogs) * 100, 2) : 0;
+    $persenactualprofitmg = ($ongkosactual != 0) ? ($totallkactual / $ongkosactual) * 100 : 0;/* profit margin*/$indexprofitmg = ($persenprofitmargin != 0) ? round(($persenactualprofitmg / $persenprofitmargin) * 100, 2) : 0; 
+    $pserenactualcostemploye = ($ongkosactual != 0) ? ($totactualsalary / $ongkosactual) * 100 : 0;/* saleri cost employe*/$indexcostemlpoye = ($persencostemploye != 0) ? round(($pserenactualcostemploye / $persencostemploye) * 100, 2) : 0;
+    $persenactualcsr = ($ongkosactual != 0) ? ($totactualscsr / $ongkosactual) * 100 : 0;/* csr*/$indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;
+    $persenactualoperatincost = ($ongkosactual != 0) ? ($actualoperasional / $ongkosactual) * 100 : 0;/*operasional cost*/$indexoperatingcost = ($persenopratingcost != 0) ? round(($persenactualoperatincost / $persenopratingcost) * 100, 2) : 0;
+    $persenactualoperasionalpmg = ($ongkosactual != 0) ? ($totalactualOp / $ongkosactual) * 100 : 0;/* opersional profit mg*/$indexoperasionalpmg = ($persenoperatingprofitmargin != 0) ? round(($persenactualoperasionalpmg / $persenoperatingprofitmargin) * 100, 2) : 0;
+    $persenactualnetprofitmg = ($ongkosactual != 0) ? ($actuallb / $ongkosactual) * 100 : 0;/*net profit*/$indexnetprofitmg = ($persennetprofitmargin != 0) ? round(($persenactualnetprofitmg / $persennetprofitmargin) * 100, 2) : 0;
     
         // Memetakan data untuk menampilkan laporan KPI
         $totals = $data->map(function ($categories, $jenisName) use ($totalRevenuep, $totalRevenuea) {
@@ -222,10 +228,9 @@ class ReportController extends Controller
     
                     // Calculate deviation and percentage here
                     $deviation = $totalPlan - $totalActual;
-                    $percentage = $totalPlan != 0 ? ($totalActual / $totalPlan) * 100 : 0;
-                    $vertikalanalisis = $totalRevenuep ? ($totalPlan / $totalRevenuep) * 100 : 0;
-                    $vertikalanalisiss = $totalRevenuea ? ($totalPlan / $totalRevenuea) * 100 : 0;
-    
+                    $percentage = $totalPlan != 0 ? round(($totalActual / $totalPlan) * 100, 2) : 0;
+                    $vertikalanalisis = $totalRevenuep ? round(($totalPlan / $totalRevenuep) * 100, 2) : 0;
+                    $vertikalanalisiss = $totalRevenuea ? round(($totalPlan / $totalRevenuea) * 100, 2) : 0;
                     return [
                         'kategori_name' => $kategori->first()->kategori_name,
                         'category_id' => $kategori->first()->category_id,
@@ -248,19 +253,25 @@ class ReportController extends Controller
 
         //Cs barging
         $query = DB::table('bargings')
-        ->join('plan_bargings', 'bargings.kuota', '=', 'plan_bargings.kuota')
-        ->leftJoin('users', 'bargings.created_by', '=', 'users.username') 
-
-        ->select('bargings.*', 'plan_bargings.nominal', 'bargings.kuota')
-        ->where(function($query) {
-            if(auth()->user()->role === 'admin') {
-                $query->where('bargings.created_by', '!=', '');
-            } else {
-                $query->where('bargings.created_by', auth()->user()->username);
-            }
+        ->join('users', 'bargings.created_by', '=', 'users.username') 
+        ->leftJoin('plan_bargings', function ($join) {
+            $join->on('bargings.kuota', '=', 'plan_bargings.kuota')
+                 ->groupBy('bargings.kuota'); 
         });        
+        // ->select('bargings.*', 'plan_bargings.nominal', 'bargings.kuota')
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0');             
+            }
+        }
+
+                    
         $data = $query->get();
-        
+        // dd($data);
         $categories = ['Ekspor', 'Domestik'];
         $results = [];
         
@@ -270,6 +281,7 @@ class ReportController extends Controller
             return floatval(str_replace(',', '', $d->quantity));
         });
         $index= $totalPlanAll? ($totalActualAll/$totalPlanAll)* 100 : 0;
+        $index = round($index, 2);
         
         $results['total'] = [
             'Plan' => number_format($totalPlanAll, 2, ',', '.'),
@@ -279,14 +291,16 @@ class ReportController extends Controller
         ];
         
         foreach ($categories as $category) {
-            $filteredData = $data->where('kuota', $category);
+            $filteredData = collect($data)->where('kuota', $category);
+            // dd($filteredData);
+
             
             $totalPlan = $filteredData->sum('nominal'); 
             $totalActual = $filteredData->sum(function ($d) {
                 return floatval(str_replace(',', '', $d->quantity));
             });
             $index= $totalPlan? ($totalActual/$totalPlan)* 100 : 0;
-            
+            $index = round($index, 2);
             $results[$category] = [
                 'Plan' => number_format($totalPlan, 2, ',', '.'),
                 'Actual' => number_format($totalActual, 2, ',', '.'),
@@ -300,24 +314,25 @@ class ReportController extends Controller
         ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
         ->leftJoin('users', 'overberden_coal.created_by', '=', 'users.username') 
 
-        ->select( 'kategori_overcoals.name as kategori_name','overberden_coal.*')
-        ->where(function($query) {
-            if(auth()->user()->role === 'admin') {
-                $query->where('overberden_coal.created_by', '!=', '');
+        ->select( 'kategori_overcoals.name as kategori_name','overberden_coal.*');
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
             } else {
-                $query->where('overberden_coal.created_by', auth()->user()->username);
+                $query->whereRaw('1 = 0');             
             }
-        });        $data = $query->get();
+        }
+      
+        $data = $query->get();
         $totalPlancoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
-        });
-        
+        }); 
         $totalActualcoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
-        });
-        
-        $percentageactual = $totalPlancoal != 0 ? ($totalActualcoal / $totalPlancoal) * 100 : 0;
-
+        });  
+        $indexcoalgetting = ($totalActualcoal != 0) ? ($totalPlancoal / $totalActualcoal) * 100 : 0;
         // Inisialisasi total nilai untuk Over Burden
         $totalPlanob = $data->where('kategori_name', 'Over Burden')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
@@ -326,8 +341,7 @@ class ReportController extends Controller
         $totalActualob = $data->where('kategori_name', 'Over Burden')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
-        $percentageob = $totalPlanob != 0 ? ($totalActualob / $totalPlanob) * 100 : 0;
-
+        $indexoverburder = $totalActualob != 0 ? round(($totalPlanob / $totalActualob) * 100,2) : 0;
 
         //PA 
         $query = DB::table('units')
@@ -337,14 +351,16 @@ class ReportController extends Controller
             'units.unit as units',
             'produksi_pas.plan as pas_plan',
             'produksi_pas.actual as pas_actual',
-        )
-        ->where(function($query) {
-            if(auth()->user()->role === 'admin') {
-                $query->where('units.created_by', '!=', '');
+        );
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
             } else {
-                $query->where('units.created_by', auth()->user()->username);
+                $query->whereRaw('1 = 0');             
             }
-        });    
+        }    
     $data = $query->get();
     
     // Group the data by 'units'
@@ -360,7 +376,7 @@ class ReportController extends Controller
             return (float)str_replace(',', '', $item->pas_actual ?? 0);
         });
     
-        $indexpa = $totalPasPlan != 0 ? ($totalPasActual / $totalPasPlan) * 100 : 0;
+        $indexpa = $totalPasPlan != 0 ? round(($totalPasActual / $totalPasPlan) * 100,2) : 0;
         // dd($totalPasPlan, $totalPasActual, $indexpa);
         return [
             'units' => $unit,
@@ -375,14 +391,18 @@ class ReportController extends Controller
     $query = DB::table('pembebasan_lahans')
     ->leftJoin('users', 'pembebasan_lahans.created_by', '=', 'users.username') 
 
-    ->select('*')
-    ->where(function($query) {
-        if(auth()->user()->role === 'admin') {
-            $query->where('pembebasan_lahans.created_by', '!=', '');
+    ->select('*');
+    if ($user->role !== 'admin') {
+        $query->where('users.id_company', $user->id_company);
+    } else {
+        if ($companyId) {
+            $query->where('users.id_company', $companyId);
         } else {
-            $query->where('pembebasan_lahans.created_by', auth()->user()->username);
+            $query->whereRaw('1 = 0');             
         }
-    });    
+    }
+
+            
     $dataPembebasan = $query->get();
     
     $averageAchievement = $dataPembebasan->average(function ($item) {
@@ -393,14 +413,18 @@ class ReportController extends Controller
     $query = DB::table('mining_readinesses')
     ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
     ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
-    ->select('kategori_mini_r_s.kategori', 'mining_readinesses.*')
-    ->where(function($query) {
-        if(auth()->user()->role === 'admin') {
-            $query->where('mining_readinesses.created_by', '!=', '');
+    ->select('kategori_mini_r_s.kategori', 'mining_readinesses.*');
+    if ($user->role !== 'admin') {
+        $query->where('users.id_company', $user->id_company);
+    } else {
+        if ($companyId) {
+            $query->where('users.id_company', $companyId);
         } else {
-            $query->where('mining_readinesses.created_by', auth()->user()->username);
+            $query->whereRaw('1 = 0');             
         }
-    });    
+    }
+
+            
     $dataMining = $query->get();
     
     $dataMining->transform(function ($item) {
@@ -433,24 +457,27 @@ class ReportController extends Controller
     $totalAspect = $totalCategories > 0 ? round($totalAllCategories / $totalCategories, 2) : 0;
     
     $finalAverage = ($totalAspect + $averageAchievement) / 2;
-    $indexmining = $finalAverage != 0 ? ($finalAverage * 100) / 100 : 0;
+    $indexmining = $finalAverage != 0 ? round(($finalAverage * 100) / 100,2) : 0;
 
 
     //people readiness
     $totalQuality = 0;
     $totalQuantity = 0;
     $count = 0; 
-    $querypeople = DB::table('people_readinesses') 
+    $query = DB::table('people_readinesses') 
     ->join('users', 'people_readinesses.created_by', '=', 'users.username') 
 
-    ->select('*')
-    ->where(function($query) {
-        if(auth()->user()->role === 'admin') {
-            $query->where('people_readinesses.created_by', '!=', '');
+    ->select('people_readinesses.*');
+    if ($user->role !== 'admin') {
+        $query->where('users.id_company', $user->id_company);
+    } else {
+        if ($companyId) {
+            $query->where('users.id_company', $companyId);
         } else {
-            $query->where('people_readinesses.created_by', auth()->user()->username);
+            $query->whereRaw('1 = 0');             
         }
-    });   $people = $querypeople->get();
+    }  
+    $people = $query->get();
     
     $totalQuality = 0;
     $totalQuantity = 0;
@@ -480,36 +507,54 @@ class ReportController extends Controller
     } else {
         $totalpr = 0; 
     }
-    $indexpeople = $totalpr != 0 ? ($totalpr * 100) / 100 : 0;
+    $indexpeople = $totalpr != 0 ? round(($totalpr * 100) / 100,2) : 0;
 
 
     //infrastruktur
-    $queryinfra = DB::table('infrastructure_readinesses')
-    ->join('users', 'infrastructure_readinesses.created_by', '=', 'users.username') 
-    ->select('*')
-    ->where(function($query) {
-        if(auth()->user()->role === 'admin') {
-            $query->where('infrastructure_readinesses.created_by', '!=', '');
+    $query = DB::table('infrastructure_readinesses')
+    ->select('infrastructure_readinesses.*')
+    ->join('users', 'infrastructure_readinesses.created_by', '=', 'users.username')
+    ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    if ($user->role !== 'admin') {
+        $query->where('users.id_company', $user->id_company);
+    } else {
+        if ($companyId) {
+            $query->where('users.id_company', $companyId);
         } else {
-            $query->where('infrastructure_readinesses.created_by', auth()->user()->username);
+            $query->whereRaw('1 = 0');             
         }
-    });    $datainfra = $queryinfra->get();
-    $averagePerformance = DB::table('infrastructure_readinesses')
-    ->selectRaw('REPLACE(total, "%", "") as total_numeric')
-    ->get()
+    }
+    $datainfra = $query->get();
+
+    
+    $averagePerformance = $datainfra->pluck('total') // Ambil hanya data yang sudah terfilter
     ->map(function ($item) {
-        return (float) $item->total_numeric;
+        return (float) str_replace('%', '', $item); // Ubah ke angka float
     })
     ->avg();
 
-    $indexinfra = $averagePerformance != 0 ? ($averagePerformance * 100) / 100 : 0;
+$indexinfra = $averagePerformance != 0 ? round(($averagePerformance * 100) / 100,2) : 0;
+
+    // dd($averagePerformance,$indexinfra);
+
     //stock jetty
     $query = DB::table('stock_jts')
     ->select('stock_jts.*')
     ->join('users', 'stock_jts.created_by', '=', 'users.username')
-    ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-    ->where('stock_jts.created_by', auth()->user()->username);
-    $data = $query->get();
+    ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    if ($user->role !== 'admin') 
+    
+    {
+        $query->where('users.id_company', $user->id_company);
+    } else {
+        if ($companyId) {
+            $query->where('users.id_company', $companyId);
+        } else {
+            $query->whereRaw('1 = 0');             
+        }
+    }
+
+            $data = $query->get();
     $planNominalsj = $data->sum(function ($p) {
         return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
     });
@@ -542,7 +587,7 @@ class ReportController extends Controller
         return $stock;
     });
     $grandTotal = optional($data->last())->stock_akhir ?? 0;
-    $indexstockjetty= $planNominalsj? ($grandTotal/$planNominalsj)* 100 : 0;
+    $indexstockjetty= $planNominalsj? round (($grandTotal/$planNominalsj)* 100,2) : 0;
 
 
 
@@ -551,11 +596,31 @@ class ReportController extends Controller
 
 
         return view('pt.report', compact('totals',
+        
         //nama perusahaan
         'companyName',
         'user',
+        'perusahaans', 'companyId',
         //stock jetty
         'grandTotal','planNominalsj','indexstockjetty',
+        //financial weight & index
+        'weightrevenue',
+        'weightcogs',
+        'weightprofitmargin',
+        'weightcostemploye',
+        'weightcsr',
+        'weightopratingcost',
+        'weightopratingmg',
+        'weightnetprofitmargin',
+        //index
+        'indexrevenue',
+        'indexcogs',
+        'indexprofitmg',
+        'indexcostemlpoye',
+        'indexcsr',
+        'indexoperatingcost',
+        'indexoperasionalpmg',
+        'indexnetprofitmg',    
         //laba rugi 
         'totalRevenuea', 'totalRevenuep', //revenue 
         'totalvertikal', 'totalvertikals','persenlb', //laba rugi
@@ -578,8 +643,8 @@ class ReportController extends Controller
         'totalActualcoal',
         'totalPlanob',
         'totalActualob',
-        'percentageob',
-        'percentageactual',
+        'indexoverburder',
+        'indexcoalgetting',
         //pa
         'unitpa',
         // pembebasan lahan dan mining

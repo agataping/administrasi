@@ -56,17 +56,17 @@
 
                     <div class="form-group">
                         <label for="shift_pertama">Shift I</label>
-                        <input type="number" class="form-control" id="shift_pertama" name="shifpertama" min="">
+                        <input type="text" class="form-control" id="shift_pertama" name="shifpertama" min="">
                     </div>
 
                     <div class="form-group">
                         <label for="shift_kedua">Shift II</label>
-                        <input tBZype="number" class="form-control" id="shift_kedua" name="shifkedua" min="0" >
+                        <input tBZype="text" class="form-control" id="shift_kedua" name="shifkedua" min="" >
                     </div>
 
                     <div class="form-group">
                         <label for="total_hauling">Total Hauling</label>
-                        <input type="number" class="form-control" id="total_hauling" name="totalhauling" min="0" readonly>
+                        <input type="text" class="form-control" id="total_hauling" name="totalhauling" min="" readonly>
                     </div>
                     <div class="form-group">
                         <label for="Lokasi">Location</label>
@@ -100,16 +100,24 @@
         const shiftPertama = document.getElementById('shift_pertama');
         const shiftKedua = document.getElementById('shift_kedua');
         const totalHauling = document.getElementById('total_hauling');
-
-        function calculateTotal() {
-            const shift1 = parseFloat(shiftPertama.value) || 0;
-            const shift2 = parseFloat(shiftKedua.value) || 0;
-            totalHauling.value = shift1 + shift2;
+        
+        function parseNumber(value) {
+            return parseFloat(value.replace(',', '.')) || 0;
         }
-
+        
+        function calculateTotal() {
+            const shift1 = parseNumber(shiftPertama.value);
+            const shift2 = parseNumber(shiftKedua.value);
+            const total = shift1 + shift2;
+            
+            totalHauling.value = total.toString().replace('.', ',');
+        }
+        
         shiftPertama.addEventListener('input', calculateTotal);
         shiftKedua.addEventListener('input', calculateTotal);
     });
+    
+
 
     document.getElementById('stockbtn').addEventListener('click', function () {
         const stockDiv = document.getElementById('stock');

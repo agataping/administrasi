@@ -1,17 +1,34 @@
 @extends('template.main')
 @section('title', '')
 @section('content')
+@extends('components.style')
 
 <div class="container-fluid mt-4">
     <div class="card w-100" style=" background-color:rgba(134, 247, 138, 0.98); ">
         <div class="card-body">
             <div class="col-12">
-
+                @if(auth()->user()->role === 'admin')    
+                <form method="GET" action="{{ route('reportkpi') }}" id="filterForm">
+                    <label for="id_company">Select Company:
+                        <br>
+                        <small><em>To view company KPI, please select a company from the list.</em></small>
+                    </label>
+                    <select name="id_company" id="id_company" onchange="updateCompanyName(); document.getElementById('filterForm').submit();">
+                        <option value="">-- Select Company --</option>
+                        @foreach ($perusahaans as $company)
+                        <option value="{{ $company->id }}" data-nama="{{ $company->nama }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                            {{ $company->nama }}
+                        </option>
+                        @endforeach
+                    </select>
+                </form>
+                @endif
+                
                 <h2 class="text-center">
                     <strong>TOTAL PERFORMANCE (YEAR TO DATE)</strong>
                 </h2>
-
-
+                
+                
                 <div class="row" style="background-color: #f4e2cd; border: 2px solid black;" >
                     <!-- Baris pertama -->
                     <div class="col" style="text-align: left;">
@@ -28,22 +45,28 @@
                         %
                     </div>
                     
+                    <!-- ama perusahaan berdasrkan role Admin -->
+                    @if(auth()->user()->role === 'admin')    
                     <div class="col text-center">
                         <h4>KPI</h4> 
-                        @if($user->role === 'admin')
-
-                                @foreach ($companyName as $company)
-                                    <h4>{{ $company->company_name }}</h4>
-                                @endforeach
-                            @else
-                            @if($companyName)
-                                <h4> <p> {{ $companyName->company_name }}</p></h4>
-                            @else
-                            <p>Tidak ada perusahaan yang ditemukan.</p>
-                            @endif
+                        <h4 id="selectedCompanyName">{{ $company->nama ?? 'No Company Selected' }}</h4>
+                    </div> 
+                    @endif
+                    
+                    <!-- nama perusahaan berdasrkan role staff -->
+                    @if(auth()->user()->role === 'staff')  
+                    <div class="col text-center">
+                        <h4>KPI</h4> 
+                        
+                        @if($companyName)
+                        <h4> <p> {{ $companyName->company_name }}</p></h4>
+                        @else
+                        <p>Tidak ada perusahaan yang ditemukan.</p>
                         @endif
                     </div> 
+                    @endif
                 </div>
+                
                 
                 
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
@@ -88,25 +111,28 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
-                                        <td style="vertical-align: middle;
-                                                    vertical-align: middle; color: white; 
-                                                    @if ($persenlb <= 75)
-                                                    background-color: black;
-                                                    @elseif ($persenlb > 75 && $persenlb <= 90)
-                                                    background-color: rgb(206, 24, 24); /* Merah */
-                                                    
-                                                    @elseif ($persenlb > 90 && $persenlb <= 100)
-                                                    background-color: yellow;
-                                                    @elseif ($persenlb > 100 && $persenlb <= 190)
-                                                    background-color: green;
-                                                    @endif">                                                    
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexrevenue<= 75)
+                                                            
+                                            background-color: black; color: white;
+                                            @elseif ($indexrevenue> 75 && $indexrevenue<= 90)
+                                                            
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
+                                                            
+                                            @elseif ($indexrevenue> 90 && $indexrevenue<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexrevenue> 100 && $indexrevenue<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexrevenue> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif">  {{ number_format($indexrevenue, 2) }}%                                                 
                                         </td>
                                     </tr>
                                     
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
-                                        <td class="text-end" style=" vertical-align: middle; color: white;">
-                                            75%
+                                        <td class="text-end" style=" vertical-align: middle; color: black;">
+                                        {{ number_format($weightrevenue, 2) }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -129,30 +155,33 @@
                                     <tr>
                                         
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($actualcogs, 2) }}</td>
+                                        <td>{{ number_format($actualcogs, 2) }}%</td>
 
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
-                                        <td style="vertical-align: middle;
-                                                    vertical-align: middle; color: white; 
-                                                    @if ($persenlb <= 75)
-                                                    background-color: black;
-                                                    @elseif ($persenlb > 75 && $persenlb <= 90)
-                                                    background-color: rgb(206, 24, 24); /* Merah */
-                                                    
-                                                    @elseif ($persenlb > 90 && $persenlb <= 100)
-                                                    background-color: yellow;
-                                                    @elseif ($persenlb > 100 && $persenlb <= 190)
-                                                    background-color: green;
-                                                    @endif">                                                    
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexcogs<= 75)
+                                                            
+                                            background-color: black; color: white;
+                                            @elseif ($indexcogs> 75 && $indexcogs<= 90)
+                                                            
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
+                                                            
+                                            @elseif ($indexcogs> 90 && $indexcogs<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexcogs> 100 && $indexcogs<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexcogs> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif">  {{ number_format($indexcogs, 2) }}%                                                     
                                         </td>
                                     </tr>
                                     
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
-                                        <td class="text-end" style=" vertical-align: middle; color: white;">
-                                            75%
+                                        <td class="text-end" style=" vertical-align: middle; color: black;">
+                                        {{ number_format($weightcogs, 2) }}%
                                         </td>
                                     </tr>
                                 </tbody>
@@ -180,25 +209,28 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
-                                        <td style="vertical-align: middle;
-                                                    vertical-align: middle; color: white; 
-                                                    @if ($persenlb <= 75)
-                                                    background-color: black;
-                                                    @elseif ($persenlb > 75 && $persenlb <= 90)
-                                                    background-color: rgb(206, 24, 24); /* Merah */
-                                                    
-                                                    @elseif ($persenlb > 90 && $persenlb <= 100)
-                                                    background-color: yellow;
-                                                    @elseif ($persenlb > 100 && $persenlb <= 190)
-                                                    background-color: green;
-                                                    @endif">                                                    
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexcostemlpoye<= 75)
+                                                            
+                                            background-color: black; color: white;
+                                            @elseif ($indexcostemlpoye> 75 && $indexcostemlpoye<= 90)
+                                                            
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
+                                                            
+                                            @elseif ($indexcostemlpoye> 90 && $indexcostemlpoye<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexcostemlpoye> 100 && $indexcostemlpoye<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexcostemlpoye> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif">  {{ number_format($indexcostemlpoye, 2) }}%                                                    
                                         </td>
                                     </tr>
                                     
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
-                                        <td class="text-end" style=" vertical-align: middle; color: white;">
-                                            75%
+                                        <td class="text-end" style=" vertical-align: middle; color: black;">
+                                        {{ number_format($weightcostemploye, 2) }}%
                                         </td>
                                     </tr>
                                 </tbody>
@@ -226,25 +258,28 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
-                                        <td style="vertical-align: middle;
-                                                    vertical-align: middle; color: white; 
-                                                    @if ($persenlb <= 75)
-                                                    background-color: black;
-                                                    @elseif ($persenlb > 75 && $persenlb <= 90)
-                                                    background-color: rgb(206, 24, 24); /* Merah */
-                                                    
-                                                    @elseif ($persenlb > 90 && $persenlb <= 100)
-                                                    background-color: yellow;
-                                                    @elseif ($persenlb > 100 && $persenlb <= 190)
-                                                    background-color: green;
-                                                    @endif">                                                    
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexcsr<= 75)
+                                                            
+                                            background-color: black; color: white;
+                                            @elseif ($indexcsr> 75 && $indexcsr<= 90)
+                                                            
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
+                                                            
+                                            @elseif ($indexcsr> 90 && $indexcsr<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexcsr> 100 && $indexcsr<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexcsr> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif">  {{ number_format($indexcsr, 2) }}%                                                    
                                         </td>
                                     </tr>
                                     
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
-                                        <td class="text-end" style=" vertical-align: middle; color: white;">
-                                            75%
+                                        <td class="text-end" style=" vertical-align: middle; color: black;">
+                                        {{ number_format($weightcsr, 2) }}%
                                         </td>
                                     </tr>
                                 </tbody>
@@ -267,11 +302,26 @@
                                     </tr>
                                     <tr>
                                         <td>Index</td>
-                                        <td class="text-end">%</td>
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexoperasionalpmg<= 75)
+                                                            
+                                            background-color: black; color: white;
+                                            @elseif ($indexoperasionalpmg> 75 && $indexoperasionalpmg<= 90)
+                                                            
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
+                                                            
+                                            @elseif ($indexoperasionalpmg> 90 && $indexoperasionalpmg<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexoperasionalpmg> 100 && $indexoperasionalpmg<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexoperasionalpmg> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif">{{ number_format($indexoperasionalpmg, 2) }}%                                                    
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($weightopratingcost, 2) }}%</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -292,11 +342,26 @@
                                     </tr>
                                     <tr>
                                         <td>Index</td>
-                                        <td class="text-end">%</td>
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexoperatingcost<= 75)
+                                                            
+                                            background-color: black; color: white;
+                                            @elseif ($indexoperatingcost> 75 && $indexoperatingcost<= 90)
+                                                            
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
+                                                            
+                                            @elseif ($indexoperatingcost> 90 && $indexoperatingcost<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexoperatingcost> 100 && $indexoperatingcost<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexoperatingcost> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif">  {{ number_format($indexoperatingcost, 2) }}%                                                   
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($weightopratingcost, 2) }}%</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -317,14 +382,31 @@
                                     </tr>
                                     <tr>
                                         <td>Index</td>
-                                        <td class="text-end">%</td>
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexoperasionalpmg<= 75)
+                                                            
+                                            background-color: black; color: white;
+                                            @elseif ($indexoperasionalpmg> 75 && $indexoperasionalpmg<= 90)
+                                                            
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
+                                                            
+                                            @elseif ($indexoperasionalpmg> 90 && $indexoperasionalpmg<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexoperasionalpmg> 100 && $indexoperasionalpmg<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexoperasionalpmg> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif">{{ number_format($indexoperasionalpmg, 2) }}%                                                    
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($weightopratingmg, 2) }}%</td>
                                     </tr>
                                 </tbody>
                             </table>
+
+
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead>
                                     <tr>
@@ -342,11 +424,26 @@
                                     </tr>
                                     <tr>
                                         <td>Index</td>
-                                        <td class="text-end">%</td>
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexnetprofitmg<= 75)
+                                                            
+                                            background-color: black; color: white;
+                                            @elseif ($indexnetprofitmg> 75 && $indexnetprofitmg<= 90)
+                                                            
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
+                                                            
+                                            @elseif ($indexnetprofitmg> 90 && $indexnetprofitmg<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexnetprofitmg> 100 && $indexnetprofitmg<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexnetprofitmg> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif">  {{ number_format($indexnetprofitmg, 2) }}%                                                  
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($weightnetprofitmargin, 2) }}%</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -593,7 +690,7 @@
                                             background-color: blue; color: white; /* Hijau */
                                             @endif
                                         ">
-                                            {{ $results['total']['Index'] }}
+                                            {{ $results['total']['Index'] }}%
                                         </td>
                                     </tr>
                                     <tr>
@@ -735,19 +832,19 @@
                                     <tr>
                                         <td>Index</td>
                                         <td class="text-end" style="vertical-align: middle; 
-                                            @if ($percentageactual <= 75)
+                                            @if ($indexcoalgetting <= 75)
                                             background-color: black; color: white;
-                                            @elseif ($percentageactual > 75 && $percentageactual <= 90)
+                                            @elseif ($indexcoalgetting > 75 && $indexcoalgetting <= 90)
                                             background-color: rgb(206, 24, 24); color: white;
-                                            @elseif ($percentageactual > 90 && $percentageactual <= 100)
+                                            @elseif ($indexcoalgetting > 90 && $indexcoalgetting <= 100)
                                             background-color: yellow; color: black;
-                                            @elseif ($percentageactual > 100 && $percentageactual <= 190)
+                                            @elseif ($indexcoalgetting > 100 && $indexcoalgetting <= 190)
                                             background-color: rgb(0, 255, 72); color: white;
                                             
-                                            @elseif ($percentageactual > 190)
+                                            @elseif ($indexcoalgetting > 190)
                                                 background-color: rgb(0, 60, 255); color: white;
                                             @endif
-                                            ">{{ number_format($percentageactual, 0, ',', '.') }}%</td>
+                                            ">{{ number_format($indexcoalgetting, 0, ',', '.') }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
@@ -774,18 +871,18 @@
                                     <tr>
                                         <td>Index</td>
                                         <td class="text-end" style="vertical-align: middle; 
-                                                @if ($percentageob <= 75)
+                                                @if ($indexoverburder <= 75)
                                                 background-color: black; color: white;
-                                                @elseif ($percentageob > 75 && $percentageob <= 90)
+                                                @elseif ($indexoverburder > 75 && $indexoverburder <= 90)
                                                 background-color: rgb(206, 24, 24); color: white;
-                                                @elseif ($percentageob > 90 && $percentageob <= 100)
+                                                @elseif ($indexoverburder > 90 && $indexoverburder <= 100)
                                                 background-color: yellow; color: black;
-                                                @elseif ($percentageob > 100 && $percentageob <= 190)
+                                                @elseif ($indexoverburder > 100 && $indexoverburder <= 190)
                                                 background-color: rgb(0, 255, 72); color: white;
-                                                @elseif ($percentageob > 190)
+                                                @elseif ($indexoverburder > 190)
                                                 background-color: rgb(0, 42, 255); color: white;
                                                 @endif
-                                            ">{{ number_format($percentageob, 0, ',', '.') }}%
+                                            ">{{ number_format($indexoverburder, 0, ',', '.') }}%
                                         </td>
                                     </tr>
                                     <tr>
@@ -816,15 +913,15 @@
                                     <tr>
                                         <td>Index</td>
                                         <td class="text-end" style="vertical-align: middle; 
-                                            @if ($percentageob <= 75)
+                                            @if ($indexoverburder <= 75)
                                             background-color: black; color: white;
-                                            @elseif ($percentageob > 75 && $percentageob <= 90)
+                                            @elseif ($indexoverburder > 75 && $indexoverburder <= 90)
                                             background-color: rgb(206, 24, 24); color: white;
-                                            @elseif ($percentageob > 90 && $percentageob <= 100)
+                                            @elseif ($indexoverburder > 90 && $indexoverburder <= 100)
                                             background-color: yellow; color: black;
-                                            @elseif ($percentageob > 100 && $percentageob <= 190)
+                                            @elseif ($indexoverburder > 100 && $indexoverburder <= 190)
                                             background-color: rgb(0, 255, 72); color: white;
-                                            @elseif ($percentageob > 190)
+                                            @elseif ($indexoverburder > 190)
                                             background-color: rgb(0, 42, 255); color: white;
                                             @endif
                                             ">
@@ -853,15 +950,15 @@
                                     <tr>
                                         <td>Index</td>
                                         <td class="text-end" style="vertical-align: middle; 
-                                            @if ($percentageactual <= 75)
+                                            @if ($indexcoalgetting <= 75)
                                             background-color: black; color: white;
-                                            @elseif ($percentageactual > 75 && $percentageactual <= 90)
+                                            @elseif ($indexcoalgetting > 75 && $indexcoalgetting <= 90)
                                             background-color: rgb(206, 24, 24); color: white;
-                                            @elseif ($percentageactual > 90 && $percentageactual <= 100)
+                                            @elseif ($indexcoalgetting > 90 && $indexcoalgetting <= 100)
                                             background-color: yellow; color: black;
-                                            @elseif ($percentageactual > 100 && $percentageactual <= 190)
+                                            @elseif ($indexcoalgetting > 100 && $indexcoalgetting <= 190)
                                             background-color: rgb(0, 255, 72); color: white;
-                                            @elseif ($percentageactual > 190)
+                                            @elseif ($indexcoalgetting > 190)
                                             background-color: rgb(0, 60, 255); color: white;
                                             @endif">{{ number_format($indexmining, 0, ',', '.') }}%
                                         </td>
@@ -974,7 +1071,19 @@
 @endsection
 @section('scripts')
 @endsection
-                        
+<script>
+    function updateCompanyName() {
+        var select = document.getElementById("id_company");
+        var selectedOption = select.options[select.selectedIndex];
+        var companyName = selectedOption.getAttribute("data-nama") || "No Company Selected";
+        document.getElementById("selectedCompanyName").innerText = companyName;
+    }
+
+    // Set initial company name on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        updateCompanyName();
+    });
+</script>              
                         
 
 

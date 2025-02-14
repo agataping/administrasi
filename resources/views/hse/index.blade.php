@@ -88,9 +88,15 @@
                         @foreach ($data as $kategori => $items)
                         <tr>
                             <!-- Header untuk setiap kategori -->
-                            <th colspan="8" style="text-align: left; background-color: #f0f0f0;">
+                            <th colspan="6" style="text-align: left; background-color: #f0f0f0;">
                                 {{ $kategori ?? '-' }}
                             </th>
+                            <td style="text-align: center; vertical-align: middle;">
+                            <form action="{{ route('formupdatecategoryhse', ['id' => $items->first()->id ?? '']) }}">
+                                    <button type="submit"  class="btn btn-primary btn-sm">Edit</button>
+                                </form>                            
+                            </td>
+
                         </tr>
                         @foreach ($items as $d)
                         <tr>

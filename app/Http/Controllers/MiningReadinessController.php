@@ -27,7 +27,7 @@ class MiningReadinessController extends Controller
         ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
         ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-        ->select('kategori_mini_r_s.kategori','mining_readinesses.*');
+        ->select('kategori_mini_r_s.kategori','kategori_mini_r_s.*','mining_readinesses.*');
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
@@ -100,14 +100,11 @@ class MiningReadinessController extends Controller
     public function createKatgori(Request $request)
     {
         $validatedData = $request->validate([
-            'kategori' => 'required|array',
-            'kategori.*' => 'required|string',
+            'kategori' => 'required',
         ]);
-        $createdBy = auth()->user()->username;
+        $validatedData['created_by'] = auth()->user()->username;
+        $data=KategoriMiniR::create($validatedData);
         
-        foreach ($validatedData['kategori'] as $nama) {
-            $data=KategoriMiniR::create(['kategori' => $nama]);
-        }
         HistoryLog::create([
             'table_name' => 'kategori_mini_r_s', 
             'record_id' => $data->id, 
@@ -122,6 +119,36 @@ class MiningReadinessController extends Controller
     
         return redirect()->back()->with('success', 'Data added successfully.');
     }
+    public function formupdatecategorymining($id){
+        $data = KategoriMiniR::findOrFail($id);
+        return view('mining.updatecategory',compact('data'));
+  
+    }
+    public function updatecategorymining(Request $request, $id){
+        $validatedData = $request->validate([
+            'kategori' => 'required',
+        ]);
+        
+        $validatedData['updated_by'] = auth()->user()->username;
+        
+        $KategoriMiniR = KategoriMiniR::findOrFail($id);
+        $oldData = $KategoriMiniR->toArray();
+        
+        $KategoriMiniR->update($validatedData);
+        
+        HistoryLog::create([
+            'table_name' => 'kategori_mini_r_s', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);        
+
+        return redirect('/indexmining')->with('success', 'Data savedsuccessfully.');
+   
+    }
+
     
     public function FormMining()
     {
@@ -321,7 +348,7 @@ class MiningReadinessController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/picamining')->with('success', 'data berhasil disimpan.');
+        return redirect('/picamining')->with('success', 'data savedsuccessfully.');
     }
     
     public function deletepicamining ($id)

@@ -26,7 +26,7 @@ class HseController extends Controller
         ->join('kategori_hses', 'hses.kategori_id', '=', 'kategori_hses.id')
         ->join('users', 'hses.created_by', '=', 'users.username')
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-        ->select('hses.*','kategori_hses.name as kategori_name','users.username as created_by');
+        ->select('hses.*','kategori_hses.*','kategori_hses.name as kategori_name','users.username as created_by');
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
@@ -42,8 +42,7 @@ class HseController extends Controller
         $data = $query->orderBy('kategori_hses.name') 
         ->get()
         ->groupBy('kategori_name'); 
-
-        return view('hse.index',compact('data','perusahaans', 'companyId'));
+               return view('hse.index',compact('data','perusahaans', 'companyId'));
     }
 
     public function formkategorihse()
@@ -93,8 +92,46 @@ class HseController extends Controller
             'name' => 'required',
         ]);
         $createdBy = auth()->user()->username;
-        kategoriHse::create($validatedData);  
+        $data=kategoriHse::create($validatedData);  
+        HistoryLog::create([
+            'table_name' => 'kategori_hses', 
+            'record_id' => $data->id, 
+            'action' => 'create',
+            'old_data' => null, 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);
+
         return redirect('/indexhse')->with('success', 'Data berhasil disimpan.');
+    }
+    public function formupdatecategoryhse($id){
+        $data = kategoriHse::findOrFail($id);
+        return view('hse.updatecategory',compact('data'));
+  
+    }
+    public function updatecategoryhse(Request $request, $id){
+        $validatedData = $request->validate([
+            'name' => 'required',
+        ]);
+        
+        $validatedData['updated_by'] = auth()->user()->username;
+        
+        $kategoriHse = kategoriHse::findOrFail($id);
+        $oldData = $kategoriHse->toArray();
+        
+        $kategoriHse->update($validatedData);
+        
+        HistoryLog::create([
+            'table_name' => 'kategori_hses', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);        
+
+        return redirect('/indexhse')->with('success', 'Data berhasil disimpan.');
+   
     }
     
     public function updatehse(Request $request, $id)

@@ -69,6 +69,8 @@
                 <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                 <tr>
                             <th  style="vertical-align: middle;">No</th>
+                            <th  style="vertical-align: middle;">Date</th>
+
                             <th   style="vertical-align: middle;">Problem</th>
                             <th  style="text-align: center;">Cause</th>
                             <th  style="text-align: center;">Corective Action</th>
@@ -84,6 +86,8 @@
                         @foreach($data as $d)
                             <tr>
                             <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                            <td style="vertical-align: middle;">{{ \Carbon\Carbon::parse($d->tanggal)->format('d-m-Y' ?? 0) }}</td>
+
                             <td style="text-align: center; vertical-align: middle;">{{ $d->problem }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->cause }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->corectiveaction }}</td>

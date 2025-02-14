@@ -155,9 +155,9 @@ class StockJtController extends Controller
             'sotckawal' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
             'stockout' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
             'plan' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'shifpertama' => 'nullable|numeric',
-            'shifkedua' => 'nullable|numeric',
-            'totalhauling' => 'nullable|numeric',
+            'shifpertama' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
+            'shifkedua' =>'nullable|regex:/^[\d]+([,.]\d+)?$/',
+            'totalhauling' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
             'lokasi' =>'required',
             'file' => 'nullable|file',
 
@@ -179,6 +179,9 @@ class StockJtController extends Controller
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
         $validatedData['sotckawal'] = convertToCorrectNumber($validatedData['sotckawal']);
         $validatedData['stockout'] = convertToCorrectNumber($validatedData['stockout']);
+        $validatedData['shifpertama'] = convertToCorrectNumber($validatedData['shifpertama']);
+        $validatedData['shifkedua'] = convertToCorrectNumber($validatedData['shifkedua']);
+        $validatedData['totalhauling'] = convertToCorrectNumber($validatedData['totalhauling']);
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
@@ -228,8 +231,9 @@ class StockJtController extends Controller
                 'sotckawal' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
                 'stockout' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
                 'plan' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-                'shifkedua' => 'nullable|numeric',
-                'totalhauling' => 'nullable|numeric',
+                'shifkedua' =>'nullable|regex:/^[\d]+([,.]\d+)?$/',
+                'shifpertama' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
+                'totalhauling' =>'nullable|regex:/^[\d]+([,.]\d+)?$/',
                 'lokasi' => 'required|string',
                 'file' => 'nullable|file',
             ]);
@@ -250,6 +254,10 @@ class StockJtController extends Controller
             $validatedData['stockawal'] = convertToCorrectNumber($validatedData['stockawal'] ?? 0);
             $validatedData['plan'] = convertToCorrectNumber($validatedData['plan'] ?? 0);
             $validatedData['stockout'] = convertToCorrectNumber($validatedData['stockout'] ?? 0);
+            $validatedData['shifpertama'] = convertToCorrectNumber($validatedData['shifpertama']?? 0);
+            $validatedData['shifkedua'] = convertToCorrectNumber($validatedData['shifkedua']?? 0);
+            $validatedData['totalhauling'] = convertToCorrectNumber($validatedData['totalhauling']?? 0);
+    
         
             $data = StockJt::findOrFail($id);
             $oldData = $data->toArray();

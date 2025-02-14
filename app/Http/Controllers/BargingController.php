@@ -213,7 +213,7 @@ class BargingController extends Controller
                 'user_id' => auth()->id(), 
             ]);
             if ($request->input('action') == 'save') {
-                return redirect('/indexbarging')->with('success', 'Data added successfully.');
+                return redirect('/indexmenu')->with('success', 'Data added successfully.');
             }
         
             return redirect()->back()->with('success', 'Data added successfully.');
@@ -268,7 +268,7 @@ class BargingController extends Controller
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexbarging')->with('success', 'data berhasil diperbarui.');
+        return redirect('/indexmenu')->with('success', 'data berhasil diperbarui.');
 
     }
 
