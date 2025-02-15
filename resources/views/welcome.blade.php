@@ -3,13 +3,11 @@
 <link href="{{asset('css/signin.css')}}" rel="stylesheet">
 
 
-<body style="font-family: 'Arial', sans-serif; background-color: rgba(116, 199, 101, 0.06); min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-
+<div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; font-family: 'Arial', sans-serif; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
+</div>
 <div class="d-flex justify-content-center position-relative" style="width: 100%;">
-    <div class="card text-center border-0 shadow-lg p-3 position-relative" style="border-radius: 16px; background: white; width: 1500px;">
         
         <!-- Gambar Latar -->
-        <img src="{{ asset('img/alatberat.jpg') }}" class="card-img-top img-fluid" alt="Administrasi" style="border-radius: 12px; width: 100%; height: auto; object-fit: cover;">
         
         <!-- Form Login di Tengah Gambar -->
         <div class="position-absolute top-50 start-50 translate-middle p-4 rounded shadow"
@@ -35,7 +33,6 @@
 </div>
 
 
-</body>
 <style>
     @media (max-width: 768px) {
     .card {
