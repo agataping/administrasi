@@ -2,12 +2,12 @@
 @section('title', '')
 @section('content')
 @extends('components.style')
-
-<div class="container-fluid mt-4">
-<div class="card mb-3 "  style="border-radius: 12px; overflow: hidden; margin: 2rem auto; height:80vh; ">
-    <img src="{{asset('storage/gambar/abcd.png')}}"  alt="Administrasi" style="width: auto; height: auto; object-fit: cover;">
+<div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
+</div>
+<div class="card mb-3" style="background:  no-repeat center center/cover; border-radius: 12px; overflow: hidden; margin: 2rem auto; height: 80vh;">
     <div class="card-img-overlay d-flex align-items-center justify-content-center" style="background: color: white; text-align: center; ">
-                <div>        <div class="card-body">
+                <div>       
+                    <div class="card-body">
             <div class="col-12">
                 
                 <h2 class="mb-3"></h2>

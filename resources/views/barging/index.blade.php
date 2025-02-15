@@ -3,9 +3,10 @@
 
 @section('title', 'Barging')
 @section('content')
-
+<div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
+</div>
 <div class="container-fluid mt-4">
-    <div class="card w-100">
+    <div class="card w-100" style="background-color:rgba(0, 0, 0, 0.48); color;white">
         <div class="card-body">
             <div class="col-12">
                 <h2 class="text-center mb-4">Barging</h2>
@@ -49,12 +50,12 @@
                 <div class="dashboard-container">
                     <!-- Over Burden Section -->
                     <div class="section-card">
-                        <h3 class="section-title">Plan & Actual</h3>
+                        <h3 class="section-title" >Plan & Actual</h3>
                         <div class="metrics-grid">
                             
                             <div class="metric">
                                 <a href="{{ route('indexPlan') }}" class="cardcost text-decoration-none">
-                                <h4>Plan</h4>
+                                <h4 style="color:white;">Plan</h4>
                                     <div class="percentage-box">
                                         <strong></strong> <span> {{ number_format($planNominal, 0, ',', '.') }}</span>
                                     </div>
@@ -62,7 +63,7 @@
                             </div>
                             <div class="metric">
                                 <a href="{{ route('indexmenu') }}" class="cardcost text-decoration-none">
-                                <h4>Actual</h4>
+                                <h4 style="color:white;">Actual</h4>
                                 <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($quantity, 0, ',', '.') }}</span>
 
@@ -97,7 +98,6 @@
 
 <style>
 .container-fluid {
-    background-color: #f8f9fa;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -108,7 +108,7 @@
 
 h2 {
     font-size: 1.8rem;
-    color: #388e3c;
+    color:rgb(255, 255, 255);
     font-weight: bold;
 }
 
@@ -120,7 +120,7 @@ h2 {
 }
 
 .section-card {
-    background-color: #ffffff;
+    background-color:rgba(32, 31, 31, 0.19);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -130,7 +130,7 @@ h2 {
 
 .section-title {
     font-size: 1.5rem;
-    color: #388e3c;
+    color:rgb(255, 255, 255);
     text-align: center;
     margin-bottom: 15px;
 }

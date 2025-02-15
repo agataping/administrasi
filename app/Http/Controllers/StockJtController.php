@@ -71,6 +71,7 @@ class StockJtController extends Controller
         });
     
         $deviasi = $planNominal - $stock_akhir;
+        
         $percen = ($planNominal != 0) ? ($stock_akhir / $planNominal) * 100 : 0;
         $grandTotal = optional($data->last())->stock_akhir ?? 0;
         return view('stockjt.indexmenu', compact('data','totalHauling','grandTotal','perusahaans', 'companyId','planNominal','deviasi','percen'));  

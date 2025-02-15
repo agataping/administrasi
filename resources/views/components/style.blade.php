@@ -1,4 +1,7 @@
 <style>
+
+
+
     @media (max-width: 768px) {
     nav {
         padding: 10px 20px; 

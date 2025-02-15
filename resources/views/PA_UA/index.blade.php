@@ -4,9 +4,11 @@
 @section('title', 'IndexPAUA')
 @section('content')
 
+<div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
+</div>
 <div class="container-fluid mt-4">
-    <div class="card w-100">
-        <div class="card-body">
+<div class="card w-100" style="background-color:rgba(0, 0, 0, 0.48); color;white">
+<div class="card-body">
             <div class="col-12">
                 
                 <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 10px;">
@@ -123,8 +125,7 @@
     
     h2 {
         font-size: 1.8rem;
-        color: #388e3c;
-        font-weight: bold;
+color:white;        font-weight: bold;
     }
     
     .dashboard-container {
@@ -134,8 +135,8 @@
         justify-content: center;
     }
     
-    .section-card {
-        background-color: #ffffff;
+.section-card {
+    background-color:rgba(32, 31, 31, 0.19);
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -145,8 +146,7 @@
     
     .section-title {
         font-size: 1.5rem;
-        color: #388e3c;
-        text-align: center;
+color:white;        text-align: center;
         margin-bottom: 15px;
     }
     

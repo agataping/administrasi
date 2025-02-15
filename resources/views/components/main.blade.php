@@ -3,12 +3,18 @@
 @section('title', 'Dashboard')
 @section('content')
 
-<header class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color: #07a43b;">
+<header class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color:transpant;">
     <a href="/dashboard" class="d-flex align-items-center text-decoration-none">
-        <div class="ms-3">
-            <h5 style="color: white; margin: 0;">ADMINISTRATION</h5>
-        </div>
-    </a>
+    <div class="d-flex align-items-center ms-3">
+    <!-- Logo Bulat -->
+    <div style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: white; margin-right: 10px;">
+        <img src="{{ asset('img/qubahGroup.jpeg') }}" alt="Logo" 
+             style="width: 90%; height: 90%; object-fit: contain;">
+    </div>
+
+    <!-- Teks -->
+    <h5 style="color: white; margin: 0;">ADMINISTRATION <br>QUBAH GROUP</h5>
+</div>
     <div class="d-flex align-items-center ms-auto">
         @if (Auth::user()->role === 'admin')
             <a href="/register" class="d-flex align-items-center text-decoration-none me-3">
@@ -52,16 +58,15 @@
     </header>
 
 <body>
+<div class="background-full" style="background:  url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
+</div>
+<div class="card mb-3 "  style="border-radius: 12px;  margin: 2rem auto; height:80vh; background-color: transparent ">
 
-<div class="card mb-3 "  style="border-radius: 12px; overflow: hidden; margin: 2rem auto; height:80vh; ">
-<div class="mb-3 text-center align-items-center justify-content-center"  >
-
-    <img src="{{asset('storage/gambar/qubahGroup.jpeg')}}" class="card-img-top" alt="Administrasi" style="width: 480px; height: auto; object-fit: cover;">
-    <div class="card-img-overlay d-flex align-items-center justify-content-center" style="background: text-align: center;">
+    <div class="card-img-overlay d-flex align-items-center justify-content-center" style="text-align: center; background-color: transparent !important;">
                     <div>
-<div style="position: relative;" style="width: auto; height: auto; object-fit: cover;">
+<div style="position: relative;" style="width: auto; height: auto; object-fit: cover; background-color: transparent">
 
-    <div class="cardcostum">
+    <div class="cardcostum" >
         <div class="cardcost">
             <h4><b>QUBAH GROUP </b></h4>
             <div class="percentage-box">98%</div>

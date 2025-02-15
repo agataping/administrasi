@@ -7,17 +7,23 @@
 
 </style>
 
-<nav class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color: #07a43b;">
-    <a href="/dashboard" class="d-flex align-items-center text-decoration-none">
-        <div class="ms-3">
-            <h5 style="color: white; margin: 0;">ADMINISTRATION</h5>
+<nav class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color: transparent; flex-wrap: nowrap;">
+    <div class="d-flex align-items-center ms-3">
+        <!-- Logo Bulat -->
+        <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: white; margin-right: 10px;">
+            <img src="{{ asset('img/qubahGroup.jpeg') }}" alt="Logo" 
+            style="width: 90%; height: 90%; object-fit: contain;">
         </div>
-    </a>
+        
+        <!-- Teks -->
+        <h6 style="color: white; margin: 0;">ADMINISTRATION <br>QUBAH GROUP</h6>
+    </div>
     <a href="/historylog" class="d-flex align-items-center text-decoration-none">
         <div class="ms-3">
             <h5 style="color: white; margin: 0;">History Log</h5>
         </div>
     </a>
+    
     
     
 
@@ -108,7 +114,7 @@
 
 
 </nav>
-<div class="card w-100" style="background-color: #07a43b; border-bottom: 2px solid white; margin-top: -24px;">
+<div class="card w-100" style="background-color:transparent ; border-bottom: 2px solid white; margin-top: -24px;">
     <div class="d-flex justify-content-start align-items-center ms-3 me-3 py-2">
         <i onclick="history.back()" class="fa fa-arrow-left" style="cursor: pointer; font-size: 20px; color: white; margin-right: 7px;"></i>
         <i onclick="history.forward()" class="fa fa-arrow-right" style="cursor: pointer; font-size: 20px; color: white; margin-right: 7px;"></i>

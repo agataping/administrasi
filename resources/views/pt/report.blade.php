@@ -3,6 +3,8 @@
 @section('content')
 @extends('components.style')
 
+<div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
+</div>
 <div class="container-fluid mt-4">
     <div class="card w-100" >
         <div class="card-body">
@@ -23,7 +25,9 @@
                     </select>
                 </form>
                 @endif
-                
+                <div class="background-full" style="background:  url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
+</div>
+
                 <h2 class="text-center">
                     <strong>TOTAL PERFORMANCE (YEAR TO DATE)</strong>
                 </h2>
