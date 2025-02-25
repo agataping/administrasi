@@ -8,10 +8,10 @@
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-        <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.81);">
+            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Balnce sheet</h2>
+                <h2 class="mb-3">Balance sheet</h2>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -112,8 +112,8 @@
                         {{-- Tampilkan Sub-Kategori --}}
                         @foreach ($total['sub_categories'] as  $subIndex => $subCategory)
                         <tr>
-                            <th style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</th>
-                            <td><strong>{{ $subCategory['sub_category'] }}</strong></td>
+                            <td style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</td>
+                            <td>{{ $subCategory['sub_category'] }}</td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -151,42 +151,42 @@
                         @endforeach
                         @endforeach
                         <tr>
-                            <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                            <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</td>
+                            <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                             {{ number_format($total['total']['debit'] ?? 0, 2) }}
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['total']['credit'] ?? 0, 2) }}</th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['total']['credit'] ?? 0, 2) }}</td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                             </tr>
                             <tr>
                                 @if ($total['category_name'] == 'CURRENT ASSETS')
-                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                 @endif
                             </tr>
                             <tr>
                                 @if ($total['category_name'] == 'EQUITY')
-                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL LIABILITIES AND EQUITY  :</th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL LIABILITIES AND EQUITY  :</td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                 @endif
                             </tr>
                             @endforeach      
                             <tr>
-                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Control :</th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
-                                <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Control :</td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                             </tr>
                         </tbody>
                     </table>

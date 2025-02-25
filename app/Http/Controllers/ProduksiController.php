@@ -247,7 +247,31 @@ class ProduksiController extends Controller
         
     }
 
+    //unit
+    public function indexunit(Request $request){
+        $user = Auth::user(); 
+        $companyId = $request->input('company_id'); 
     
+        $query = DB::table('units')
+            ->select('units.*')
+            ->join('users', 'units.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0'); 
+            }
+        }
+    
+        $data = $query->get(); 
+    
+        return view('PA_UA.indexunit',compact('data'));
+
+    }
     
     //create
     public function createproduksipa(Request $request) {

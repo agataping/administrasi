@@ -5,7 +5,7 @@
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-        <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.81);">
+        <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
                 <h2 class="mb-3">Profit & Loss</h2>
@@ -25,7 +25,7 @@
                 </div>
                 
                 @endif
-                <div class="row justify-content-start">
+                <div class="row justify-content-start ">
                     <div class="col-auto">
                         <form action="{{ route('categorylabarugi') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
@@ -43,6 +43,15 @@
                             <input type="hidden" name="form_type" value="subkategori">
                             <button type="submit" class="btn btn-custom">Add Detail</button>
                         </form>
+                    </div>
+                </div>
+                <div class="row justify-content-start ">
+                    <div class="col-auto">
+                        <a href="/indexdesclr" >View Description Data
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/indexsublr">View Sub-description Data</a>
                     </div>
                 </div>
                                 @if(auth()->user()->role === 'admin')    
@@ -78,7 +87,7 @@
                     </button>
                 </form>
                 <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
-                <table class="table table-bordered">
+                        <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
                 <colgroup>
         <col style="width: 5%;">
         <col style="width: 20%;">
@@ -117,13 +126,13 @@
                         
                         <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
                         <td colspan=""><strong>{{$kategoriName}}</strong></td>
-                        <td style="text-align: end;"><strong>{{ number_format($total['total_plan'], 2) }}</strong></td>
+                        <td style="text-align: end;">{{ number_format($total['total_plan'], 2) }}</strong></td>
                         <td></td>
-                        <td style="text-align: end;"><strong>{{ number_format($total['vertikal'], 2) }} %</strong></td>
-                        <td style="text-align: end;"><strong>{{ number_format($total['total_actual'], 2) }}</strong></td>
-                        <td style="text-align: end;"><strong>{{ number_format($total['vertikals'], 2) }} %</strong></td>
-                        <td style="text-align: end;"><strong>{{ number_format($total['deviation'], 2) }}</strong></td>
-                        <td style="text-align: end;"><strong>{{ number_format($total['vertikals'], 2) }} %</strong></td>
+                        <th style="text-align: end;">{{ number_format($total['vertikal'], 2) }} %</strong></th>
+                        <th style="text-align: end;">{{ number_format($total['total_actual'], 2) }}</strong></th>
+                        <th style="text-align: end;">{{ number_format($total['vertikals'], 2) }} %</strong></th>
+                        <th style="text-align: end;">{{ number_format($total['deviation'], 2) }}</strong></th>
+                        <th style="text-align: end;">{{ number_format($total['vertikals'], 2) }} %</strong></th>
                         <td></td>
                         <td style="text-align: center; vertical-align: middle;">
                             <a href="{{ route('formupdatecategorylr', ['category_id' => $total['category_id']]) }}" class="btn btn-primary">Edit</a>
@@ -134,11 +143,11 @@
                     @foreach ($total['sub_categories'] as  $subIndex => $subCategory)
                     <tr data-toggle="collapse" data-target="#detail-{{ Str::slug($subCategory['name_sub'], '-') }}" style="cursor: pointer;">
                     <th style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</th>
-                    <td style="vertical-align: middle;"><strong>{{ $subCategory['name_sub'] }}</strong></td>
-                    <td style="text-align: end;"><strong>{{ number_format($subCategory['total_plan'], 2) }}</strong></td>
+                    <td style="vertical-align: middle;">{{ $subCategory['name_sub'] }}</strong></td>
+                    <td style="text-align: end;">{{ number_format($subCategory['total_plan'], 2) }}</strong></td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: end;"><strong>{{ number_format($subCategory['total_actual'], 2) }}</strong></td>
+                    <td style="text-align: end;">{{ number_format($subCategory['total_actual'], 2) }}</strong></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -215,11 +224,39 @@
                 @endforeach
                 @endforeach
                 <tr>
+                @if($jenis['jenis_name'] == 'Operating Profit')
+                    <th colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">Total General & Administration</th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($planoperasional, 2) }}
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                    
+                        </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                    {{ number_format($vertikalplanop, 2) }}%
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($actualoperasional, 2) }}
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($vertikalactualop, 2) }}
+                    </th>
+                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($deviasitotalgeneral, 2) }}
+                    </th>                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        {{ number_format($persengeneralop, 2) }}%
+                    </th>
+                    <th colspan="4" style="background-color:rgb(244, 244, 244); text-align: end;">
+                        
+                        </th>
+                    @endif
+                </tr>
+                <tr>
+
 
 
 
                     <th colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">{{ $jenisName}} </th>
-
                     @if ($jenis['jenis_name'] == 'Gross Profit')
                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                         {{ number_format($totalplanlr, 2) }}

@@ -6,7 +6,7 @@
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-        <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.81);">
+            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
             <a href="/indexPlan" class=" text-decoration-none " style="color: black;">
@@ -39,7 +39,7 @@
                                 <input type="date" class="form-control" id="tanggal" name="tanggal" required>
                             </div>
                             <div style="margin-bottom: 1rem;">
-                                <label for="kuota" style="font-weight: bold; font-size: 1rem;">Pilih Kategori:</label>
+                                <label for="kuota" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
                                 <select id="kuota" name="kuota" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
                                     <option value="" disabled selected>-- Select Category --</option>
                                     <option value="Ekspor">Ekspor</option>

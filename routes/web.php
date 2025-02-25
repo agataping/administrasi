@@ -259,12 +259,15 @@ Route::post('/createlabarugi', [DetailabarugiController::class, 'createlabarugi'
 Route::delete('/deletedetaillr/{id}', [DetailabarugiController::class, 'deletedetaillr'])->middleware('auth')->name('deletedetaillr');
 
 //category
+Route::get('/indexdesclr', [DetailabarugiController::class, 'indexdesclr'])->middleware('auth')->name('indexdesclr');
 Route::get('/categorylabarugi', [DetailabarugiController::class, 'categorylabarugi'])->middleware('auth')->name('categorylabarugi');
 Route::post('/createkatlabarugi', [DetailabarugiController::class, 'createkatlabarugi'])->middleware('auth')->name('createkatlabarugi');
 Route::get('/formupdatecategorylr/{category_id}', [DetailabarugiController::class, 'formupdatecategorylr'])->middleware('auth')->name('formupdatecategorylr');
 Route::post('/updatecategorylr/{id}', [DetailabarugiController::class, 'updatecategorylr'])->middleware('auth')->name('updatecategorylr');
+Route::delete('/deletecategorylr/{id}', [DetailabarugiController::class, 'deletecategorylr'])->middleware('auth')->name('deletecategorylr');
 
 //sub
+Route::get('/indexsublr', [DetailabarugiController::class, 'indexsublr'])->middleware('auth')->name('indexsublr');
 Route::get('/sublr', [DetailabarugiController::class, 'sublr'])->middleware('auth')->name('sublr');
 Route::post('/createsub', [DetailabarugiController::class, 'createsub'])->middleware('auth')->name('createsub');
 Route::get('/formupdatesublr/{id}', [DetailabarugiController::class, 'formupdatesublr'])->middleware('auth')->name('formupdatesublr');
@@ -345,6 +348,7 @@ Route::post('/updateproduksiua/{id}', [ProduksiController::class, 'updateproduks
 Route::delete('/deleteproduksiua/{id}', [ProduksiController::class, 'deleteproduksiua'])->middleware('auth')->name('deleteproduksiua');
 Route::delete('/deleteproduksipa/{id}', [ProduksiController::class, 'deleteproduksipa'])->middleware('auth')->name('deleteproduksipa');
 //unit
+Route::get('/indexunit', [ProduksiController::class, 'indexunit'])->middleware('auth')->name('indexunit');
 Route::get('/unit', [ProduksiController::class, 'unit'])->middleware('auth')->name('unit');
 Route::post('/createunit', [ProduksiController::class, 'createunit'])->middleware('auth')->name('createunit');
 Route::get('/formupadteunit/{id}', [ProduksiController::class, 'formupadteunit'])->middleware('auth')->name('formupadteunit');
@@ -369,8 +373,13 @@ Route::post('/updateovercoal/{id}', [OverberdenCoalController::class, 'updateove
 Route::delete('/deleteovercoal/{id}', [OverberdenCoalController::class, 'deleteovercoal'])->middleware('auth')->name('deleteovercoal');
 
 //kategori
+Route::get('/indexcategoryobcoal', [OverberdenCoalController::class, 'indexcategoryobcoal'])->middleware('auth')->name('indexcategoryobcoal');
 Route::get('/formkategoriobc', [OverberdenCoalController::class, 'formkategoriobc'])->middleware('auth')->name('formkategoriobc');
 Route::post('/createkatgeoriobc', [OverberdenCoalController::class, 'createkatgeoriobc'])->middleware('auth')->name('createkatgeoriobc');
+Route::get('/formupdatecategoryobc/{id}', [OverberdenCoalController::class, 'formupdatecategoryobc'])->middleware('auth')->name('formupdatecategoryobc');
+Route::post('/updatecategoryobc/{id}', [OverberdenCoalController::class, 'updatecategoryobc'])->middleware('auth')->name('updatecategoryobc');
+Route::delete('/deletecategoryobc/{id}', [OverberdenCoalController::class, 'deletecategoryobc'])->middleware('auth')->name('deletecategoryobc');
+
 //pica
 Route::get('/picaobc', [OverberdenCoalController::class, 'picaobc'])->middleware('auth')->name('picaobc');
 Route::get('/formpicaobc', [OverberdenCoalController::class, 'formpicaobc'])->middleware('auth')->name('formpicaobc');

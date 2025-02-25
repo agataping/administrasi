@@ -6,10 +6,10 @@
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-        <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.81);">
+            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Over Burden & Coal</h2>
+                <h2 class="mb-3" onclick="window.history.back()" style="cursor: pointer;">Over Burden & Coal</h2>
                 
                 @if (session('success'))
                 <div class="alert alert-success">

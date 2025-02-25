@@ -50,30 +50,60 @@ class PerusahaanController extends Controller
                 ->get();
             } else {
                 $data = DB::table('perusahaans')
-                ->join('users', 'perusahaans.id', '=', 'users.id_company')
-                ->where('users.id', auth()->id()) 
-                ->where('perusahaans.induk', 'IUP') 
+                ->where('perusahaans.induk', 'IUP')
                 ->select('perusahaans.*')
                 ->get();
             }
-            
 
             return view('pt.iup', compact('data'));
         }
                 
         public function nonenergi()
         {
-            $data = DB::table('perusahaans')->where('induk', 'Non Energi')->get();
+            $user = auth()->user();
+            if (auth()->user()->role === 'admin') {
+                $data = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Non Energi')
+                ->select('perusahaans.*')
+                ->get();
+            } else {
+                $data = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Non Energi')
+                ->select('perusahaans.*')
+                ->get();
+            }
             return view('pt.nonenergi',compact('data'));
         }
         public function kontraktor()
         {
-            $data = DB::table('perusahaans')->where('induk', 'Kontraktor')->get();
+            $user = auth()->user();
+            if (auth()->user()->role === 'admin') {
+                $data = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Kontraktor')
+                ->select('perusahaans.*')
+                ->get();
+            } else {
+                $data = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Kontraktor')
+                ->select('perusahaans.*')
+                ->get();
+            }
             return view('pt.kontraktor',compact('data'));
         }
         public function mineral()
         {
-            $data = DB::table('perusahaans')->where('induk', 'Marketing')->get();
+            $user = auth()->user();
+            if (auth()->user()->role === 'admin') {
+                $data = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Marketing')
+                ->select('perusahaans.*')
+                ->get();
+            } else {
+                $data = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Marketing')
+                ->select('perusahaans.*')
+                ->get();
+            }
             return view('pt.mineral',compact('data'));
         } 
 

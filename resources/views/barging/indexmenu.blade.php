@@ -6,7 +6,7 @@
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-        <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.81);">
+            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
             <a href="/indexbarging" class=" text-decoration-none " style="color: black;">
@@ -92,7 +92,7 @@
                         <th rowspan="2" style="vertical-align: middle;">SURVEYOR</th>
                         <th rowspan="2" style="vertical-align: middle;">PORT OF LOADING</th>
                         <th rowspan="2" style="vertical-align: middle;">PORT OF DISCHARGING</th>
-                        <th  rowspan="4"style="text-align: center;">NOTIFY ADDRESS</th>
+                        <th  rowspan="4"style="text-align: center;">SHIPPER</th>
                         <th  rowspan="2"style="vertical-align: middle;">INITIAL SURVEY</th>
                         <th  rowspan="2"style="vertical-align: middle;">FINAL SURVEY</th>
                         <th  rowspan="2"style="vertical-align: middle;">QUANTITY (MT)</th>

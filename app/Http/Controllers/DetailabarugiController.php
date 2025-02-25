@@ -149,11 +149,16 @@ class DetailabarugiController extends Controller
         $persenlr = $totalplanlr ? ($totalactuallr / $totalplanlr) * 100 : 0;
         //operasional
         $totalplanlp = $totalplanlr-$planoperasional;
-        $totalactualOp = $actualoperasional-$totalactuallr;
+        $totalactualOp = $totalactuallr-$actualoperasional;
         $verticallp = $totalRevenuep ? ($totalplanlp / $totalRevenuep) * 100 : 0;
         $verticalsp = $totalRevenuea ? ($totalactualOp / $totalRevenuea) * 100 : 0;
         $deviasiop = $totalplanlp-$totalactualOp;
         $persenop = $totalplanlp ? ($totalactualOp / $totalplanlp) * 100 : 0;
+        $vertikalplanop=($totalRevenuep && $totalRevenuep != 0) ? ($planoperasional / $totalRevenuep) * 100 : 0;
+        $vertikalactualop=($totalRevenuep && $totalRevenuep != 0) ? ($actualoperasional / $totalRevenuep) * 100 : 0;
+        $deviasitotalgeneral = $planoperasional-$actualoperasional;
+        $persengeneralop = $planoperasional ? ($actualoperasional / $planoperasional) * 100 : 0;
+
         //lababersih
         $totalplanlb = $totalplanlp-$planlb;
         $totalactuallb = $actualoperasional-$actuallb;
@@ -230,8 +235,13 @@ class DetailabarugiController extends Controller
         return view('labarugi.index', compact('totals','totalplanlr','totalvertikal','totalactuallr'
         ,'totalplanlp','verticallp','totalactualOp','verticalsp','persenlb',
         'deviasilb','verticalslb', 'deviasiop','persenop', 'deviasilr','persenlr','totalvertikals',
-        'persenlb','deviasilb','verticalslb','verticallb','totalplanlb','totalactuallb'
-        ,'perusahaans', 'companyId'));
+        'persenlb','deviasilb','verticalslb','verticallb','totalplanlb','totalactuallb','planoperasional','actualoperasional'
+        ,'perusahaans', 'companyId',
+        'vertikalplanop',
+        'vertikalactualop',
+        'deviasitotalgeneral',
+        'persengeneralop',
+    ));
     }
     
     public function formlabarugi()
@@ -303,6 +313,33 @@ class DetailabarugiController extends Controller
         return redirect()->back()->with('success', 'Data added successfully.');
     }
     //category
+    public function indexdesclr (Request $request)
+    {
+        $user = Auth::user(); 
+        $companyId = $request->input('company_id'); 
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+    
+        $query = DB::table('category_labarugis')
+            ->select('category_labarugis.*','category_labarugis.id as category_id',)
+            ->join('users', 'category_labarugis.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0'); 
+            }
+        }
+    
+        $kat = $query->get(); 
+
+        return view('labarugi.indexcategory',compact('kat','companyId','perusahaans'));
+    }
+               
     public function categorylabarugi()
     {
         $user = Auth::user();  
@@ -331,8 +368,52 @@ class DetailabarugiController extends Controller
     
         return redirect()->back()->with('success', 'Data added successfully.');
     }
+    public function deletecategorylr ($id)
+    {
+        $data = categoryLabarugi::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'category_labarugis', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect()->back()->with('success', 'Data deleted successfully.');    
+
+    }
 
     //sub
+    public function indexsublr (Request $request){
+        $user = Auth::user(); 
+        $companyId = $request->input('company_id'); 
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+    
+        $query = DB::table('sub_labarugis')
+            ->select('sub_labarugis.*')
+            ->join('users', 'sub_labarugis.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0'); 
+            }
+        }
+    
+        $kat = $query->get(); 
+        return view('labarugi.indexsub',compact('kat','companyId','perusahaans'));
+    }
     public function sublr()
     {
         $user = Auth::user();  
@@ -363,6 +444,7 @@ class DetailabarugiController extends Controller
         return redirect()->back()->with('success', 'Data added successfully.');
 
     }
+
     
     //pica
     public function picalr(Request $request)
@@ -643,7 +725,7 @@ class DetailabarugiController extends Controller
 
     public function deletesublr ($id)
     {
-        $data = categoryLabarugi::findOrFail($id);
+        $data = subkategoriLabarugi::findOrFail($id);
         $oldData = $data->toArray();
         
         // Hapus data dari tabel 
@@ -651,7 +733,7 @@ class DetailabarugiController extends Controller
         
         // Simpan log ke tabel history_logs
         HistoryLog::create([
-            'table_name' => 'category_labarugis', 
+            'table_name' => 'sub_labarugis', 
             'record_id' => $id, 
             'action' => 'delete', 
             'old_data' => json_encode($oldData), 

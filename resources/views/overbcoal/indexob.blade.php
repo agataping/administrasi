@@ -8,7 +8,7 @@
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-        <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.81);">
+            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
             <a href="/indexovercoal" class=" text-decoration-none " style="color: black;">
@@ -44,6 +44,13 @@
                         </form>
                     </div>
                 </div>
+                <div class="row justify-content-start">
+                    <div class="col-auto">
+                    <a href="/indexcategoryobcoal" >View Description Data
+                </a>
+                    </div>
+                </div>
+
                 @if(auth()->user()->role === 'admin')    
 
                 <form method="GET" action="{{ route('indexob') }}" id="filterForm">
@@ -77,7 +84,7 @@
                 </form>
 
                 <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
-                <table class="table table-bordered">
+                        <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
                 <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;"
                     >
                         <tr>

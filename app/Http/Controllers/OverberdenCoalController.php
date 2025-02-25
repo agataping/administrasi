@@ -371,10 +371,35 @@ class OverberdenCoalController extends Controller
         return back()->with('success', 'Data berhasil dihapus.');
     }
     
-    
-    
-    
+
     //kategori
+    public function indexcategoryobcoal(Request $request)
+    {
+        $user = Auth::user(); 
+        $companyId = $request->input('company_id'); 
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+    
+        $query = DB::table('kategori_overcoals')
+            ->select('kategori_overcoals.*')
+            ->join('users', 'kategori_overcoals.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0'); 
+            }
+        }
+    
+        $data = $query->get(); 
+    
+        return view('overbcoal.indexcategoryobc', compact('data','companyId','perusahaans')); 
+    }
+    
     public function formkategoriobc()
     {
         return view('overbcoal.formkategori');
@@ -401,8 +426,55 @@ class OverberdenCoalController extends Controller
         return redirect()->back()->with('success', 'Data added successfully.');
 
     }
+
+    public function formupdatecategoryobc($id){
+        $user = Auth::user();  
+        $data = kategoriOvercoal::findOrFail($id);
+        return view('overbcoal.formupdatecategory',compact('data'));   
+    }
+
+    public function updatecategoryobc(Request $request,$id){
+        $user = Auth::user();  
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+        ]);
+        $validatedData['updated_by'] = auth()->user()->username;
         
+        $data = kategoriOvercoal::findOrFail($id);
+        $oldData = $data->toArray();
         
+        $data->update($validatedData);
+        
+        HistoryLog::create([
+            'table_name' => 'kategori_overcoals', 
+            'record_id' => $id, 
+            'action' => 'update', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => json_encode($validatedData), 
+            'user_id' => auth()->id(), 
+        ]);        
+        return view('overbcoal.indexcategoryobcoal',compact('data'));   
+    }
+        
+    public function deletecategoryobc ($id)
+    {
+        $data = kategoriOvercoal::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        $data->delete();
+        
+        HistoryLog::create([
+            'table_name' => 'kategori_overcoals', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect()->back()->with('success', 'Data deleted successfully.');    
+
+    }
+  
     
     
     //PICA
