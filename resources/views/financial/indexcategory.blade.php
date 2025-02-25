@@ -9,7 +9,7 @@
         <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <a href="/labarugi" class=" text-decoration-none " style="color: black;">
+                <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
                     <h2 class="mb-3">Description Data</h2>
                 </a>                
                 @if (session('success'))
@@ -32,7 +32,7 @@
                 
                 <div class="row align-items-center">
                     <div class="col-auto">
-                        <form action="{{ route('categorylabarugi') }}" method="get">
+                        <form action="{{ route('categoryneraca') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
                             <button type="submit" class="btn btn-custom">Add Data</button>
                         </form>
@@ -40,7 +40,7 @@
                 </div>
                 
                 @if(auth()->user()->role === 'admin')    
-                <form method="GET" action="{{ route('indexdesclr') }}" id="filterForm">
+                <form method="GET" action="{{ route('indexcategoryneraca') }}" id="filterForm">
                     <label for="id_company">Select Company:
                         <br>
                         <small><em>To view company data, please select a company from the list.</em></small></label>
@@ -72,7 +72,7 @@
                                         <td style="text-align: ;">{{$d->namecategory}}</td>
                                         
                                         <td style="text-align: center; vertical-align: middle;"  rowspan="">
-                                                <a href="{{ route('formupdatecategorylr', ['category_id' => $d->category_id]) }}" class="btn btn-primary btn-sm">
+                                                <a href="{{ route('formupdatecatneraca', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
                                                     Edit
                                                 </a>
                                         </td>
@@ -80,7 +80,7 @@
                                         
                                         <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                             
-                                            <form action="{{ route('deletecategorylr', ['id' => $d->id]) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                                            <form action="{{ route('deltecategoryneraca', ['id' => $d->id]) }}" method="POST" onsubmit="return confirmDelete(event)" >
                                                 
                                                 @csrf
                                                 @method('DELETE')

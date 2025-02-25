@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Description Data')
+@section('title', 'Sub-Description Data')
 @section('content')
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
@@ -9,8 +9,8 @@
         <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <a href="/labarugi" class=" text-decoration-none " style="color: black;">
-                    <h2 class="mb-3">Description Data</h2>
+                <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
+                    <h2 class="mb-3">Sub-Description Data</h2>
                 </a>                
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -32,7 +32,7 @@
                 
                 <div class="row align-items-center">
                     <div class="col-auto">
-                        <form action="{{ route('categorylabarugi') }}" method="get">
+                        <form action="{{ route('subneraca') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
                             <button type="submit" class="btn btn-custom">Add Data</button>
                         </form>
@@ -40,7 +40,7 @@
                 </div>
                 
                 @if(auth()->user()->role === 'admin')    
-                <form method="GET" action="{{ route('indexdesclr') }}" id="filterForm">
+                <form method="GET" action="{{ route('indexsubneraca') }}" id="filterForm">
                     <label for="id_company">Select Company:
                         <br>
                         <small><em>To view company data, please select a company from the list.</em></small></label>
@@ -56,11 +56,13 @@
                     @endif
                     <div class="" style="overflow-x:auto;">
                         <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
-                                    <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+                        <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+
+
                                 <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                                     <tr>
                                         <th rowspan="2" style="vertical-align: middle;">No</th>
-                                        <th rowspan="2"style="vertical-align: middle;">Description</th>
+                                        <th rowspan="2"style="vertical-align: middle;">Sub-Description</th>
                                         <th rowspan="2" colspan="3"  style="vertical-align: middle;">Action</th>
                                     </tr>
                                 </thead>
@@ -69,18 +71,20 @@
                                     @foreach($kat as $d)
                                     <tr>
                                         <th rowspan="" style="vertical-align: middle;">{{ $loop->iteration }}</th>
-                                        <td style="text-align: ;">{{$d->namecategory}}</td>
+                                        <td style="text-align: ;">{{$d->namesub}}</td>
                                         
                                         <td style="text-align: center; vertical-align: middle;"  rowspan="">
-                                                <a href="{{ route('formupdatecategorylr', ['category_id' => $d->category_id]) }}" class="btn btn-primary btn-sm">
+                                            
+                                                <a href="{{ route('formupdatesubneraca', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
                                                     Edit
                                                 </a>
+                                           
                                         </td>
                                         
                                         
                                         <td style="text-align: center; vertical-align: middle;"  rowspan="">
                                             
-                                            <form action="{{ route('deletecategorylr', ['id' => $d->id]) }}" method="POST" onsubmit="return confirmDelete(event)" >
+                                            <form action="{{ route('deletesubfinan', ['id' => $d->id]) }}" method="POST" onsubmit="return confirmDelete(event)" >
                                                 
                                                 @csrf
                                                 @method('DELETE')

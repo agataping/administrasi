@@ -218,6 +218,31 @@ class DetailNeracaController extends Controller
     }
     
     //categori
+    public function indexcategoryneraca(Request $request){
+        $user = Auth::user(); 
+        $companyId = $request->input('company_id'); 
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+    
+        $query = DB::table('category_neracas')
+            ->select('category_neracas.*')
+            ->join('users', 'category_neracas.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0'); 
+            }
+        }
+    
+        $kat = $query->get(); 
+
+        return view('financial.indexcategory',compact('kat','companyId','perusahaans'));
+    }
     public function categoryneraca()
     {
         $user = Auth::user();  
@@ -273,7 +298,52 @@ class DetailNeracaController extends Controller
 
  
     }
+    public function deltecategoryneraca ($id)
+    {
+        $data = CategoryNeraca::findOrFail($id);
+        $oldData = $data->toArray();
+        
+        // Hapus data dari tabel 
+        $data->delete();
+        
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'category_neracas', 
+            'record_id' => $id, 
+            'action' => 'delete', 
+            'old_data' => json_encode($oldData), 
+            'new_data' => null, 
+            'user_id' => auth()->id(), 
+        ]);
+        return redirect()->back()->with('success', 'Data deleted successfully.');
+    }
+
     //sub
+    public function indexsubneraca(Request $request){
+        $user = Auth::user(); 
+        $companyId = $request->input('company_id'); 
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+    
+        $query = DB::table('sub_neracas')
+            ->select('sub_neracas.*')
+            ->join('users', 'sub_neracas.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('1 = 0'); 
+            }
+        }
+    
+        $kat = $query->get(); 
+
+        return view('financial.indexsub',compact('kat','companyId','perusahaans'));
+    }
     public function subneraca()
     {
         $user = Auth::user();  

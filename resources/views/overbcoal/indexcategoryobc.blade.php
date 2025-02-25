@@ -40,7 +40,7 @@
                 </div>
                 
                 @if(auth()->user()->role === 'admin')    
-                <form method="GET" action="{{ route('indexPlan') }}" id="filterForm">
+                <form method="GET" action="{{ route('indexcategoryobcoal') }}" id="filterForm">
                     <label for="id_company">Select Company:
                         <br>
                         <small><em>To view company data, please select a company from the list.</em></small></label>
@@ -72,11 +72,9 @@
                                         <td style="text-align: ;">{{$d->name}}</td>
                                         
                                         <td style="text-align: center; vertical-align: middle;"  rowspan="">
-                                            <td style="text-align: center; vertical-align: middle;">
                                                 <a href="{{ route('formupdatecategoryobc', ['id' => $d->id]) }}" class="btn btn-primary btn-sm">
                                                     Edit
                                                 </a>
-                                            </td>
                                         </td>
                                         
                                         

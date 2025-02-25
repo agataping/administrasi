@@ -295,8 +295,11 @@ Route::get('/categoryneraca', [DetailNeracaController::class, 'categoryneraca'])
 Route::post('/createcategoryneraca', [DetailNeracaController::class, 'createcategoryneraca'])->middleware('auth')->name('createcategoryneraca');
 Route::get ('/formupdatecatneraca/{id}', [DetailNeracaController::class, 'formupdatecatneraca'])->middleware('auth')->name('formupdatecatneraca');
 Route::post ('/updatecatneraca/{id}', [DetailNeracaController::class, 'updatecatneraca'])->middleware('auth')->name('updatecatneraca');
+Route::get('/indexcategoryneraca', [DetailNeracaController::class, 'indexcategoryneraca'])->middleware('auth')->name('indexcategoryneraca');
+Route::delete('/deltecategoryneraca/{id}', [DetailNeracaController::class, 'deltecategoryneraca'])->middleware('auth')->name('deltecategoryneraca');
 
 //sub
+Route::get('/indexsubneraca', [DetailNeracaController::class, 'indexsubneraca'])->middleware('auth')->name('indexsubneraca');
 Route::get('/subneraca', [DetailNeracaController::class, 'subneraca'])->middleware('auth')->name('subneraca');
 Route::post('/createsubneraca', [DetailNeracaController::class, 'createsubneraca'])->middleware('auth')->name('createsubneraca');
 Route::get ('/formupdatesubneraca/{id}', [DetailNeracaController::class, 'formupdatesubneraca'])->middleware('auth')->name('formupdatesubneraca');

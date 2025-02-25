@@ -44,10 +44,11 @@
                             <input type="text" class="form-control" value="{{$data->namesub}}" id="kategori" placeholder="" value="" required name="namesub">
                         </div>
                     </div>
-                <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Simpan</button>
-                </div>
-                
+                    <div class="d-flex justify-content-end mt-3">
+                                               <button type="submit" class="btn-block btn-lg gradient-custom-4"
+                        style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
+                            border-radius: 5px; font-weight: bold;"">Update</button>
+                    </div>                
                 
                 </form>
                     

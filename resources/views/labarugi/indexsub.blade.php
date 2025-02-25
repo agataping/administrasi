@@ -40,7 +40,7 @@
                 </div>
                 
                 @if(auth()->user()->role === 'admin')    
-                <form method="GET" action="{{ route('indexPlan') }}" id="filterForm">
+                <form method="GET" action="{{ route('indexsublr') }}" id="filterForm">
                     <label for="id_company">Select Company:
                         <br>
                         <small><em>To view company data, please select a company from the list.</em></small></label>

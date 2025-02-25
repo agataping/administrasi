@@ -6,7 +6,7 @@
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
+        <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.81);">
         <div class="card-body">
             <div class="col-12">
             <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
@@ -68,8 +68,10 @@
 
 
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>                    </div>
-                </form>
+                                               <button type="submit" class="btn-block btn-lg gradient-custom-4"
+                        style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
+                            border-radius: 5px; font-weight: bold;"">Update</button>
+                    </div>                </form>
             </div>
         </div>
     </div>
