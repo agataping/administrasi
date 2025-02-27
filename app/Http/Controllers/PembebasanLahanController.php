@@ -28,12 +28,12 @@ class PembebasanLahanController extends Controller
         ->join('users', 'pembebasan_lahans.created_by', '=', 'users.username')
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0');             
+                $query->whereRaw('users.id_company', $companyId);             
             }
         }
 
@@ -154,12 +154,12 @@ class PembebasanLahanController extends Controller
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
     
         if ($user->role !== 'admin') {
-                $query->where('users.id_company', $user->id_company);
+                $query->where('users.id_company', $companyId);
             } else {
                 if ($companyId) {
                     $query->where('users.id_company', $companyId);
                 } else {
-                    $query->whereRaw('1 = 0');             
+                    $query->whereRaw('users.id_company', $companyId);             
                 }
             }
 

@@ -36,7 +36,7 @@
                     </div>
                 </div> 
 
-                @if(auth()->user()->role === 'admin')    
+                <!-- @if(auth()->user()->role === 'admin')    
 
                 <form method="GET" action="{{ route('indexpicabarging') }}" id="filterForm">
                                    <label for="id_company">Select Company:
@@ -51,7 +51,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif
+                @endif -->
 
                 
                 <form method="GET" action="{{ route('indexpicabarging') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">

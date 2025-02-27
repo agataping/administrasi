@@ -39,7 +39,7 @@
                     </div>
                 </div> 
                 
-                @if(auth()->user()->role === 'admin')    
+                <!-- @if(auth()->user()->role === 'admin')    
 
                 <form method="GET" action="{{ route('stockjt') }}" id="filterForm">
                                    <label for="id_company">Select Company:
@@ -54,7 +54,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif
+                @endif -->
                 <form method="GET" action="{{ route('stockjt') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
@@ -139,10 +139,13 @@
                                 @endphp
                                 <a href="{{ asset('storage/' . $d->file) }}" class="text-decoration-none" target="_blank">View File</a>
                             </td>
-                            <td  colspan="" style="text-align: center; vertical-align: middle;">{{ $d->shifpertama}}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->shifkedua}}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->totalhauling }}</td>
-                            <td style="text-align: end; vertical-align: middle;">{{ number_format($d->akumulasi_stock,  3, ',', '.') }} </td>
+                            <td  colspan="" style="text-align: center; vertical-align: middle;">{{ $d->shifpertama }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->shifkedua }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $d->totalhauling  }}</td>
+                            <td style="text-align: end; vertical-align: middle;">
+                                {{ isset($d->akumulasi_stock) ? number_format($d->akumulasi_stock, 2, ',', '.') : '-' }}
+                            </td>
+                            
                             <td style="text-align: end; vertical-align: middle;">{{ number_format($d->stockout,  2, ',', '.') }} </td>
                             <td style="text-align: end; vertical-align: middle;">{{ number_format($d->stock_akhir, 2, ',', '.') }}
                             </td>

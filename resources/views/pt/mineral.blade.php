@@ -67,17 +67,22 @@
                                 </div>
                             </div>
                             @endforeach
-                            @elseif(auth()->user()->role === 'admin')    
+                            @elseif(auth()->user()->role === 'admin') 
+                            <div class="grid-container  justify-content-center">
+   
                             @foreach($data as $item)
                             
                             <div class="grid-item">
                                 <div class="cardcostum">
                                     <div class="cardcost">
-                                        <a href="/reportkpi" class="cardcost text-decoration-none">
-                                            <h4><b>
-                                                <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
-                                                <div class="percentage-box">98%</div>
-                                            </a>
+                                    @if($item->id == auth()->user()->id_company)
+                                    <a href="/reportkpi" class="cardcost text-decoration-none">
+                                        @else
+                                        <a class="cardcost text-decoration-none disabled-link">
+                                            @endif
+                                            <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
+                                            <div class="percentage-box">98%</div>
+                                        </a>
                                         </div>
                                     </div>
                                 </div>

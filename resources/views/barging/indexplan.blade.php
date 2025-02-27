@@ -37,7 +37,7 @@
                         </form>
                     </div>
                 </div>
-                                @if(auth()->user()->role === 'admin')    
+                                <!-- @if(auth()->user()->role === 'admin')    
 
                 <form method="GET" action="{{ route('indexPlan') }}" id="filterForm">
                                    <label for="id_company">Select Company:
@@ -52,7 +52,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif
+                @endif -->
                 <div class="" style="overflow-x:auto;">
                 <form method="GET" action="{{ route('indexPlan') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div >

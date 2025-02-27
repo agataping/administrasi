@@ -46,12 +46,12 @@ class DetailabarugiController extends Controller
 
         );
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0');             
+                $query->whereRaw('users.id_company', $companyId);             
             }
         }
         
@@ -326,12 +326,12 @@ class DetailabarugiController extends Controller
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
     
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0'); 
+                $query->whereRaw('users.id_company', $companyId); 
             }
         }
     
@@ -402,12 +402,12 @@ class DetailabarugiController extends Controller
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
     
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0'); 
+                $query->whereRaw('users.id_company', $companyId); 
             }
         }
     
@@ -461,12 +461,12 @@ class DetailabarugiController extends Controller
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0'); 
+                $query->whereRaw('users.id_company', $companyId); 
             }
         }
         if ($startDate && $endDate) {

@@ -62,11 +62,17 @@
                             </div>
                             
                             @elseif(auth()->user()->role === 'admin')    
+                            <div class="grid-container  justify-content-center">
+
                             @foreach($data as $item)
                             <div class="grid-item">
                                 <div class="cardcostum">
                                     <div class="cardcost">
+                                    @if($item->id == auth()->user()->id_company)
                                         <a href="/reportkpi" class="cardcost text-decoration-none">
+                                        @else
+                                            <a class="cardcost text-decoration-none disabled-link">
+                                                @endif
                                             <h4><b>
                                                 <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
                                                 

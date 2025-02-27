@@ -124,7 +124,7 @@
     .cardcostum {
         transition: 0.3s;
         width: 300px;
-        background-color:rgb(77, 248, 82); 
+        background-color: rgba(78, 78, 78, 0.69);
         margin: 40px auto; 
         padding: 20px;
         border-radius: 10px;
@@ -140,7 +140,7 @@
     }
 
     .cardcost {
-        color: black;
+        color: white;
         text-align: center;
         margin: 0;
         font-size: 15px; 
@@ -149,7 +149,7 @@
 
     .percentage-box {
         background-color:rgb(255, 255, 255); 
-        color: black;
+        color: #333;
         font-weight: bold;
         padding: 5px 10px;
         border-radius: 5px;

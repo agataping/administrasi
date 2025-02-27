@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 
-                @if(auth()->user()->role === 'admin')    
+                <!-- @if(auth()->user()->role === 'admin')    
                 <form method="GET" action="{{ route('indexcategoryneraca') }}" id="filterForm">
                     <label for="id_company">Select Company:
                         <br>
@@ -53,7 +53,7 @@
                             @endforeach
                         </select>
                     </form>
-                    @endif
+                    @endif -->
                     <div class="" style="overflow-x:auto;">
                         <div class="table-responsive" style="max-height: 400px; overflow-y:auto;"> 
                                     <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">

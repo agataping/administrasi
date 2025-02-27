@@ -38,12 +38,12 @@ class ProduksiController extends Controller
                 'produksi_pas.actual as pas_actual'
             );
             if ($user->role !== 'admin') {
-                $queryPas->where('users.id_company', $user->id_company);
+                $queryPas->where('users.id_company', $companyId);
             } else {
                 if ($companyId) {
                     $queryPas->where('users.id_company', $companyId);
                 } else {
-                    $queryPas->whereRaw('1 = 0');             
+                    $queryPas->whereRaw('users.id_company', $companyId);             
                 }
             }    
             
@@ -59,12 +59,12 @@ class ProduksiController extends Controller
                 'produksi_uas.actual as uas_actual'
             );
             if ($user->role !== 'admin') {
-                $queryUas->where('users.id_company', $user->id_company);
+                $queryUas->where('users.id_company', $companyId);
             } else {
                 if ($companyId) {
                     $queryUas->where('users.id_company', $companyId);
                 } else {
-                    $queryUas->whereRaw('1 = 0');             
+                    $queryUas->whereRaw('users.id_company', $companyId);             
                 }
             }    
         // Tambahkan filter tanggal jika tersedia
@@ -131,12 +131,12 @@ class ProduksiController extends Controller
         ->select('produksi_uas.*',
         'units.unit as units');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0');             
+                $query->whereRaw('users.id_company', $companyId);             
             }
         }
             if ($startDate && $endDate) {
@@ -187,12 +187,12 @@ class ProduksiController extends Controller
         ->select('produksi_pas.*','units.*',
         'units.unit as units');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0');             
+                $query->whereRaw('users.id_company', $companyId);             
             }
         }
             if ($startDate && $endDate) {
@@ -258,12 +258,12 @@ class ProduksiController extends Controller
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
     
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0'); 
+                $query->whereRaw('users.id_company', $companyId); 
             }
         }
     
@@ -627,12 +627,12 @@ class ProduksiController extends Controller
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
 
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0');             
+                $query->whereRaw('users.id_company', $companyId);             
             }
         }
         if ($startDate && $endDate) {

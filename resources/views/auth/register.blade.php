@@ -98,7 +98,6 @@
                         <option value="" disabled selected>-- Select Companyy--</option>
                         <option value="direksi">Direksi</option>
                         <option value="pimpinan">Pimpinan</option>
-                        <option value="admin">Admin</option>
                         @foreach($data as $d)
                         <option value="{{ $d->id }}">{{ $d->induk }} | {{ $d->nama }}</option>
                         @endforeach

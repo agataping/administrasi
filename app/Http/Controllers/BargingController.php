@@ -22,27 +22,21 @@ class BargingController extends Controller
         $user = Auth::user();  
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');
-        $companyId = $user->role !== 'admin' ? $user->id_company : $request->input('id_company');
-
-        
+        $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         
-        // Hitung nominal plan 
+        // plan
         $planNominal = null;
-        if ($companyId) {
-            $planNominal = DB::table('plan_bargings')
-            ->whereIn('created_by', function ($query) use ($companyId) {
-                $query->select('username')->from('users')->whereNotNull('id_company')->where('id_company', $companyId);
-            })
-            ->sum(DB::raw("CAST(REPLACE(REPLACE(nominal, '.', ''), ',', '.') AS DECIMAL(15,2))"));
-           
+        $queryPlan = DB::table('plan_bargings')
+        ->whereIn('created_by', function ($query) use ($companyId, $user) {
+            $query->select('username')->from('users')->whereNotNull('id_company');
+            
+            if ($user->role !== 'admin' || $companyId) {
+                $query->where('id_company', $companyId);
             }
-        // dd([
-        //     'role' => Auth::user()->role,
-        //     'companyId' => $companyId,
-        // ]);
+        });
         
-       
+        $planNominal = $queryPlan->sum(DB::raw("CAST(REPLACE(REPLACE(nominal, '.', ''), ',', '.') AS DECIMAL(15,2))"));
         
         $query = DB::table('bargings')
             ->join('users', 'bargings.created_by', '=', 'users.username')
@@ -57,12 +51,12 @@ class BargingController extends Controller
                 })
             ->select('bargings.*', 'plan_bargings.nominal');
             if ($user->role !== 'admin') {
-                $query->where('users.id_company', $user->id_company);
+                $query->where('users.id_company', $companyId);
             } else {
                 if ($companyId) {
                     $query->where('users.id_company', $companyId);
                 } else {
-                    $query->whereRaw('1 = 0');             
+                    $query->whereRaw('users.id_company', $companyId);             
                 }
             }
             
@@ -101,7 +95,6 @@ class BargingController extends Controller
     }
                 
 
-
     public function indexmenu(Request $request)
     {
         $user = Auth::user();  
@@ -123,13 +116,14 @@ class BargingController extends Controller
                      ->whereRaw('plan_bargings.id = (SELECT MIN(id) FROM plan_bargings WHERE plan_bargings.kuota = bargings.kuota)');
             })
             ->select('bargings.*', 'plan_bargings.nominal');
-            if ($user->role !== 'admin') {
-                $query->where('users.id_company', $user->id_company);
-            } else {
+            if ($user->role !== 'admin' || $companyId) {
+                $query->where('users.id_company', $companyId);
+            }
+             else {
                 if ($companyId) {
                     $query->where('users.id_company', $companyId);
                 } else {
-                    $query->whereRaw('1 = 0');             
+                    $query->whereRaw('users.id_company', $companyId);             
                 }
             }                    
             if ($startDate && $endDate) {
@@ -308,12 +302,12 @@ class BargingController extends Controller
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')        ->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
         
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0');             
+                $query->whereRaw('users.id_company', $companyId);           
             }
         }
         $data = $query->get();
@@ -455,12 +449,12 @@ class BargingController extends Controller
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0'); // Mencegah admin melihat semua data secara default
+                $query->whereRaw('users.id_company', $companyId); 
             }
         }
         

@@ -35,12 +35,12 @@ class ControllerEwhFuel extends Controller
                 'ewhs.actual as actual_ewh'
             );
             if ($user->role !== 'admin') {
-                $queryEwh->where('users.id_company', $user->id_company);
+                $queryEwh->where('users.id_company', $companyId);
             } else {
                 if ($companyId) {
                     $queryEwh->where('users.id_company', $companyId);
                 } else {
-                    $queryEwh->whereRaw('1 = 0');             
+                    $queryEwh->whereRaw('users.id_company', $companyId);             
                 }
             }    
             
@@ -55,12 +55,12 @@ class ControllerEwhFuel extends Controller
                 'fuels.actual as actual_fuel'
             );
             if ($user->role !== 'admin') {
-                $queryFuel->where('users.id_company', $user->id_company);
+                $queryFuel->where('users.id_company', $companyId);
             } else {
                 if ($companyId) {
                     $queryFuel->where('users.id_company', $companyId);
                 } else {
-                    $queryFuel->whereRaw('1 = 0');             
+                    $queryFuel->whereRaw('users.id_company', $companyId);             
                 }
             }      
         if ($startDate && $endDate) {
@@ -122,12 +122,12 @@ class ControllerEwhFuel extends Controller
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
         ->select('ewhs.*','units.unit as units');
         if ($user->role !== 'admin') {
-            $queryewh->where('users.id_company', $user->id_company);
+            $queryewh->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $queryewh->where('users.id_company', $companyId);
             } else {
-                $queryewh->whereRaw('1 = 0');             
+                $queryewh->whereRaw('users.id_company', $companyId);             
             }
         }
             if ($startDate && $endDate) {
@@ -181,12 +181,12 @@ class ControllerEwhFuel extends Controller
         ->select('fuels.*',
         'units.unit as units');
         if ($user->role !== 'admin') {
-            $queryewh->where('users.id_company', $user->id_company);
+            $queryewh->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $queryewh->where('users.id_company', $companyId);
             } else {
-                $queryewh->whereRaw('1 = 0');             
+                $queryewh->whereRaw('users.id_company', $companyId);             
             }
         }
             if ($startDate && $endDate) {
@@ -494,12 +494,12 @@ class ControllerEwhFuel extends Controller
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
     
         if ($user->role !== 'admin') {
-                $queryewh->where('users.id_company', $user->id_company);
+                $queryewh->where('users.id_company', $companyId);
             } else {
                 if ($companyId) {
                     $queryewh->where('users.id_company', $companyId);
                 } else {
-                    $queryewh->whereRaw('1 = 0');             
+                    $queryewh->whereRaw('users.id_company', $companyId);             
                 }
             }
 

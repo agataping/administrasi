@@ -41,12 +41,12 @@ class ReportController extends Controller
             );
 
             if ($user->role !== 'admin') {
-                $query->where('users.id_company', $user->id_company);
+                $query->where('users.id_company', $companyId);
             } else {
                 if ($companyId) {
                     $query->where('users.id_company', $companyId);
                 } else {
-                    $query->whereRaw('1 = 0');             
+                    $query->whereRaw('users.id_company', $companyId);             
                 }
             }
         $data = $query->get()->groupBy(['jenis_name', 'kategori_name']);
@@ -260,12 +260,12 @@ class ReportController extends Controller
         });        
         // ->select('bargings.*', 'plan_bargings.nominal', 'bargings.kuota')
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0');             
+                $query->whereRaw('users.id_company', $companyId);             
             }
         }
 
@@ -316,12 +316,12 @@ class ReportController extends Controller
 
         ->select( 'kategori_overcoals.name as kategori_name','overberden_coal.*');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0');             
+                $query->whereRaw('users.id_company', $companyId);             
             }
         }
       
@@ -353,12 +353,12 @@ class ReportController extends Controller
             'produksi_pas.actual as pas_actual',
         );
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
+            $query->where('users.id_company', $companyId);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('1 = 0');             
+                $query->whereRaw('users.id_company', $companyId);             
             }
         }    
     $data = $query->get();
@@ -393,12 +393,12 @@ class ReportController extends Controller
 
     ->select('*');
     if ($user->role !== 'admin') {
-        $query->where('users.id_company', $user->id_company);
+        $query->where('users.id_company', $companyId);
     } else {
         if ($companyId) {
             $query->where('users.id_company', $companyId);
         } else {
-            $query->whereRaw('1 = 0');             
+            $query->whereRaw('users.id_company', $companyId);             
         }
     }
 
@@ -415,12 +415,12 @@ class ReportController extends Controller
     ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
     ->select('kategori_mini_r_s.kategori', 'mining_readinesses.*');
     if ($user->role !== 'admin') {
-        $query->where('users.id_company', $user->id_company);
+        $query->where('users.id_company', $companyId);
     } else {
         if ($companyId) {
             $query->where('users.id_company', $companyId);
         } else {
-            $query->whereRaw('1 = 0');             
+            $query->whereRaw('users.id_company', $companyId);             
         }
     }
 
@@ -469,12 +469,12 @@ class ReportController extends Controller
 
     ->select('people_readinesses.*');
     if ($user->role !== 'admin') {
-        $query->where('users.id_company', $user->id_company);
+        $query->where('users.id_company', $companyId);
     } else {
         if ($companyId) {
             $query->where('users.id_company', $companyId);
         } else {
-            $query->whereRaw('1 = 0');             
+            $query->whereRaw('users.id_company', $companyId);             
         }
     }  
     $people = $query->get();
@@ -516,12 +516,12 @@ class ReportController extends Controller
     ->join('users', 'infrastructure_readinesses.created_by', '=', 'users.username')
     ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
     if ($user->role !== 'admin') {
-        $query->where('users.id_company', $user->id_company);
+        $query->where('users.id_company', $companyId);
     } else {
         if ($companyId) {
             $query->where('users.id_company', $companyId);
         } else {
-            $query->whereRaw('1 = 0');             
+            $query->whereRaw('users.id_company', $companyId);             
         }
     }
     $datainfra = $query->get();
@@ -545,12 +545,12 @@ $indexinfra = $averagePerformance != 0 ? round(($averagePerformance * 100) / 100
     if ($user->role !== 'admin') 
     
     {
-        $query->where('users.id_company', $user->id_company);
+        $query->where('users.id_company', $companyId);
     } else {
         if ($companyId) {
             $query->where('users.id_company', $companyId);
         } else {
-            $query->whereRaw('1 = 0');             
+            $query->whereRaw('users.id_company', $companyId);             
         }
     }
 
