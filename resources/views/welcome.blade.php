@@ -1,5 +1,5 @@
 @extends('components.header')
-@section('title', 'ADMINISTRATION')
+@section('title', 'KPI')
 <link href="{{asset('css/signin.css')}}" rel="stylesheet">
 
 

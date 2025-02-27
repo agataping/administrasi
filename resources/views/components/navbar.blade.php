@@ -56,7 +56,7 @@
     </div>
 
     <!-- Teks -->
-    <h5 style="color: white; margin: 0;">ADMINISTRATION <br>QUBAH GROUP</h5>
+    <h5 style="color: white; margin: 0;"><span style="font-size: 10px;">KEY PERFORMANCE INDICATOR</span><br>QUBAH GROUP</h5>
 </div>
     </a>
     

@@ -124,7 +124,7 @@
     .cardcostum {
         transition: 0.3s;
         width: 300px;
-        background-color: rgba(78, 78, 78, 0.69);
+        background-color: rgba(0, 0, 41, 0.69);
         margin: 40px auto; 
         padding: 20px;
         border-radius: 10px;

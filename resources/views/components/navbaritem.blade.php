@@ -16,8 +16,8 @@
         </div>
         
         <!-- Teks -->
-        <h6 style="color: white; margin: 0;">ADMINISTRATION <br>QUBAH GROUP</h6>
-    </div>
+        <h5 style="color: white; margin: 0;"><span style="font-size: 10px;">KEY PERFORMANCE INDICATOR</span><br>QUBAH GROUP</h5>
+        </div>
     <a href="/historylog" class="d-flex align-items-center text-decoration-none">
         <div class="ms-3">
             <h5 style="color: white; margin: 0;">History Log</h5>

@@ -139,9 +139,9 @@
                                 @endphp
                                 <a href="{{ asset('storage/' . $d->file) }}" class="text-decoration-none" target="_blank">View File</a>
                             </td>
-                            <td  colspan="" style="text-align: center; vertical-align: middle;">{{ $d->shifpertama }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->shifkedua }}</td>
-                            <td style="text-align: center; vertical-align: middle;">{{ $d->totalhauling  }}</td>
+                            <td  colspan="" style="text-align: center; vertical-align: middle;">{{ $loop->last ? '-' : $d->shifpertama }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $loop->last ? '-' : $d->shifkedua }}</td>
+                            <td style="text-align: center; vertical-align: middle;">{{ $loop->last ? '-' : $d->totalhauling }}</td>
                             <td style="text-align: end; vertical-align: middle;">
                                 {{ isset($d->akumulasi_stock) ? number_format($d->akumulasi_stock, 2, ',', '.') : '-' }}
                             </td>

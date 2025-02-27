@@ -80,98 +80,108 @@ class StockJtController extends Controller
 
     public function stockjt(Request $request)
     {
-        {
-            $user = Auth::user();  
-            $startDate = $request->input('start_date'); 
-            $endDate = $request->input('end_date'); 
-            $companyId = $request->input('id_company');
-            $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get(); 
-            
-            $query = DB::table('stock_jts')
-                ->select('stock_jts.*')
-                ->join('users', 'stock_jts.created_by', '=', 'users.username')
-                ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
-                
-            if ($user->role !== 'admin') {
+        $user = Auth::user();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date') ?? date('Y-m-d');
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+    
+        $query = DB::table('stock_jts')
+            ->select('stock_jts.*')
+            ->join('users', 'stock_jts.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
                 $query->where('users.id_company', $companyId);
-            } else {
-                if ($companyId) {
-                    $query->where('users.id_company', $companyId);
-                } else {
-                    $query->whereRaw('users.id_company', $companyId);          
-                }
             }
-            
-            if ($startDate && $endDate) {
-                $query->whereBetween('stock_jts.date', [$startDate, $endDate])
-                      ->orderBy('stock_jts.date', 'asc'); 
-            }
-            
-            $data = $query->get();
-            
-            $planNominal = $data->sum(function ($p) {
-                return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
-            });
-            
-            $data->transform(function ($item) {
-                $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
-                return $item;
-            });
-            
-            $data->each(function ($item) {
-                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
-            });
-            
-            $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
-            
-            $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
-            $akumulasi = $stokAwal;
-            
-            $endForStokMasuk = date('Y-m-d', strtotime($endDate . ' -1 day'));
-            $dataStokMasuk = $data->filter(function($item) use ($endForStokMasuk) {
-                return $item->date <= $endForStokMasuk;
-            });
-            
-            
-            $data->each(function ($stock, $index) use ($endForStokMasuk, &$akumulasi) {
-                $stock->sotckawal    = floatval($stock->sotckawal ?? 0);
-                $stock->totalhauling  = floatval($stock->totalhauling ?? 0);
-                $stock->stockout     = floatval($stock->stockout ?? 0);
-                
-                if ($index === 0) {
-                    $akumulasi = $stock->sotckawal;
-                }
-                
-                if ($stock->date <= $endForStokMasuk) {
-                    $akumulasi += $stock->totalhauling;
-                }
-                
-                $stock->akumulasi_stock = $akumulasi;
-            });
-            
-            $kumulatifStockOut = 0;
-            $data->each(function ($stock) use (&$kumulatifStockOut) {
-                $kumulatifStockOut += floatval($stock->stockout ?? 0);
-                $stock->stock_akhir = $stock->akumulasi_stock - $kumulatifStockOut;
-            });
-                                    
-            $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
-            $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
+        }
+    
+        if ($startDate && $endDate) {
+            $query->whereBetween('stock_jts.date', [$startDate, $endDate])
+                  ->orderBy('stock_jts.date', 'asc');
+        }
+    
+        $data = $query->get();
+    
+        $planNominal = $data->sum(function ($p) {
+            return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
+        });
+    
+        $data->transform(function ($item) {
+            $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
+            return $item;
+        });
+    
+        $data->each(function ($item) {
+            $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+        });
+    
+        $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+    
+        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
+        $akumulasi = $stokAwal;
+    
+        $endForStokMasuk = date('Y-m-d', strtotime($endDate . ' -1 day'));
+        $dataStokMasuk = $data->filter(function ($item) use ($endForStokMasuk) {
+            return isset($item->date) && $item->date <= $endForStokMasuk;
+        });
 
-            
-            return view('stockjt.index', compact(
-                'data',
-                'totalHauling',
-                'grandTotal',
-                'perusahaans', 
-                'companyId',
-                'planNominal',
-                'grandTotalstockakhir'
-            ));  
-        }}
         
+        if ($dataStokMasuk->isEmpty()) {
+            $dataStokMasuk = collect();
+        }
+        $akumulasiStokMasuk = $data->where('date', '<=', $endDate)->sum(function ($item) {
+            return floatval($item->sotckawal) + floatval($item->totalhauling);
+        });
+        $akumulasiStokMasuk = 0;
+        $data->each(function ($stock, $index) use ($dataStokMasuk, &$akumulasiStokMasuk) {
+            $stock->sotckawal = floatval($stock->sotckawal ?? 0);
+            $stock->totalhauling = floatval($stock->totalhauling ?? 0);
+            $stock->stockout = floatval($stock->stockout ?? 0);
+    
+            if ($index === 0) {
+                $akumulasiStokMasuk = $stock->sotckawal;
+            }
+    
+            if ($dataStokMasuk->contains('id', $stock->id)) {
+                $akumulasiStokMasuk += $stock->totalhauling;
+            }
+    
+            $stock->akumulasi_stock = $akumulasiStokMasuk;
+        });
+    
+        $prevStockAkhir = 0;
+        $data->each(function ($stock) use (&$prevStockAkhir) {
+            // Jika ada stock_awal, gunakan itu, kalau tidak pakai stock_akhir sebelumnya
+            $stock->sotckawal = $stock->sotckawal > 0 ? $stock->sotckawal : $prevStockAkhir;
+        
+            // Hitung stock_akhir
+            $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;
+        
+            // Simpan stock_akhir untuk hari berikutnya
+            $prevStockAkhir = $stock->stock_akhir;
+        });
+        
+        
+        // dd($data->toArray());
 
-    public function formstockjt(Request $request)
+        $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
+        $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
+    
+        return view('stockjt.index', compact(
+            'data',
+            'totalHauling',
+            'grandTotal',
+            'perusahaans',
+            'companyId',
+            'planNominal',
+            'grandTotalstockakhir'
+        ));
+    }
+        public function formstockjt(Request $request)
     {
         return view('stockjt.adddata');  
     }
@@ -361,7 +371,7 @@ class StockJtController extends Controller
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('users.id_company', $companyId); 
+                $query->whereRaw('users.id_company', $companyId); // Mencegah admin melihat semua data secara default
             }
         }
         if ($startDate && $endDate) {
