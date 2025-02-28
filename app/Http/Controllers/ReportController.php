@@ -66,13 +66,13 @@ class ReportController extends Controller
             });
         //cogs
         $totalactualcogas = (clone $query)
-            ->where('category_labarugis.namecategory', 'Cost of Goods Sold (COGS)')
+            ->where('category_labarugis.namecategory', 'Cost of Goods Sold')
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
         $totalplancogas = (clone $query)
-            ->where('category_labarugis.namecategory', 'Cost of Goods Sold (COGS)')
+            ->where('category_labarugis.namecategory', 'Cost of Goods Sold')
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
