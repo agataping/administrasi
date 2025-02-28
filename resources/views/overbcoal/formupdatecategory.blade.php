@@ -1,22 +1,22 @@
 @extends('template.main')
-@section('title', 'Description Over Burden & Coal')
+@section('title', 'Description Overburden & Coal getting')
 @section('content')
 @extends('components.style')
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
+    <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-            <h2 class="mb-3" onclick="window.history.back()" style="cursor: pointer;">Update Data Description Over Burden & Coal</h2>
+                <h3 class="mb-3" onclick="window.history.back()" style="cursor: pointer;">Update Data Description OverBurden & Coal getting</h3>
 
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
                 @endif
-                
+
                 @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -27,9 +27,9 @@
                 </div>
                 @endif
                 <form action="{{ route('updatecategoryobc',$data->id) }}" method="post">
-                @csrf
-                <input type="hidden" name="updeted_by_name" value="{{ Auth::user()->username }}">
-                <div style="margin-bottom: 1rem;">
+                    @csrf
+                    <input type="hidden" name="updeted_by_name" value="{{ Auth::user()->username }}">
+                    <div style="margin-bottom: 1rem;">
                         <label for="name" style="font-weight: bold; font-size: 1rem;">Description:</label>
                         <input type="text" class="form-control" value="{{$data->name}}" id="plan" name="name">
                     </div>
@@ -38,22 +38,22 @@
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
                     </div>
-                
-                
-                </form>
-                    
-                </div>
-            </div>
-            
-      
-        
 
-        
+
+                </form>
+
+            </div>
+        </div>
+
+
+
+
+
     </div>
 </div>
-        
-        
-        
+
+
+
 
 
 

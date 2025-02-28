@@ -6,12 +6,12 @@
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
+    <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-            <a href="/indexfuel" class=" text-decoration-none " style="color: black;">
-                <h2 class="mb-3">ADD DATA FUEL</h2>
-                </a>                
+                <a href="/indexfuel" class=" text-decoration-none " style="color: black;">
+                    <h3 class="mb-3">ADD DATA FUEL</h3>
+                </a>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -26,8 +26,7 @@
                     </ul>
                 </div>
                 @endif
-                <form action="{{ route('createfuel') }}" method="post" enctype="multipart/form-data"
-                >
+                <form action="{{ route('createfuel') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                     <div class="form-group">
@@ -50,15 +49,15 @@
                     </div>
 
                     <!-- Nominal Inputs -->
-                    <div id="planInput"  class="form-group">
+                    <div id="planInput" class="form-group">
                         <label for="plan">Nominal Plan</label>
                         <input type="text" class="form-control" id="plan" name="plan">
                     </div>
-                    <div id="planInput"  class="form-group">
+                    <div id="planInput" class="form-group">
                         <label for="plan">File</label>
                         <input type="file" class="form-control" id="plan" name="file">
                     </div>
-                    <div id="planInput"  class="form-group">
+                    <div id="planInput" class="form-group">
                         <label for="plan">Nominal Plan</label>
                         <input type="text" class="form-control" id="plan" name="actual">
                     </div>
@@ -66,9 +65,9 @@
                     <!-- Submit Button -->
 
                     <div class="d-flex justify-content-end mt-3">
-                                <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
-                                <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
-                            </div>
+                        <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
+                        <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
+                    </div>
                 </form>
             </div>
         </div>

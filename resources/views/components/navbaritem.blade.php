@@ -1,40 +1,55 @@
 @extends('components.header')
 @section('title', '')
 <style>
-.nav-item:hover .dropdown-menu {
-    display: block;
-}
+    .nav-item:hover .dropdown-menu {
+        display: block;
+    }
 
+    .dropdown-menu .dropdown-item {
+        text-transform: uppercase;
+        font-optical-sizing: auto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: ;
+        color: rgb(255, 255, 255);
+    }
+
+    .dropdown-menu {
+        background: rgba(62, 61, 61, 0.47) !important;
+        backdrop-filter: blur(10px);
+        border-radius: 8px;
+        border: 2px solid rgba(0, 0, 0, 0.3);
+    }
 </style>
 
 <nav class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color: transparent; flex-wrap: nowrap;">
     <div class="d-flex align-items-center ms-3">
         <!-- Logo Bulat -->
         <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: white; margin-right: 10px;">
-            <img src="{{ asset('img/qubahGroup.jpeg') }}" alt="Logo" 
-            style="width: 90%; height: 90%; object-fit: contain;">
+            <img src="{{ asset('img/qubahGroup.jpeg') }}" alt="Logo"
+                style="width: 90%; height: 90%; object-fit: contain;">
         </div>
-        
+
         <!-- Teks -->
-        <h5 style="color: white; margin: 0;"><span style="font-size: 10px;">KEY PERFORMANCE INDICATOR</span><br>QUBAH GROUP</h5>
-        </div>
+        <h5 style="color: white; margin: 0;">KPI</span><br>QUBAH GROUP</h5>
+    </div>
     <a href="/historylog" class="d-flex align-items-center text-decoration-none">
         <div class="ms-3">
-            <h5 style="color: white; margin: 0;">History Log</h5>
+            <H6 style="color: white; margin: 0;">History Log</H6>
         </div>
     </a>
-    
-    
-    
+
+
+
 
     <ul class="nav">
         <li class="nav-item dropdown">
             <a a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" aria-expanded="false">Costumer Prespective</a>
             <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item " href="/indexbarging">Barging</a></li>
-            <li><a class="dropdown-item " href="/indexpicabarging">PICA Barging</a></li>
-            <li><a class="dropdown-item " href="/dashboardstockjt">Stock Jetty</a></li>
-            <li><a class="dropdown-item " href="/picastockjt">PICA Stock Jetty</a></li>
+                <li><a class="dropdown-item " href="/indexbarging">Barging</a></li>
+                <li><a class="dropdown-item " href="/indexpicabarging">PICA Barging</a></li>
+                <li><a class="dropdown-item " href="/dashboardstockjt">Stock Jetty</a></li>
+                <li><a class="dropdown-item " href="/picastockjt">PICA Stock Jetty</a></li>
             </ul>
         </li>
 
@@ -45,7 +60,7 @@
                 <li><a class="dropdown-item" href="/indexfinancial">Balance Sheet </a></li>
                 <li><a class="dropdown-item" href="/picalr">PICA Financial</a></li>
 
-                 
+
 
             </ul>
         </li>
@@ -53,8 +68,8 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" aria-expanded="false">Internal Process Perspective</a>
             <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="/indexovercoal">Over Barden & Coal </a></li>
-                <li><a class="dropdown-item" href="/picaobc">PICA Over Barden & Coal </a></li>
+                <li><a class="dropdown-item" href="/indexovercoal">OverBUrden & Coal getting</a></li>
+                <li><a class="dropdown-item" href="/picaobc">PICA OverBUrden & Coal getting</a></li>
                 <li><a class="dropdown-item " href="/indexpaua">PA & UA</a></li>
                 <li><a class="dropdown-item " href="/picapaua">PICA PA & UA</a></li>
                 <li><a class="dropdown-item " href="/indexewhfuel">EWH & FUEL</a></li>
@@ -63,54 +78,56 @@
                 <li><a class="dropdown-item " href="/picamining">PICA Mining Readiness</a></li>
                 <li><a class="dropdown-item " href="/indexhse">HSE</a></li>
                 <li><a class="dropdown-item " href="/picahse">PICA HSE</a></li>
-                
+
             </ul>
         </li>
-        
+
 
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" aria-expanded="false">Learning & Growth Perspective</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="/struktur">Struktur Organisasi</a></li>
-            <li><a class="dropdown-item" href="/indexPeople">People Readiness</a></li>
-            <li><a class="dropdown-item" href="/indexpicapeople">PICA People Readiness</a></li>
+                <li><a class="dropdown-item" href="/struktur">Struktur Organisasi</a></li>
+                <li><a class="dropdown-item" href="/indexPeople">People Readiness</a></li>
+                <li><a class="dropdown-item" href="/indexpicapeople">PICA People Readiness</a></li>
                 <li><a class="dropdown-item" href="/indexInfrastructureReadiness">Infrastructure Readiness</a></li>
                 <li><a class="dropdown-item" href="/picainfrastruktur">PICA Infrastructure Readiness</a></li>
-                
+
                 <li><a class="dropdown-item" href="/indexdeadline">Deadline Compensation</a></li>
                 <li><a class="dropdown-item" href="/picadeadline">PICA Deadline Compensation</a></li>
                 <li><a class="dropdown-item" href="/indexPembebasanLahan">Land Acquisition</a></li>
                 <li><a class="dropdown-item" href="/picapl">PICA Land Acquisition</a></li>
-                
+
             </ul>
         </li>
-        
+
         <li class="nav-item"><a href="/dashboard" class="nav-link text-white">Home</a></li>
     </ul>
-    
-    
+
+
     <div class="flex-shrink-0 dropdown me-3">
-    <a href="#" class="d-block link-light text-decoration-none" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 0.5rem;">
-        <img src="img/profil.jpg" alt="Profile" width="32" height="32" class="rounded-circle border border-2 border-light">
-        <i class="bi bi-chevron-down text-white"></i>
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser2" style="min-width: 200px; border-radius: 8px; overflow: hidden;">
-        <li class="dropdown-item text-muted px-3">
-            <i class="bi bi-person-circle me-2 text-primary"></i>
-            {{ Auth::user()->name }}
-        </li>
-        <li><hr class="dropdown-divider"></li>
-        <li>
-            <form action="{{ url('logout') }}" method="POST" id="logout-form">
-                @csrf
-                <button class="dropdown-item text-danger d-flex align-items-center" style="gap: 0.5rem;" type="submit">
-                    <i class="bi bi-box-arrow-right"></i>
-                    Sign out
-                </button>
-            </form>
-        </li>
-    </ul>
-</div>
+        <a href="#" class="d-block link-light text-decoration-none" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 0.5rem;">
+            <img src="img/profil.jpg" alt="Profile" width="32" height="32" class="rounded-circle border border-2 border-light">
+            <i class="bi bi-chevron-down text-white"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser2" style="min-width: 200px; border-radius: 8px; overflow: hidden;">
+            <li class="dropdown-item text-muted px-3">
+                <i class="bi bi-person-circle me-2 text-primary"></i>
+                {{ Auth::user()->name }}
+            </li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li>
+                <form action="{{ url('logout') }}" method="POST" id="logout-form">
+                    @csrf
+                    <button class="dropdown-item text-danger d-flex align-items-center" style="gap: 0.5rem;" type="submit">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Sign out
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
 
 
 </nav>

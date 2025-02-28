@@ -72,13 +72,16 @@ class ReportController extends Controller
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
         $totalplancogas = (clone $query)
-            ->where('category_labarugis.namecategory', 'Cost of Goods Sold')
-            ->get()
+        ->where('category_labarugis.namecategory', 'LIKE', '%Cost of Goods Sold%')
+        ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
         });
         $actualcogs = $totalRevenuea ? ($totalactualcogas /$totalRevenuea ) * 100 : 0;
         $plancogs = $totalRevenuep ? ($totalplancogas / $totalRevenuep) * 100 : 0;
+        // dd($query->where('category_labarugis.namecategory', 'Cost of Goods Sold')->get());
+
+        // dd($plancogs,$totalplancogas,$totalRevenuep);
         //cos of employe
         $totactualsalary = (clone $query)
             ->where('category_labarugis.namecategory', 'Salary')

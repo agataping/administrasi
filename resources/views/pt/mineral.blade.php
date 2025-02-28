@@ -37,7 +37,7 @@
                     <div class="cardcostum">
                         <div class="cardcost">
                             <a href="/dashboard" class="cardcost text-decoration-none">
-                                <h3><b>MARKETING</b></h3>
+                                <h3 style="color: whitesmoke;"><b>MARKETING</b></h3>
                                 <div class="percentage-box">
                                     <h3>
                                     98%

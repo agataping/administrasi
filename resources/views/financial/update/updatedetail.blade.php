@@ -1,24 +1,23 @@
 @extends('template.main')
-
 @section('title', 'Balnce sheet')
-
+@extends('components.style')
 @section('content')
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-        <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.81);">
+    <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.81);">
         <div class="card-body">
             <div class="col-12">
-            <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
-                <h2 class="mb-3">Update Data Detail Balnce sheet</h2>
-                </a>                 
-                
+                <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
+                    <h3 class="mb-3">Update Data Detail Balnce sheet</h3>
+                </a>
+
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
                 @endif
-                
+
                 @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -42,15 +41,16 @@
                         <select id="kategori" name="sub_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
                             <option value="" disabled selected>-- Select Category --</option>
                             @foreach($sub as $kategori)
-                            <option value="{{ $kategori->id }}" {{ $kategori->id == $data->sub_id ? 'selected' : '' }}> 
-                                {{ $kategori->namecategory }} | {{ $kategori->namesub }}</option>
+                            <option value="{{ $kategori->id }}" {{ $kategori->id == $data->sub_id ? 'selected' : '' }}>
+                                {{ $kategori->namecategory }} | {{ $kategori->namesub }}
+                            </option>
                             @endforeach
 
                         </select>
                     </div>
                     <div style="margin-bottom: 1rem;">
                         <label for="name" style="font-weight: bold; font-size: 1rem;">Deskripsi:</label>
-                        <input type="text" id="name" name="name" value="{{$data->name}}" plhaceholder="Cth. Mandiri Hauling Dll"style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; " required>
+                        <input type="text" id="name" name="name" value="{{$data->name}}" plhaceholder="Cth. Mandiri Hauling Dll" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; " required>
                     </div>
 
 
@@ -59,17 +59,17 @@
 
                     <div id="" class="form-group">
                         <label for="actual">Debit</label>
-                        <input type="text" class="form-control" id="actual" name="debit" value="{{$data->debit}}"> 
-                    </div>    
+                        <input type="text" class="form-control" id="actual" name="debit" value="{{$data->debit}}">
+                    </div>
                     <div id="" class="form-group">
                         <label for="actual">Credit</label>
-                        <input type="text" class="form-control" id="actual" name="credit" value="{{$data->credit}}"> 
+                        <input type="text" class="form-control" id="actual" name="credit" value="{{$data->credit}}">
                     </div>
 
 
                     <div class="d-flex justify-content-end mt-3">
-                                               <button type="submit" class="btn-block btn-lg gradient-custom-4"
-                        style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
+                        <button type="submit" class="btn-block btn-lg gradient-custom-4"
+                            style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
                             border-radius: 5px; font-weight: bold;"">Update</button>
                     </div>                </form>
             </div>

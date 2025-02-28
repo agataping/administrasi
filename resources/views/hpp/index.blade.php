@@ -80,7 +80,7 @@
                             @foreach ($categories as $d)
                             <!-- Tampilkan item -->
                             <tr>
-                            <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                            <td  style="vertical-align: middle;">{{ $loop->iteration }}</td>
 
                                 <td class="item">{{ $d->item }}</td>
                                 <td>{{ number_format($d->rencana, 0, ',', '.') }}</td>

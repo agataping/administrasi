@@ -1,22 +1,22 @@
 @extends('template.main')
-@section('title', 'Add Data Over Burden & Coal')
+@section('title', 'Add Data OverBurden & Coal')
 @section('content')
 @extends('components.style')
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
+    <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-            <h2 class="mb-3" onclick="window.history.back()" style="cursor: pointer;">Add Data Over Burden & Coal</h2>
-                
+                <h3 class="mb-3" onclick="window.history.back()" style="cursor: pointer;">Add Data OverBurden & Coal getting</h3>
+
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
                 @endif
-                
+
                 @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -30,7 +30,7 @@
                 <form action="{{ route('createovercoal') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
-                    <input type="hidden" name="kategori_id" value="{{ old('kategori_id', '2') }}">                    
+                    <input type="hidden" name="kategori_id" value="{{ old('kategori_id', '2') }}">
                     <div style="margin-bottom: 1rem;">
                         <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
                         <select id="kategori" name="kategori_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">

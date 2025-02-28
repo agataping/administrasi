@@ -38,7 +38,7 @@ class ProduksiController extends Controller
                 'produksi_pas.actual as pas_actual'
             );
             if ($user->role !== 'admin') {
-                $queryPas->where('users.id_company', $companyId);
+                $queryPas->where('users.id_company', $user->id_company);
             } else {
                 if ($companyId) {
                     $queryPas->where('users.id_company', $companyId);
@@ -59,7 +59,7 @@ class ProduksiController extends Controller
                 'produksi_uas.actual as uas_actual'
             );
             if ($user->role !== 'admin') {
-                $queryUas->where('users.id_company', $companyId);
+                $queryUas->where('users.id_company', $user->id_company);
             } else {
                 if ($companyId) {
                     $queryUas->where('users.id_company', $companyId);

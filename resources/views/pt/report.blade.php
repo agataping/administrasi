@@ -136,7 +136,7 @@
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
                                         <td class="text-end" style=" vertical-align: middle; color: black;">
-                                        {{ number_format($weightrevenue, 2) }}
+                                        {{ number_format($weightrevenue, 2) }}%
                                         </td>
                                     </tr>
                                 </tbody>

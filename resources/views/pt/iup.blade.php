@@ -31,7 +31,7 @@
                     <div class="cardcostum">
                         <div class="cardcost">
                             <a href="/dashboard" class="cardcost text-decoration-none">
-                                <h3><b>IUP</b></h3>
+                                <h3 style="color: whitesmoke;"><b>IUP</b></h3>
                                 <div class="percentage-box"><h3>
                                     98%
                                 </h3></div>

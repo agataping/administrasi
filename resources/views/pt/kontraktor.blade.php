@@ -33,7 +33,7 @@
                             <div class="cardcost">
                                 <a href="/dashboard" class="cardcost text-decoration-none">
                                     
-                                    <h3><b>KONTRAKTOR</b></h3>                        
+                                    <h3 style="color:white;"><b>KONTRAKTOR</b></h3>                        
                                     <div class="percentage-box" >
                                         <h3>
                                             98%

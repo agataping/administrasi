@@ -6,18 +6,18 @@
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-4">
-            <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
+    <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-            <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
-                <h2 class="mb-3">Add Data Description Balance sheet</h2>
-                </a>                 
+                <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
+                    <h3 class="mb-3">Add Data Description Balance sheet</h3>
+                </a>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
                 @endif
-                
+
                 @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -42,25 +42,25 @@
                         <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
                         <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
                     </div>
-                    
+
                 </form>
-                    
-                    
-                
+
+
+
             </div>
         </div>
     </div>
 </div>
-        
-        
-        
-        
-    
-    
-    
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
 
 
 

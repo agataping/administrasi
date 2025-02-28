@@ -143,30 +143,30 @@ class DetailabarugiController extends Controller
         //laba rugi 
         $totalplanlr = $totalRevenuep-$totallkplan;
         $totalactuallr = $totalRevenuea-$totallkactual;
-        $totalvertikal = ($totalRevenuep && $totalRevenuep != 0) ? ($totalplanlr / $totalRevenuep) * 100 : 0;
-        $totalvertikals = $totalRevenuea ? ($totalactuallr / $totalRevenuea) * 100 : 0;
+        $totalvertikal = round(($totalRevenuep && $totalRevenuep != 0) ? ($totalplanlr / $totalRevenuep) * 100 : 0);
+        $totalvertikals = round($totalRevenuea ? ($totalactuallr / $totalRevenuea) * 100 : 0);
         $deviasilr = $totalplanlr-$totalactuallr;
-        $persenlr = $totalplanlr ? ($totalactuallr / $totalplanlr) * 100 : 0;
+        $persenlr = round($totalplanlr ? ($totalactuallr / $totalplanlr) * 100 : 0);
         //operasional
         $totalplanlp = $totalplanlr-$planoperasional;
         $totalactualOp = $totalactuallr-$actualoperasional;
-        $verticallp = $totalRevenuep ? ($totalplanlp / $totalRevenuep) * 100 : 0;
-        $verticalsp = $totalRevenuea ? ($totalactualOp / $totalRevenuea) * 100 : 0;
+        $verticallp = round($totalRevenuep ? ($totalplanlp / $totalRevenuep) * 100 : 0);
+        $verticalsp = round($totalRevenuea ? ($totalactualOp / $totalRevenuea) * 100 : 0);
         $deviasiop = $totalplanlp-$totalactualOp;
-        $persenop = $totalplanlp ? ($totalactualOp / $totalplanlp) * 100 : 0;
-        $vertikalplanop=($totalRevenuep && $totalRevenuep != 0) ? ($planoperasional / $totalRevenuep) * 100 : 0;
-        $vertikalactualop=($totalRevenuep && $totalRevenuep != 0) ? ($actualoperasional / $totalRevenuep) * 100 : 0;
+        $persenop = round($totalplanlp ? ($totalactualOp / $totalplanlp) * 100 : 0);
+        $vertikalplanop=round(($totalRevenuep && $totalRevenuep != 0) ? ($planoperasional / $totalRevenuep) * 100 : 0);
+        $vertikalactualop=round(($totalRevenuep && $totalRevenuep != 0) ? ($actualoperasional / $totalRevenuep) * 100 : 0);
         $deviasitotalgeneral = $planoperasional-$actualoperasional;
-        $persengeneralop = $planoperasional ? ($actualoperasional / $planoperasional) * 100 : 0;
+        $persengeneralop = round($planoperasional ? ($actualoperasional / $planoperasional) * 100 : 0);
 
         //lababersih
         $totalplanlb = $totalplanlp-$planlb;
         $totalactuallb = $actualoperasional-$actuallb;
         // dd($totalactuallb );
-        $verticallb = $totalRevenuep ? ($totalplanlb / $totalRevenuep) * 100 : 0;
-        $verticalslb = $totalRevenuea ? ($totalactuallb / $totalRevenuea) * 100 : 0;
+        $verticallb = round($totalRevenuep ? ($totalplanlb / $totalRevenuep) * 100 : 0);
+        $verticalslb = round($totalRevenuea ? ($totalactuallb / $totalRevenuea) * 100 : 0);
         $deviasilb = $totalplanlb-$totalactuallb;
-        $persenlb = $totalplanlb ? ($totalactuallb / $totalplanlb) * 100 : 0;
+        $persenlb = round($totalplanlb ? ($totalactuallb / $totalplanlb) * 100 : 0);
    
         // dd($totalplanlb, $totalactuallb, $verticallb, $verticalslb, $persenlb);
 
@@ -200,28 +200,37 @@ class DetailabarugiController extends Controller
                     $percentage = $totalPlan != 0 ? ($totalActual / $totalPlan) * 100 : 0;
                     $vertikalanalisis = $totalRevenuep ? ($totalPlan / $totalRevenuep) * 100 : 0;
                     $vertikalanalisiss = $totalRevenuea ? ($totalPlan / $totalRevenuea) * 100 : 0;
-                    
+                    // dd($categoryTotalPlan, $totalActual, $deviation,$totalPlan,$categoryTotalActual);
+
                     return [
                         'name_sub' => $subCategory,
                         'total_plan' => $totalPlan,
                         'total_actual' => $totalActual,
                         'vertikal' => $vertikalanalisis,
                         'deviation' => $deviation,
-                        'percentage' => $percentage,
+                        'percen' => $percentage,
                         'vertikals' => $vertikalanalisiss,
                         'details' => $items,
+
+
                     ];
                 });
-        
+
                 return [
                     'kategori_name' => $kategoriName,
+                    // 'total_plan' => $totalPlan,
+                    // 'total_actual' => $totalActual,
+
                     'category_id' => $kategori->first()->category_id,  // Menambahkan category_id ke dalam hasil
                     'sub_categories' => $subCategoryDetails,
                     'total_plan' => $categoryTotalPlan,
                     'total_actual' => $categoryTotalActual,
                     'deviation' => $categoryTotalPlan - $categoryTotalActual,                 
-                    'vertikal' => $totalRevenuep ? ($categoryTotalPlan / $totalRevenuep) * 100 : 0,
-                    'vertikals' => $totalRevenuea ? ($categoryTotalPlan / $totalRevenuea) * 100 : 0,
+                    'vertikal' => round($totalRevenuep ? ($categoryTotalPlan / $totalRevenuep) * 100 : 0),
+                    'vertikals' => round ($totalRevenuea ? ($categoryTotalActual / $totalRevenuea)* 100 : 0),
+                    // 'percentage' => $percentage,
+                    'percen' => ($categoryTotalPlan > 0) ? (($categoryTotalPlan - $categoryTotalActual) / $categoryTotalPlan) * 100 : 0,
+
                 ];
             });
         

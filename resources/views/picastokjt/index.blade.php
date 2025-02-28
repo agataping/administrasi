@@ -11,7 +11,7 @@
             <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Pica Stock JETTY </h2>
+                <h3 class="mb-3">Pica Stock JETTY </h3>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -30,7 +30,7 @@
                 @endif
                 <div class="row">
                     <div class="col-sm-">
-                        <a href="/formpicasjt" class="btn btn-custom">Add Pica </a>
+                        <a href="/formpicasjt" class="btn btn-custom">Add data </a>
                     </div>
                 </div> 
                 
@@ -84,7 +84,7 @@
                     <tbody>
                         @foreach($data as $d)
                             <tr>
-                            <th  style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                            <td  style="vertical-align: middle;">{{ $loop->iteration }}</td>
                             <td style="vertical-align: middle;">{{ \Carbon\Carbon::parse($d->tanggal)->format('d-m-Y' ?? 0) }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->problem }}</td>
                             <td style="text-align: center; vertical-align: middle;">{{ $d->cause }}</td>

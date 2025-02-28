@@ -10,7 +10,7 @@
         <div class="card-body">
             <div class="col-12">
                 <a href="/labarugi" class=" text-decoration-none " style="color: black;">
-                    <h2 class="mb-3">Sub-Description Data</h2>
+                    <h3 class="mb-3">Sub-Description Data</h3>
                 </a>                
                 @if (session('success'))
                 <div class="alert alert-success">

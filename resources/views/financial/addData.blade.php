@@ -9,7 +9,7 @@
         <div class="card-body">
             <div class="col-12">
             <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
-                <h2 class="mb-3">Add Data Detail Balnce sheet</h2>
+                <h3 class="mb-3">Add Data Detail Balance sheet</h3>
                 </a>                 
                 
                 @if (session('success'))
@@ -49,8 +49,6 @@
                         <label for="name" style="font-weight: bold; font-size: 1rem;">Description:</label>
                         <input type="text" id="name" name="name" plhaceholder="e.g. Mandiri, Hauling Etc"style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; " required>
                     </div>
-
-
 
 
 
