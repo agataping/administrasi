@@ -50,9 +50,8 @@ class BargingController extends Controller
                     $join->on('users.username', '=', 'plan_bargings.created_by');
                 })
             ->select('bargings.*', 'plan_bargings.nominal');
-            if ($user->role !== 'admin') {
-                $query->where('users.id_company', $companyId);
-            } else {
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);            } else {
                 if ($companyId) {
                     $query->where('users.id_company', $companyId);
                 } else {
@@ -302,7 +301,7 @@ class BargingController extends Controller
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')        ->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
         
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -449,7 +448,7 @@ class BargingController extends Controller
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);

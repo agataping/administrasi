@@ -144,7 +144,7 @@ class DeadlineCompensationController extends Controller
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);

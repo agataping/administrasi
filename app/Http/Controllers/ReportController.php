@@ -40,9 +40,9 @@ class ReportController extends Controller
                 'detailabarugis.nominalactual'
             );
 
-            if ($user->role !== 'admin') {
-                $query->where('users.id_company', $companyId);
-            } else {
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);            
+        } else {
                 if ($companyId) {
                     $query->where('users.id_company', $companyId);
                 } else {
@@ -260,7 +260,7 @@ class ReportController extends Controller
         });        
         // ->select('bargings.*', 'plan_bargings.nominal', 'bargings.kuota')
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -316,7 +316,7 @@ class ReportController extends Controller
 
         ->select( 'kategori_overcoals.name as kategori_name','overberden_coal.*');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -353,7 +353,7 @@ class ReportController extends Controller
             'produksi_pas.actual as pas_actual',
         );
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);

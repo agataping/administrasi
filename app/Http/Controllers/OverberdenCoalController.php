@@ -33,7 +33,7 @@ class OverberdenCoalController extends Controller
         ->select('kategori_overcoals.name as kategori_name','overberden_coal.*');
         
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -96,7 +96,7 @@ class OverberdenCoalController extends Controller
         ->select(
         'kategori_overcoals.name as kategori_name','overberden_coal.*');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -162,7 +162,7 @@ class OverberdenCoalController extends Controller
             'kategori_overcoals.name as kategori_name','overberden_coal.*'
         );
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -386,7 +386,7 @@ class OverberdenCoalController extends Controller
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
     
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -493,7 +493,7 @@ class OverberdenCoalController extends Controller
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
     
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);

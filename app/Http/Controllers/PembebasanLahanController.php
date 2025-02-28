@@ -28,7 +28,7 @@ class PembebasanLahanController extends Controller
         ->join('users', 'pembebasan_lahans.created_by', '=', 'users.username')
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);

@@ -28,7 +28,7 @@ class HseController extends Controller
         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
         ->select('hses.*','kategori_hses.*','kategori_hses.name as kategori_name','users.username as created_by');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);

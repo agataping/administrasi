@@ -44,9 +44,8 @@ class PeopleReadinessController extends Controller
             ->select('people_readinesses.*')
             ->join('users', 'people_readinesses.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
-            if ($user->role !== 'admin') {
-                $query->where('users.id_company', $companyId);
-            } else {
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);            } else {
                 if ($companyId) {
                     $query->where('users.id_company', $companyId);
                 } else {
@@ -344,9 +343,8 @@ class PeopleReadinessController extends Controller
                 ->leftJoin('users', 'gambars.created_by', '=', 'users.username')
                 ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         
-            if ($user->role !== 'admin') {
-                $query->where('users.id_company', $companyId);
-            } else {
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);            } else {
                 if (!empty($companyId)) {
                     $query->where('users.id_company', $companyId);
                 } else {
