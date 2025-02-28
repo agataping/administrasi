@@ -5,8 +5,8 @@
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
-<div class="container-fluid mt-4">
-    <div class="card w-100" >
+<div class="container-fluid mt-4 " >
+    <div class="card w-100 " >
         <div class="card-body">
             <div class="col-12">
                 <!-- @if(auth()->user()->role === 'admin')    
@@ -26,56 +26,58 @@
                 </form>
                 @endif -->
                 <div class="background-full" style="background:  url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
-</div>
+                </div>
 
                 <h2 class="text-center">
                     <strong>TOTAL PERFORMANCE (YEAR TO DATE)</strong>
                 </h2>
-                
-                
-                <div class="row" style="background-color: #f4e2cd; border: 2px solid black;" >
+
+
+                <div class="row" style="background-color: #f4e2cd; border: 2px solid black;">
                     <!-- Baris pertama -->
                     <div class="col" style="text-align: left;">
                         <h2 class="">TOTAL PERFORMANCE (YEAR TO DATE)</h2>
                     </div>
-                    <div class="col text-end" >
+                    <div class="col text-end">
                         <h4 style="margin-top: 10px;">WEIGHT: 100%</h4>
                     </div>
                 </div>
-                
+
                 <!-- Baris kedua untuk persen -->
                 <div class="row mt-1" style="border: 2px solid black;">
                     <div class="col-2 d-flex justify-content-center align-items-center" style="background-color:rgb(221, 255, 0); font-size: 2em; font-weight: bold;">
                         %
                     </div>
-                    
+
                     <!-- ama perusahaan berdasrkan role Admin -->
-                    @if(auth()->user()->role === 'admin')    
+                    @if(auth()->user()->role === 'admin')
                     <div class="col text-center">
-                        <h4>KPI</h4> 
+                        <h4>KPI</h4>
                         <h4 id="selectedCompanyName">{{ $company->nama ?? 'No Company Selected' }}</h4>
-                    </div> 
+                    </div>
                     @endif
-                    
+
                     <!-- nama perusahaan berdasrkan role staff -->
-                    @if(auth()->user()->role === 'staff')  
+                    @if(auth()->user()->role === 'staff')
                     <div class="col text-center">
-                        <h4>KPI</h4> 
-                        
+                        <h4>KPI</h4>
+
                         @if($companyName)
-                        <h4> <p> {{ $companyName->company_name }}</p></h4>
+                        <h4>
+                            <p> {{ $companyName->company_name }}</p>
+                        </h4>
                         @else
                         <p>Tidak ada perusahaan yang ditemukan.</p>
                         @endif
-                    </div> 
+                    </div>
                     @endif
                 </div>
-                
-                
-                
+
+
+
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
                 <div class="row mt-1" style="border: 2px solid black;">
-                    
+
                     <div class="col" style="text-align-end">
                         <h4 style="margin-top: 10px;">FINANCIAL PERSPECTIVE</h4>
                     </div>
@@ -91,8 +93,8 @@
                     </div>
                     <div class="col">
                         <!-- Grid layout untuk tabel yang disusun secara horizontal -->
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">  
-                            
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead>
                                     <tr>
@@ -103,13 +105,14 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">
                                             Plan</td>
-                                         <td>
-                                            {{ number_format($totalRevenuep, 2) }}</td>
+                                        <td>
+                                            {{ number_format($totalRevenuep, 2) }}
+                                        </td>
                                     </tr>
                                     <tr>
-                                        
+
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
                                         <td>{{ number_format($totalRevenuea, 2) }}</td>
                                     </tr>
@@ -129,14 +132,14 @@
                                             background-color: green; color: white; /* Hijau */
                                             @elseif ($indexrevenue> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">  {{ number_format($indexrevenue, 2) }}%                                                 
+                                            @endif"> {{ number_format($indexrevenue, 2) }}%
                                         </td>
                                     </tr>
-                                    
+
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
                                         <td class="text-end" style=" vertical-align: middle; color: black;">
-                                        {{ number_format($weightrevenue, 2) }}%
+                                            {{ number_format($weightrevenue, 2) }}%
                                         </td>
                                     </tr>
                                 </tbody>
@@ -146,18 +149,18 @@
                                 <thead>
                                     <tr>
                                         <th colspan="3" style="text-align: center; vertical-align: middle;">
-                                        Cost of Goods Sold (COGS)
+                                            Cost of Goods Sold (COGS)
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">
                                             Plan</td>
-                                            <td>{{ number_format($plancogs, 2) }}</td>
+                                        <td>{{ number_format($plancogs, 2) }}</td>
                                     </tr>
                                     <tr>
-                                        
+
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
                                         <td>{{ number_format($actualcogs, 2) }}%</td>
 
@@ -178,14 +181,14 @@
                                             background-color: green; color: white; /* Hijau */
                                             @elseif ($indexcogs> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">  {{ number_format($indexcogs, 2) }}%                                                     
+                                            @endif"> {{ number_format($indexcogs, 2) }}%
                                         </td>
                                     </tr>
-                                    
+
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
                                         <td class="text-end" style=" vertical-align: middle; color: black;">
-                                        {{ number_format($weightcogs, 2) }}%
+                                            {{ number_format($weightcogs, 2) }}%
                                         </td>
                                     </tr>
                                 </tbody>
@@ -195,19 +198,20 @@
                                 <thead>
                                     <tr>
                                         <th colspan="3" style="text-align: center; vertical-align: middle;">
-                                        Cost Of Employe
+                                            Cost Of Employe
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">
                                             Plan</td>
-                                         <td>
-                                            {{ number_format($plancoe, 2) }}</td>
+                                        <td>
+                                            {{ number_format($plancoe, 2) }}
+                                        </td>
                                     </tr>
                                     <tr>
-                                        
+
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
                                         <td>{{ number_format($actualcoe, 2) }}</td>
                                     </tr>
@@ -227,14 +231,14 @@
                                             background-color: green; color: white; /* Hijau */
                                             @elseif ($indexcostemlpoye> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">  {{ number_format($indexcostemlpoye, 2) }}%                                                    
+                                            @endif"> {{ number_format($indexcostemlpoye, 2) }}%
                                         </td>
                                     </tr>
-                                    
+
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
                                         <td class="text-end" style=" vertical-align: middle; color: black;">
-                                        {{ number_format($weightcostemploye, 2) }}%
+                                            {{ number_format($weightcostemploye, 2) }}%
                                         </td>
                                     </tr>
                                 </tbody>
@@ -244,19 +248,20 @@
                                 <thead>
                                     <tr>
                                         <th colspan="3" style="text-align: center; vertical-align: middle;">
-                                        CSR
+                                            CSR
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
+                                        <td colspan="2" style="text-align: start; vertical-align: middle;">
                                             Plan</td>
-                                         <td>
-                                            {{ number_format($totplanscsr, 2) }}</td>
+                                        <td>
+                                            {{ number_format($totplanscsr, 2) }}
+                                        </td>
                                     </tr>
                                     <tr>
-                                        
+
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
                                         <td>{{ number_format($actualcsr, 2) }}</td>
                                     </tr>
@@ -276,14 +281,14 @@
                                             background-color: green; color: white; /* Hijau */
                                             @elseif ($indexcsr> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">  {{ number_format($indexcsr, 2) }}%                                                    
+                                            @endif"> {{ number_format($indexcsr, 2) }}%
                                         </td>
                                     </tr>
-                                    
+
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Weight</td>
                                         <td class="text-end" style=" vertical-align: middle; color: black;">
-                                        {{ number_format($weightcsr, 2) }}%
+                                            {{ number_format($weightcsr, 2) }}%
                                         </td>
                                     </tr>
                                 </tbody>
@@ -320,7 +325,7 @@
                                             background-color: green; color: white; /* Hijau */
                                             @elseif ($indexoperasionalpmg> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">{{ number_format($indexoperasionalpmg, 2) }}%                                                    
+                                            @endif">{{ number_format($indexoperasionalpmg, 2) }}%
                                         </td>
                                     </tr>
                                     <tr>
@@ -360,7 +365,7 @@
                                             background-color: green; color: white; /* Hijau */
                                             @elseif ($indexoperatingcost> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">  {{ number_format($indexoperatingcost, 2) }}%                                                   
+                                            @endif"> {{ number_format($indexoperatingcost, 2) }}%
                                         </td>
                                     </tr>
                                     <tr>
@@ -400,7 +405,7 @@
                                             background-color: green; color: white; /* Hijau */
                                             @elseif ($indexoperasionalpmg> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">{{ number_format($indexoperasionalpmg, 2) }}%                                                    
+                                            @endif">{{ number_format($indexoperasionalpmg, 2) }}%
                                         </td>
                                     </tr>
                                     <tr>
@@ -442,7 +447,7 @@
                                             background-color: green; color: white; /* Hijau */
                                             @elseif ($indexnetprofitmg> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">  {{ number_format($indexnetprofitmg, 2) }}%                                                  
+                                            @endif"> {{ number_format($indexnetprofitmg, 2) }}%
                                         </td>
                                     </tr>
                                     <tr>
@@ -540,25 +545,25 @@
                     </div>
                 </div>
 
-                            
-                    
+
+
                 <div class="row mt-1" style="border: 2px solid black;">
                     <div class="col" style="text-align-end">
                         <h4 style="margin-top: 10px;">COSTUMER PERSPECTIVE</h4>
                     </div>
                     <div class="col text-end">
-                        <h5 style="margin-top: 10px; font-size: 1.25rem;"> 
+                        <h5 style="margin-top: 10px; font-size: 1.25rem;">
                             WEIGHT: 15%
                         </h5>
                     </div>
                 </div>
                 <div class="row mt-1">
                     <!-- Persentase di sebelah kiri -->
-                    <div class="col-2 d-flex justify-content-center align-items-center" 
+                    <div class="col-2 d-flex justify-content-center align-items-center"
                         style="background-color: #f4e2cd; font-size: 2em; font-weight: bold; text-align: center;">
                         59%
                     </div>
-                
+
                     <!-- Kolom untuk Tabel -->
                     <div class="col">
                         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
@@ -658,7 +663,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            
+
 
                             <!-- Tabel Barging -->
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
@@ -705,7 +710,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            
+
                             <!-- Tabel Domestik -->
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead style="background-color: rgb(107, 255, 149);">
@@ -744,17 +749,17 @@
                                             {{ $results['Domestik']['Index'] }}%
                                         </td>
                                     </tr>
-                                    
+
                                     <tr>
                                         <td>Weight</td>
                                         <td class="text-end" style=" vertical-align: middle; color: white;">
                                             5,00%
-                                            
+
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                        
+
                             <!-- Tabel Ekspor -->
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead style="background-color: rgb(107, 255, 149);">
@@ -767,7 +772,7 @@
                                         <td>Plan</td>
                                         <td class="text-end">{{ $results['Ekspor']['Plan'] }}</td>
                                     </tr>
-                                    <tr >
+                                    <tr>
                                         <td>Actual</td>
                                         <td class="text-end"> {{ $results['Ekspor']['Actual'] }}</td>
                                     </tr>
@@ -796,46 +801,46 @@
                     </div>
                 </div>
               
-                <div class="row mt-1" style="border: 2px solid black;">
-                    <div class="col" style="text-align-end">
-                        <h4 style="margin-top: 10px;">INTERNAL PROCESS PERSPECTIVE</h4>
-                    </div>
-                    <div class="col text-end">
-                        <h5 style="margin-top: 10px; font-size: 1.25rem;"> 
-                            WEIGHT: 30%
-                        </h5>
-                    </div>
-                </div>
-                    <div class="row mt-1">
-                        <!-- Persentase di sebelah kiri -->
-                        <div class="col-2 d-flex justify-content-center align-items-center" 
-                            style="background-color: #f4e2cd; font-size: 2em; font-weight: bold; text-align: center;">
-                            59%
+                <div class=" row mt-1" style="border: 2px solid black;">
+                                            <div class="col" style="text-align-end">
+                                                <h4 style="margin-top: 10px;">INTERNAL PROCESS PERSPECTIVE</h4>
+                                            </div>
+                                            <div class="col text-end">
+                                                <h5 style="margin-top: 10px; font-size: 1.25rem;">
+                                                    WEIGHT: 30%
+                                                </h5>
+                                            </div>
                         </div>
-                
-                    
-                        <div class="col">
-                        <!-- Grid layout untuk tabel yang disusun secara horizontal -->
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                            <!-- Fleet Productivity (Coal) -->
-                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                                <thead style="background-color: rgb(107, 255, 149);">
-                                    <tr>
-                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Fleet Productivity (Coal)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Plan</td>
-                                        <td>{{ number_format($totalPlancoal, 0, ',', '.') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Actual</td>
-                                        <td>{{ number_format($totalActualcoal, 0, ',', '.') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
+                        <div class="row mt-1">
+                            <!-- Persentase di sebelah kiri -->
+                            <div class="col-2 d-flex justify-content-center align-items-center"
+                                style="background-color: #f4e2cd; font-size: 2em; font-weight: bold; text-align: center;">
+                                59%
+                            </div>
+
+
+                            <div class="col">
+                                <!-- Grid layout untuk tabel yang disusun secara horizontal -->
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                                    <!-- Fleet Productivity (Coal) -->
+                                    <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                        <thead style="background-color: rgb(107, 255, 149);">
+                                            <tr>
+                                                <th colspan="3" style="text-align: center; vertical-align: middle;">Fleet Productivity (Coal)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Plan</td>
+                                                <td>{{ number_format($totalPlancoal, 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Actual</td>
+                                                <td>{{ number_format($totalActualcoal, 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Index</td>
+                                                <td class="text-end" style="vertical-align: middle; 
                                             @if ($indexcoalgetting <= 75)
                                             background-color: black; color: white;
                                             @elseif ($indexcoalgetting > 75 && $indexcoalgetting <= 90)
@@ -849,32 +854,32 @@
                                                 background-color: rgb(0, 60, 255); color: white;
                                             @endif
                                             ">{{ number_format($indexcoalgetting, 0, ',', '.') }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Weight</td>
-                                        <td class="text-end">2,00%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <!-- Fleet Productivity (OB) -->
-                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                                <thead style="background-color: rgb(107, 255, 149);">
-                                    <tr>
-                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Fleet Productivity (OB)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Plan</td>
-                                        <td>{{ number_format($totalPlanob, 0, ',', '.') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Actual</td>
-                                        <td>{{ number_format($totalPlanob, 0, ',', '.') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
+                                            </tr>
+                                            <tr>
+                                                <td>Weight</td>
+                                                <td class="text-end">2,00%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- Fleet Productivity (OB) -->
+                                    <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                        <thead style="background-color: rgb(107, 255, 149);">
+                                            <tr>
+                                                <th colspan="3" style="text-align: center; vertical-align: middle;">Fleet Productivity (OB)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Plan</td>
+                                                <td>{{ number_format($totalPlanob, 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Actual</td>
+                                                <td>{{ number_format($totalPlanob, 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Index</td>
+                                                <td class="text-end" style="vertical-align: middle; 
                                                 @if ($indexoverburder <= 75)
                                                 background-color: black; color: white;
                                                 @elseif ($indexoverburder > 75 && $indexoverburder <= 90)
@@ -887,36 +892,36 @@
                                                 background-color: rgb(0, 42, 255); color: white;
                                                 @endif
                                             ">{{ number_format($indexoverburder, 0, ',', '.') }}%
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Weight</td>
-                                        <td class="text-end">2,00%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Weight</td>
+                                                <td class="text-end">2,00%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                            <!-- Physical Availability (PA) Tables -->
-                            @foreach($unitpa as $item)
-                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                                <thead style="background-color: rgb(107, 255, 149);">
-                                    <tr>
-                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Physical Availability <br> PA {{ $item['units'] }}</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Plan</td>
-                                        <td>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Actual</td>
-                                        <td>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
+                                    <!-- Physical Availability (PA) Tables -->
+                                    @foreach($unitpa as $item)
+                                    <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                        <thead style="background-color: rgb(107, 255, 149);">
+                                            <tr>
+                                                <th colspan="3" style="text-align: center; vertical-align: middle;">Physical Availability <br> PA {{ $item['units'] }}</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Plan</td>
+                                                <td>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Actual</td>
+                                                <td>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Index</td>
+                                                <td class="text-end" style="vertical-align: middle; 
                                             @if ($indexoverburder <= 75)
                                             background-color: black; color: white;
                                             @elseif ($indexoverburder > 75 && $indexoverburder <= 90)
@@ -929,31 +934,32 @@
                                             background-color: rgb(0, 42, 255); color: white;
                                             @endif
                                             ">
-                                            {{ number_format($item['indexpa'], 0, ',', '.') }}%</td>
-                                        
-                                    </tr>
-                                </tbody>
-                            </table>
-                            @endforeach
-                            <!-- Mining Readiness -->
-                            <table style="border: 1px solid black; border-collapse: collapse; width: 16rem;" class="table table-bordered">
-                                <thead style="background-color: rgb(107, 255, 149);">
-                                    <tr>
-                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Mining Readiness</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Plan</td>
-                                        <td>100%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Actual</td>
-                                        <td>{{ number_format($finalAverage, 0, ',', '.') }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
+                                                    {{ number_format($item['indexpa'], 0, ',', '.') }}%
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    @endforeach
+                                    <!-- Mining Readiness -->
+                                    <table style="border: 1px solid black; border-collapse: collapse; width: 16rem;" class="table table-bordered">
+                                        <thead style="background-color: rgb(107, 255, 149);">
+                                            <tr>
+                                                <th colspan="3" style="text-align: center; vertical-align: middle;">Mining Readiness</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Plan</td>
+                                                <td>100%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Actual</td>
+                                                <td>{{ number_format($finalAverage, 0, ',', '.') }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Index</td>
+                                                <td class="text-end" style="vertical-align: middle; 
                                             @if ($indexcoalgetting <= 75)
                                             background-color: black; color: white;
                                             @elseif ($indexcoalgetting > 75 && $indexcoalgetting <= 90)
@@ -965,50 +971,56 @@
                                             @elseif ($indexcoalgetting > 190)
                                             background-color: rgb(0, 60, 255); color: white;
                                             @endif">{{ number_format($indexmining, 0, ',', '.') }}%
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Weight</td>
-                                        <td class="text-end">4,00%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Weight</td>
+                                                <td class="text-end">4,00%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="row mt-1" style="border: 2px solid black;">
-                    
-                    <div class="col" style="text-align: start;">
-                        <h4 style="margin-top: 10px;">LEARNING & GROWTH PERSPECTIVE</h4>
-                    </div>
-                    <div class="col text-end" style="width: 100%;">
-                        <h5 style="margin-top: 10px; font-size: 1.25rem;">WEIGHT: 20%</h5>
-                    </div>
-                </div>
-                
-                <div class="row mt-1">
-                    <div class="col-2 d-flex justify-content-center align-items-center" 
-                    style="background-color: #f4e2cd; font-size: 2em; font-weight: bold;">
-                    75%
-                </div>
-                <div class="col">
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: start; max-width: 50rem;">
-                        <!-- Tabel 1: People Readiness -->
-                        <table class="table table-bordered" 
-                            style="border: 1px solid black; border-collapse: collapse; width: 100%; height: 100%;">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">People Readiness</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>Plan</td><td>100%</td></tr>
-                                <tr><td>Actual</td><td>{{ number_format($totalpr, 0, ',', '.') }}%</td></tr>
-                                <tr>
-                                    <td>Index</td>
-                                    <td class="text-end" style="
+
+                        <div class="row mt-1" style="border: 2px solid black;">
+
+                            <div class="col" style="text-align: start;">
+                                <h4 style="margin-top: 10px;">LEARNING & GROWTH PERSPECTIVE</h4>
+                            </div>
+                            <div class="col text-end" style="width: 100%;">
+                                <h5 style="margin-top: 10px; font-size: 1.25rem;">WEIGHT: 20%</h5>
+                            </div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="col-2 d-flex justify-content-center align-items-center"
+                                style="background-color: #f4e2cd; font-size: 2em; font-weight: bold;">
+                                75%
+                            </div>
+                            <div class="col">
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: start; max-width: 50rem;">
+                                    <!-- Tabel 1: People Readiness -->
+                                    <table class="table table-bordered"
+                                        style="border: 1px solid black; border-collapse: collapse; width: 100%; height: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">People Readiness</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Plan</td>
+                                                <td>100%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Actual</td>
+                                                <td>{{ number_format($totalpr, 0, ',', '.') }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Index</td>
+                                                <td class="text-end" style="
                                         @if ($indexpeople <= 75)
                                         background-color: black; color: white;
                                         @elseif ($indexpeople > 75 && $indexpeople <= 90)
@@ -1020,27 +1032,36 @@
                                         @elseif ($indexpeople > 190)
                                         background-color: rgb(0, 60, 255); color: white;
                                         @endif">
-                                        {{ number_format($indexpeople, 0, ',', '.') }}%
-                                    </td>
-                                </tr>
-                                <tr><td>Weight</td><td class="text-end">10,00%</td></tr>
-                            </tbody>
-                        </table>
-                    
-                        <!-- Tabel 2: Infrastructure Readiness -->
-                        <table class="table table-bordered" 
-                            style="border: 1px solid black; border-collapse: collapse; width: 100%; height: 100%;">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Infrastructure Readiness</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>Plan</td><td>100%</td></tr>
-                                <tr><td>Actual</td><td>{{ number_format($averagePerformance, 0, ',', '.') }}%</td></tr>
-                                <tr>
-                                    <td>Index</td>
-                                    <td class="text-end" style="
+                                                    {{ number_format($indexpeople, 0, ',', '.') }}%
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Weight</td>
+                                                <td class="text-end">10,00%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- Tabel 2: Infrastructure Readiness -->
+                                    <table class="table table-bordered"
+                                        style="border: 1px solid black; border-collapse: collapse; width: 100%; height: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Infrastructure Readiness</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Plan</td>
+                                                <td>100%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Actual</td>
+                                                <td>{{ number_format($averagePerformance, 0, ',', '.') }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Index</td>
+                                                <td class="text-end" style="
                                         @if ($indexinfra <= 75)
                                         background-color: black; color: white;
                                         
@@ -1053,68 +1074,73 @@
                                         @elseif ($indexinfra > 190)
                                         background-color: rgb(0, 60, 255); color: white;
                                         @endif">
-                                        {{ number_format($indexinfra, 0, ',', '.') }}%
-                                    </td>
-                                </tr>
-                                <tr><td>Weight</td><td class="text-end">10,00%</td></tr>
-                            </tbody>
-                        </table>
+                                                    {{ number_format($indexinfra, 0, ',', '.') }}%
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Weight</td>
+                                                <td class="text-end">10,00%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                        <!-- Struktur Organisasi (Diturunkan sedikit) -->
-                        <div class="mt-3" style="width: 16rem; height: 2rem; background-color: rgb(107, 255, 149); border: 2px solid black; border-radius: 5px;
+                                    <!-- Struktur Organisasi (Diturunkan sedikit) -->
+                                    <div class="mt-3" style="width: 16rem; height: 2rem; background-color: rgb(107, 255, 149); border: 2px solid black; border-radius: 5px;
                             display: flex; justify-content: center; align-items: center;">
-                            <a href="{{ route('struktur') }}" target="_blank" style="text-decoration: none; color: inherit;">
-                                    Struktur Organisasi
-                            </a>
+                                        <a href="{{ route('struktur') }}" target="_blank" style="text-decoration: none; color: inherit;">
+                                            Struktur Organisasi
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-@endif
-                        
-@endsection
-@section('scripts')
-@endsection
-<script>
-    function updateCompanyName() {
-        var select = document.getElementById("id_company");
-        var selectedOption = select.options[select.selectedIndex];
-        var companyName = selectedOption.getAttribute("data-nama") || "No Company Selected";
-        document.getElementById("selectedCompanyName").innerText = companyName;
-    }
+                        @endif
 
-    // Set initial company name on page load
-    document.addEventListener("DOMContentLoaded", function() {
-        updateCompanyName();
-    });
-</script>              
-                        
+                        @endsection
+                        @section('scripts')
+                        @endsection
+                        <script>
+                            function updateCompanyName() {
+                                var select = document.getElementById("id_company");
+                                var selectedOption = select.options[select.selectedIndex];
+                                var companyName = selectedOption.getAttribute("data-nama") || "No Company Selected";
+                                document.getElementById("selectedCompanyName").innerText = companyName;
+                            }
+
+                            // Set initial company name on page load
+                            document.addEventListener("DOMContentLoaded", function() {
+                                updateCompanyName();
+                            });
+                        </script>
 
 
-<style>
-    .table{
-        background-color: #f8f9fa;
-      margin-top: 10px;  
-    }
-    .table thead {
-    font-family: "Poppins", sans-serif;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 120%;
-    background-color:rgb(107, 255, 149);
-    text-align: center;
-}
-.table tbody td { 
-    color: black;
-    font-family: "Arial", sans-serif;
-    
-}
-td:first-child {
-    text-align: start;
-}
 
-td:last-child {
-    text-align: end;
-}
+                        <style>
+                            .table {
+                                background-color: #f8f9fa;
+                                margin-top: 10px;
+                            }
 
-</style>
+                            .table thead {
+                                font-family: "Poppins", sans-serif;
+                                font-weight: bold;
+                                text-transform: uppercase;
+                                font-size: 120%;
+                                background-color: rgb(107, 255, 149);
+                                text-align: center;
+                            }
+
+                            .table tbody td {
+                                color: black;
+                                font-family: "Arial", sans-serif;
+
+                            }
+
+                            td:first-child {
+                                text-align: start;
+                            }
+
+                            td:last-child {
+                                text-align: end;
+                            }
+                        </style>

@@ -87,7 +87,7 @@
                             Filter
                         </button>
                     </form>
-                    <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y:auto; overflow-x:auto;">
                         <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
                             <colgroup>
                                 <col style="width: 5%;">
@@ -225,7 +225,7 @@
                                 @endforeach
                                 <tr>
                                     @if($jenis['jenis_name'] == 'Operating Profit')
-                                    <th colspan="2" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">Total General & Administration</th>
+                                    <th colspan="2" style="color:black; background-color:rgb(244, 244, 244); text-align: start; font-size: small;">Total General & Administration</th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($planoperasional, 2) }}
                                     </th>
@@ -257,7 +257,7 @@
 
 
 
-                                    <th colspan="2" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">{{ $jenisName}} </th>
+                                    <th colspan="2" style="color:black; background-color:rgb(244, 244, 244); text-align: start;">{{ $jenisName}} </th>
                                     @if ($jenis['jenis_name'] == 'Gross Profit')
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($totalplanlr, 2) }}
@@ -283,7 +283,7 @@
                                         {{ number_format($persenlr, 2) }}%
                                     </th>
 
-                                    <th colspan="5" style="color:black; background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                    <th colspan="5" style="color:black; background-color:rgb(244, 244, 244); text-align: star;"></th>
                                     @elseif($jenis['jenis_name'] == 'Operating Profit')
                                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($totalplanlp, 2) }}

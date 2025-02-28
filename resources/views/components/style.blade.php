@@ -17,6 +17,7 @@
         color: #333;
         /* text-align: center; */
         padding: 8px;
+        text-transform: capitalize;
         vertical-align: middle;
         border: 1px solid #ddd;
         background-color: rgb(0, 0, 0);
