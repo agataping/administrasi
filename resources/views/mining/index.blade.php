@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Meaning Readines')
+@section('title', 'Mining Readines')
 @section('content')
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
@@ -10,7 +10,7 @@
     <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <h3 class="mb-3">Meaning Readines</h3>
+                <h3 class="mb-3">Mining Readines</h3>
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -30,7 +30,7 @@
                     <div class="col-auto">
                         <form action="{{ route('FormKategori') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
-                            <button type="submit" class="btn btn-custom">Add Kategori</button>
+                            <button type="submit" class="btn btn-custom">Add Category</button>
                         </form>
                     </div>
                     <div class="col-auto">
@@ -40,7 +40,12 @@
                         </form>
                     </div>
                 </div>
-
+                <div class="row justify-content-start ">
+                    <div class="col-auto">
+                        <a href="/categorymining">View category Data
+                        </a>
+                    </div>
+                </div>
                 <!-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexmining') }}" id="filterForm">
@@ -116,7 +121,9 @@
                                 <td style="text-align: center; vertical-align: middle;">{{ $d->Description ?? '-' }}</td>
                                 <td style="text-align: center; vertical-align: middle;">{{ $d->NomerLegalitas ?? '-' }}</td>
                                 <td style="text-align: center; vertical-align: middle;">{{ $d->status ?? '-' }}</td>
-                                <td style="text-align: center; vertical-align: middle;">{{ $d->tanggal ?? '-' }}</td>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    {{ \Carbon\Carbon::parse($d->tanggal)->format('d-m-Y') }}
+                                </td>
                                 <td style="text-align: center; vertical-align: middle;">{{ $d->berlaku ?? '-' }}</td>
                                 <td style="text-align: center; vertical-align: middle;">{{ $d->filling ?? '-' }}</td>
                                 <td style="text-align: center; vertical-align: middle;">{{ $d->Achievement ?? '-' }} </td>
@@ -136,14 +143,14 @@
                             </tr>
                             @endforeach
                             <tr>
-                                <th colspan="9" style="text-align: end; background-color:rgb(244, 244, 244);">Total</th>
+                                <th colspan="7" style="text-align: end; background-color:rgb(244, 244, 244);">Total</th>
                                 <th style="background-color:rgb(244, 244, 244); text-align: center;">
                                     {{ round($d->average_achievement, 2) }}%
                                 </th>
                             </tr>
                             @endforeach
                             <tr>
-                                <th colspan="9" style="text-align: end; background-color: rgb(244, 244, 244);">Legal Aspect</th>
+                                <th colspan="7" style="text-align: end; background-color: rgb(244, 244, 244);">Legal Aspect</th>
                                 <th style="background-color: rgb(244, 244, 244); text-align: center;">
                                     {{ round($totalAspect , 2) }}%
                                 </th>

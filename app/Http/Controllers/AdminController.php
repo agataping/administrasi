@@ -13,16 +13,23 @@ class AdminController extends Controller
 {
     public function historylog(Request $request)
     {
+        $user = Auth::user(); // Ambil user yang sedang login
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');  
+    
         $query = DB::table('history_logs')
-        ->join('users', 'history_logs.user_id', '=', 'users.id')
-        ->select('history_logs.*', 'users.username');
+            ->join('users', 'history_logs.user_id', '=', 'users.id')
+            ->select('history_logs.*', 'users.username')
+            ->where('users.id_company', $user->id_company); // Filter berdasarkan id_company user yang login
+    
         if ($startDate && $endDate) {
             $query->whereBetween('history_logs.created_at', [$startDate, $endDate]);
         }
+    
         $data = $query->paginate(15);
-        return view('historylog.index',compact('data'));
+    
+        return view('historylog.index', compact('data'));
     }
+        
     
 }

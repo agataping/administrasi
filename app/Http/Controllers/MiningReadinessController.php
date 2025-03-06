@@ -147,8 +147,51 @@ class MiningReadinessController extends Controller
 
         return redirect('/indexmining')->with('success', 'Data savedsuccessfully.');
     }
+    public function deletecategorymining ($id)
+    {
+        $data = KategoriMiniR::findOrFail($id);
+        $oldData = $data->toArray();
 
+        $data->delete();
 
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'kategori_mini_r_s',
+            'record_id' => $id,
+            'action' => 'delete',
+            'old_data' => json_encode($oldData),
+            'new_data' => null,
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->with('success', 'Data deleted successfully.');
+    }
+
+    public function categorymining(Request $request)
+    {
+        $user = Auth::user();
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+        $query = DB::table('kategori_mini_r_s')
+        ->select('kategori_mini_r_s.*')
+        ->leftJoin('users', 'kategori_mini_r_s.created_by', '=', 'users.username')
+        ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('users.id_company', $companyId);
+            }
+        }
+    
+        $data = $query->get(); 
+        
+        // dd($data);
+        return view('mining.indexcategory', compact('data'));
+    }
     public function FormMining()
     {
         $kategori = KategoriMiniR::all();

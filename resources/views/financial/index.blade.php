@@ -95,12 +95,24 @@
                         <table class="table table-bordered" id="myTable">
                             <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                                 <tr>
-                                    <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
-                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
-                                    <th colspan="" style="vertical-align: middle; text-align: center;">Debit</th>
-                                    <th colspan="" style="vertical-align: middle; text-align: center;">Credit</th>
-                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">Date</th>
-                                    <th colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
+                                    <th rowspan="2" style="vertical-align: middle; text-align: center;">No</th>
+                                    <th rowspan="2" style="vertical-align: middle;  text-align: center;">Description</th>
+                                    <th colspan="3" style="vertical-align: middle; text-align: center;">plan</th>
+                                    <th colspan="3" style="vertical-align: middle; text-align: center;">actual</th>
+                                    <th rowspan="2" style="vertical-align: middle;  text-align: center;">Date</th>
+                                    <th colspan="2" rowspan="2" style="vertical-align: middle; text-align: center;">Action</th>
+                                </tr>
+
+                                <tr>
+                                    <th rowspan="" style="vertical-align: middle; text-align: center;">Debit</th>
+                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">credit</th>
+                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">file</th>
+
+                                    <th rowspan="" style="vertical-align: middle; text-align: center;">Debit</th>
+                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">credit</th>
+                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">file</th>
+
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -112,6 +124,11 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                    <td></td>
                                     <td style="text-align: center; vertical-align: middle;" rowspan="">
                                         <form action="{{ route('formupdatecatneraca', ['id' => $total['category_id']]) }}">
                                             <button type="submit" class="btn btn-primary btn-sm">Edit</button>
@@ -121,10 +138,16 @@
                                 </tr>
                                 {{-- Tampilkan Sub-Kategori --}}
                                 @foreach ($total['sub_categories'] as $subIndex => $subCategory)
-                                <tr>
+                                <tr data-toggle="collapse" data-target="#detail-{{ Str::slug($subCategory['sub_category'], '-') }}" style="cursor: pointer;">
+
                                     <td style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</td>
                                     <td>{{ $subCategory['sub_category'] }}</td>
+                                    <td>{{ number_format($subCategory['sub_total_debit']) }}</td>
+                                    <td>{{ number_format ($subCategory['sub_total_credit']) }}</td>
                                     <td></td>
+                                    <td>{{ number_format($subCategory['sub_total_debitactual']) }}</td>
+                                    <td>{{ number_format ($subCategory['sub_total_creditactual']) }}</td>
+
                                     <td></td>
                                     <td></td>
                                     <td style="text-align: center; vertical-align: middle;" rowspan="">
@@ -139,36 +162,83 @@
                                         </form>
                                     </td>
                                 </tr>
-                                @foreach ($subCategory['details'] as $detailIndex => $detail)
-                                <tr>
-                                    <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
-                                    <td>{{ $detail['name'] }}</td>
-                                    <td style="text-align: right;">{{ number_format($detail['debit'], ) }}</td>
-                                    <td style="text-align: right;">{{ number_format($detail['credit'], ) }}</td>
-                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($detail['tanggal'])->format('d-m-Y') }}</td>
-                                    <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                        <form action="{{ route('formupdatefinancial', ['id' => $detail['id']]) }}">
-                                            <button type="submit" class="btn btn-primary btn-sm">Edit</button>
-                                        </form>
-                                    </td>
-                                    <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                        <form action="{{ route('deletefinancial', $detail['id']) }}" method="POST" onsubmit="return confirmDelete(event)"> @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                        </form>
+                                <tr id="detail-{{ Str::slug($subCategory['sub_category'], '-') }}" class="d-none">
+                                    <td colspan="7">
+                                        <table class="table table-bordered" style=" width: 100%; border-collapse: collapse;">
+                                            <tbody>
+
+                                                @foreach ($subCategory['details'] as $detailIndex => $detail)
+                                                <tr>
+                                                    <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
+                                                    <td>{{ $detail['name'] }}</td>
+                                                    <td style=" text-align: end;">{{ number_format($detail['debit'],2 ) }}</td>
+                                                    <td style="text-align: end;">{{ number_format($detail['credit'], ) }}</td>
+                                                    <td>
+                                                        @if (!empty($detail['fileplan']))
+                                                        <a href="{{ asset('storage/' . $detail['fileplan']) }}" class="text-decoration-none" target="_blank">View File</a>
+                                                        @else
+                                                        <span class="text-muted">No File</span>
+                                                        @endif
+                                                    </td>
+                                                    <td style=" text-align: end;">{{ number_format($detail['debit_actual'], 2) }}</td>
+                                                    <td style="text-align: end;">{{ number_format($detail['credit_actual'],2 ) }}</td>
+                                                    <td>
+                                                        @if (!empty($detail['fileactual']))
+                                                        <a href="{{ asset('storage/' . $detail['fileactual']) }}" class="text-decoration-none" target="_blank">View File</a>
+                                                        @else
+                                                        <span class="text-muted">No File</span>
+                                                        @endif
+                                                    </td>
+
+                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($detail['tanggal'])->format('d-m-Y') }}</td>
+                                                    <td style="text-align: center; vertical-align: middle;" rowspan="">
+                                                        <form action="{{ route('formupdatefinancial', ['id' => $detail['id']]) }}">
+                                                            <button type="submit" class="btn btn-primary btn-sm">Edit</button>
+                                                        </form>
+                                                    </td>
+                                                    <td style="text-align: center; vertical-align: middle;" rowspan="">
+                                                        <form action="{{ route('deletefinancial', $detail['id']) }}" method="POST" onsubmit="return confirmDelete(event)"> @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+
+                                        </table>
                                     </td>
                                 </tr>
-                                @endforeach
+
                                 @endforeach
                                 <tr>
+                                    @if (in_array($total['category_name'], ['CURRENT ASSETS', 'FIX ASSETS']))
                                     <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
-                                        {{ number_format($total['total']['debit'] ?? 0, 2) }}
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['total']['credit'] ?? 0, 2) }}</td>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">
+                                        {{ number_format($total['subTotalplanasset'], 2) }}
+                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['subTotalSaldoActualasset'], 2) }}</td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                    @endif
+
                                 </tr>
+                                @if (in_array($total['category_name'], ['LIABILITIES', 'EQUITY']))
+                                <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</td>
+                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">
+                                    {{ number_format($total['subTotalplanmodalhutang'], 2) }}
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+
+                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['subTotalSaldoActualmodalhutang'], 2) }}</td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                @endif
+
+                                </tr>
+
                                 <tr>
                                     @if ($total['category_name'] == 'CURRENT ASSETS')
                                     <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</td>
@@ -181,12 +251,9 @@
                                 </tr>
                                 <tr>
                                     @if ($total['category_name'] == 'EQUITY')
-                                    <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL LIABILITIES AND EQUITY :</td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td> 
                                     @endif
                                 </tr>
                                 @endforeach
@@ -221,5 +288,21 @@
 @endsection
 @section('scripts')
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll("[data-toggle='collapse']").forEach(function(row) {
+            row.addEventListener("click", function() {
+                let targetId = this.getAttribute("data-target").substring(1); // Hapus '#' dari id
+                let targetElement = document.getElementById(targetId);
+
+                if (targetElement.classList.contains("d-none")) {
+                    targetElement.classList.remove("d-none"); // Tampilkan
+                } else {
+                    targetElement.classList.add("d-none"); // Sembunyikan
+                }
+            });
+        });
+    });
+</script>
 
 @endsection

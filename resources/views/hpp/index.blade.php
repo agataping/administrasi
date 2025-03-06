@@ -58,7 +58,7 @@
                             <th rowspan="2" style="vertical-align: middle; text-align: center;">Uraian</th>
                             <th colspan="2" style="text-align: center;">Tahun {{$year ?? 'Semua Tahun' }}</th>
                             <th rowspan="2" style="text-align: center; vertical-align: middle;">created_by</th>
-                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Aksi</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Action</th>
 
                         </tr>
                         <tr>

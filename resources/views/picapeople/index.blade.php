@@ -79,7 +79,7 @@
                                 <th style="vertical-align: middle; text-align: center;">PIC</th>
                                 <th style="vertical-align: middle; text-align: center;">Status</th>
                                 <th style="vertical-align: middle; text-align: center;">Remerks</th>
-                                <th rowspan="2" colspan="2" style="vertical-align: middle; text-align: center;">Aksi</th>
+                                <th rowspan="2" colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
                             </tr>
                         </thead>
                         <tbody>

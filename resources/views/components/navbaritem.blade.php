@@ -1,4 +1,5 @@
 @extends('components.header')
+@extends('components.style')
 @section('title', '')
 <style>
     .nav-item:hover .dropdown-menu {
@@ -86,7 +87,7 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" aria-expanded="false">Learning & Growth Perspective</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="/struktur">Struktur Organisasi</a></li>
+                <li><a class="dropdown-item" href="/struktur">Organizational Structure</a></li>
                 <li><a class="dropdown-item" href="/indexPeople">People Readiness</a></li>
                 <li><a class="dropdown-item" href="/indexpicapeople">PICA People Readiness</a></li>
                 <li><a class="dropdown-item" href="/indexInfrastructureReadiness">Infrastructure Readiness</a></li>
@@ -115,6 +116,12 @@
                 {{ Auth::user()->name }}
             </li>
             <li>
+                <button class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#updatePasswordModal" style="gap: 0.5rem;">
+                    <i class="fas fa-key"></i>
+                    Update Password
+                </button>
+            </li>
+            <li>
                 <hr class="dropdown-divider">
             </li>
             <li>
@@ -136,5 +143,36 @@
         <i onclick="history.back()" class="fa fa-arrow-left" style="cursor: pointer; font-size: 20px; color: white; margin-right: 7px;"></i>
         <i onclick="history.forward()" class="fa fa-arrow-right" style="cursor: pointer; font-size: 20px; color: white; margin-right: 7px;"></i>
         <i onclick="location.reload()" class="fa fa-sync" style="cursor: pointer; font-size: 20px; color: white;"></i>
+    </div>
+</div>
+<div class="modal fade" id="updatePasswordModal" tabindex="-1" aria-labelledby="updatePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updatePasswordModalLabel">Update Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('updatePassword') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Old Password</label>
+                        <input type="password" name="current_password" id="current_password" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" name="new_password" id="new_password" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
+                        <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>

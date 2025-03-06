@@ -59,9 +59,9 @@
                 <div class="" style="overflow-x:auto;">
                     <form method="GET" action="{{ route('indexmenu') }}" style="text-transform: uppercase; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                         <div style="display: flex; align-items: center; gap: 7px;">
-                            <label for="category" style="font-weight: bold;">Filter Kategori:</label>
+                            <label for="category" style="font-weight: bold;">Filter category:</label>
                             <select name="kuota" id="category" class="form-control" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; min-width: 200px;">
-                                <option value="">-- Semua Kategori --</option>
+                                <option value="">--All Categories --</option>
                                 <option value="Ekspor">Ekspor</option>
                                 <option value="Domestik">Domestik</option>
                             </select>

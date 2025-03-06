@@ -25,7 +25,7 @@
                         @endforeach
                     </ul>
                 </div>
-                @endifxa
+                @endif
 
                 <form action="{{ route('createhse') }}" method="post" enctype="multipart/form-data">
                     @csrf

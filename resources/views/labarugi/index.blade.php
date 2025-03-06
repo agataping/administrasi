@@ -170,7 +170,7 @@
                                     <td colspan="12">
                                         <table class="table table-bordered" style=" width: 100%; border-collapse: collapse;">
                                             <colgroup>
-                                                <col style="width: %;">
+                                                <col style="width: 5%;">
                                                 <col style="width: 14%;">
                                                 <col style="width: 14%;">
                                                 <col style="width: 9%;">

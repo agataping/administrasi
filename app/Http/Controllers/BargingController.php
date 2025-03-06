@@ -130,7 +130,7 @@ class BargingController extends Controller
             $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
         }
         
-        // Tambahkan filter kategori jika ada
+        // Tambahkan Old Password:ori jika ada
         if ($kuota) {
             $query->where('bargings.kuota', $kuota);
         }

@@ -48,7 +48,54 @@ class HseController extends Controller
                 $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
             });
         });
+
         return view('hse.index', compact('data', 'perusahaans', 'companyId'));
+    }
+    public function indexcategoryhse(Request $request)
+    {
+        $user = Auth::user();
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+        $query = DB::table('kategori_hses')
+        ->select('kategori_hses.*')
+        ->leftJoin('users', 'kategori_hses.created_by', '=', 'users.username')
+        ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+    
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('users.id_company', $companyId);
+            }
+        }
+    
+        $data = $query->get(); 
+        // $data = DB::table('kategori_hses')->get();
+        
+        // dd($data);
+        return view('hse.indexcategory', compact('data'));
+    }
+
+    public function deletecategoryhse($id)
+    {
+        $data = kategoriHse::findOrFail($id);
+        $oldData = $data->toArray();
+
+        $data->delete();
+
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'kategori_hses',
+            'record_id' => $id,
+            'action' => 'delete',
+            'old_data' => json_encode($oldData),
+            'new_data' => null,
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->with('success', 'Data deleted successfully.');
     }
 
     public function formkategorihse()
@@ -219,7 +266,7 @@ class HseController extends Controller
 
         // Simpan log ke tabel history_logs
         HistoryLog::create([
-            'table_name' => 'indexhse',
+            'table_name' => 'hses',
             'record_id' => $id,
             'action' => 'delete',
             'old_data' => json_encode($oldData),

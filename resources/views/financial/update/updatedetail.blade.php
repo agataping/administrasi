@@ -9,7 +9,7 @@
         <div class="card-body">
             <div class="col-12">
                 <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
-                    <h3 class="mb-3">Update Data Detail Balnce sheet</h3>
+                    <h3 class="mb-3">Update Data Detail Balence sheet</h3>
                 </a>
 
                 @if (session('success'))
@@ -53,19 +53,48 @@
                         <input type="text" id="name" name="name" value="{{$data->name}}" plhaceholder="Cth. Mandiri Hauling Dll" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; " required>
                     </div>
 
-
-
-
-
-                    <div id="" class="form-group">
-                        <label for="actual">Debit</label>
-                        <input type="text" class="form-control" id="actual" name="debit" value="{{$data->debit}}">
+                    <div id="debitplan" class="form-group" style="display: none;">
+                        <label for="actual">Debit plan</label>
+                        <input type="text" class="form-control" id="debitplan" name="debit" value="{{$data->debit}}">
                     </div>
-                    <div id="" class="form-group">
-                        <label for="actual">Credit</label>
-                        <input type="text" class="form-control" id="actual" name="credit" value="{{$data->credit}}">
+                    <div id="creditplan" class="form-group" style="display: none;">
+                        <label for="actual">Credit plan </label>
+                        <input type="text" class="form-control" id="creditplan" name="credit" value="{{$data->credit}}">
+                    </div>
+                    <div id="fileplan" style="display: none;" class="form-group">
+                        <label for="fileplan">File Plan</label>
+                        <input type="file" class="form-control" name="fileplan">
+
+                        @if (!empty($data->fileplan))
+                        <a href="{{ asset('storage/' . $data->fileplan) }}" class="text-decoration-none" target="_blank">View File Plan</a>
+                        @else
+                        <span class="text-muted">No File</span>
+                        @endif
                     </div>
 
+                    <div id="debitactual" class="form-group" style="display: none;">
+                        <label for="actual">Debit actual</label>
+                        <input type="text" class="form-control" id="debitactual" name="debit_actual" value="{{$data->debit_actual}}">
+                    </div>
+
+                    <div id="creditactual" class="form-group" style="display: none;">
+                        <label for="actual">Credit actual</label>
+                        <input type="text" class="form-control" id="creditactual" name="credit_actual" value="{{$data->credit_actual}}">
+                    </div>
+                    <div id="fileactual" style="display: none;" class="form-group">
+                        <label for="fileactual">File Actual</label>
+                        <input type="file" class="form-control" name="fileactual">
+
+                        @if (!empty($data->fileactual))
+                        <a href="{{ asset('storage/' . $data->fileactual) }}" class="text-decoration-none" target="_blank">View File</a>
+                        @else
+                        <span class="text-muted">No File Plan</span>
+                        @endif
+                    </div>
+                    <div class="d-flex justify-content-end mt-3" style="display: none;">
+                        <button type="button" id="planBtn" class="btn">Add Plan</button>
+                        <button type="button" id="actualBtn" class="btn ml-2">Add Actual</button>
+                    </div>
 
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn-block btn-lg gradient-custom-4"
@@ -80,4 +109,26 @@
 @endsection
 
 @section('scripts')
+<script>
+    document.getElementById('planBtn').addEventListener('click', function() {
+        document.getElementById('debitactual').style.display = 'none';
+        document.getElementById('creditactual').style.display = 'none';
+        document.getElementById('fileactual').style.display = 'none';
+
+        document.getElementById('fileplan').style.display = 'block';
+        document.getElementById('debitplan').style.display = 'block';
+        document.getElementById('creditplan').style.display = 'block';
+    });
+
+    document.getElementById('actualBtn').addEventListener('click', function() {
+        document.getElementById('debitactual').style.display = 'block';
+        document.getElementById('creditactual').style.display = 'block';
+        document.getElementById('fileactual').style.display = 'block';
+
+        document.getElementById('debitplan').style.display = 'none';
+        document.getElementById('creditplan').style.display = 'none';
+        document.getElementById('fileplan').style.display = 'none';
+
+    });
+</script>
 @endsection

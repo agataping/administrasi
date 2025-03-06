@@ -33,7 +33,7 @@
                         <a href="/formpicaewhfuel " class="btn btn-custom">Add data </a>
                     </div>
                 </div>
-                @if(auth()->user()->role === 'admin')
+                <!-- @if(auth()->user()->role === 'admin')
                 <form method="GET" action="{{ route('picaewhfuel') }}" id="filterForm">
                     <label for="id_company">Select Company:
                         <br>
@@ -47,7 +47,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif
+                @endif -->
 
                 <form method="GET" action="{{ route('picaewhfuel') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div>
@@ -78,7 +78,7 @@
                                 <th style="vertical-align: middle;">PIC</th>
                                 <th style="vertical-align: middle;">Status</th>
                                 <th style="vertical-align: middle;">Remerks</th>
-                                <th colspan="2" style="vertical-align: middle;">Aksi</th>
+                                <th colspan="2" style="vertical-align: middle;">Action</th>
                             </tr>
 
                         </thead>

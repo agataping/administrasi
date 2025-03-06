@@ -83,7 +83,7 @@
                                 <th style="vertical-align: middle;">Status</th>
                                 <th style="vertical-align: middle;">Remerks</th>
                                 <th style="vertical-align: middle;">created_by</th>
-                                <th colspan="2" style="vertical-align: middle;">Aksi</th>
+                                <th colspan="2" style="vertical-align: middle;">Action</th>
                             </tr>
 
                         </thead>

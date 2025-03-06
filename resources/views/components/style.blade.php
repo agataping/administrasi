@@ -1,4 +1,23 @@
 <style>
+    .nav-item:hover .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-menu .dropdown-item {
+        text-transform: uppercase;
+        font-optical-sizing: auto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: ;
+        color: rgb(255, 255, 255);
+    }
+
+    .dropdown-menu {
+        background: rgba(62, 61, 61, 0.47) !important;
+        backdrop-filter: blur(10px);
+        border-radius: 8px;
+        border: 2px solid rgba(0, 0, 0, 0.3);
+    }
     .metric:hover {
         transform: scale(1.05);
         transition: 0.3s ease-in-out;

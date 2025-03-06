@@ -5,8 +5,8 @@
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
-<div class="container-fluid mt-4 " >
-    <div class="card w-100 " >
+<div class="container-fluid mt-4 ">
+    <div class="card w-100 ">
         <div class="card-body">
             <div class="col-12">
                 <!-- @if(auth()->user()->role === 'admin')    
@@ -74,7 +74,6 @@
                 </div>
 
 
-
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
                 <div class="row mt-1" style="border: 2px solid black;">
 
@@ -93,9 +92,10 @@
                     </div>
                     <div class="col">
                         <!-- Grid layout untuk tabel yang disusun secara horizontal -->
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
 
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+
                                 <thead>
                                     <tr>
                                         <th colspan="3" style="text-align: center; vertical-align: middle;">
@@ -104,6 +104,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
                                             Plan</td>
@@ -157,12 +158,12 @@
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
                                             Plan</td>
-                                        <td>{{ number_format($plancogs, 2) }}</td>
+                                        <td>{{ number_format($totalplancogas, 2) }}</td>
                                     </tr>
                                     <tr>
 
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($actualcogs, 2) }}%</td>
+                                        <td>{{ number_format($totalactualcogas, 2) }}%</td>
 
                                     </tr>
                                     <tr>
@@ -1084,11 +1085,11 @@
                                         </tbody>
                                     </table>
 
-                                    <!-- Struktur Organisasi (Diturunkan sedikit) -->
+                                    <!-- Organizational Structure (Diturunkan sedikit) -->
                                     <div class="mt-3" style="width: 16rem; height: 2rem; background-color: rgb(107, 255, 149); border: 2px solid black; border-radius: 5px;
                             display: flex; justify-content: center; align-items: center;">
                                         <a href="{{ route('struktur') }}" target="_blank" style="text-decoration: none; color: inherit;">
-                                            Struktur Organisasi
+                                            Organizational Structure
                                         </a>
                                     </div>
                                 </div>

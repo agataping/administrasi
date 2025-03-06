@@ -46,7 +46,7 @@
                         <input type="hidden" name="KatgoriDescription" value="{{ $kategori->kategori }}">
 
                         <div class="form-group">
-                            <label for="nomor">Nomor</label>
+                            <label for="nomor">Number</label>
                             <input type="text" class="form-control" id="nomor" name="nomor" required>
                         </div>
 

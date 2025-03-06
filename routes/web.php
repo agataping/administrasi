@@ -61,9 +61,10 @@ Route::middleware('auth')->group(function () {
 //regitrasi akun
 Route::post('/daftar', [RegistrasiController::class, 'store']);
 Route::get('/register', [RegistrasiController::class, 'register'])->name('register');
+Route::post('/updatePassword', [RegistrasiController::class, 'updatePassword'])->name('updatePassword');
 
 // login
-Route::get('/login',[LoginController::class,'create'])->name('login');
+Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/signin', [loginController::class, 'authentication'])->middleware('guest');
 Route::post('/logout', [loginController::class, 'logout'])->middleware('auth');
 
@@ -103,6 +104,9 @@ Route::get('/FormMiningUpdate/{id}', [MiningReadinessController::class, 'FormMin
 Route::post('/UpdateMining/{id}', [MiningReadinessController::class, 'UpdateMining'])->middleware('auth')->name('UpdateMining');
 Route::delete('/deletemining/{id}', [MiningReadinessController::class, 'deletemining'])->middleware('auth')->name('deletemining');
 //kategori
+Route::get('/categorymining', [MiningReadinessController::class, 'categorymining'])->middleware('auth')->name('categorymining');
+Route::delete('/deletecategorymining/{id}', [MiningReadinessController::class, 'deletecategorymining'])->middleware('auth')->name('deletecategorymining');
+
 Route::get('/FormKategori', [MiningReadinessController::class, 'FormKategori'])->middleware('auth')->name('FormKategori');
 Route::post('/createKatgori', [MiningReadinessController::class, 'createKatgori'])->middleware('auth')->name('createKatgori');
 Route::get('/formupdatecategorymining/{id}', [MiningReadinessController::class, 'formupdatecategorymining'])->middleware('auth')->name('formupdatecategorymining');
@@ -126,6 +130,10 @@ Route::get('/formupdatehse/{id}', [HseController::class, 'formupdatehse'])->midd
 Route::post('/updatehse/{id}', [HseController::class, 'updatehse'])->middleware('auth')->name('updatehse');
 Route::delete('/deletehse/{id}', [HseController::class, 'deletehse'])->middleware('auth')->name('deletehse');
 //kategorihse
+
+Route::delete('/deletecategoryhse/{id}', [HseController::class, 'deletecategoryhse'])->middleware('auth')->name('deletecategoryhse');
+
+Route::get('/indexcategoryhse', [HseController::class, 'indexcategoryhse'])->middleware('auth')->name('indexcategoryhse');
 Route::get('/formupdatecategoryhse/{id}', [HseController::class, 'formupdatecategoryhse'])->middleware('auth')->name('formupdatecategoryhse');
 Route::post('/updatecategoryhse/{id}', [HseController::class, 'updatecategoryhse'])->middleware('auth')->name('updatecategoryhse');
 Route::get('/formkategorihse', [HseController::class, 'formkategorihse'])->middleware('auth')->name('formkategorihse');
@@ -287,14 +295,14 @@ Route::get('/indexfinancial', [DetailNeracaController::class, 'indexfinancial'])
 Route::get('/formfinanc', [DetailNeracaController::class, 'formfinanc'])->middleware('auth')->name('formfinanc');
 Route::get('/formupdatefinanc/{id}', [DetailNeracaController::class, 'formupdatefinanc'])->middleware('auth')->name('formupdatefinanc');
 Route::post('/createfinanc', [DetailNeracaController::class, 'createfinanc'])->middleware('auth')->name('createfinanc');
-Route::get ('/formupdatefinancial/{id}', [DetailNeracaController::class, 'formupdatefinancial'])->middleware('auth')->name('formupdatefinancial');
-Route::post ('/updatedetailfinan/{id}', [DetailNeracaController::class, 'updatedetailfinan'])->middleware('auth')->name('updatedetailfinan');
-Route::delete ('/deletefinancial/{id}', [DetailNeracaController::class, 'deletefinancial'])->middleware('auth')->name('deletefinancial');
+Route::get('/formupdatefinancial/{id}', [DetailNeracaController::class, 'formupdatefinancial'])->middleware('auth')->name('formupdatefinancial');
+Route::post('/updatedetailfinan/{id}', [DetailNeracaController::class, 'updatedetailfinan'])->middleware('auth')->name('updatedetailfinan');
+Route::delete('/deletefinancial/{id}', [DetailNeracaController::class, 'deletefinancial'])->middleware('auth')->name('deletefinancial');
 //category
 Route::get('/categoryneraca', [DetailNeracaController::class, 'categoryneraca'])->middleware('auth')->name('categoryneraca');
 Route::post('/createcategoryneraca', [DetailNeracaController::class, 'createcategoryneraca'])->middleware('auth')->name('createcategoryneraca');
-Route::get ('/formupdatecatneraca/{id}', [DetailNeracaController::class, 'formupdatecatneraca'])->middleware('auth')->name('formupdatecatneraca');
-Route::post ('/updatecatneraca/{id}', [DetailNeracaController::class, 'updatecatneraca'])->middleware('auth')->name('updatecatneraca');
+Route::get('/formupdatecatneraca/{id}', [DetailNeracaController::class, 'formupdatecatneraca'])->middleware('auth')->name('formupdatecatneraca');
+Route::post('/updatecatneraca/{id}', [DetailNeracaController::class, 'updatecatneraca'])->middleware('auth')->name('updatecatneraca');
 Route::get('/indexcategoryneraca', [DetailNeracaController::class, 'indexcategoryneraca'])->middleware('auth')->name('indexcategoryneraca');
 Route::delete('/deltecategoryneraca/{id}', [DetailNeracaController::class, 'deltecategoryneraca'])->middleware('auth')->name('deltecategoryneraca');
 
@@ -302,9 +310,9 @@ Route::delete('/deltecategoryneraca/{id}', [DetailNeracaController::class, 'delt
 Route::get('/indexsubneraca', [DetailNeracaController::class, 'indexsubneraca'])->middleware('auth')->name('indexsubneraca');
 Route::get('/subneraca', [DetailNeracaController::class, 'subneraca'])->middleware('auth')->name('subneraca');
 Route::post('/createsubneraca', [DetailNeracaController::class, 'createsubneraca'])->middleware('auth')->name('createsubneraca');
-Route::get ('/formupdatesubneraca/{id}', [DetailNeracaController::class, 'formupdatesubneraca'])->middleware('auth')->name('formupdatesubneraca');
-Route::post ('/updatesubneraca/{id}', [DetailNeracaController::class, 'updatesubneraca'])->middleware('auth')->name('updatesubneraca');
-Route::delete ('/deletesubfinan/{id}', [DetailNeracaController::class, 'deletesubfinan'])->middleware('auth')->name('deletesubfinan');
+Route::get('/formupdatesubneraca/{id}', [DetailNeracaController::class, 'formupdatesubneraca'])->middleware('auth')->name('formupdatesubneraca');
+Route::post('/updatesubneraca/{id}', [DetailNeracaController::class, 'updatesubneraca'])->middleware('auth')->name('updatesubneraca');
+Route::delete('/deletesubfinan/{id}', [DetailNeracaController::class, 'deletesubfinan'])->middleware('auth')->name('deletesubfinan');
 
 
 //hpp 

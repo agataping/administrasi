@@ -42,6 +42,13 @@
                         </form>
                     </div>
                 </div>
+                <div class="row justify-content-start ">
+                    <div class="col-auto">
+                        <a href="/indexcategoryhse">View category Data
+                        </a>
+                    </div>
+                </div>
+
                 <!-- @if(auth()->user()->role === 'admin')
                 <form method="GET" action="{{ route('indexhse') }}" id="filterForm">
                     <label for="id_company">Select Company:
