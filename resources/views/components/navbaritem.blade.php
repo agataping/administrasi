@@ -25,14 +25,18 @@
 
 <nav class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom" style="background-color: transparent; flex-wrap: nowrap;">
     <div class="d-flex align-items-center ms-3">
-        <!-- Logo Bulat -->
-        <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: white; margin-right: 10px;">
-            <img src="{{ asset('img/qubahGroup.jpeg') }}" alt="Logo"
-                style="width: 90%; height: 90%; object-fit: contain;">
-        </div>
+        <a href="/reportkpi" class="d-flex align-items-center text-decoration-none">
 
-        <!-- Teks -->
-        <h5 style="color: white; margin: 0;">KPI</span><br>QUBAH GROUP</h5>
+            <!-- Logo Bulat -->
+            <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: white; margin-right: 10px;">
+                <img src="{{ asset('img/qubahGroup.jpeg') }}" alt="Logo"
+                    style="width: 90%; height: 90%; object-fit: contain;">
+            </div>
+
+            <!-- Teks -->
+            <h5 style="color: white; margin: 0;">KPI</span><br>QUBAH GROUP</h5>
+        </a>
+
     </div>
     <a href="/historylog" class="d-flex align-items-center text-decoration-none">
         <div class="ms-3">

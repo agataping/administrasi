@@ -87,7 +87,7 @@
                                     <th rowspan="" style="vertical-align: middle;color:black;text-align: center;">{{ $loop->iteration }}</th>
                                     <td>{{ \Carbon\Carbon::parse($d->tanggal)->format('d-m-Y') }}</td>
                                     <td style="text-align: center;">{{$d->kuota}}</td>
-                                    <td style="text-align: end; vertical-align: middle;">
+                                    <td   style="text-align: end; vertical-align: middle;">
                                         {{ number_format(floatval(str_replace(',', '.', str_replace('.', '', $d->nominal))), 2, ',', '.') }}
                                     </td>
                                     <td>
@@ -118,7 +118,7 @@
                             <tfoot>
                                 <tr>
                                     <th colspan="3" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end; color:black;">Total</th>
-                                    <th style="background-color:rgb(244, 244, 244); text-align: end;color:black;">
+                                    <th   style="background-color:rgb(244, 244, 244); text-align: end;color:black;">
                                         {{ number_format(floatval($planNominal), 2,',', )}}
                                     </th>
                                 </tr>

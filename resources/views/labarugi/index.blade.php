@@ -128,11 +128,11 @@
                                     <td colspan="" style="text-align: start;vertical-align: middle;"><strong>{{$kategoriName}}</strong></td>
                                     <td style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['total_plan'], 2) }}</strong></td>
                                     <td></td>
-                                    <th style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['vertikal'], 2) }} %</strong></th>
-                                    <th style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['total_actual'], 2) }}</strong></th>
-                                    <th style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['vertikals'], 2) }} %</strong></th>
-                                    <th style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['deviation'], 2) }}</strong></th>
-                                    <th style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['percen'], 2) }} %</strong></th>
+                                    <td style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['vertikal'], 2) }} %</strong></td>
+                                    <td style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['total_actual'], 2) }}</strong></td>
+                                    <td style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['vertikals'], 2) }} %</strong></td>
+                                    <td style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['deviation'], 2) }}</strong></td>
+                                    <td style="text-align: end;color:black;vertical-align: middle;">{{ number_format($total['percen'], 2) }} %</strong></td>
                                     <td></td>
                                     <td style="text-align: center; vertical-align: middle;">
                                         <a href="{{ route('formupdatecategorylr', ['category_id' => $total['category_id']]) }}" class="btn btn-primary">Edit</a>
@@ -283,7 +283,7 @@
                                         {{ number_format($persenlr, 2) }}%
                                     </th>
 
-                                    <th colspan="5" style="color:black; background-color:rgb(244, 244, 244); text-align: star;"></th>
+                                    <th colspan="5" style="color:black; background-color:rgb(244, 244, 244); text-align: ;"></th>
                                     @elseif($jenis['jenis_name'] == 'Operating Profit')
                                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($totalplanlp, 2) }}

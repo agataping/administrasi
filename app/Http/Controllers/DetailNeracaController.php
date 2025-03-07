@@ -75,6 +75,99 @@ class DetailNeracaController extends Controller
         // } else {
         //     $note = "Benar";
         // }
+        $fixassettotal = (clone $query)
+            ->where('category_neracas.namecategory', 'FIX ASSETS')
+            ->get()
+            ->reduce(function ($carry, $item) {
+                return [
+                    'credit'      => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
+                    'debit'       => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
+                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
+                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0),
+                ];
+            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
+        $currenasset = (clone $query)
+            ->where('category_neracas.namecategory', 'CURRENT ASSETS')
+            ->get()
+            ->reduce(function ($carry, $item) {
+                return [
+                    'credit'         => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
+                    'debit'          => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
+                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
+                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0), // Perbaikan disini!
+                ];
+            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
+        // FIX ASSET hasil
+        $totalcreditfixassetplan = $fixassettotal['credit'];
+        $totaldebitfixassetplan = $fixassettotal['debit'];
+        $totalcreditfixassetactual = $fixassettotal['credit_actual'];
+        $totaldebitfixassetactual = $fixassettotal['debit_actual'];
+        $totalplanfixasset = $totaldebitfixassetplan - $totalcreditfixassetplan; //plan (debit-credit)
+        $totalactualfixasset = $totaldebitfixassetactual - $totalcreditfixassetactual; //actuall (debit-credit)
+
+        // current asset hasil
+        $creditcurrentassetplan = $currenasset['credit'];
+        $debitcurrentassetplan = $currenasset['debit'];
+        $creditcurrentassetactual = $currenasset['credit_actual'];
+        $debitcurrentassetactual = $currenasset['debit_actual'];
+        $totalplancurrentasset = $debitcurrentassetplan - $creditcurrentassetplan; //plan
+        $totalactualcurrentasset = $debitcurrentassetactual - $creditcurrentassetactual; //actual
+        //total LIABILITIES EQUITY 
+        $totalplanasset = ($totalplancurrentasset < 0)
+            ? $totalplanfixasset + $totalplancurrentasset
+            : $totalplanfixasset - $totalplancurrentasset; //plan
+        $totalactualasset = ($totalactualcurrentasset < 0)//actual
+            ? $totalactualfixasset + $totalactualcurrentasset
+            : $totalactualfixasset - $totalactualcurrentasset;
+
+            // dd($fixassettotal,$currenasset, $totalplanasset, $totalactualasset,$totalactualcurrentasset,$totalactualfixasset);
+
+        $liabilitestotal = (clone $query)
+            ->where('category_neracas.namecategory', 'LIABILITIES')
+            ->get()
+            ->reduce(function ($carry, $item) {
+                return [
+                    'credit'      => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
+                    'debit'       => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
+                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
+                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0),
+                ];
+            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
+        $equatytotal = (clone $query)
+            ->where('category_neracas.namecategory', 'EQUITY')
+            ->get()
+            ->reduce(function ($carry, $item) {
+                return [
+                    'credit'         => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
+                    'debit'          => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
+                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
+                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0), // Perbaikan disini!
+                ];
+            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
+        // LIABILITIES hasil
+        $totalCreditliabilites = $liabilitestotal['credit'];
+        $totalDebitliabilites = $liabilitestotal['debit'];
+        $totalCreditactualliabilites = $liabilitestotal['credit_actual'];
+        $totalDebitactualliabilites = $liabilitestotal['debit_actual'];
+        $totalplanliabili = $totalCreditliabilites - $totalDebitliabilites; //plan
+        $toalactualliabliti = $totalCreditactualliabilites - $totalDebitactualliabilites; //actuall
+
+        // equaty hasil
+        $totalCreditequaty = $equatytotal['credit'];
+        $totalDebitequaty = $equatytotal['debit'];
+        $totalCreditactualequaty = $equatytotal['credit_actual'];
+        $totalDebitactualequaty = $equatytotal['debit_actual'];
+        $totalplanequaty = $totalCreditequaty - $totalDebitequaty; //plan
+        $totalactualequaty = $totalCreditactualequaty - $totalDebitactualequaty; //actual
+        //total LIABILITIES EQUITY 
+        $modalhutangplan = ($totalplanequaty < 0)
+            ? $totalplanliabili + $totalplanequaty
+            : $totalplanliabili - $totalplanequaty;
+        $modalhutangactual = ($totalactualequaty < 0)
+            ? $toalactualliabliti + $totalactualequaty
+            : $toalactualliabliti - $totalactualequaty;
+
+        // dd($totalCreditliabilites,$totalDebitliabilites, $totalplanliabili, $totalplanequaty, $totalCreditequaty, $totalDebitequaty,$modalhutangplan);
 
         $groupedData = $data->map(function ($categories, $categoryName) {
             $totalJenis = ['debit' => 0, 'credit' => 0];
@@ -128,7 +221,7 @@ class DetailNeracaController extends Controller
             $subTotalplanasset = $totalJenis['debit'] - $totalJenis['credit'];
             $subTotalSaldoActualasset = array_sum(array_column($categoriesGrouped->toArray(), 'subTotalSaldoActualasset'));
             $subTotalplanmodalhutang = $totalJenis['credit'] - $totalJenis['debit'];
-            $subTotalSaldoActualmodalhutang = array_sum(array_column($categoriesGrouped->toArray(), 'subTotalSaldoActualmodalhutang'));        
+            $subTotalSaldoActualmodalhutang = array_sum(array_column($categoriesGrouped->toArray(), 'subTotalSaldoActualmodalhutang'));
             // dd($totalSaldoActualModalHutang) ;
             return [
                 'category_name' => $categoryName,
@@ -137,16 +230,14 @@ class DetailNeracaController extends Controller
                 'category_id' => $categories->first()->category_id,
                 'subTotalplanasset' => in_array($categoryName, ['CURRENT ASSETS', 'FIX ASSETS']) ? $subTotalplanasset : null,
                 'subTotalSaldoActualasset' => in_array($categoryName, ['CURRENT ASSETS', 'FIX ASSETS']) ? $subTotalSaldoActualasset : null,
-            
+
                 'subTotalplanmodalhutang' => in_array($categoryName, ['LIABILITIES', 'EQUITY']) ? $subTotalplanmodalhutang : null,
                 'subTotalSaldoActualmodalhutang' => in_array($categoryName, ['LIABILITIES', 'EQUITY']) ? $subTotalSaldoActualmodalhutang : null,
-                // 'totalmodalhutangplan' => in_array($categoryName, ['LIABILITIES', 'EQUITY']) ? $totalPlanModalHutang : null,
-                // 'totalmodalhutangactual' => in_array($categoryName, ['LIABILITIES', 'EQUITY']) ? $totalSaldoActualModalHutang : null,
             ];
         });
         // dd($groupedData);
 
-        return view('financial.index', compact('groupedData', 'perusahaans', 'companyId'));
+        return view('financial.index', compact('groupedData', 'perusahaans', 'companyId', 'modalhutangactual', 'modalhutangplan','totalplanasset','totalactualasset'));
     }
     public function formfinanc(Request $request)
     {

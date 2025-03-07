@@ -466,19 +466,31 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($persenassetplan, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($psersenactualasset, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>
-                                        <td class="text-end">%</td>
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexactualasset <= 75)
+                                            background-color: black; color: white;
+                                            @elseif ($indexactualasset > 75 && $indexactualasset <= 90)
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */                                                            
+                                            @elseif ($indexactualasset > 90 && $indexactualasset <= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexactualasset > 100 && $indexactualasset <= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexactualasset > 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif"> {{ number_format($indexactualasset , 2) }}%
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($weightasset , 2) }}%</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -491,19 +503,31 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($persenmodalhutangplan  , 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($persenactualmodalhutang , 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>
-                                        <td class="text-end">%</td>
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexmodalhutanactual<= 75)
+                                            background-color: black; color: white;
+                                            @elseif ($indexmodalhutanactual> 75 && $indexmodalhutanactual<= 90)
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */                                                            
+                                            @elseif ($indexmodalhutanactual> 90 && $indexmodalhutanactual<= 100)
+                                            background-color: yellow; color: black; /* Kuning */
+                                            @elseif ($indexmodalhutanactual> 100 && $indexmodalhutanactual<= 190)
+                                            background-color: green; color: white; /* Hijau */
+                                            @elseif ($indexmodalhutanactual> 190 )
+                                            background-color: blue; color: white; /* Hijau */
+                                            @endif"> {{ number_format($indexmodalhutanactual  , 2) }}%
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($weightmodalhutang , 2) }}%</td>
                                     </tr>
                                 </tbody>
                             </table>

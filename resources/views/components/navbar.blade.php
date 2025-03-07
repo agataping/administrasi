@@ -54,11 +54,14 @@
                 <img src="{{ asset('img/qubahGroup.jpeg') }}" alt="Logo"
                     style="width: 90%; height: 90%; object-fit: contain;">
             </div>
+    </a>
+    <a href="/reportkpi" class="d-flex align-items-center text-decoration-none">
 
-            <!-- Teks -->
-            <h5 style="color: white; margin: 0;"><span style="font-size: 10px;">KEY PERFORMANCE INDICATOR</span><br>QUBAH GROUP</h5>
+        <!-- Teks -->
+        <h5 style="color: white; margin: 0;"><span style="font-size: 10px;">KEY PERFORMANCE INDICATOR</span><br>QUBAH GROUP</h5>
         </div>
     </a>
+
 
     <a href="/historylog" class="d-flex align-items-center text-decoration-none ms-auto">
         <div class="me-3">

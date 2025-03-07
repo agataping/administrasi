@@ -1,8 +1,7 @@
 @extends('template.main')
 @extends('components.style')
-@section('title', 'Balnce sheet')
+@section('title', 'Balence sheet')
 @section('content')
-
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
@@ -92,7 +91,8 @@
                     </form>
 
                     <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
-                        <table class="table table-bordered" id="myTable">
+                        <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+
                             <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                                 <tr>
                                     <th rowspan="2" style="vertical-align: middle; text-align: center;">No</th>
@@ -142,11 +142,11 @@
 
                                     <td style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</td>
                                     <td>{{ $subCategory['sub_category'] }}</td>
-                                    <td>{{ number_format($subCategory['sub_total_debit']) }}</td>
-                                    <td>{{ number_format ($subCategory['sub_total_credit']) }}</td>
+                                    <td  style=" text-align: end;">{{ number_format($subCategory['sub_total_debit']) }}</td>
+                                    <td   style=" text-align: end;">{{ number_format ($subCategory['sub_total_credit']) }}</td>
                                     <td></td>
-                                    <td>{{ number_format($subCategory['sub_total_debitactual']) }}</td>
-                                    <td>{{ number_format ($subCategory['sub_total_creditactual']) }}</td>
+                                    <td   style=" text-align: end;">{{ number_format($subCategory['sub_total_debitactual']) }}</td>
+                                    <td   style=" text-align: end;">{{ number_format ($subCategory['sub_total_creditactual']) }}</td>
 
                                     <td></td>
                                     <td></td>
@@ -171,8 +171,8 @@
                                                 <tr>
                                                     <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
                                                     <td>{{ $detail['name'] }}</td>
-                                                    <td style=" text-align: end;">{{ number_format($detail['debit'],2 ) }}</td>
-                                                    <td style="text-align: end;">{{ number_format($detail['credit'], ) }}</td>
+                                                    <td style=" text-align: end;"  >{{ number_format($detail['debit'],2 ) }}</td>
+                                                    <td style="text-align: end;"  >{{ number_format($detail['credit'], ) }}</td>
                                                     <td>
                                                         @if (!empty($detail['fileplan']))
                                                         <a href="{{ asset('storage/' . $detail['fileplan']) }}" class="text-decoration-none" target="_blank">View File</a>
@@ -180,8 +180,8 @@
                                                         <span class="text-muted">No File</span>
                                                         @endif
                                                     </td>
-                                                    <td style=" text-align: end;">{{ number_format($detail['debit_actual'], 2) }}</td>
-                                                    <td style="text-align: end;">{{ number_format($detail['credit_actual'],2 ) }}</td>
+                                                    <td style=" text-align: end;"  >{{ number_format($detail['debit_actual'], 2) }}</td>
+                                                    <td style="text-align: end;"  >{{ number_format($detail['credit_actual'],2 ) }}</td>
                                                     <td>
                                                         @if (!empty($detail['fileactual']))
                                                         <a href="{{ asset('storage/' . $detail['fileactual']) }}" class="text-decoration-none" target="_blank">View File</a>
@@ -213,12 +213,12 @@
                                 @endforeach
                                 <tr>
                                     @if (in_array($total['category_name'], ['CURRENT ASSETS', 'FIX ASSETS']))
-                                    <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</td>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">
+                                    <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</th>
+                                    <td  colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  >
                                         {{ number_format($total['subTotalplanasset'], 2) }}
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
 
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['subTotalSaldoActualasset'], 2) }}</td>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($total['subTotalSaldoActualasset'], 2) }}</td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
@@ -226,12 +226,12 @@
 
                                 </tr>
                                 @if (in_array($total['category_name'], ['LIABILITIES', 'EQUITY']))
-                                <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</td>
-                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">
+                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;"  >Total {{ $total['category_name'] }}</th>
+                                <td  colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  >
                                     {{ number_format($total['subTotalplanmodalhutang'], 2) }}
                                 <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
 
-                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['subTotalSaldoActualmodalhutang'], 2) }}</td>
+                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($total['subTotalSaldoActualmodalhutang'], 2) }}</td>
                                 <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                 <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                 <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
@@ -241,19 +241,20 @@
 
                                 <tr>
                                     @if ($total['category_name'] == 'CURRENT ASSETS')
-                                    <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</td>
+                                    <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</th>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($totalplanasset, 2) }}</td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($totalactualasset, 2) }}</td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     @endif
                                 </tr>
                                 <tr>
                                     @if ($total['category_name'] == 'EQUITY')
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td> 
+                                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">TOTAL LIABILITIES AND EQUITY </th>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($modalhutangplan, 2) }}</td>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($modalhutangactual, 2) }}</td>
+                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"  ></td>
                                     @endif
                                 </tr>
                                 @endforeach
@@ -273,7 +274,7 @@
         </div>
     </div>
 </div>
-</div>
+
 
 
 
@@ -290,19 +291,20 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll("[data-toggle='collapse']").forEach(function(row) {
+        document.querySelectorAll("tr[data-toggle='collapse']").forEach(function(row) {
             row.addEventListener("click", function() {
-                let targetId = this.getAttribute("data-target").substring(1); // Hapus '#' dari id
-                let targetElement = document.getElementById(targetId);
+                let targetId = this.getAttribute("data-target");
+                let targetElement = document.querySelector(targetId);
 
-                if (targetElement.classList.contains("d-none")) {
-                    targetElement.classList.remove("d-none"); // Tampilkan
-                } else {
-                    targetElement.classList.add("d-none"); // Sembunyikan
+                if (targetElement) {
+                    // Toggle visibility
+                    targetElement.classList.toggle("d-none");
                 }
             });
         });
     });
+
+
 </script>
 
 @endsection

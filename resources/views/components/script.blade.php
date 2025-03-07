@@ -17,6 +17,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
 <script>
+
     // Fungsi untuk menghitung quantity fulfillment
     function hitungQuantityFulfillment() {
       const plan = parseFloat(document.getElementById('Fullfillment_plan').value);

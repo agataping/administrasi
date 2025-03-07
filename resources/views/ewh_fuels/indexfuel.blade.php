@@ -102,15 +102,15 @@
                                 <th colspan="" style="text-align: left; background-color: #f0f0f0;">
                                     {{ $total['units'] }}
                                 </th>
-                                <th style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                                <td  style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                     {{ number_format($total['total_plan'], 2) }}
-                                </th>
+                                </td >
                                 <th style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
 
                                 </th>
-                                <th colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                                <td  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                     {{ number_format($total['total_actual'], 2) }}
-                                </th>
+                                </td>
 
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
                                     <form action="{{ route('formupadteunit', $total['details'][0]->unit_id) }}">
@@ -127,7 +127,7 @@
                                 <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
                                 <td>{{ \Carbon\Carbon::parse($detail->date)->format('d F Y') }}</td>
                                 <td>{{ $detail->desc }}</td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->plan, 2) }}</td>
+                                <td  style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->plan, 2) }}</td>
                                 <td style="vertical-align: middle; text-align: end;">
                                     @php
                                     $fileExtension = $detail->file_extension;
@@ -135,7 +135,7 @@
                                     <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
 
                                 </td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
+                                <td  style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
                                     <form action="{{ route('formupdatefuel', ['id' => $detail->id]) }}">
                                         <button type="submit" class="btn btn-primary btn-sm">Edit</button>

@@ -122,7 +122,7 @@
                                     <td style="text-align: center; vertical-align: middle;">{{ $d->notifyaddres }}</td>
                                     <td style="text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($d->initialsurvei)->format('d-m-Y') }}</td>
                                     <td style="text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($d->finalsurvey)->format('d-m-Y') }}</td>
-                                    <td style="text-align: end; vertical-align: middle;">
+                                    <td  style="text-align: end; vertical-align: middle;">
                                         {{ number_format(floatval(str_replace(',', '.', str_replace('.', '', $d->quantity))), 2, ',', '.') }}
                                     </td>
                                     <td style="text-align: center; vertical-align: middle;" rowspan="">
@@ -142,7 +142,7 @@
                             <tfoot>
                                 <tr>
                                     <th colspan="11" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; color:black; ">Total</th>
-                                    <th style="background-color:rgb(244, 244, 244); text-align: end; color:black;">
+                                    <th   style="background-color:rgb(244, 244, 244); text-align: end; color:black;">
                                         {{ number_format(floatval( $quantity), 2, ',',)}}
 
                                     </th>
