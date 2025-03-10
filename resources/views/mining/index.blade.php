@@ -124,8 +124,23 @@
                                 <td style="text-align: center; vertical-align: middle;">
                                     {{ \Carbon\Carbon::parse($d->tanggal)->format('d-m-Y') }}
                                 </td>
-                                <td style="text-align: center; vertical-align: middle;">{{ $d->berlaku ?? '-' }}</td>
-                                <td style="text-align: center; vertical-align: middle;">{{ $d->filling ?? '-' }}</td>
+                                <td style="text-align: center; vertical-align: middle;
+                                    @php
+                                    $bgColor = '#ffffff'; // Default warna background (putih)
+                                    
+                                    if (Str::contains(strtolower($d->berlaku), 'sekarang')) {
+                                        
+                                            $bgColor = '#90EE90'; // Hijau muda
+                                        } elseif (preg_match('/\d{1,2} \w+ \d{4}/', $d->berlaku)) {
+                                            $bgColor = '#FFD700'; // Kuning emas (untuk format tanggal)
+                                        } elseif (preg_match('/\d+ tahun/', strtolower($d->berlaku))) {
+                                            $bgColor = '#ADD8E6'; // Biru muda (untuk " x tahun")
+                                    }
+                                    @endphp
+                                    background-color: {{ $bgColor }}; ">
+                                    {{ $d->berlaku ?? '-' }}
+                                </td>
+                                <td style=" text-align: center; vertical-align: middle;">{{ $d->filling ?? '-' }}</td>
                                 <td style="text-align: center; vertical-align: middle;">{{ $d->Achievement ?? '-' }} </td>
 
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">

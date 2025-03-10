@@ -87,12 +87,27 @@
                     </div>
                 </div>
                 <div class="row mt-1">
-                    <div class="col-2 d-flex justify-content-center align-items-center" style="background-color: #f4e2cd; font-size: 2em; text- font-weight: bold;">
-                        59%
+                    <div class="col-2 d-flex justify-content-center align-items-center" style="background-color: #f4e2cd; font-size: 2em;
+                    @if ($totalresultfinancial<= 75)
+                    
+                    background-color: black; color: white;
+                    @elseif ($totalresultfinancial> 75 && $totalresultfinancial<= 90)
+                    
+                    background-color: rgb(206, 24, 24); color: white; /* Merah */
+                    
+                    @elseif ($totalresultfinancial> 90 && $totalresultfinancial<= 100)
+                    background-color: yellow; color: black; /* Kuning */
+                    @elseif ($totalresultfinancial> 100 && $totalresultfinancial<= 190)
+                    background-color: green; color: white; /* Hijau */
+                    @elseif ($totalresultfinancial> 190 )
+                    background-color: blue; color: white; /* Hijau */
+                    @endif">
+                        {{ number_format($totalresultfinancial, 2) }}%
                     </div>
+
                     <div class="col">
                         <!-- Grid layout untuk tabel yang disusun secara horizontal -->
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 5px;">
 
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
 
@@ -163,7 +178,7 @@
                                     <tr>
 
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($totalactualcogas, 2) }}%</td>
+                                        <td>{{ number_format($totalactualcogas, 2) }}</td>
 
                                     </tr>
                                     <tr>
@@ -208,13 +223,13 @@
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
                                             Plan</td>
                                         <td>
-                                            {{ number_format($plancoe, 2) }}
+                                            {{ number_format($plancoe, 2) }}%
                                         </td>
                                     </tr>
                                     <tr>
 
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($actualcoe, 2) }}</td>
+                                        <td>{{ number_format($actualcoe, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
@@ -258,13 +273,13 @@
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">
                                             Plan</td>
                                         <td>
-                                            {{ number_format($totplanscsr, 2) }}
+                                            {{ number_format($plancsr, 2) }}%
                                         </td>
                                     </tr>
                                     <tr>
 
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Actual</td>
-                                        <td>{{ number_format($actualcsr, 2) }}</td>
+                                        <td>{{ number_format($actualcsr, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="text-align: start; vertical-align: middle;">Index</td>
@@ -585,13 +600,27 @@
                 <div class="row mt-1">
                     <!-- Persentase di sebelah kiri -->
                     <div class="col-2 d-flex justify-content-center align-items-center"
-                        style="background-color: #f4e2cd; font-size: 2em; font-weight: bold; text-align: center;">
-                        59%
+                        style="background-color: #f4e2cd; font-size: 2em; font-weight: bold; text-align: center;
+                        @if ($indexmodalhutanactual<= 75)
+                        
+                        background-color: black; color: white;
+                        @elseif ($totalresultcostumer> 75 && $totalresultcostumer<= 90)
+                        background-color: rgb(206, 24, 24); color: white; /* Merah */                                                            
+                        @elseif ($totalresultcostumer> 90 && $totalresultcostumer<= 100)
+                        background-color: yellow; color: black; /* Kuning */
+                        @elseif ($totalresultcostumer> 100 && $totalresultcostumer<= 190)
+                        background-color: green; color: white; /* Hijau */
+                        @elseif ($totalresultcostumer> 190 )
+                        background-color: blue; color: white; /* Hijau */
+                        @endif">
+
+                        {{ number_format($totalresultcostumer, 2) }}%
                     </div>
+
 
                     <!-- Kolom untuk Tabel -->
                     <div class="col">
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 5px;">
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead>
                                     <tr>
@@ -601,7 +630,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td class="text-end">3,6</td>
+                                        <td class="text-end">3,6 </td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
@@ -827,8 +856,10 @@
                 </div>
               
                 <div class=" row mt-1" style="border: 2px solid black;">
+
                                             <div class="col" style="text-align-end">
                                                 <h4 style="margin-top: 10px;">INTERNAL PROCESS PERSPECTIVE</h4>
+
                                             </div>
                                             <div class="col text-end">
                                                 <h5 style="margin-top: 10px; font-size: 1.25rem;">
@@ -846,8 +877,7 @@
 
                             <div class="col">
                                 <!-- Grid layout untuk tabel yang disusun secara horizontal -->
-                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                                    <!-- Fleet Productivity (Coal) -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 5px;"> <!-- Fleet Productivity (Coal) -->
                                     <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                         <thead style="background-color: rgb(107, 255, 149);">
                                             <tr>
@@ -856,6 +886,7 @@
                                         </thead>
                                         <tbody>
                                             <tr>
+
                                                 <td>Plan</td>
                                                 <td>{{ number_format($totalPlancoal, 0, ',', '.') }}</td>
                                             </tr>
@@ -876,7 +907,7 @@
                                             background-color: rgb(0, 255, 72); color: white;
                                             
                                             @elseif ($indexcoalgetting > 190)
-                                                background-color: rgb(0, 60, 255); color: white;
+                                            background-color: rgb(0, 60, 255); color: white;
                                             @endif
                                             ">{{ number_format($indexcoalgetting, 0, ',', '.') }}%</td>
                                             </tr>
@@ -916,7 +947,7 @@
                                                 @elseif ($indexoverburder > 190)
                                                 background-color: rgb(0, 42, 255); color: white;
                                                 @endif
-                                            ">{{ number_format($indexoverburder, 0, ',', '.') }}%
+                                                ">{{ number_format($indexoverburder, 0, ',', '.') }}%
                                                 </td>
                                             </tr>
                                             <tr>
@@ -962,7 +993,13 @@
                                                     {{ number_format($item['indexpa'], 0, ',', '.') }}%
                                                 </td>
 
+
                                             </tr>
+                                            <tr>
+                                                <td>Weight</td>
+                                                <td class="text-end">6 F,00%</td>
+                                            </tr>
+
                                         </tbody>
                                     </table>
                                     @endforeach
@@ -980,6 +1017,7 @@
                                             </tr>
                                             <tr>
                                                 <td>Actual</td>
+
                                                 <td>{{ number_format($finalAverage, 0, ',', '.') }}%</td>
                                             </tr>
                                             <tr>
@@ -1021,8 +1059,20 @@
 
                         <div class="row mt-1">
                             <div class="col-2 d-flex justify-content-center align-items-center"
-                                style="background-color: #f4e2cd; font-size: 2em; font-weight: bold;">
-                                75%
+                                style="background-color: #f4e2cd; font-size: 2em; font-weight: bold;                                        @if ($indexpeople <= 75)
+                                        background-color: black; color: white;
+                                        @elseif ($resultlearning > 75 && $resultlearning <= 90)
+                                        background-color: rgb(206, 24, 24); color: white;
+                                        @elseif ($resultlearning > 90 && $resultlearning <= 100)
+                                        background-color: yellow; color: black;
+                                        @elseif ($resultlearning > 100 && $resultlearning <= 190)
+                                        background-color: rgb(0, 255, 72); color: white;
+                                        @elseif ($resultlearning > 190)
+                                        background-color: rgb(0, 60, 255); color: white;
+                                        @endif">
+                                {{ number_format($resultlearning,2) }}%
+
+
                             </div>
                             <div class="col">
                                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: start; max-width: 50rem;">
@@ -1158,14 +1208,26 @@
                             .table tbody td {
                                 color: black;
                                 font-family: "Arial", sans-serif;
+                                white-space: nowrap;
 
                             }
 
                             td:first-child {
                                 text-align: start;
+                                white-space: nowrap;
                             }
 
                             td:last-child {
                                 text-align: end;
+                                white-space: nowrap;
+                            }
+
+                            th {
+                                padding: 5px;
+                                /* Kurangi padding */
+                                line-height: 1.5;
+                                /* Kurangi tinggi baris */
+                                text-align: center;
+                                /* Rata tengah */
                             }
                         </style>

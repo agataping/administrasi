@@ -100,7 +100,8 @@
                         <button type="submit" class="btn-block btn-lg gradient-custom-4"
                             style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
                             border-radius: 5px; font-weight: bold;"">Update</button>
-                    </div>                </form>
+                    </div>               
+                 </form>
             </div>
         </div>
     </div>

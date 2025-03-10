@@ -91,7 +91,7 @@
                             <th rowspan="3" style="vertical-align: middle;">Plan</th>
                             <th rowspan="3" style="vertical-align: middle;">File</th>
                             <th colspan="4" style="text-align: center;">HAULING</th>
-                            <th rowspan="3" style="vertical-align: middle;">Stock Out</th>
+                            <th rowspan="3" style="vertical-align: middle;">Load to Barger / <br>Stock Out</th>
                             <th rowspan="3" style="vertical-align: middle;">Ending Stock</th>
                             <th rowspan="3" style="vertical-align: middle;">Location</th>
 
@@ -199,6 +199,30 @@
                     </tfoot>
                 </table>
 
+                <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+                    <thead style="text-align: center; vertical-align: middle;">
+                        <tr style="background-color:rgba(9, 220, 37, 0.75);">
+                            <th colspan="3">HOULING TO JETTY</th>
+                            <th colspan="2">JETTY</th>
+                        </tr>
+                        <tr style="background-color:rgba(133, 185, 218, 0.75);">
+                            <th>Opening Stock </th>
+                            <th>Hauling to Jetty</th>
+                            <th>Total Hauling</th>
+                            <th>Barging</th>
+                            <th>Remaining Stock at Jetty</th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align: end; vertical-align: middle;"> 
+                        <tr>
+                            <td> {{ number_format($data->first()->sotckawal ?? 0,  2, ',', '.') }}</td>
+                            <td>{{ number_format($totalHauling,  3, ',', '.') }}</td>
+                            <td>{{ number_format($grandTotal,  3, ',', '.') }}</td>
+                            <td>{{ number_format($totalQuantity,  3, ',', '.') }}</td>
+                            <td>{{ number_format($grandTotalstockakhir,  3, ',', '.') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
 
 

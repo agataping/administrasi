@@ -49,9 +49,16 @@
                     </div>
 
 
-                    <div class="form-group" id="stockout" style="display: none;">
-                        <label for="stockout">Stock Out</label>
-                        <input type="text" class="form-control" id="stockout" name="stockout" min="">
+
+
+                    <div id="stockout-container" style="display: none; margin-bottom: 1rem;">
+                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Load to Barger / stock out:</label>
+                        <select id="stockout" name="stockout" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
+                            <option value="" disabled selected>-- Select Load to Barge--</option>
+                            @foreach($data as $kategori)
+                            <option value="{{ $kategori->quantity }}">{{ $kategori->quantity }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
 
@@ -134,12 +141,12 @@
     document.getElementById('planBtn').addEventListener('click', function() {
         document.getElementById('plan').style.display = 'block';
         document.getElementById('file').style.display = 'block';
-        document.getElementById('stockout').style.display = 'none';
+        document.getElementById('stockout-container').style.display = 'none';
     });
 
     document.getElementById('stockoutBtn').addEventListener('click', function() {
         document.getElementById('plan').style.display = 'none';
-        document.getElementById('stockout').style.display = 'block';
+        document.getElementById('stockout-container').style.display = 'block';
     });
 </script>
 @endsection
