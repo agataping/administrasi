@@ -127,13 +127,6 @@
         margin: 20px 0;
     }
 
-    .col-sm-2 {
-        background-color: #f8f9fa;
-        /* Warna latar belakang lembut */
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
 
     label {
         font-size: 16px;

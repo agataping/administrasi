@@ -92,7 +92,7 @@
                             <th rowspan="3" style="vertical-align: middle;">File</th>
                             <th colspan="4" style="text-align: center;">HAULING</th>
                             <th rowspan="3" style="vertical-align: middle;">Load to Barger / <br>Stock Out</th>
-                            <th rowspan="3" style="vertical-align: middle;">Ending Stock</th>
+                            <th rowspan="2" colspan="" style="vertical-align: middle;">Ending Stock</th>
                             <th rowspan="3" style="vertical-align: middle;">Location</th>
 
                             <th rowspan="3" colspan="3" style="vertical-align: middle;">Action</th>
@@ -105,6 +105,8 @@
                             <th>Total Hauling</th>
                             <th>Accumulation</th>
                         </tr>
+
+
                         <tr>
                             <th colspan="3" style="text-align: start;">
                                 Opening stock :
@@ -119,8 +121,13 @@
                             <th colspan="1" style="text-align: end;">
                                 {{ number_format($data->first()->sotckawal ?? 0,  2, ',', '.') }}
                             </th>
+                            <th colspan="1" style="text-align: end;">
+                                {{ number_format($data->first()->sotckawal ?? 0,  2, ',', '.') }}
+                            </th>
 
                         </tr>
+
+
 
                     </thead>
                     <tbody>
@@ -176,22 +183,19 @@
                             <th colspan="" style="background-color:rgb(244, 244, 244); text-align: center;color:black;">
                                 {{ number_format($planNominal,  2, ',', '.') }}
                             </th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: center; color:black;">
+                            <th colspan="3" style="background-color:rgb(244, 244, 244); text-align: center; color:black;">
                             </th>
                             <th colspan="" style="background-color:rgb(244, 244, 244); text-align: center;color:black;">
-                            </th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: center;color:black;">
-                            </th>
-                            <th colspan="" style="background-color:rgb(244, 244, 244); text-align: center;color:black;">
-                                {{ number_format($totalHauling,  3, ',', '.') }}
+                                {{ number_format($totalHauling,  2, ',', '.') }}
                             </th>
                             <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end; color:black;">
-                                {{ number_format($grandTotal,  3, ',', '.') }}
+                                {{ number_format($grandTotal,  2, ',', '.') }}
                             </th>
                             <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end; color:black;">
+                            {{ number_format($totalStockOut,  2, ',', '.') }}
                             </th>
                             <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end; color:black;">
-                                {{ number_format($grandTotalstockakhir,  3, ',', '.') }}
+                                {{ number_format($grandTotalstockakhir,  2, ',', '.') }}
                             </th>
 
                         </tr>
@@ -202,7 +206,7 @@
                 <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
                     <thead style="text-align: center; vertical-align: middle;">
                         <tr style="background-color:rgba(9, 220, 37, 0.75);">
-                            <th colspan="3">HOULING TO JETTY</th>
+                            <th colspan="3">HaULING TO JETTY</th>
                             <th colspan="2">JETTY</th>
                         </tr>
                         <tr style="background-color:rgba(133, 185, 218, 0.75);">
@@ -213,13 +217,13 @@
                             <th>Remaining Stock at Jetty</th>
                         </tr>
                     </thead>
-                    <tbody style="text-align: end; vertical-align: middle;"> 
+                    <tbody style="text-align: end; vertical-align: middle;">
                         <tr>
                             <td> {{ number_format($data->first()->sotckawal ?? 0,  2, ',', '.') }}</td>
-                            <td>{{ number_format($totalHauling,  3, ',', '.') }}</td>
-                            <td>{{ number_format($grandTotal,  3, ',', '.') }}</td>
-                            <td>{{ number_format($totalQuantity,  3, ',', '.') }}</td>
-                            <td>{{ number_format($grandTotalstockakhir,  3, ',', '.') }}</td>
+                            <td>{{ number_format($totalHauling,  2, ',', '.') }}</td>
+                            <td>{{ number_format($grandTotal,  2, ',', '.') }}</td>
+                            <td>{{ number_format($totalQuantity,  2, ',', '.') }}</td>
+                            <td>{{ number_format($grandTotalstockakhir,  2, ',', '.') }}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -56,7 +56,7 @@
                         <select id="stockout" name="stockout" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
                             <option value="" disabled selected>-- Select Load to Barge--</option>
                             @foreach($data as $kategori)
-                            <option value="{{ $kategori->quantity }}">{{ $kategori->quantity }}</option>
+                            <option value="{{ $kategori->quantity }}">{{ $kategori->quantity }}|{{ $kategori->quantity }}</option>
                             @endforeach
                         </select>
                     </div>

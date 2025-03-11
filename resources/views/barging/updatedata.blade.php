@@ -42,11 +42,12 @@
                     <div style="margin-bottom: 1rem;">
                         <label for="kuota" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
                         <select id="kuota" name="kuota" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                            <option value="" disabled selected>-- Select Category --</option>
-                            <option value="Ekspor">Ekspor</option>
-                            <option value="Domestik">Domestik</option>
+                            <option value="" disabled>-- Select Category --</option>
+                            <option value="Ekspor" {{ old('kuota', $data->kuota ?? '') == 'Ekspor' ? 'selected' : '' }}>Ekspor</option>
+                            <option value="Domestik" {{ old('kuota', $data->kuota ?? '') == 'Domestik' ? 'selected' : '' }}>Domestik</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="nomor">Laycan</label>
                         <input type="text" class="form-control" value="{{$data->laycan}}" id="nomor" name="laycan" required>

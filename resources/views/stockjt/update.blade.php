@@ -48,19 +48,19 @@
                     </div>
 
 
-
                     <div id="stockout-container" style="display: none; margin-bottom: 1rem;">
                         <label for="kategori" style="font-weight: bold; font-size: 1rem;">Load to Barger / stock out:</label>
                         <select id="stockout" name="stockout" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                            <option value="" disabled selected>-- Select Load to Barge --</option>
+                            <option value="" disabled>-- Select Load to Barge --</option>
                             @foreach($barging as $kategori)
-                            <option value="{{ $kategori->quantity }}" {{ $kategori->quantity == $data->quantity ? 'selected' : '' }}>
-                                {{ $kategori->quantity }}
+                            <option value="{{ $kategori->quantity }}"
+                                {{ old('stockout', $data->quantity ?? '') == $kategori->quantity ? 'selected' : '' }}>
+                                {{ $kategori->laycan }} | {{ $kategori->quantity }}
                             </option>
                             @endforeach
-
                         </select>
                     </div>
+
 
                     <div class="form-group">
                         <label for="shift_pertama">Shift I</label>

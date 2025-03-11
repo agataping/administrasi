@@ -11,7 +11,7 @@
         <div class="card-body">
             <div class="col-12">
                 <!-- <a href="" class="cardcost text-decoration-none"> -->
-                    <h2 class="text-center mb-4">STOCK JETTY</h2>
+                <h2 class="text-center mb-4">STOCK JETTY</h2>
                 <!-- </a> -->
                 <!-- @if(auth()->user()->role === 'admin')    
 
@@ -56,36 +56,46 @@
                     <div class="section-card">
                         <h3 class="section-title">Plan & Actual</h3>
                         <div class="metrics-grid">
-                            <div class="metric">
+
+                            <div class="metric plan">
                                 <a href="{{ route('stockjt') }}" class="cardcost text-decoration-none">
 
                                     <h4>Plan</h4>
                                 </a>
                                 <div class="percentage-box">
-                                    <strong></strong> <span> {{ number_format($planNominal, 0, ',', '.') }}</span>
+                                    <strong></strong> <span> {{ number_format($planNominal, 2, ',', '.') }}</span>
                                 </div>
                             </div>
-                            <div class="metric">
+                            <div class="metric actual">
                                 <a href="{{ route('stockjt') }}" class="cardcost text-decoration-none">
                                     <h4>Actual</h4>
                                 </a>
                                 <div class="percentage-box">
-                                    <strong></strong> <span>{{ number_format($grandTotal, 0, ',', '.') }}</span>
+                                    <strong></strong> <span>{{ number_format($grandTotal, 2, ',', '.') }}</span>
 
                                 </div>
                             </div>
                             <div class="metric">
                                 <h4>Deviasi</h4>
                                 <div class="percentage-box">
-                                    <strong></strong><span>{{ number_format($deviasi, 0, ',', '.') }}</span>
+                                    <strong></strong><span>{{ number_format($deviasi, 2, ',', '.') }}</span>
 
                                 </div>
                             </div>
                             <div class="metric">
                                 <h4>Percentage</h4>
                                 <div class="percentage-box">
-                                    <strong></strong> <span>{{ number_format($percen, 0, ',', '.') }}%</span>
+                                    <strong></strong> <span>{{ number_format($percen, 2, ',', '.') }}%</span>
 
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <a href="{{ route('stockjt') }}" class="cardcost text-decoration-none">
+
+                                    <h4>stock</h4>
+                                </a>
+                                <div class="percentage-box">
+                                    <strong></strong> <span> {{ number_format($akumulasiStokMasuk, 2, ',', '.') }}</span>
                                 </div>
                             </div>
 
@@ -141,10 +151,10 @@
         margin-bottom: 15px;
     }
 
-    .metrics-grid {
+    /* .metrics-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
         text-align: center;
     }
 
@@ -154,7 +164,36 @@
         padding: 15px;
         border-radius: 8px;
         box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    } */
+    .metrics-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: space-between;
     }
+
+    .metric {
+        flex: 1 1 calc(33.33% - 16px);
+        background-color: rgba(90, 90, 90, 0.85);
+        color: #ffffff;
+        padding: 16px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .metric.plan,
+    .metric.actual {
+        flex: 1 1 calc(50% - 16px);
+    }
+
+    @media (max-width: 768px) {
+        .metric {
+            flex: 1 1 100%;
+        }
+    }
+
+
 
     .metric h4 {
         font-size: 1rem;

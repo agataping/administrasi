@@ -27,8 +27,13 @@ class ReportController extends Controller
 
         //neraca
         $user = Auth::user();
+        $tahun = $request->input('tahun', session('tahun'));
 
-
+        // Simpan ke session hanya jika ada input tahun
+        if ($tahun) {
+            session(['tahun' => $tahun]);
+        }
+        session(['tahun' => $tahun]);
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         // Query data
@@ -54,6 +59,10 @@ class ReportController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+        if ($tahun) {
+            $query->whereBetween('detail_neracas.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
+        }
+        // dd($tahun);
         $data = $query->orderBy('category_neracas.created_at', 'asc')
             ->get()
 
@@ -178,6 +187,9 @@ class ReportController extends Controller
             } else {
                 $query->whereRaw('users.id_company', $companyId);
             }
+        }
+        if (!empty($tahun)) {
+            $query->whereBetween('detailabarugis.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
         $data = $query->get()->groupBy(['jenis_name', 'kategori_name']);
         // Menghitung Total Revenue untuk actual dan plan
@@ -445,7 +457,9 @@ class ReportController extends Controller
             }
         }
 
-
+        if (!empty($tahun)) {
+            $query->whereBetween('bargings.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
+        }
         $data = $query->get();
         // dd($data);
         $categories = ['Ekspor', 'Domestik'];
@@ -506,6 +520,9 @@ class ReportController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+        if (!empty($tahun)) {
+            $query->whereBetween('overberden_coal.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
+        }
 
         $data = $query->get();
         $totalPlancoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
@@ -543,6 +560,10 @@ class ReportController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+        if (!empty($tahun)) {
+            $query->whereBetween('produksi_pas.date', ["$tahun-01-01", "$tahun-12-31"]);
+        }
+
         $data = $query->get();
 
         // Group the data by 'units'
@@ -575,7 +596,7 @@ class ReportController extends Controller
 
             ->select('*');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -583,7 +604,9 @@ class ReportController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-
+        if (!empty($tahun)) {
+            $query->whereBetween('pembebasan_lahans.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
+        }
 
         $dataPembebasan = $query->get();
 
@@ -597,7 +620,7 @@ class ReportController extends Controller
             ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
             ->select('kategori_mini_r_s.kategori', 'mining_readinesses.*');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -606,6 +629,9 @@ class ReportController extends Controller
             }
         }
 
+        if (!empty($tahun)) {
+            $query->whereBetween('mining_readinesses.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
+        }
 
         $dataMining = $query->get();
 
@@ -646,12 +672,13 @@ class ReportController extends Controller
         $totalQuality = 0;
         $totalQuantity = 0;
         $count = 0;
+        
         $query = DB::table('people_readinesses')
+            ->select('people_readinesses.*')
             ->join('users', 'people_readinesses.created_by', '=', 'users.username')
-
-            ->select('people_readinesses.*');
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -659,7 +686,11 @@ class ReportController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+        if (!empty($tahun)) {
+            $query->whereBetween('people_readinesses.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
+        }
         $people = $query->get();
+        // dd($query->toSql(), $query->getBindings());
 
         $totalQuality = 0;
         $totalQuantity = 0;
@@ -674,7 +705,10 @@ class ReportController extends Controller
                 $totalQuantity += $quantityPlan;
                 $count++;
             }
+            // echo "Quality Plan: $d->Quality_plan → Converted: $qualityPlan\n";
+            // echo "Quantity Plan: $d->Quantity_plan → Converted: $quantityPlan\n";
         }
+        // dd("Total Quality:", $totalQuality, "Total Quantity:", $totalQuantity, "Count:", $count);
 
         if ($count > 0) {
             $averageQuality = $totalQuality / $count;
@@ -689,8 +723,17 @@ class ReportController extends Controller
         } else {
             $totalpr = 0;
         }
+        // dd("Total Data:", $totalQuantity, $totalQuality);
+
+        // dd(
+        //     $totalpr,
+        //     $averageQuality,
+        //     $averageQuantity,
+        //     $qualityPlan,
+        //     $quantityPlan
+        // );
         $indexpeople = $totalpr != 0 ? round(($totalpr * 100) / 100, 2) : 0;
-        $resultpeople= round($indexpeople * (10 / 100), 2);
+        $resultpeople = round($indexpeople * (10 / 100), 2);
 
 
 
@@ -701,13 +744,16 @@ class ReportController extends Controller
             ->join('users', 'infrastructure_readinesses.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
                 $query->whereRaw('users.id_company', $companyId);
             }
+        }
+        if (!empty($tahun)) {
+            $query->whereBetween('infrastructure_readinesses.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
         $datainfra = $query->get();
 
@@ -719,10 +765,10 @@ class ReportController extends Controller
             ->avg();
 
         $indexinfra = $averagePerformance != 0 ? round(($averagePerformance * 100) / 100, 2) : 0;
-        $resultinfrastruktur= round($indexinfra * (10 / 100), 2);
+        $resultinfrastruktur = round($indexinfra * (10 / 100), 2);
         //l&g
-        $totalindexlearning=$resultpeople+$resultinfrastruktur;
-        $resultlearning=round($totalindexlearning * 0.10, 2);
+        $totalindexlearning = $resultpeople + $resultinfrastruktur;
+        $resultlearning = round($totalindexlearning * 0.10, 2);
 
         // dd($averagePerformance,$indexinfra);
 
@@ -739,6 +785,9 @@ class ReportController extends Controller
             } else {
                 $query->whereRaw('users.id_company', $companyId);
             }
+        }
+        if (!empty($tahun)) {
+            $query->whereBetween('stock_jts.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
 
         $data = $query->get();

@@ -58,6 +58,35 @@ class StockJtController extends Controller
         $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
 
         $akumulasi = $stokAwal;
+        $endForStokMasuk = date('Y-m-d', strtotime($endDate . ' -1 day'));
+        $dataStokMasuk = $data->filter(function ($item) use ($endForStokMasuk) {
+            return isset($item->date) && $item->date <= $endForStokMasuk;
+        });
+
+        // dd($akumulasiStokMasuk);
+
+        if ($dataStokMasuk->isEmpty()) {
+            $dataStokMasuk = collect();
+        }
+        $akumulasiStokMasuk = $data->where('date', '<=', $endDate)->sum(function ($item) {
+            return floatval($item->sotckawal) + floatval($item->totalhauling);
+        });
+        $akumulasiStokMasuk = 0;
+        $data->each(function ($stock, $index) use ($dataStokMasuk, &$akumulasiStokMasuk) {
+            $stock->sotckawal = floatval($stock->sotckawal ?? 0);
+            $stock->totalhauling = floatval($stock->totalhauling ?? 0);
+            $stock->stockout = floatval($stock->stockout ?? 0);
+
+            if ($index === 0) {
+                $akumulasiStokMasuk = $stock->sotckawal;
+            }
+
+            if ($dataStokMasuk->contains('id', $stock->id)) {
+                $akumulasiStokMasuk += $stock->totalhauling;
+            }
+
+            $stock->akumulasi_stock = $akumulasiStokMasuk;
+        });
 
         $data->map(function ($stock, $index) use (&$akumulasi, &$stock_akhir) {
             $stock->sotckawal = floatval($stock->sotckawal ?? 0);
@@ -78,7 +107,7 @@ class StockJtController extends Controller
 
         $percen = ($planNominal != 0) ? ($stock_akhir / $planNominal) * 100 : 0;
         $grandTotal = optional($data->last())->stock_akhir ?? 0;
-        return view('stockjt.indexmenu', compact('data', 'totalHauling', 'grandTotal', 'perusahaans', 'companyId', 'planNominal', 'deviasi', 'percen'));
+        return view('stockjt.indexmenu', compact('data', 'akumulasiStokMasuk','totalHauling', 'grandTotal', 'perusahaans', 'companyId', 'planNominal', 'deviasi', 'percen'));
     }
 
 
@@ -198,20 +227,22 @@ class StockJtController extends Controller
         });
 
         $prevStockAkhir = 0;
-        $data->each(function ($stock) use (&$prevStockAkhir) {
-            // Jika ada stock_awal, gunakan itu, kalau tidak pakai stock_akhir sebelumnya
+        $totalStockOut = 0; // Variabel untuk menyimpan total stockout
+
+        $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut) {
             $stock->sotckawal = $stock->sotckawal > 0 ? $stock->sotckawal : $prevStockAkhir;
 
-            // Hitung stock_akhir
             $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;
 
-            // Simpan stock_akhir untuk hari berikutnya
+            $totalStockOut += $stock->stockout;
+
             $prevStockAkhir = $stock->stock_akhir;
         });
 
+        // dd($totalStockOut);
+
 
         // dd($data->toArray());
-
         $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
         $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
 
@@ -222,13 +253,15 @@ class StockJtController extends Controller
             'perusahaans',
             'companyId',
             'planNominal',
-            'grandTotalstockakhir','totalQuantity'
+            'grandTotalstockakhir',
+            'totalQuantity',
+            'totalStockOut'
         ));
     }
     public function formstockjt(Request $request)
     {
-        $data=Barging::all();
-        return view('stockjt.adddata',compact('data'));
+        $data = Barging::all();
+        return view('stockjt.adddata', compact('data'));
     }
     public function createstockjt(Request $request)
     {
@@ -303,9 +336,9 @@ class StockJtController extends Controller
 
     public function formupdatestockjt($id)
     {
-        $barging=Barging::all();
+        $barging = Barging::all();
         $data = StockJt::findOrFail($id);
-        return view('stockjt.update', compact('data','barging'));
+        return view('stockjt.update', compact('data', 'barging'));
     }
 
     public function updatestockjt(Request $request, $id)
