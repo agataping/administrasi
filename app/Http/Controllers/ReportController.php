@@ -226,14 +226,14 @@ class ReportController extends Controller
         // dd($plancogs,$totalplancogas,$totalRevenuep);
         //cost of employe
         $totactualsalary = (clone $query)
-            ->where('category_labarugis.namecategory', 'Salary')
+            ->where('category_labarugis.namecategory', ['Salary','Biaya Gaji'])
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
 
         $totplansalary = (clone $query)
-            ->where('category_labarugis.namecategory', 'Salary')
+            ->where('category_labarugis.namecategory', ['Salary','Biaya Gaji'])
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
@@ -243,13 +243,13 @@ class ReportController extends Controller
 
         //csr
         $totactualscsr = (clone $query)
-            ->where('category_labarugis.namecategory', 'Social & CSR')
+            ->where('category_labarugis.namecategory', ['Social & CSR','Biaya adm dan Umum'])
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
         $totplanscsr = (clone $query)
-            ->where('category_labarugis.namecategory', 'Social & CSR')
+            ->where('category_labarugis.namecategory', ['Social & CSR','Biaya adm dan Umum'])
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
