@@ -226,30 +226,31 @@ class ReportController extends Controller
         // dd($plancogs,$totalplancogas,$totalRevenuep);
         //cost of employe
         $totactualsalary = (clone $query)
-            ->where('category_labarugis.namecategory', ['Salary','Biaya Gaji'])
+            ->whereIn('category_labarugis.namecategory', ['Salary', 'Biaya Gaji'])
             ->get()
             ->sum(function ($item) {
-                return (float)str_replace(',', '', $item->nominalactual ?? 0);
+                return (float)str_replace(',', '', trim($item->nominalactual ?? 0));
             });
 
         $totplansalary = (clone $query)
-            ->where('category_labarugis.namecategory', ['Salary','Biaya Gaji'])
+            ->whereIn('category_labarugis.namecategory', ['Salary', 'Biaya Gaji'])
             ->get()
             ->sum(function ($item) {
-                return (float)str_replace(',', '', $item->nominalplan ?? 0);
+                return (float)str_replace(',', '', trim($item->nominalplan ?? 0));
             });
+
         $actualcoe = $totalRevenuea ? ($totactualsalary / $totalRevenuea) * 100 : 0;
         $plancoe = $totalRevenuep ? ($totplansalary / $totalRevenuep) * 100 : 0;
 
         //csr
         $totactualscsr = (clone $query)
-            ->where('category_labarugis.namecategory', ['Social & CSR','Biaya adm dan Umum'])
+            ->whereIn('category_labarugis.namecategory', ['Social & CSR', 'Biaya adm dan Umum'])
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
         $totplanscsr = (clone $query)
-            ->where('category_labarugis.namecategory', ['Social & CSR','Biaya adm dan Umum'])
+            ->whereIn('category_labarugis.namecategory', ['Social & CSR', 'Biaya adm dan Umum'])
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
@@ -672,7 +673,7 @@ class ReportController extends Controller
         $totalQuality = 0;
         $totalQuantity = 0;
         $count = 0;
-        
+
         $query = DB::table('people_readinesses')
             ->select('people_readinesses.*')
             ->join('users', 'people_readinesses.created_by', '=', 'users.username')
