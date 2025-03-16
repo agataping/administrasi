@@ -5,7 +5,7 @@
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-2">
     <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
@@ -26,11 +26,11 @@
                 </div>
 
                 @endif
-                <div class="row justify-content-start">
+                <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('categoryneraca') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
-                            <button type="submit" class="btn btn-custom">Add Deskripsi</button>
+                            <button type="submit" class="btn btn-custom">Add Description</button>
                         </form>
                     </div>
                     <div class="col-auto">
@@ -89,9 +89,11 @@
                             Filter
                         </button>
                     </form>
-
+                    <!-- <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..." style="margin-bottom: 10px; padding: 5px; width: 100%; border: 1px solid #ccc; border-radius: 4px;"> -->
+                    <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
+                        style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
                     <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
-                        <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+                        <table id="myTable" class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
 
                             <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                                 <tr>
@@ -142,11 +144,11 @@
 
                                     <td style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</td>
                                     <td>{{ $subCategory['sub_category'] }}</td>
-                                    <td  style=" text-align: end;">{{ number_format($subCategory['sub_total_debit']) }}</td>
-                                    <td   style=" text-align: end;">{{ number_format ($subCategory['sub_total_credit']) }}</td>
+                                    <td style=" text-align: end;">{{ number_format($subCategory['sub_total_debit']) }}</td>
+                                    <td style=" text-align: end;">{{ number_format ($subCategory['sub_total_credit']) }}</td>
                                     <td></td>
-                                    <td   style=" text-align: end;">{{ number_format($subCategory['sub_total_debitactual']) }}</td>
-                                    <td   style=" text-align: end;">{{ number_format ($subCategory['sub_total_creditactual']) }}</td>
+                                    <td style=" text-align: end;">{{ number_format($subCategory['sub_total_debitactual']) }}</td>
+                                    <td style=" text-align: end;">{{ number_format ($subCategory['sub_total_creditactual']) }}</td>
 
                                     <td></td>
                                     <td></td>
@@ -171,8 +173,8 @@
                                                 <tr>
                                                     <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
                                                     <td>{{ $detail['name'] }}</td>
-                                                    <td style=" text-align: end;"  >{{ number_format($detail['debit'],2 ) }}</td>
-                                                    <td style="text-align: end;"  >{{ number_format($detail['credit'], ) }}</td>
+                                                    <td style=" text-align: end;">{{ number_format($detail['debit'],2 ) }}</td>
+                                                    <td style="text-align: end;">{{ number_format($detail['credit'], ) }}</td>
                                                     <td>
                                                         @if (!empty($detail['fileplan']))
                                                         <a href="{{ asset('storage/' . $detail['fileplan']) }}" class="text-decoration-none" target="_blank">View File</a>
@@ -180,8 +182,8 @@
                                                         <span class="text-muted">No File</span>
                                                         @endif
                                                     </td>
-                                                    <td style=" text-align: end;"  >{{ number_format($detail['debit_actual'], 2) }}</td>
-                                                    <td style="text-align: end;"  >{{ number_format($detail['credit_actual'],2 ) }}</td>
+                                                    <td style=" text-align: end;">{{ number_format($detail['debit_actual'], 2) }}</td>
+                                                    <td style="text-align: end;">{{ number_format($detail['credit_actual'],2 ) }}</td>
                                                     <td>
                                                         @if (!empty($detail['fileactual']))
                                                         <a href="{{ asset('storage/' . $detail['fileactual']) }}" class="text-decoration-none" target="_blank">View File</a>
@@ -214,11 +216,11 @@
                                 <tr>
                                     @if (in_array($total['category_name'], ['CURRENT ASSETS', 'FIX ASSETS']))
                                     <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</th>
-                                    <td  colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  >
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($total['subTotalplanasset'], 2) }}
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
 
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($total['subTotalSaldoActualasset'], 2) }}</td>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['subTotalSaldoActualasset'], 2) }}</td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
@@ -226,12 +228,12 @@
 
                                 </tr>
                                 @if (in_array($total['category_name'], ['LIABILITIES', 'EQUITY']))
-                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;"  >Total {{ $total['category_name'] }}</th>
-                                <td  colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  >
+                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</th>
+                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">
                                     {{ number_format($total['subTotalplanmodalhutang'], 2) }}
                                 <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
 
-                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($total['subTotalSaldoActualmodalhutang'], 2) }}</td>
+                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['subTotalSaldoActualmodalhutang'], 2) }}</td>
                                 <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                 <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                 <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
@@ -242,9 +244,9 @@
                                 <tr>
                                     @if ($total['category_name'] == 'CURRENT ASSETS')
                                     <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</th>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($totalplanasset, 2) }}</td>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($totalplanasset, 2) }}</td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($totalactualasset, 2) }}</td>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($totalactualasset, 2) }}</td>
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     @endif
                                 </tr>
@@ -252,9 +254,9 @@
                                     @if ($total['category_name'] == 'EQUITY')
                                     <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">TOTAL LIABILITIES AND EQUITY </th>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($modalhutangplan, 2) }}</td>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"  > {{ number_format($modalhutangactual, 2) }}</td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"  ></td>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($modalhutangplan, 2) }}</td>
+                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($modalhutangactual, 2) }}</td>
+                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
                                     @endif
                                 </tr>
                                 @endforeach
@@ -304,7 +306,29 @@
         });
     });
 
+    function searchTable() {
+        let input = document.getElementById("searchInput");
+        let filter = input.value.toLowerCase();
+        let table = document.getElementById("myTable");
+        let tr = table.getElementsByTagName("tr");
 
+        for (let i = 1; i < tr.length; i++) {
+            let td = tr[i].getElementsByTagName("td");
+            let rowVisible = false;
+
+            for (let j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    let txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+            }
+
+            tr[i].style.display = rowVisible ? "" : "none";
+        }
+    }
 </script>
 
 @endsection

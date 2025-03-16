@@ -350,56 +350,56 @@ class ReportController extends Controller
 
 
         // Perhitungan persen revenue dan weight (plan)
-        $persenassetplan = round($ongkosplan != 0) ? ($totalplanasset / $ongkosplan) * 100 : 0;/* asset*/
+        $persenassetplan = ($ongkosplan != 0) ? round($totalplanasset / $ongkosplan) * 100 : 0;/* asset*/
         $weightasset = round(($persenassetplan / 35.00) * 100, 2);
-        $persenmodalhutangplan = round($ongkosplan != 0) ? ($modalhutangplan / $ongkosplan) * 100 : 0;/* libili equaity*/
+        $persenmodalhutangplan = ($ongkosplan != 0) ? round ($modalhutangplan / $ongkosplan) * 100 : 0;/* libili equaity*/
         $weightmodalhutang = round(($persenmodalhutangplan / 35.00) * 100, 2);
-        $persenrevenue = round($ongkosplan != 0) ? ($totalRevenuep / $ongkosplan) * 100 : 0;/* revenue*/
+        $persenrevenue = ($ongkosplan != 0) ? round ($totalRevenuep / $ongkosplan) * 100 : 0;/* revenue*/
         $weightrevenue = round(($persenrevenue / 35.00) * 100, 2);
-        $persencogs = ($ongkosplan != 0) ? ($totalplancogas / $ongkosplan) * 100 : 0;/* cogs*/
+        $persencogs = ($ongkosplan != 0) ? round ($totalplancogas / $ongkosplan) * 100 : 0;/* cogs*/
         $weightcogs = round(($persencogs / 35.00) * 100, 2);
-        $persenprofitmargin = ($ongkosplan != 0) ? ($totallkplan / $ongkosplan) * 100 : 0;/* profit margin*/
+        $persenprofitmargin = ($ongkosplan != 0) ? round ($totallkplan / $ongkosplan) * 100 : 0;/* profit margin*/
         $weightprofitmargin = round(($persenprofitmargin / 35.00) * 100, 2);
-        $persencostemploye = ($ongkosplan != 0) ? ($totplansalary / $ongkosplan) * 100 : 0;/* saleri cost employe*/
+        $persencostemploye = ($ongkosplan != 0) ? round ($totplansalary / $ongkosplan) * 100 : 0;/* saleri cost employe*/
         $weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
-        $persencsr = ($ongkosplan != 0) ? ($totplanscsr / $ongkosplan) * 100 : 0;/* csr*/
+        $persencsr = ($ongkosplan != 0) ? round ($totplanscsr / $ongkosplan) * 100 : 0;/* csr*/
         $weightcsr = round(($persencsr / 35.00) * 100, 2);
-        $persenopratingcost = ($ongkosplan != 0) ? ($planoperasional / $ongkosplan) * 100 : 0;/*operasional cost*/
+        $persenopratingcost = ($ongkosplan != 0) ? round ($planoperasional / $ongkosplan) * 100 : 0;/*operasional cost*/
         $weightopratingcost = round(($persenopratingcost / 35.00) * 100, 2);
-        $persenoperatingprofitmargin = ($ongkosplan != 0) ? ($totalplanlp / $ongkosplan) * 100 : 0;/* opersional profit mg*/
+        $persenoperatingprofitmargin = ($ongkosplan != 0) ? round ($totalplanlp / $ongkosplan) * 100 : 0;/* opersional profit mg*/
         $weightopratingmg = round(($persenoperatingprofitmargin / 35.00) * 100, 2);
-        $persennetprofitmargin = ($ongkosplan != 0) ? ($planlb / $ongkosplan) * 100 : 0;/*net profit*/
+        $persennetprofitmargin = ($ongkosplan != 0) ? round ($planlb / $ongkosplan) * 100 : 0;/*net profit*/
         $weightnetprofitmargin = round(($persennetprofitmargin / 35.00) * 100, 2);
 
         // Perhitungan persen actual dan index result (index * weight)
-        $psersenactualasset = round($ongkosactual != 0) ? ($totalactualasset / $ongkosactual) * 100 : 0;/* asset*/
+        $psersenactualasset = ($ongkosactual != 0) ? round ($totalactualasset / $ongkosactual) * 100 : 0;/* asset*/
         $indexactualasset = ($persenassetplan != 0) ? round(($psersenactualasset / $persenassetplan) * 100, 2) : 0;
         $resultasset = round($indexactualasset * ($weightasset / 100), 2);
-        $persenactualmodalhutang = round($ongkosactual != 0) ? ($modalhutangactual / $ongkosactual) * 100 : 0;/* liabiliti equity*/
+        $persenactualmodalhutang = ($ongkosactual != 0) ? round ($modalhutangactual / $ongkosactual) * 100 : 0;/* liabiliti equity*/
         $indexmodalhutanactual = ($persenmodalhutangplan != 0) ? round(($persenactualmodalhutang / $persenmodalhutangplan) * 100, 2) : 0;
         $resultequity = round($indexmodalhutanactual * ($weightmodalhutang / 100), 2);
         $persenactualrevenue = ($ongkosactual != 0) ? ($totalRevenuea / $ongkosactual) * 100 : 0; /* revenue*/
         $indexrevenue = ($persenrevenue != 0) ? round(($persenactualrevenue / $persenrevenue) * 100, 2) : 0;
         $resultrevenue = round($indexrevenue *  ($weightrevenue / 100), 2);
-        $persenactualcogs = ($ongkosactual != 0) ? ($totalactualcogas / $ongkosactual) * 100 : 0;/* cogs*/
+        $persenactualcogs = ($ongkosactual != 0) ? round ($totalactualcogas / $ongkosactual) * 100 : 0;/* cogs*/
         $indexcogs = ($persencogs != 0) ? round(($persenactualcogs / $persencogs) * 100, 2) : 0;
         $resultcogs = round($indexcogs * ($weightcogs / 100), 2);
-        $persenactualprofitmg = ($ongkosactual != 0) ? ($totallkactual / $ongkosactual) * 100 : 0;/* profit margin*/
+        $persenactualprofitmg = ($ongkosactual != 0) ? round ($totallkactual / $ongkosactual) * 100 : 0;/* profit margin*/
         $indexprofitmg = ($persenprofitmargin != 0) ? round(($persenactualprofitmg / $persenprofitmargin) * 100, 2) : 0;
         $resultoperatingpm = round($indexprofitmg * ($weightprofitmargin / 100), 2);
-        $pserenactualcostemploye = ($ongkosactual != 0) ? ($totactualsalary / $ongkosactual) * 100 : 0;/* saleri cost employe*/
+        $pserenactualcostemploye = ($ongkosactual != 0) ? round ($totactualsalary / $ongkosactual) * 100 : 0;/* saleri cost employe*/
         $indexcostemlpoye = ($persencostemploye != 0) ? round(($pserenactualcostemploye / $persencostemploye) * 100, 2) : 0;
         $resultemploye = round($indexcostemlpoye * ($weightcostemploye / 100), 2);
         $persenactualcsr = ($ongkosactual != 0) ? ($totactualscsr / $ongkosactual) * 100 : 0;/* csr*/
         $indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;
         $resultcsr = round($indexcsr *  ($weightcsr / 100), 2);
-        $persenactualoperatincost = ($ongkosactual != 0) ? ($actualoperasional / $ongkosactual) * 100 : 0;/*operasional cost*/
+        $persenactualoperatincost = ($ongkosactual != 0) ? round ($actualoperasional / $ongkosactual) * 100 : 0;/*operasional cost*/
         $indexoperatingcost = ($persenopratingcost != 0) ? round(($persenactualoperatincost / $persenopratingcost) * 100, 2) : 0;
         $ressultoperasionalcost = round($indexoperatingcost * ($weightopratingcost / 100), 2);
         $persenactualoperasionalpmg = ($ongkosactual != 0) ? ($totalactualOp / $ongkosactual) * 100 : 0;/* opersional profit mg*/
         $indexoperasionalpmg = ($persenoperatingprofitmargin != 0) ? round(($persenactualoperasionalpmg / $persenoperatingprofitmargin) * 100, 2) : 0;
         $resultgrosspm = round($indexoperasionalpmg * ($weightopratingmg / 100), 2);
-        $persenactualnetprofitmg = ($ongkosactual != 0) ? ($actuallb / $ongkosactual) * 100 : 0;/*net profit*/
+        $persenactualnetprofitmg = ($ongkosactual != 0) ? round ($actuallb / $ongkosactual) * 100 : 0;/*net profit*/
         $indexnetprofitmg = ($persennetprofitmargin != 0) ? round(($persenactualnetprofitmg / $persennetprofitmargin) * 100, 2) : 0;
         $resultnetpm = round($indexnetprofitmg * ($weightnetprofitmargin / 100), 2);
         //financial perspectif 

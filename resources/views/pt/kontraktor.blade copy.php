@@ -5,7 +5,7 @@
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-2">
 <div class="card mb-3 "  style="border-radius: 12px; overflow: hidden; margin: 2rem auto; height:80vh; ">
     <img src="{{asset('storage/gambar/abcd.png')}}"  alt="Administrasi" style="width: auto; height: auto; object-fit: cover;">
     <div class="card-img-overlay d-flex align-items-center justify-content-center" style="background: color: white; text-align: center; ">
