@@ -310,8 +310,8 @@ class ReportController extends Controller
 
         $totalplanlr = $totalRevenuep - $totallkplan;
         $totalactuallr = $totalRevenuea - $totallkactual;
-        $plancoe = ($totalRevenuep > 0) ? ($totplansalary / $totalRevenuep) * 100 : 0;
-        $totalvertikals = $totalRevenuea ? ($totalactuallr / $totalRevenuea) * 100 : 0;
+        $totalvertikal = ($totalplanlr && $totalRevenuep > 0) ? ($totalplanlr / $totalRevenuep) * 100 : 0;
+        $totalvertikals = ($totalRevenuea > 0) ? ($totalactuallr / $totalRevenuea) * 100 : 0;
         $deviasilr = $totalplanlr - $totalactuallr;
         // dd($totalactuallr);
         $persenlr = $totalplanlr ? ($totalactuallr / $totalplanlr) * 100 : 0;
