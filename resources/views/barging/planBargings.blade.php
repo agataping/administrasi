@@ -1,5 +1,6 @@
 @extends('template.main')
 @section('title', 'AddPlanBarging')
+
 @extends('components.style')
 @section('content')
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">

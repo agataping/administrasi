@@ -1,5 +1,7 @@
 @extends('template.main')
 @extends('components.style')
+@extends('components.script')
+
 @section('title', 'Profit & Loss')
 @section('content')
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
@@ -86,7 +88,7 @@
                         <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                             Filter
                         </button>
-                        
+
                     </form>
                     <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..." style="margin-bottom: 10px; padding: 5px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
 
@@ -144,7 +146,7 @@
                                 </tr>
                                 {{-- Tampilkan Sub-Kategori --}}
                                 @foreach ($total['sub_categories'] as $subIndex => $subCategory)
-                                <tr data-toggle="collapse" data-target="#detail-{{ Str::slug($subCategory['name_sub'], '-') }}" style="cursor: pointer;">
+                                <tr data-bs-toggle="collapse" data-bs-target="#detail-{{ Str::slug($subCategory['name_sub'], '-') }}" style="cursor: pointer;">
                                     <th style=" color:black;vertical-align: middle; ">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</th>
                                     <td style="vertical-align: middle; text-align: start;">{{ $subCategory['name_sub'] }}</strong></td>
                                     <td style="text-align: end;vertical-align: middle;">{{ number_format($subCategory['total_plan'], 2) }}</strong></td>
@@ -157,7 +159,11 @@
                                     <td></td>
 
                                     <td colspan="" style="text-align: center; vertical-align: middle;">
-                                        <a href="{{ route('formupdatesublr', $subCategory['details'][0]->sub_id) }}" class="btn btn-primary">Edit</a>
+                                        <form action="{{ route('formupdatesublr', $subCategory['details'][0]->sub_id) }}">
+                                            <button type="submit" class="btn btn-primary">Edit</button type="submit">
+
+                                        </form>
+
                                     </td>
                                     <td style="text-align: center; vertical-align: middle;" rowspan="">
                                         <form action="{{ route('deletesublr',$subCategory['details'][0]->sub_id) }}" method="POST" onsubmit="return confirmDelete(event)">
@@ -170,6 +176,7 @@
                                 {{-- Tampilkan Detail dari Sub-Kategori --}}
 
                                 <tr id="detail-{{ Str::slug($subCategory['name_sub'], '-') }}" class="d-none">
+
                                     <td colspan="12">
                                         <table class="table table-bordered" style=" width: 100%; border-collapse: collapse;">
                                             <colgroup>
@@ -369,9 +376,9 @@
 @section('scripts')
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll("tr[data-toggle='collapse']").forEach(function(row) {
+        document.querySelectorAll("tr[data-bs-toggle='collapse']").forEach(function(row) {
             row.addEventListener("click", function() {
-                let targetId = this.getAttribute("data-target");
+                let targetId = this.getAttribute("data-bs-target");
                 let targetElement = document.querySelector(targetId);
 
                 if (targetElement) {
@@ -388,7 +395,7 @@
         let table = document.getElementById("myTable");
         let tr = table.getElementsByTagName("tr");
 
-        for (let i = 1; i < tr.length; i++) { 
+        for (let i = 1; i < tr.length; i++) {
             let td = tr[i].getElementsByTagName("td");
             let rowVisible = false;
 

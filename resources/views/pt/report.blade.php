@@ -39,26 +39,29 @@
 
                 
                 
-                <h3 class="text-center">
-                <strong>KPI JTN DASHBOARD - {{ request('tahun', date('Y')) }} </strong>
-                </h3>
-                <div class="row" style="background-color: #f4e2cd; border: 2px solid black;">
-                    <!-- Baris pertama -->
-                    <div class="col" style="text-align: left;">
-                        <h2 class="">TOTAL PERFORMANCE (YEAR TO DATE)</h2>
+                 <div class="row mt-1" style="margin-bottom: 0.5rem;">
+                     <h4 class="text-center text-uppercase fw-bold text-primary mb-2">
+                         KPI JTN Dashboard - {{ request('tahun', date('Y')) }}
+                        </h4>
+                        
+                        <div class="row align-items-center p-2 m-0 shadow-sm rounded"
+                            style="border-radius: 5px; background: linear-gradient(135deg,rgb(76, 76, 76),rgb(76, 76, 76)); border: 1px solid #d4af37; color: #f5f5f5;
+                            max-height: 80px; overflow: hidden;">
+        
+                        <!-- Bagian Kiri -->
+                        <div class="col-auto">
+                            
+                            <h2 class="fw-bold m-0">Total Performance (YTD)</h2>
+                        </div>
+                        
+                        <!-- Bagian Kanan -->
+                        <div class="col text-end">
+                            <h6 class="fw-bold text-light m-0">WEIGHT: <span class="text-warning">100%</span></h6>
+                        </div>
                     </div>
-                    <div class="col text-end">
-                        <h4 style="margin-top: 10px;">WEIGHT: 100%</h4>
-                    </div>
-                </div>
-                                
-                
-                <!-- Baris kedua untuk persen -->
-                <div class="row mt-1" style="border: 2px solid black;">
-                    <div class="col-2 d-flex justify-content-center align-items-center" style="background-color:rgb(221, 255, 0); font-size: 2em; font-weight: bold;">
+                    <div class="mt-1 col-2 d-flex justify-content-center align-items-center" style="border-radius: 5px; background-color:rgb(221, 255, 0); font-size: 2em; font-weight: bold;">
                         %
                     </div>
-                    
                     <!-- ama perusahaan berdasrkan role Admin -->
                     @if(auth()->user()->role === 'admin')
                     <div class="col text-center">
@@ -81,9 +84,17 @@
                         @endif
                     </div>
                     @endif
+
                 </div>
-                <div class="sidebar p-1 border rounded shadow-sm bg-light">
-                    <h6 class="text-muted text-center mb-1">Please select a year to view the KPI performance.</h6>
+                
+
+                                
+                
+                <!-- Baris kedua untuk persen -->
+                <div class="row " style="border: 1px solid black; margin-bottom: 0.5rem; ">
+                </div>
+                <div class="row sidebar p-1 border rounded shadow-sm bg-light " style="">
+                    <h6 class="text-muted text-center ">Please select a year to view the KPI performance.</h6>
                     
                     <form method="GET" action="{{ route('reportkpi') }}">
                         <label for="tahun" class="form-label mb-1"><strong>Select Year:</strong></label>
@@ -546,7 +557,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($planlavarge, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>

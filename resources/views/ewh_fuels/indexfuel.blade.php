@@ -1,6 +1,6 @@
 @extends('template.main')
 @extends('components.style')
-
+@extends('components.script')
 @section('title', 'fuel')
 @section('content')
 
@@ -30,7 +30,7 @@
                 </div>
 
                 @endif
-                                <div class="row justify-content-start mb-0">
+                <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('unit') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
@@ -44,7 +44,7 @@
                         </form>
                     </div>
                 </div>
-                                <div class="row justify-content-start mb-0">
+                <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <a href="/indexunit">View Unit Data</a>
                     </div>
@@ -80,9 +80,11 @@
                         Filter
                     </button>
                 </form>
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
+                        style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
 
                 <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
-                    <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+                    <table id="myTable" class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
                         <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                             <tr>
                                 <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
@@ -102,13 +104,13 @@
                                 <th colspan="" style="text-align: left; background-color: #f0f0f0;">
                                     {{ $total['units'] }}
                                 </th>
-                                <td  style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                                <td style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                     {{ number_format($total['total_plan'], 2) }}
-                                </td >
+                                </td>
                                 <th style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
 
                                 </th>
-                                <td  colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                                <td colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                     {{ number_format($total['total_actual'], 2) }}
                                 </td>
 
@@ -127,7 +129,7 @@
                                 <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
                                 <td>{{ \Carbon\Carbon::parse($detail->date)->format('d F Y') }}</td>
                                 <td>{{ $detail->desc }}</td>
-                                <td  style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->plan, 2) }}</td>
+                                <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->plan, 2) }}</td>
                                 <td style="vertical-align: middle; text-align: end;">
                                     @php
                                     $fileExtension = $detail->file_extension;
@@ -135,7 +137,7 @@
                                     <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
 
                                 </td>
-                                <td  style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
+                                <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
                                     <form action="{{ route('formupdatefuel', ['id' => $detail->id]) }}">
                                         <button type="submit" class="btn btn-primary btn-sm">Edit</button>
@@ -193,5 +195,29 @@
         document.getElementById('planInput').style.display = 'block';
         document.getElementById('actualInput').style.display = 'none';
     });
+    function searchTable() {
+        let input = document.getElementById("searchInput");
+        let filter = input.value.toLowerCase();
+        let table = document.getElementById("myTable");
+        let tr = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < tr.length; i++) { 
+            let td = tr[i].getElementsByTagName("td");
+            let rowVisible = false;
+
+            for (let j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    let txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+            }
+
+            tr[i].style.display = rowVisible ? "" : "none";
+        }
+    }
+
 </script>
 @endsection

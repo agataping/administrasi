@@ -38,8 +38,6 @@
                             <option value="{{ $kategori->id }}" {{ $kategori->id == $data->jenis_id ? 'selected' : '' }}>
                                 {{ $kategori->namecategory }} {{ $kategori->name }}
                             </option>
-
-
                             @endforeach
                         </select>
                     </div>

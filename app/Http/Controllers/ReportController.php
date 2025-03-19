@@ -26,26 +26,30 @@ class ReportController extends Controller
         }
 
         //neraca
-        $user = Auth::user();
         $tahun = $request->input('tahun', session('tahun'));
-
-        // Simpan ke session hanya jika ada input tahun
+        $user = Auth::user();
+        $companyId = $request->input('id_company');
+        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         if ($tahun) {
             session(['tahun' => $tahun]);
         }
         session(['tahun' => $tahun]);
-        $companyId = $request->input('id_company');
-        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
-        // Query data
+
+
         $query = DB::table('detail_neracas')
             ->join('sub_neracas', 'detail_neracas.sub_id', '=', 'sub_neracas.id')
             ->join('category_neracas', 'sub_neracas.kategori_id', '=', 'category_neracas.id')
             ->join('users', 'detail_neracas.created_by', '=', 'users.username')
+            ->join('jenis_neracas', 'category_neracas.jenis_id', '=', 'jenis_neracas.id')
+
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
             ->select(
                 'category_neracas.namecategory as category',
+                'category_neracas.*',
+
                 'sub_neracas.namesub as sub_category',
                 'detail_neracas.*',
+                'jenis_neracas.name as jenis_name',
                 'sub_neracas.id as sub_id',
                 'category_neracas.id as category_id',
                 'detail_neracas.id as detail_id'
@@ -62,109 +66,77 @@ class ReportController extends Controller
         if ($tahun) {
             $query->whereBetween('detail_neracas.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
-        // dd($tahun);
-        $data = $query->orderBy('category_neracas.created_at', 'asc')
+
+        $data = $query->orderBy('jenis_neracas.created_at', 'asc')
             ->get()
+            ->groupBy(['jenis_name', 'category', 'sub_category']);
+            
 
-            ->groupBy('category');
-        $fixassettotal = (clone $query)
-            ->where('category_neracas.namecategory', 'FIX ASSETS')
+        //total jenis asset
+        $fixAssetTotals = (clone $query)
+            ->where('jenis_neracas.name', 'fix assets')
             ->get()
-            ->reduce(function ($carry, $item) {
-                return [
-                    'credit'      => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
-                    'debit'       => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
-                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
-                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0),
-                ];
-            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
-        $currenasset = (clone $query)
-            ->where('category_neracas.namecategory', 'CURRENT ASSETS')
+            ->reduce(function ($totals, $item) {
+                $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                return $totals;
+            }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
+
+        $totalplanfixasset = $fixAssetTotals['debit'] - $fixAssetTotals['credit'];
+        $totalactualfixtasset = $fixAssetTotals['debit_actual'] - $fixAssetTotals['credit_actual'];
+
+        $currenassettotal = (clone $query)
+            ->where('jenis_neracas.name', 'CURRENT ASSETS')
             ->get()
-            ->reduce(function ($carry, $item) {
-                return [
-                    'credit'         => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
-                    'debit'          => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
-                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
-                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0), // Perbaikan disini!
-                ];
-            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
-        // FIX ASSET hasil
-        $totalcreditfixassetplan = $fixassettotal['credit'];
-        $totaldebitfixassetplan = $fixassettotal['debit'];
-        $totalcreditfixassetactual = $fixassettotal['credit_actual'];
-        $totaldebitfixassetactual = $fixassettotal['debit_actual'];
-        $totalplanfixasset = $totaldebitfixassetplan - $totalcreditfixassetplan; //plan (debit-credit)
-        $totalactualfixasset = $totaldebitfixassetactual - $totalcreditfixassetactual; //actuall (debit-credit)
+            ->reduce(function ($totals, $item) {
+                $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                return $totals;
+            }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-        // current asset hasil
-        $creditcurrentassetplan = $currenasset['credit'];
-        $debitcurrentassetplan = $currenasset['debit'];
-        $creditcurrentassetactual = $currenasset['credit_actual'];
-        $debitcurrentassetactual = $currenasset['debit_actual'];
-        $totalplancurrentasset = $debitcurrentassetplan - $creditcurrentassetplan; //plan
-        $totalactualcurrentasset = $debitcurrentassetactual - $creditcurrentassetactual; //actual
-        //total LIABILITIES EQUITY 
-        $totalplanasset = ($totalplancurrentasset < 0)
-            ? $totalplanfixasset + $totalplancurrentasset
-            : $totalplanfixasset - $totalplancurrentasset; //plan
-        $totalactualasset = ($totalactualcurrentasset < 0) //actual
-            ? $totalactualfixasset + $totalactualcurrentasset
-            : $totalactualfixasset - $totalactualcurrentasset;
+        $totalplancurrentasset = $currenassettotal['debit'] - $currenassettotal['credit'];
+        $totalactualcurrentasset = $currenassettotal['debit_actual'] - $currenassettotal['credit_actual'];
 
-        // dd($fixassettotal,$currenasset, $totalplanasset, $totalactualasset,$totalactualcurrentasset,$totalactualfixasset);
+        $totalplanasset = $totalplanfixasset + $totalplancurrentasset; //plan asset
+        $totalactualasset = $totalactualfixtasset + $totalactualcurrentasset; //actual asset
 
-        $liabilitestotal = (clone $query)
-            ->where('category_neracas.namecategory', 'LIABILITIES')
+        //modal hutang
+        $liabilititotal = (clone $query)
+            ->where('jenis_neracas.name', 'LIABILITIES')
             ->get()
-            ->reduce(function ($carry, $item) {
-                return [
-                    'credit'      => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
-                    'debit'       => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
-                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
-                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0),
-                ];
-            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
-        $equatytotal = (clone $query)
-            ->where('category_neracas.namecategory', 'EQUITY')
+            ->reduce(function ($totals, $item) {
+                $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                return $totals;
+            }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
+
+        $totalplanliabiliti = $liabilititotal['debit'] - $liabilititotal['credit'];
+        $totalactualliabiliti = $liabilititotal['debit_actual'] - $liabilititotal['credit_actual'];
+
+        $equitytotal = (clone $query)
+            ->where('jenis_neracas.name', 'EQUITY')
             ->get()
-            ->reduce(function ($carry, $item) {
-                return [
-                    'credit'         => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
-                    'debit'          => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
-                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
-                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0), // Perbaikan disini!
-                ];
-            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
-        // LIABILITIES hasil
-        $totalCreditliabilites = $liabilitestotal['credit'];
-        $totalDebitliabilites = $liabilitestotal['debit'];
-        $totalCreditactualliabilites = $liabilitestotal['credit_actual'];
-        $totalDebitactualliabilites = $liabilitestotal['debit_actual'];
-        $totalplanliabili = $totalCreditliabilites - $totalDebitliabilites; //plan
-        $toalactualliabliti = $totalCreditactualliabilites - $totalDebitactualliabilites; //actuall
+            ->reduce(function ($totals, $item) {
+                $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                return $totals;
+            }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-        // equaty hasil
-        $totalCreditequaty = $equatytotal['credit'];
-        $totalDebitequaty = $equatytotal['debit'];
-        $totalCreditactualequaty = $equatytotal['credit_actual'];
-        $totalDebitactualequaty = $equatytotal['debit_actual'];
-        $totalplanequaty = $totalCreditequaty - $totalDebitequaty; //plan
-        $totalactualequaty = $totalCreditactualequaty - $totalDebitactualequaty; //actual
-        //total LIABILITIES EQUITY 
-        $modalhutangplan = ($totalplanequaty < 0) //plan
-            ? $totalplanliabili + $totalplanequaty
-            : $totalplanliabili - $totalplanequaty;
-        $modalhutangactual = ($totalactualequaty < 0) //actual
-            ? $toalactualliabliti + $totalactualequaty
-            : $toalactualliabliti - $totalactualequaty;
+        $totalplanequity = $equitytotal['debit'] - $equitytotal['credit'];
+        $totalactualequity = $equitytotal['debit_actual'] - $equitytotal['credit_actual'];
+        $totalplanmodalhutang = $totalplanliabiliti + $totalplanequity; //plan
+        $totalactualmodalhutang = $totalactualliabiliti + $totalactualequity; //actual
+        $planlavarge = ($totalactualequity != 0) ? ceil($totalactualliabiliti / $totalactualequity * 100) / 100 : 2;
+        // dd($totalactualliabiliti / $totalactualequity);
 
-
-
-
-        //labarugi
-        // $companyId = $request->input('id_company');
-        // $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
         $query = DB::table('detailabarugis')
             ->join('sub_labarugis', 'detailabarugis.sub_id', '=', 'sub_labarugis.id')
@@ -343,63 +315,63 @@ class ReportController extends Controller
         //kpi jtn & pengukuran 
         //total ongkosplan dan ongkos actual financial
         $ongkosactual = $totalRevenuea + $totalactualcogas + $totallkactual + $totactualsalary
-            + $totactualscsr + $actualoperasional + $totalactualOp + $actuallb + $totalactualasset + $modalhutangactual;
+            + $totactualscsr + $actualoperasional + $totalactualOp + $actuallb + $totalactualasset + $totalactualmodalhutang;
         // (total seluruh plan) yang belum - Return On Assets - Return On Equity 
         $ongkosplan = $totalRevenuep + $totalplancogas + $totallkplan +
-            $totplansalary + $totplanscsr + $planoperasional + $totalplanlp + $planlb + $totalplanasset + $modalhutangplan;  // (total seluruh plan) yang belum - Return On Assets - Return On Equity */
+            $totplansalary + $totplanscsr + $planoperasional + $totalplanlp + $planlb + $totalplanasset + $totalplanmodalhutang;  // (total seluruh plan) yang belum - Return On Assets - Return On Equity */
 
 
         // Perhitungan persen revenue dan weight (plan)
         $persenassetplan = ($ongkosplan != 0) ? round($totalplanasset / $ongkosplan) * 100 : 0;/* asset*/
         $weightasset = round(($persenassetplan / 35.00) * 100, 2);
-        $persenmodalhutangplan = ($ongkosplan != 0) ? round ($modalhutangplan / $ongkosplan) * 100 : 0;/* libili equaity*/
+        $persenmodalhutangplan = ($ongkosplan != 0) ? round($totalplanmodalhutang/ $ongkosplan) * 100 : 0;/* libili equaity*/
         $weightmodalhutang = round(($persenmodalhutangplan / 35.00) * 100, 2);
-        $persenrevenue = ($ongkosplan != 0) ? round ($totalRevenuep / $ongkosplan) * 100 : 0;/* revenue*/
+        $persenrevenue = ($ongkosplan != 0) ? round($totalRevenuep / $ongkosplan) * 100 : 0;/* revenue*/
         $weightrevenue = round(($persenrevenue / 35.00) * 100, 2);
-        $persencogs = ($ongkosplan != 0) ? round ($totalplancogas / $ongkosplan) * 100 : 0;/* cogs*/
+        $persencogs = ($ongkosplan != 0) ? round($totalplancogas / $ongkosplan) * 100 : 0;/* cogs*/
         $weightcogs = round(($persencogs / 35.00) * 100, 2);
-        $persenprofitmargin = ($ongkosplan != 0) ? round ($totallkplan / $ongkosplan) * 100 : 0;/* profit margin*/
+        $persenprofitmargin = ($ongkosplan != 0) ? round($totallkplan / $ongkosplan) * 100 : 0;/* profit margin*/
         $weightprofitmargin = round(($persenprofitmargin / 35.00) * 100, 2);
-        $persencostemploye = ($ongkosplan != 0) ? round ($totplansalary / $ongkosplan) * 100 : 0;/* saleri cost employe*/
+        $persencostemploye = ($ongkosplan != 0) ? round($totplansalary / $ongkosplan) * 100 : 0;/* saleri cost employe*/
         $weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
-        $persencsr = ($ongkosplan != 0) ? round ($totplanscsr / $ongkosplan) * 100 : 0;/* csr*/
+        $persencsr = ($ongkosplan != 0) ? round($totplanscsr / $ongkosplan) * 100 : 0;/* csr*/
         $weightcsr = round(($persencsr / 35.00) * 100, 2);
-        $persenopratingcost = ($ongkosplan != 0) ? round ($planoperasional / $ongkosplan) * 100 : 0;/*operasional cost*/
+        $persenopratingcost = ($ongkosplan != 0) ? round($planoperasional / $ongkosplan) * 100 : 0;/*operasional cost*/
         $weightopratingcost = round(($persenopratingcost / 35.00) * 100, 2);
-        $persenoperatingprofitmargin = ($ongkosplan != 0) ? round ($totalplanlp / $ongkosplan) * 100 : 0;/* opersional profit mg*/
+        $persenoperatingprofitmargin = ($ongkosplan != 0) ? round($totalplanlp / $ongkosplan) * 100 : 0;/* opersional profit mg*/
         $weightopratingmg = round(($persenoperatingprofitmargin / 35.00) * 100, 2);
-        $persennetprofitmargin = ($ongkosplan != 0) ? round ($planlb / $ongkosplan) * 100 : 0;/*net profit*/
+        $persennetprofitmargin = ($ongkosplan != 0) ? round($planlb / $ongkosplan) * 100 : 0;/*net profit*/
         $weightnetprofitmargin = round(($persennetprofitmargin / 35.00) * 100, 2);
 
         // Perhitungan persen actual dan index result (index * weight)
-        $psersenactualasset = ($ongkosactual != 0) ? round ($totalactualasset / $ongkosactual) * 100 : 0;/* asset*/
+        $psersenactualasset = ($ongkosactual != 0) ? round($totalactualasset / $ongkosactual) * 100 : 0;/* asset*/
         $indexactualasset = ($persenassetplan != 0) ? round(($psersenactualasset / $persenassetplan) * 100, 2) : 0;
         $resultasset = round($indexactualasset * ($weightasset / 100), 2);
-        $persenactualmodalhutang = ($ongkosactual != 0) ? round ($modalhutangactual / $ongkosactual) * 100 : 0;/* liabiliti equity*/
+        $persenactualmodalhutang = ($ongkosactual != 0) ? round($totalactualmodalhutang / $ongkosactual) * 100 : 0;/* liabiliti equity*/
         $indexmodalhutanactual = ($persenmodalhutangplan != 0) ? round(($persenactualmodalhutang / $persenmodalhutangplan) * 100, 2) : 0;
         $resultequity = round($indexmodalhutanactual * ($weightmodalhutang / 100), 2);
         $persenactualrevenue = ($ongkosactual != 0) ? ($totalRevenuea / $ongkosactual) * 100 : 0; /* revenue*/
         $indexrevenue = ($persenrevenue != 0) ? round(($persenactualrevenue / $persenrevenue) * 100, 2) : 0;
         $resultrevenue = round($indexrevenue *  ($weightrevenue / 100), 2);
-        $persenactualcogs = ($ongkosactual != 0) ? round ($totalactualcogas / $ongkosactual) * 100 : 0;/* cogs*/
+        $persenactualcogs = ($ongkosactual != 0) ? round($totalactualcogas / $ongkosactual) * 100 : 0;/* cogs*/
         $indexcogs = ($persencogs != 0) ? round(($persenactualcogs / $persencogs) * 100, 2) : 0;
         $resultcogs = round($indexcogs * ($weightcogs / 100), 2);
-        $persenactualprofitmg = ($ongkosactual != 0) ? round ($totallkactual / $ongkosactual) * 100 : 0;/* profit margin*/
+        $persenactualprofitmg = ($ongkosactual != 0) ? round($totallkactual / $ongkosactual) * 100 : 0;/* profit margin*/
         $indexprofitmg = ($persenprofitmargin != 0) ? round(($persenactualprofitmg / $persenprofitmargin) * 100, 2) : 0;
         $resultoperatingpm = round($indexprofitmg * ($weightprofitmargin / 100), 2);
-        $pserenactualcostemploye = ($ongkosactual != 0) ? round ($totactualsalary / $ongkosactual) * 100 : 0;/* saleri cost employe*/
+        $pserenactualcostemploye = ($ongkosactual != 0) ? round($totactualsalary / $ongkosactual) * 100 : 0;/* saleri cost employe*/
         $indexcostemlpoye = ($persencostemploye != 0) ? round(($pserenactualcostemploye / $persencostemploye) * 100, 2) : 0;
         $resultemploye = round($indexcostemlpoye * ($weightcostemploye / 100), 2);
         $persenactualcsr = ($ongkosactual != 0) ? ($totactualscsr / $ongkosactual) * 100 : 0;/* csr*/
         $indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;
         $resultcsr = round($indexcsr *  ($weightcsr / 100), 2);
-        $persenactualoperatincost = ($ongkosactual != 0) ? round ($actualoperasional / $ongkosactual) * 100 : 0;/*operasional cost*/
+        $persenactualoperatincost = ($ongkosactual != 0) ? round($actualoperasional / $ongkosactual) * 100 : 0;/*operasional cost*/
         $indexoperatingcost = ($persenopratingcost != 0) ? round(($persenactualoperatincost / $persenopratingcost) * 100, 2) : 0;
         $ressultoperasionalcost = round($indexoperatingcost * ($weightopratingcost / 100), 2);
         $persenactualoperasionalpmg = ($ongkosactual != 0) ? ($totalactualOp / $ongkosactual) * 100 : 0;/* opersional profit mg*/
         $indexoperasionalpmg = ($persenoperatingprofitmargin != 0) ? round(($persenactualoperasionalpmg / $persenoperatingprofitmargin) * 100, 2) : 0;
         $resultgrosspm = round($indexoperasionalpmg * ($weightopratingmg / 100), 2);
-        $persenactualnetprofitmg = ($ongkosactual != 0) ? round ($actuallb / $ongkosactual) * 100 : 0;/*net profit*/
+        $persenactualnetprofitmg = ($ongkosactual != 0) ? round($actuallb / $ongkosactual) * 100 : 0;/*net profit*/
         $indexnetprofitmg = ($persennetprofitmargin != 0) ? round(($persenactualnetprofitmg / $persennetprofitmargin) * 100, 2) : 0;
         $resultnetpm = round($indexnetprofitmg * ($weightnetprofitmargin / 100), 2);
         //financial perspectif 
@@ -837,6 +809,7 @@ class ReportController extends Controller
             'resultlearning',
             'totals',
             //neraca
+            'planlavarge',
             'persenassetplan',
             'psersenactualasset',
             'indexactualasset',

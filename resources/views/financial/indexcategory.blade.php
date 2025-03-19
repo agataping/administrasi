@@ -1,5 +1,6 @@
 @extends('template.main')
 @extends('components.style')
+@extends('components.script')
 
 @section('title', 'Description Data')
 @section('content')

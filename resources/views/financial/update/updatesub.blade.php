@@ -1,5 +1,5 @@
 @extends('template.main')
-@section('title', 'Deskripsi Balnce sheet')
+@section('title', 'Description Balnce sheet')
 @section('content')
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
@@ -40,7 +40,7 @@
                     </div>
                     <div class="row g-3">
                         <div class="">
-                            <label for="kategori" class="form-label">Deskripsi</label>
+                            <label for="kategori" class="form-label">Description</label>
                             <input type="text" class="form-control" value="{{$data->namesub}}" id="kategori" placeholder="" value="" required name="namesub">
                         </div>
                     </div>

@@ -249,8 +249,8 @@ class ControllerEwhFuel extends Controller
     public function createewh(Request $request)
     {
         $validatedData = $request->validate([
-            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'actual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'plan' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'date' => 'required|date',
             'desc' => 'required|string|max:255',
             'unit_id' => 'required',
@@ -300,8 +300,8 @@ class ControllerEwhFuel extends Controller
     public function createfuel(Request $request)
     {
         $validatedData = $request->validate([
-            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'actual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'plan' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'date' => 'required|date',
             'desc' => 'required|string|max:255',
             'unit_id' => 'required',
@@ -363,8 +363,8 @@ class ControllerEwhFuel extends Controller
     public function updateewh(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'actual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'plan' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'date' => 'required',
             'desc' => 'required',
             'unit_id' => 'required',
@@ -411,8 +411,8 @@ class ControllerEwhFuel extends Controller
     public function updatefuel(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'actual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'plan' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'date' => 'required',
             'desc' => 'required',
             'unit_id' => 'required',

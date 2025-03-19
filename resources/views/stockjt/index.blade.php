@@ -70,19 +70,16 @@
                         Filter
                     </button>
                 </form>
-                <div class="form-group ">
-                    <input
-                        type="text"
-                        id="myInput"
-                        onkeyup="filterByLocation()"
-                        placeholder="Search for location..."
-                        title="Type in a location"
-                        style="width: 40%; padding: 10px; font-size: 16px;">
-                </div>
+
+                <input type="text"
+                    id="myInput"
+                    onkeyup="filterByLocation()"
+                    placeholder="Search for location..."
+                    title="Type in a location"
+                    style="margin-bottom: 10px; padding: 5px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
 
 
-
-                <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);" id="myTable">
+                <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);" id="myTablestockjetty">
 
                     <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                         <tr>
@@ -192,7 +189,7 @@
                                 {{ number_format($grandTotal,  2, ',', '.') }}
                             </th>
                             <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end; color:black;">
-                            {{ number_format($totalStockOut,  2, ',', '.') }}
+                                {{ number_format($totalStockOut,  2, ',', '.') }}
                             </th>
                             <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end; color:black;">
                                 {{ number_format($grandTotalstockakhir,  2, ',', '.') }}
@@ -248,4 +245,25 @@
 
 @endsection
 @section('scripts')
+<SCript>
+      function filterByLocation() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTablestockjetty");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[10]; // Mengambil kolom lokasi
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</SCript>
 @endsection

@@ -244,8 +244,8 @@ class OverberdenCoalController extends Controller
     public function createovercoal(Request $request)
     {
         $validatedData = $request->validate([
-            'nominalplan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'nominalactual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'nominalplan' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'nominalactual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'kategori_id' => 'required|string',
             'desc' => 'required|string',
             'tanggal' => 'required|date',
@@ -299,8 +299,8 @@ class OverberdenCoalController extends Controller
     public function updateovercoal(Request $request, $id){
         // dd($request->all());
         $validatedData = $request->validate([
-            'nominalplan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'nominalactual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'nominalplan' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'nominalactual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'kategori_id' => 'required|string',
             'desc' => 'required|string',
             'tanggal' => 'required|date',

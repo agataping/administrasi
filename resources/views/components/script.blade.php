@@ -17,38 +17,52 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
 <script>
+  function confirmDelete(event) {
+    event.preventDefault(); // Prevent the form from submitting immediately
+
+    let confirmation = confirm("Are you sure you want to delete this data?");
+
+    if (confirmation) {
+      event.target.closest("form").submit(); // Submit the form if the user confirms
+    }
+  }
+
   //search table
   function searchTable() {
-        let input = document.getElementById("searchInput");
-        let filter = input.value.toLowerCase();
-        let table = document.getElementById("myTable");
-        let tr = table.getElementsByTagName("tr");
+    let input = document.getElementById("searchInput");
+    let filter = input.value.toLowerCase();
+    let table = document.getElementById("myTable");
+    let tr = table.getElementsByTagName("tr");
 
-        for (let i = 1; i < tr.length; i++) { 
-            let td = tr[i].getElementsByTagName("td");
-            let rowVisible = false;
+    for (let i = 1; i < tr.length; i++) {
+        let td = tr[i].getElementsByTagName("td");
+        let rowVisible = false;
 
-            for (let j = 0; j < td.length; j++) {
-                if (td[j]) {
-                    let txtValue = td[j].textContent || td[j].innerText;
-                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                        rowVisible = true;
-                        break;
-                    }
+        for (let j = 0; j < td.length; j++) {
+            if (td[j]) {
+                let txtValue = td[j].textContent || td[j].innerText;
+                console.log("Checking:", txtValue); // Debugging
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    rowVisible = true;
+                    break;
                 }
             }
-
-            tr[i].style.display = rowVisible ? "" : "none";
         }
+
+        tr[i].style.display = rowVisible ? "" : "none";
     }
+}
+
   //select option serach
   $(document).ready(function() {
     $('#kategori').select2({
       placeholder: "-- Select Category --",
       allowClear: true,
-      maximumInputLength: dropdownCssClass: "custom-dropdown-scroll"
+      maximumInputLength: 10, // Gantilah dengan angka yang sesuai
+      dropdownCssClass: "custom-dropdown-scroll" // Pisahkan menjadi properti sendiri
     });
   });
+
 
   document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById("note");
@@ -352,37 +366,6 @@
     });
   });
 
-  function confirmDelete(event) {
-    // Tampilkan dialog konfirmasi
-    const confirmation = confirm("Apakah Anda yakin ingin menghapus data ini?");
 
-    // Jika pengguna memilih Cancel, batalkan pengiriman form
-    if (!confirmation) {
-      event.preventDefault();
-      return false;
-    }
 
-    // Jika pengguna memilih OK, biarkan form dikirim
-    return true;
-  }
-
-  function filterByLocation() {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("myTable");
-    tr = table.getElementsByTagName("tr");
-
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[9]; // Mengambil kolom lokasi
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
-    }
-  }
 </script>

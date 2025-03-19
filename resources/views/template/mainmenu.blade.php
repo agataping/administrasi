@@ -33,3 +33,7 @@
 </body>
 
 </html>
+<script>
+        console.log("Script file is loaded!");
+
+</script>

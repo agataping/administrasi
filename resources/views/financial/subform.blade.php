@@ -1,5 +1,5 @@
 @extends('template.main')
-@section('title', 'Deskripsi Balnce sheet')
+@section('title', 'Description Balnce sheet')
 @section('content')
 @extends('components.style')
 
@@ -41,8 +41,8 @@
                     </div>
                     <div class="row g-3">
                         <div class="">
-                            <label for="kategori" class="form-label">Deskripsi</label>
-                            <input type="text" class="form-control" id="kategori" placeholder="e.g. Cash & Cash Equivalents, Account Payable Etc." value="" required name="namesub">
+                            <label for="kategori" class="form-label">Description</label>
+                            <input type="text" class="form-control" id=""required name="namesub">
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">

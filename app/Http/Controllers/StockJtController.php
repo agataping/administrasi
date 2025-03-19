@@ -267,12 +267,12 @@ class StockJtController extends Controller
     {
         $validatedData = $request->validate([
             'date' => 'required|date',
-            'sotckawal' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'stockout' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'plan' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'shifpertama' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'shifkedua' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'totalhauling' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
+            'sotckawal' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'stockout' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'plan' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'shifpertama' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'shifkedua' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'totalhauling' => 'nullable|regex:/^-?[0-9.,]+$/',
             'lokasi' => 'required',
             'file' => 'nullable|file',
 
@@ -294,7 +294,7 @@ class StockJtController extends Controller
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
         $validatedData['sotckawal'] = convertToCorrectNumber($validatedData['sotckawal']);
-        $validatedData['stockout'] = convertToCorrectNumber($validatedData['stockout']);
+        $validatedData['stockout'] = convertToCorrectNumber($validatedData['stockout'] ?? null);
         $validatedData['shifpertama'] = convertToCorrectNumber($validatedData['shifpertama']);
         $validatedData['shifkedua'] = convertToCorrectNumber($validatedData['shifkedua']);
         $validatedData['totalhauling'] = convertToCorrectNumber($validatedData['totalhauling']);
@@ -346,14 +346,15 @@ class StockJtController extends Controller
         // Validasi input
         $validatedData = $request->validate([
             'date' => 'required|date',
-            'sotckawal' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'stockout' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'plan' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'shifkedua' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'shifpertama' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
-            'totalhauling' => 'nullable|regex:/^[\d]+([,.]\d+)?$/',
+            'sotckawal' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'stockout' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'plan' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'shifkedua' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'shifpertama' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'totalhauling' => 'nullable|regex:/^-?[0-9.,]+$/',
             'lokasi' => 'required|string',
             'file' => 'nullable|file',
+            // regex:/^-?[0-9.,]+$/
         ]);
 
         function convertToCorrectNumber($value)

@@ -125,17 +125,18 @@
     // Menentukan input mana yang pertama kali tampil berdasarkan kondisi nilai
     window.onload = function() {
         const planValue = " {{ $data->nominalplan }}"; // Nilai nominal plan
-                            const actualValue="{{ $data->nominalactual }}" ; // Nilai nominal actual
-                            const fileValue="{{ $data->file}}" ; // file
-
-                            if (planValue && !actualValue && !fileValue) {
-                            document.getElementById('planBtn').click();
-                            } else if (planValue && fileValue && !actualValue) {
-                            document.getElementById('planFileBtn').click();
-                            } else if (actualValue) {
-                            document.getElementById('actualBtn').click();
-                            }
-
-                            };
-                            </script>
-                            @endsection
+        const actualValue="{{ $data->nominalactual }}" ; // Nilai nominal actual
+        const fileValue="{{ $data->file}}" ; // file
+        
+        if (planValue && !actualValue && !fileValue) {
+            document.getElementById('planBtn').click();
+        } else if (planValue && fileValue && !actualValue) {
+            document.getElementById('planFileBtn').click();
+        } else if (actualValue) {
+            document.getElementById('actualBtn').click();
+        }
+        
+    };
+    </script>
+@endsection
+                            

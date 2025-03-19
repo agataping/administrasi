@@ -1,5 +1,7 @@
 @extends('template.main')
 @extends('components.style')
+@extends('components.script')
+
 @section('title', 'Barging')
 @section('content')
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
@@ -74,8 +76,8 @@
 
 
                     <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
-                        <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
-                            <thead id="myTable" style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
+                        <table id="myTable" class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+                            <thead  style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                                 <tr>
                                     <th rowspan="2" style="vertical-align: middle;">No</th>
                                     <th rowspan="2" style="vertical-align: middle;">Date</th>

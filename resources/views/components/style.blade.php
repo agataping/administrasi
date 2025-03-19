@@ -1,4 +1,11 @@
 <style>
+    thead {
+        vertical-align: middle;
+        text-align: center;
+        padding: 6px 8px;
+        line-height: 1.5;
+    }
+
     .nav-item:hover .dropdown-menu {
         display: block;
     }
@@ -18,6 +25,7 @@
         border-radius: 8px;
         border: 2px solid rgba(0, 0, 0, 0.3);
     }
+
     .metric:hover {
         transform: scale(1.05);
         transition: 0.3s ease-in-out;

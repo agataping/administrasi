@@ -56,12 +56,11 @@ class HseController extends Controller
         $user = Auth::user();
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
-
         $query = DB::table('kategori_hses')
-        ->select('kategori_hses.*')
-        ->leftJoin('users', 'kategori_hses.created_by', '=', 'users.username')
-        ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id');
-    
+            ->select('kategori_hses.*')
+            ->join('users', 'kategori_hses.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
@@ -71,10 +70,11 @@ class HseController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-    
+
         $data = $query->get(); 
         // $data = DB::table('kategori_hses')->get();
-        
+        // dd($data);
+
         // dd($data);
         return view('hse.indexcategory', compact('data'));
     }
@@ -160,7 +160,7 @@ class HseController extends Controller
         $validatedData = $request->validate([
             'name' => 'required',
         ]);
-        $createdBy = auth()->user()->username;
+        $validatedData['created_by'] = auth()->user()->username;
         $data = kategoriHse::create($validatedData);
         HistoryLog::create([
             'table_name' => 'kategori_hses',
@@ -306,7 +306,6 @@ class HseController extends Controller
         }
 
         $data = $query->get();
-
         return view('picahse.index', compact('data', 'perusahaans', 'companyId'));
     }
 

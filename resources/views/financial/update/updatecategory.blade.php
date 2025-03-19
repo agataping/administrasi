@@ -1,5 +1,5 @@
 @extends('template.main')
-@section('title', 'Deskripsi ')
+@section('title', 'Description ')
 @section('content')
 @extends('components.style')
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
@@ -31,9 +31,20 @@
                 <form action="{{ route('updatecatneraca',$data->id) }}" method="post">
                     @csrf
                     <input type="hidden" name="updeted_by_name" value="{{ Auth::user()->username }}">
+                    <div style="margin-bottom: 1rem;">
+                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Caregory:</label>
+                        <select id="kategori" name="jenis_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
+                            <option value="" disabled selected>-- Select Caregory --</option>
+                            @foreach($kat as $kategori)
+                            <option value="{{ $kategori->id }}" {{ $kategori->id == $data->jenis_id ? 'selected' : '' }}>
+                                {{ $kategori->namecategory }} {{ $kategori->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="row g-3">
                         <div class="">
-                            <label for="kategori" class="form-label">Deskripsi</label>
+                            <label for="kategori" class="form-label">Description</label>
                             <input type="text" class="form-control" value="{{$data->namecategory}}" id="kategori" placeholder="" value="" required name="namecategory">
                         </div>
                     </div>

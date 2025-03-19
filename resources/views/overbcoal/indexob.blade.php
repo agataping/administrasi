@@ -30,7 +30,7 @@
                 </div>
 
                 @endif
-                                <div class="row justify-content-start mb-0">
+                <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('formkategoriobc') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
@@ -44,7 +44,7 @@
                         </form>
                     </div>
                 </div>
-                                <div class="row justify-content-start mb-0">
+                <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <a href="/indexcategoryobcoal">View Description Data
                         </a>
@@ -82,9 +82,10 @@
                         Filter
                     </button>
                 </form>
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..." style="margin-bottom: 10px; padding: 5px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
 
                 <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
-                    <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+                    <table id="myTable" class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
                         <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                             <tr>
                                 <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>

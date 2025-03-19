@@ -28,7 +28,7 @@
                 </div>
                 @endif
 
-                <form action="{{ route('updatedetailfinan',$data->id) }}" method="post">
+                <form action="{{ route('updatedetailfinan',$data->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                     <div style="margin-bottom: 1rem;">
@@ -49,7 +49,7 @@
                         </select>
                     </div>
                     <div style="margin-bottom: 1rem;">
-                        <label for="name" style="font-weight: bold; font-size: 1rem;">Deskripsi:</label>
+                        <label for="name" style="font-weight: bold; font-size: 1rem;">Description:</label>
                         <input type="text" id="name" name="name" value="{{$data->name}}" plhaceholder="Cth. Mandiri Hauling Dll" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; " required>
                     </div>
 
@@ -131,5 +131,36 @@
         document.getElementById('fileplan').style.display = 'none';
 
     });
+    window.onload = function() {
+    const planValue = "{{ $data->nominalplan }}".trim(); // Nilai nominal plan
+    const actualValue = "{{ $data->nominalactual }}".trim(); // Nilai nominal actual
+    const filePlanValue = "{{ $data->fileplan }}".trim(); // File Plan
+    const fileActualValue = "{{ $data->fileactual }}".trim(); // File Actual
+    const debitPlanValue = "{{ $data->debit }}".trim(); // Debit Plan
+    const creditPlanValue = "{{ $data->credit }}".trim(); // Credit Plan
+    const debitActualValue = "{{ $data->debit_actual }}".trim(); // Debit Actual
+    const creditActualValue = "{{ $data->credit_actual }}".trim(); // Credit Actual
+
+    // Fungsi untuk mengecek apakah elemen ada sebelum klik
+    function safeClick(buttonId) {
+        const btn = document.getElementById(buttonId);
+        if (btn) btn.click();
+    }
+
+    // Logika untuk menampilkan elemen sesuai data
+    if (planValue !== "" && actualValue === "" && filePlanValue === "" && fileActualValue === "" 
+        && debitPlanValue !== "" && creditPlanValue !== "" && debitActualValue === "" && creditActualValue === "") {
+        safeClick('planBtn');
+    } 
+    else if (planValue !== "" && filePlanValue !== "" && actualValue === "" 
+        && debitPlanValue !== "" && creditPlanValue !== "" && debitActualValue === "" && creditActualValue === "") {
+        safeClick('planFileBtn');
+    } 
+    else if (actualValue !== "" || debitActualValue !== "" || creditActualValue !== "" || fileActualValue !== "") {
+        safeClick('actualBtn');
+    }
+};
+
+
 </script>
 @endsection

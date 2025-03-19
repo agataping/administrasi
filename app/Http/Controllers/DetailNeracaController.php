@@ -11,6 +11,7 @@ use App\Models\DetailNeraca;
 use App\Models\CategoryNeraca;
 use App\Models\SubNeraca;
 use App\Models\HistoryLog;
+use App\Models\JenisNeraca;
 use Termwind\Components\Dd;
 
 class DetailNeracaController extends Controller
@@ -29,11 +30,16 @@ class DetailNeracaController extends Controller
             ->join('sub_neracas', 'detail_neracas.sub_id', '=', 'sub_neracas.id')
             ->join('category_neracas', 'sub_neracas.kategori_id', '=', 'category_neracas.id')
             ->join('users', 'detail_neracas.created_by', '=', 'users.username')
+            ->join('jenis_neracas', 'category_neracas.jenis_id', '=', 'jenis_neracas.id')
+
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
             ->select(
                 'category_neracas.namecategory as category',
+                'category_neracas.*',
+
                 'sub_neracas.namesub as sub_category',
                 'detail_neracas.*',
+                'jenis_neracas.name as jenis_name',
                 'sub_neracas.id as sub_id',
                 'category_neracas.id as category_id',
                 'detail_neracas.id as detail_id'
@@ -51,197 +57,150 @@ class DetailNeracaController extends Controller
         if ($startDate && $endDate) {
             $query->whereBetween('detail_neracas.tanggal', [$startDate, $endDate]);
         }
-        $data = $query->orderBy('category_neracas.created_at', 'asc')
+        $data = $query->orderBy('jenis_neracas.created_at', 'asc')
             ->get()
+            ->groupBy(['jenis_name', 'category', 'sub_category']);
+            // dd($data);
 
-            ->groupBy('category');
+        $totalPerJenis = [];
+        $totalPlan = [
+            'current_asset' => 0,
+            'fix_asset' => 0,
+            'liabilities' => 0,
+            'equity' => 0,
+        ];
+        $totalActual = [
+            'current_asset' => 0,
+            'fix_asset' => 0,
+            'liabilities' => 0,
+            'equity' => 0,
+        ];
 
 
-        // $totalsAssets = $data->only(['CURRENT ASSETS', 'FIX ASSETS'])
-        // ->map(function ($categories) {
-        //     return $categories->sum('nominal');
-        // })
-        // ->sum();
-        // $totalLiabilitas = $data->only(['EQUITY', 'LIABILITIES'])
-        // ->map(function ($categories) {
-        //     return $categories->sum('nominal');
-        // })
-        // ->sum();
-        // //total control
-        // $control= $totalLiabilitas - $totalsAssets;
-        // // NILAI BENER JIKA 0
-        // if ($control !== 0) {
-        //     $note = "Salah: $control";
-        // } else {
-        //     $note = "Benar";
-        // }
-        $fixassettotal = (clone $query)
-            ->where('category_neracas.namecategory', 'FIX ASSETS')
-            ->get()
-            ->reduce(function ($carry, $item) {
-                return [
-                    'credit'      => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
-                    'debit'       => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
-                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
-                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0),
+        $categoryTotals = []; // Untuk total kategori
+        $subCategoryTotals = []; // Untuk total subkategori
+
+        foreach ($data as $jenis_name => $categories) {
+            $jenisClean = strtolower(trim($jenis_name));
+
+            foreach ($categories as $category_name => $subcategories) {
+                $categoryTotals[$category_name] = [
+                    'debit' => 0,
+                    'credit' => 0,
+                    'debit_actual' => 0,
+                    'credit_actual' => 0,
                 ];
-            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
-        $currenasset = (clone $query)
-            ->where('category_neracas.namecategory', 'CURRENT ASSETS')
-            ->get()
-            ->reduce(function ($carry, $item) {
-                return [
-                    'credit'         => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
-                    'debit'          => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
-                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
-                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0), // Perbaikan disini!
-                ];
-            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
-        // FIX ASSET hasil
-        $totalcreditfixassetplan = $fixassettotal['credit'];
-        $totaldebitfixassetplan = $fixassettotal['debit'];
-        $totalcreditfixassetactual = $fixassettotal['credit_actual'];
-        $totaldebitfixassetactual = $fixassettotal['debit_actual'];
-        $totalplanfixasset = $totaldebitfixassetplan - $totalcreditfixassetplan; //plan (debit-credit)
-        $totalactualfixasset = $totaldebitfixassetactual - $totalcreditfixassetactual; //actuall (debit-credit)
 
-        // current asset hasil
-        $creditcurrentassetplan = $currenasset['credit'];
-        $debitcurrentassetplan = $currenasset['debit'];
-        $creditcurrentassetactual = $currenasset['credit_actual'];
-        $debitcurrentassetactual = $currenasset['debit_actual'];
-        $totalplancurrentasset = $debitcurrentassetplan - $creditcurrentassetplan; //plan
-        $totalactualcurrentasset = $debitcurrentassetactual - $creditcurrentassetactual; //actual
-        //total LIABILITIES EQUITY 
-        $totalplanasset = ($totalplancurrentasset < 0)
-            ? $totalplanfixasset + $totalplancurrentasset
-            : $totalplanfixasset - $totalplancurrentasset; //plan
-        $totalactualasset = ($totalactualcurrentasset < 0)//actual
-            ? $totalactualfixasset + $totalactualcurrentasset
-            : $totalactualfixasset - $totalactualcurrentasset;
 
-            // dd($fixassettotal,$currenasset, $totalplanasset, $totalactualasset,$totalactualcurrentasset,$totalactualfixasset);
+                foreach ($subcategories as $subcategory_name => $details) {
 
-        $liabilitestotal = (clone $query)
-            ->where('category_neracas.namecategory', 'LIABILITIES')
-            ->get()
-            ->reduce(function ($carry, $item) {
-                return [
-                    'credit'      => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
-                    'debit'       => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
-                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
-                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0),
-                ];
-            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
-        $equatytotal = (clone $query)
-            ->where('category_neracas.namecategory', 'EQUITY')
-            ->get()
-            ->reduce(function ($carry, $item) {
-                return [
-                    'credit'         => $carry['credit'] + (float)str_replace(',', '', $item->credit ?? 0),
-                    'debit'          => $carry['debit'] + (float)str_replace(',', '', $item->debit ?? 0),
-                    'credit_actual'  => $carry['credit_actual'] + (float)str_replace(',', '', $item->credit_actual ?? 0),
-                    'debit_actual'   => $carry['debit_actual'] + (float)str_replace(',', '', $item->debit_actual ?? 0), // Perbaikan disini!
-                ];
-            }, ['credit' => 0, 'debit' => 0, 'credit_actual' => 0, 'debit_actual' => 0]);
-        // LIABILITIES hasil
-        $totalCreditliabilites = $liabilitestotal['credit'];
-        $totalDebitliabilites = $liabilitestotal['debit'];
-        $totalCreditactualliabilites = $liabilitestotal['credit_actual'];
-        $totalDebitactualliabilites = $liabilitestotal['debit_actual'];
-        $totalplanliabili = $totalCreditliabilites - $totalDebitliabilites; //plan
-        $toalactualliabliti = $totalCreditactualliabilites - $totalDebitactualliabilites; //actuall
+                    $subCategoryTotals[$subcategory_name] = [
+                        'debit' => collect($details)->sum(fn($item) => (float) str_replace(',', '', $item->debit)),
+                        'credit' => collect($details)->sum(fn($item) => (float) str_replace(',', '', $item->credit)),
+                        'debit_actual' => collect($details)->sum(fn($item) => (float) str_replace(',', '', $item->debit_actual)),
+                        'credit_actual' => collect($details)->sum(fn($item) => (float) str_replace(',', '', $item->credit_actual)),
+                    ];
 
-        // equaty hasil
-        $totalCreditequaty = $equatytotal['credit'];
-        $totalDebitequaty = $equatytotal['debit'];
-        $totalCreditactualequaty = $equatytotal['credit_actual'];
-        $totalDebitactualequaty = $equatytotal['debit_actual'];
-        $totalplanequaty = $totalCreditequaty - $totalDebitequaty; //plan
-        $totalactualequaty = $totalCreditactualequaty - $totalDebitactualequaty; //actual
-        //total LIABILITIES EQUITY 
-        $modalhutangplan = ($totalplanequaty < 0)
-            ? $totalplanliabili + $totalplanequaty
-            : $totalplanliabili - $totalplanequaty;
-        $modalhutangactual = ($totalactualequaty < 0)
-            ? $toalactualliabliti + $totalactualequaty
-            : $toalactualliabliti - $totalactualequaty;
+                    // Tambahkan total subkategori ke total kategori
+                    $categoryTotals[$category_name]['debit'] += $subCategoryTotals[$subcategory_name]['debit'];
+                    $categoryTotals[$category_name]['credit'] += $subCategoryTotals[$subcategory_name]['credit'];
+                    $categoryTotals[$category_name]['debit_actual'] += $subCategoryTotals[$subcategory_name]['debit_actual'];
+                    $categoryTotals[$category_name]['credit_actual'] += $subCategoryTotals[$subcategory_name]['credit_actual'];
+                }
+            }
+            // dd($subCategoryTotals);
 
-        // dd($totalCreditliabilites,$totalDebitliabilites, $totalplanliabili, $totalplanequaty, $totalCreditequaty, $totalDebitequaty,$modalhutangplan);
+            // Hitung total berdasarkan kategori yang ada di jenis ini
+            $totalDebit = collect($categoryTotals)->sum('debit');
+            $totalCredit = collect($categoryTotals)->sum('credit');
+            $totalDebitActual = collect($categoryTotals)->sum('debit_actual');
+            $totalCreditActual = collect($categoryTotals)->sum('credit_actual');
 
-        $groupedData = $data->map(function ($categories, $categoryName) {
-            $totalJenis = ['debit' => 0, 'credit' => 0];
 
-            $categoriesGrouped = $categories->groupBy('sub_category')->map(function ($subItems, $subCategoryName) use (&$totalJenis) {
-                // Konversi nilai ke float untuk perhitungan yang benar
-                $subTotalDebit = $subItems->sum(fn($item) => (float) str_replace(',', '', $item->debit));
-                $subTotalCredit = $subItems->sum(fn($item) => (float) str_replace(',', '', $item->credit));
-                $subTotalDebitactual = $subItems->sum(fn($item) => (float) str_replace(',', '', $item->debit_actual));
-                $subTotalCreditactual = $subItems->sum(fn($item) => (float) str_replace(',', '', $item->credit_actual));
+            //total jenis asset
+            $fixAssetTotals = (clone $query)
+                ->where('jenis_neracas.name', 'fix assets')
+                ->get()
+                ->reduce(function ($totals, $item) {
+                    $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                    $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                    $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                    $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                    return $totals;
+                }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-                // Menambahkan ke total keseluruhan
-                $totalJenis['debit'] += $subTotalDebit;
-                $totalJenis['credit'] += $subTotalCredit;
+            $totalplanfixasset = $fixAssetTotals['debit'] - $fixAssetTotals['credit'];
+            $totalactualfixtasset = $fixAssetTotals['debit_actual'] - $fixAssetTotals['credit_actual'];
 
-                // Hitung Subtotal Plan dan Actual
-                $subTotalplanasset = $subTotalDebit - $subTotalCredit;
-                $subTotalSaldoActualasset = $subTotalDebitactual - $subTotalCreditactual;
-                $subTotalplanmodalhutang = $subTotalCredit - $subTotalDebit;
-                $subTotalSaldoActualmodalhutang = $subTotalCreditactual - $subTotalDebitactual;
+            $currenassettotal = (clone $query)
+                ->where('jenis_neracas.name', 'CURRENT ASSETS')
+                ->get()
+                ->reduce(function ($totals, $item) {
+                    $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                    $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                    $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                    $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                    return $totals;
+                }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-                return [
-                    'sub_category' => $subCategoryName,
-                    'sub_id' => $subItems->first()->sub_id ?? null,
-                    'sub_total_debit' => $subTotalDebit,
-                    'sub_total_credit' => $subTotalCredit,
-                    'sub_total_debitactual' => $subTotalDebitactual,
-                    'sub_total_creditactual' => $subTotalCreditactual,
-                    'subTotalplanasset' => $subTotalplanasset,
-                    'subTotalSaldoActualasset' => $subTotalSaldoActualasset,
-                    'subTotalplanmodalhutang' => $subTotalplanmodalhutang,
-                    'subTotalSaldoActualmodalhutang' => $subTotalSaldoActualmodalhutang,
+            $totalplancurrentasset = $currenassettotal['debit'] - $currenassettotal['credit'];
+            $totalactualcurrentasset = $currenassettotal['debit_actual'] - $currenassettotal['credit_actual'];
 
-                    'details' => $subItems->map(function ($item) {
-                        return [
-                            'id' => $item->detail_id,
-                            'name' => $item->name,
-                            'tanggal' => $item->tanggal,
-                            'debit' => (float) str_replace(',', '', $item->debit),
-                            'credit' => (float) str_replace(',', '', $item->credit),
-                            'debit_actual' => (float) str_replace(',', '', $item->debit_actual),
-                            'credit_actual' => (float) str_replace(',', '', $item->credit_actual),
-                            'fileplan' => $item->fileplan ?? null,
-                            'fileactual' => $item->fileactual ?? null,
-                        ];
-                    }),
-                ];
-            });
+            $totalplanasset = $totalplanfixasset + $totalplancurrentasset; //plan asset
+            $totalactualasset = $totalactualfixtasset + $totalactualcurrentasset; //actual asset
 
-            // Hitung total plan dan actual setelah perulangan selesai
-            $subTotalplanasset = $totalJenis['debit'] - $totalJenis['credit'];
-            $subTotalSaldoActualasset = array_sum(array_column($categoriesGrouped->toArray(), 'subTotalSaldoActualasset'));
-            $subTotalplanmodalhutang = $totalJenis['credit'] - $totalJenis['debit'];
-            $subTotalSaldoActualmodalhutang = array_sum(array_column($categoriesGrouped->toArray(), 'subTotalSaldoActualmodalhutang'));
-            // dd($totalSaldoActualModalHutang) ;
-            return [
-                'category_name' => $categoryName,
-                'total' => $totalJenis,
-                'sub_categories' => $categoriesGrouped,
-                'category_id' => $categories->first()->category_id,
-                'subTotalplanasset' => in_array($categoryName, ['CURRENT ASSETS', 'FIX ASSETS']) ? $subTotalplanasset : null,
-                'subTotalSaldoActualasset' => in_array($categoryName, ['CURRENT ASSETS', 'FIX ASSETS']) ? $subTotalSaldoActualasset : null,
+            //modal hutang
+            $liabilititotal = (clone $query)
+                ->where('jenis_neracas.name', 'LIABILITIES')
+                ->get()
+                ->reduce(function ($totals, $item) {
+                    $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                    $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                    $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                    $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                    return $totals;
+                }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-                'subTotalplanmodalhutang' => in_array($categoryName, ['LIABILITIES', 'EQUITY']) ? $subTotalplanmodalhutang : null,
-                'subTotalSaldoActualmodalhutang' => in_array($categoryName, ['LIABILITIES', 'EQUITY']) ? $subTotalSaldoActualmodalhutang : null,
-            ];
-        });
-        // dd($groupedData);
+            $totalplanliabiliti = $liabilititotal['debit'] - $liabilititotal['credit'];
+            $totalactualliabiliti = $liabilititotal['debit_actual'] - $liabilititotal['credit_actual'];
 
-        return view('financial.index', compact('groupedData', 'perusahaans', 'companyId', 'modalhutangactual', 'modalhutangplan','totalplanasset','totalactualasset'));
+            $equitytotal = (clone $query)
+                ->where('jenis_neracas.name', 'EQUITY')
+                ->get()
+                ->reduce(function ($totals, $item) {
+                    $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                    $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                    $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                    $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                    return $totals;
+                }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
+
+            $totalplanequity = $equitytotal['debit'] - $equitytotal['credit'];
+            $totalactualequity = $equitytotal['debit_actual'] - $equitytotal['credit_actual'];
+            $totalplanmodalhutang = $totalplanliabiliti + $totalplanequity; //plan
+            $totalactualmodalhutang = $totalactualliabiliti + $totalactualequity; //actual
+
+            // Control Validasi Neraca
+            $controlplan =round($totalplanmodalhutang - $totalplanasset);
+            $controlactual = round($totalactualmodalhutang - $totalactualasset);
+
+            $noteplan = $controlplan == 0 ? "Valid" : "Invalid: $controlplan";
+            $noteactual = $controlactual == 0 ? "Valid" : "Invalid: $controlactual";
+            // dd($controlactual, $noteactual, $totalactualmodalhutang, $totalactualliabiliti, $totalplanliabiliti);
+        }
+        return view('financial.index', compact(
+            'totalplanfixasset', 'totalactualfixtasset', 
+            'totalplancurrentasset', 'totalactualcurrentasset', 
+            'totalplanasset', 'totalactualasset', 
+            'totalplanliabiliti', 'totalactualliabiliti', 
+            'totalplanequity', 'totalactualequity', 
+            'totalplanmodalhutang', 'totalactualmodalhutang', 
+            'noteplan', 'noteactual',
+            'categoryTotals', 'subCategoryTotals', 'data', 'perusahaans', 'startDate', 'endDate', 'companyId'));
     }
     public function formfinanc(Request $request)
     {
-        $sub = SubNeraca::all();
+        // $sub = SubNeraca::all();
         $sub = DB::table('sub_neracas')
             ->join('category_neracas', 'sub_neracas.kategori_id', '=', 'category_neracas.id')
             ->select('category_neracas.namecategory', 'sub_neracas.namesub', 'sub_neracas.id')
@@ -253,10 +212,10 @@ class DetailNeracaController extends Controller
     public function createfinanc(Request $request)
     {
         $validatedData = $request->validate([
-            'debit' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'credit' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'debit_actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'credit_actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'debit' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'credit' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'debit_actual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'credit_actual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'fileactual' => 'nullable|file',
             'fileplan' => 'nullable|file',
             'name' => 'required|string',
@@ -311,10 +270,15 @@ class DetailNeracaController extends Controller
 
     public function formupdatefinancial($id)
     {
+        // $sub = DB::table('sub_neracas')
+        //     ->join('category_neracas', 'sub_neracas.kategori_id', '=', 'category_neracas.id')
+        //     ->select('category_neracas.namecategory', 'sub_neracas.namesub', 'sub_neracas.id')
+        //     ->get();
         $sub = DB::table('sub_neracas')
             ->join('category_neracas', 'sub_neracas.kategori_id', '=', 'category_neracas.id')
             ->select('category_neracas.namecategory', 'sub_neracas.namesub', 'sub_neracas.id')
             ->get();
+
         $data = DetailNeraca::FindOrFail($id);
         return view('financial.update.updatedetail', compact('data', 'sub'));
     }
@@ -322,10 +286,10 @@ class DetailNeracaController extends Controller
     public function updatedetailfinan(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'debit' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'credit' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'debit_actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
-            'credit_actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'debit' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'credit' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'debit_actual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
+            'credit_actual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'fileactual' => 'nullable|file',
             'fileplan' => 'nullable|file',
 
@@ -409,13 +373,15 @@ class DetailNeracaController extends Controller
     public function categoryneraca()
     {
         $user = Auth::user();
-        return view('financial.categoryform');
+        $kat = JenisNeraca::all();
+        return view('financial.categoryform', compact('kat'));
     }
 
     public function createcategoryneraca(Request $request)
     {
         $validatedData = $request->validate([
             'namecategory' => 'required|string',
+            'jenis_id' => 'required|string',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
         $data = CategoryNeraca::create($validatedData);
@@ -436,14 +402,17 @@ class DetailNeracaController extends Controller
 
     public function formupdatecatneraca($id)
     {
+        $kat = JenisNeraca::all();
         $data = categoryneraca::FindOrFail($id);
-        return view('financial.update.updatecategory', compact('data'));
+        return view('financial.update.updatecategory', compact('data', 'kat'));
     }
 
     public function updatecatneraca(Request $request, $id)
     {
         $validatedData = $request->validate([
             'namecategory' => 'required|string',
+            'jenis_id' => 'required|string',
+
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
         $data = CategoryNeraca::findOrFail($id);
@@ -489,9 +458,10 @@ class DetailNeracaController extends Controller
 
 
         $query = DB::table('sub_neracas')
-            ->select('sub_neracas.*')
+            ->join('category_neracas', 'sub_neracas.kategori_id', '=', 'category_neracas.id')
             ->join('users', 'sub_neracas.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->select('sub_neracas.*', 'category_neracas.namecategory as nama_kategori');
 
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);

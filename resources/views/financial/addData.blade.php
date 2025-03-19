@@ -45,6 +45,7 @@
                             @endforeach
                         </select>
                     </div>
+                    
                     <div style="margin-bottom: 1rem;">
                         <label for="name" style="font-weight: bold; font-size: 1rem;">Description:</label>
                         <input type="text" id="name" name="name" plhaceholder="e.g. Mandiri, Hauling Etc" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; " required>

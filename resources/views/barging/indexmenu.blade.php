@@ -1,5 +1,6 @@
 @extends('template.main')
 @extends('components.style')
+@extends('components.script')
 
 @section('title', 'Barging')
 @section('content')
@@ -86,7 +87,7 @@
 
 
                     <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
-                        <table id="myTable " class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+                        <table id="myTable" class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
 
                             <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                                 <tr>
@@ -180,30 +181,5 @@
 
     @endsection
     @section('scripts')
-    <script>
-        function searchTable() {
-            let input = document.getElementById("searchInput");
-            let filter = input.value.toLowerCase();
-            let table = document.getElementById("myTable");
-            let tr = table.getElementsByTagName("tr");
-
-            for (let i = 1; i < tr.length; i++) {
-                let td = tr[i].getElementsByTagName("td");
-                let rowVisible = false;
-
-                for (let j = 0; j < td.length; j++) {
-                    if (td[j]) {
-                        let txtValue = td[j].textContent || td[j].innerText;
-                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                            rowVisible = true;
-                            break;
-                        }
-                    }
-                }
-
-                tr[i].style.display = rowVisible ? "" : "none";
-            }
-        }
-    </script>
 
     @endsection

@@ -1,5 +1,6 @@
 @extends('template.main')
 @extends('components.style')
+@extends('components.script')
 @section('title', 'Deadline Compensation')
 @section('content')
 
@@ -66,8 +67,11 @@
                         </button>
                     </form>
 
+                    <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
+                        style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
 
-                    <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
+
+                    <table id="myTable" class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
                         <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center;">
                             <tr>
                                 <th rowspan="" style="vertical-align: middle;">No</th>

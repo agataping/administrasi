@@ -1,4 +1,5 @@
 @extends('template.main')
+@extends('components.script')
 @extends('components.style')
 @section('title', 'Balence sheet')
 @section('content')
@@ -89,185 +90,191 @@
                             Filter
                         </button>
                     </form>
-                    <!-- <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..." style="margin-bottom: 10px; padding: 5px; width: 100%; border: 1px solid #ccc; border-radius: 4px;"> -->
                     <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
                         style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
                     <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
                         <table id="myTable" class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
 
-                            <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
+                            <thead style="vertical-align: middle; text-align: center; padding: 2px 5px; line-height: 1; position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center;">
                                 <tr>
-                                    <th rowspan="2" style="vertical-align: middle; text-align: center;">No</th>
-                                    <th rowspan="2" style="vertical-align: middle;  text-align: center;">Description</th>
-                                    <th colspan="3" style="vertical-align: middle; text-align: center;">plan</th>
-                                    <th colspan="3" style="vertical-align: middle; text-align: center;">actual</th>
-                                    <th rowspan="2" style="vertical-align: middle;  text-align: center;">Date</th>
+                                    <th rowspan="2" style="vertical-align: middle; text-align: center; width: 50px;">No</th>
+                                    <th rowspan="2" style="vertical-align: middle; text-align: center; width: 200px;">Description</th>
+                                    <th colspan="3" style="vertical-align: middle; text-align: center;">Plan</th>
+                                    <th colspan="3" style="vertical-align: middle; text-align: center;">Actual</th>
+                                    <th rowspan="2" style="vertical-align: middle; text-align: center; width: 100px;">Date</th>
                                     <th colspan="2" rowspan="2" style="vertical-align: middle; text-align: center;">Action</th>
                                 </tr>
-
                                 <tr>
-                                    <th rowspan="" style="vertical-align: middle; text-align: center;">Debit</th>
-                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">credit</th>
-                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">file</th>
-
-                                    <th rowspan="" style="vertical-align: middle; text-align: center;">Debit</th>
-                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">credit</th>
-                                    <th rowspan="" style="vertical-align: middle;  text-align: center;">file</th>
-
-
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                    <th>File</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                    <th>File</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($groupedData as $total)
-                                {{-- Tampilkan Kategori --}}
+                                @foreach ($data as $jenis_name => $categories)
+                                @foreach ($categories as $category => $sub_categories)
+
                                 <tr>
-                                    <td style="vertical-align: middle;">{{ $loop->iteration }}</td>
-                                    <td colspan=""><strong>{{ $total['category_name'] }}</strong></td>
+                                    <th style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                                    <td colspan="" class=""><strong>{{ $category }}</strong></td>
+                                    <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['debit'] ?? 0, 2) }}</strong></td>
+                                    <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['credit'] ?? 0, 2) }}</strong></td>
                                     <td></td>
+                                    <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['debit_actual'] ?? 0, 2) }}</strong></td>
+                                    <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['credit_actual'] ?? 0, 2) }}</strong></td>
                                     <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        <form action="{{ route('formupdatecatneraca', ['id' => $sub_categories->flatten()->first()->category_id]) }}">
 
-                                    <td></td>
-                                    <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                        <form action="{{ route('formupdatecatneraca', ['id' => $total['category_id']]) }}">
                                             <button type="submit" class="btn btn-primary btn-sm">Edit</button>
                                         </form>
                                     </td>
-                                    <td></td>
                                 </tr>
-                                {{-- Tampilkan Sub-Kategori --}}
-                                @foreach ($total['sub_categories'] as $subIndex => $subCategory)
-                                <tr data-toggle="collapse" data-target="#detail-{{ Str::slug($subCategory['sub_category'], '-') }}" style="cursor: pointer;">
+                                @foreach ($sub_categories as $sub_category => $details)
+                                <tr data-bs-toggle="collapse" data-bs-target="#detail-{{ Str::slug($details->first()->sub_category, '-') }}" style="cursor: pointer;">
 
-                                    <td style="vertical-align: middle;">{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</td>
-                                    <td>{{ $subCategory['sub_category'] }}</td>
-                                    <td style=" text-align: end;">{{ number_format($subCategory['sub_total_debit']) }}</td>
-                                    <td style=" text-align: end;">{{ number_format ($subCategory['sub_total_credit']) }}</td>
-                                    <td></td>
-                                    <td style=" text-align: end;">{{ number_format($subCategory['sub_total_debitactual']) }}</td>
-                                    <td style=" text-align: end;">{{ number_format ($subCategory['sub_total_creditactual']) }}</td>
+                                    <td>{{ $loop->parent->iteration ?? 0 }}.{{ $loop->iteration }}</td>
+                                    <td colspan="">
+                                        {{ $sub_category }}
 
+                                    </td>
+                                    <td style="text-align: end;">{{ number_format($subCategoryTotals[$sub_category]['debit'] ?? 0, 2) }}</td>
+                                    <td style="text-align: end;">{{ number_format($subCategoryTotals[$sub_category]['credit'] ?? 0, 2) }}</td>
                                     <td></td>
+                                    <td style="text-align: end;">{{ number_format($subCategoryTotals[$sub_category]['debit_actual'] ?? 0, 2) }}</td>
+                                    <td style="text-align: end;">{{ number_format($subCategoryTotals[$sub_category]['credit_actual'] ?? 0, 2) }}</td>
                                     <td></td>
-                                    <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                        <form action="{{ route('formupdatesubneraca', ['id' => $subCategory['sub_id']]) }}">
+                                    <td>
+                                        <form action="{{ route('formupdatesubneraca', ['id' => $details->flatten()->first()->sub_id]) }}">
                                             <button type="submit" class="btn btn-primary btn-sm">Edit</button>
                                         </form>
+
                                     </td>
-                                    <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                        <form action="{{ route('deletesubfinan', ['id' => $subCategory['sub_id']]) }}" method="POST" onsubmit="return confirmDelete(event)"> @csrf
+                                    <td>
+                                        <form action="{{ route('deletesubfinan', ['id' => $details->flatten()->first()->sub_id]) }}" method="POST" onsubmit="return confirmDelete(event)">
+
+
+                                            @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
-                                <tr id="detail-{{ Str::slug($subCategory['sub_category'], '-') }}" class="d-none">
-                                    <td colspan="7">
-                                        <table class="table table-bordered" style=" width: 100%; border-collapse: collapse;">
-                                            <tbody>
-
-                                                @foreach ($subCategory['details'] as $detailIndex => $detail)
-                                                <tr>
-                                                    <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
-                                                    <td>{{ $detail['name'] }}</td>
-                                                    <td style=" text-align: end;">{{ number_format($detail['debit'],2 ) }}</td>
-                                                    <td style="text-align: end;">{{ number_format($detail['credit'], ) }}</td>
-                                                    <td>
-                                                        @if (!empty($detail['fileplan']))
-                                                        <a href="{{ asset('storage/' . $detail['fileplan']) }}" class="text-decoration-none" target="_blank">View File</a>
-                                                        @else
-                                                        <span class="text-muted">No File</span>
-                                                        @endif
-                                                    </td>
-                                                    <td style=" text-align: end;">{{ number_format($detail['debit_actual'], 2) }}</td>
-                                                    <td style="text-align: end;">{{ number_format($detail['credit_actual'],2 ) }}</td>
-                                                    <td>
-                                                        @if (!empty($detail['fileactual']))
-                                                        <a href="{{ asset('storage/' . $detail['fileactual']) }}" class="text-decoration-none" target="_blank">View File</a>
-                                                        @else
-                                                        <span class="text-muted">No File</span>
-                                                        @endif
-                                                    </td>
-
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($detail['tanggal'])->format('d-m-Y') }}</td>
-                                                    <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                                        <form action="{{ route('formupdatefinancial', ['id' => $detail['id']]) }}">
-                                                            <button type="submit" class="btn btn-primary btn-sm">Edit</button>
-                                                        </form>
-                                                    </td>
-                                                    <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                                        <form action="{{ route('deletefinancial', $detail['id']) }}" method="POST" onsubmit="return confirmDelete(event)"> @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-
+                                <tr id="detail-{{ Str::slug($details->first()->sub_category, '-') }}" class="d-none">
+                                    <td colspan="11">
+                                        <table class="table table-bordered">
+                                            @foreach ($details as $detail)
+                                            <tr>
+                                                <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
+                                                <td>{{ $detail->name }}</td>
+                                                <td style="text-align: end;">{{ number_format($detail->debit,2 ) }}</td>
+                                                <td style="text-align: end;">{{ number_format($detail->credit,2 ) }}</td>
+                                                <td>
+                                                    @if (!empty($detail->fileplan))
+                                                    <a href="{{ asset('storage/' . $detail->fileplan) }}" class="btn btn-info btn-sm" target="_blank">
+                                                        <i class="fas fa-file"></i> View File
+                                                    </a>
+                                                    @else
+                                                    <span class="text-muted">No File</span>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: end;">{{ number_format($detail->debit_actual,2 ) }}</td>
+                                                <td style="text-align: end;">{{ number_format($detail->credit_actual,2 ) }}</td>
+                                                <td>
+                                                    @if (!empty($detail->fileactual))
+                                                    <a href="{{ asset('storage/' . $detail->fileactual) }}" class="btn btn-info btn-sm" target="_blank">
+                                                        <i class="fas fa-file"></i> View File
+                                                    </a>
+                                                    @else
+                                                    <span class="text-muted">No File</span>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($detail->tanggal)->format('d-m-Y') }}</td>
+                                                <td>
+                                                    <form action="{{ route('formupdatefinancial', ['id' => $detail->id]) }}">
+                                                        <button type="submit" class="btn btn-primary btn-sm">Edit</button>
+                                                    </form>
+                                                </td>
+                                                <td>
+                                                    <form action="{{ route('deletefinancial', ['id' => $detail->id]) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            @endforeach
                                         </table>
                                     </td>
                                 </tr>
-
+                                @endforeach
                                 @endforeach
                                 <tr>
-                                    @if (in_array($total['category_name'], ['CURRENT ASSETS', 'FIX ASSETS']))
-                                    <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</th>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">
-                                        {{ number_format($total['subTotalplanasset'], 2) }}
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['subTotalSaldoActualasset'], 2) }}</td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    @endif
-
+                                    <!-- <td colspan="5" class="table-primary"><strong>{{ $jenis_name }}</strong></td> -->
+                                    @if ($jenis_name === 'FIX ASSETS')
+                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
+                                    <th style="text-align: start;" colspan="2">Total {{ strtoupper($jenis_name) }}</th>
+                                    <th style="color:black; background-color:rgb(244, 244, 244); text-align: end;" colspan="2">{{ number_format($totalplanfixasset, 2) }}</th>
+                                    <th></th>
+                                    <th colspan="2">{{ number_format($totalactualfixtasset, 2) }}</th>
+                                    <th colspan="3"></th>
                                 </tr>
-                                @if (in_array($total['category_name'], ['LIABILITIES', 'EQUITY']))
-                                <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Total {{ $total['category_name'] }}</th>
-                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;">
-                                    {{ number_format($total['subTotalplanmodalhutang'], 2) }}
-                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                @elseif ($jenis_name === 'CURRENT ASSETS')
+                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
+                                    <th colspan="2" style="text-align: start;">Total {{ strtoupper($jenis_name) }}</th>
+                                    <th colspan="2">{{ number_format($totalplancurrentasset, 2) }}</th>
+                                    <th></th>
+                                    <th colspan="2">{{ number_format($totalactualcurrentasset, 2) }}</th>
+                                    <th colspan="3"></th>
+                                </tr>
+                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;"">
+                                    <th colspan=" 2">Total Assets</th>
+                                    <th colspan="2">{{ number_format($totalplanasset, 2) }}</th>
+                                    <th></th>
+                                    <th colspan="2">{{ number_format($totalactualasset, 2) }}</th>
+                                    <th colspan="3"></th>
+                                </tr>
 
-                                <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($total['subTotalSaldoActualmodalhutang'], 2) }}</td>
-                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                @elseif ($jenis_name === 'LIABILITIES')
+                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
+                                    <th colspan="2" style="text-align: start;">Total {{ strtoupper($jenis_name) }}</th>
+                                    <th colspan="2">{{ number_format($totalplanliabiliti, 2) }}</th>
+                                    <th></th>
+                                    <th colspan="2">{{ number_format($totalactualliabiliti, 2) }}</th>
+                                    <th colspan="3"></th>
+                                </tr>
+                                @elseif ($jenis_name === 'EQUITY')
+                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
+                                    <th colspan="2" style="text-align: start;">Total {{ strtoupper($jenis_name) }}</th>
+                                    <th colspan="2">{{ number_format($totalplanequity, 2) }}</th>
+                                    <th></th>
+                                    <th colspan="2">{{ number_format($totalactualequity, 2) }}</th>
+                                    <th colspan="3"></th>
+                                </tr>
+                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
+                                    <th style="text-align: start;" colspan="2">Total LIABILITIES EQUITY</th>
+                                    <th colspan="2">{{ number_format($totalplanmodalhutang, 2) }}</th>
+                                    <th></th>
+                                    <th colspan="2">{{ number_format($totalactualmodalhutang, 2) }}</th>
+                                    <th colspan="3"></th>
+                                </tr>
+
                                 @endif
-
-                                </tr>
-
-                                <tr>
-                                    @if ($total['category_name'] == 'CURRENT ASSETS')
-                                    <th colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">TOTAL ASSETS :</th>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($totalplanasset, 2) }}</td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($totalactualasset, 2) }}</td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    @if ($total['category_name'] == 'EQUITY')
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">TOTAL LIABILITIES AND EQUITY </th>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($modalhutangplan, 2) }}</td>
-                                    <td colspan="2" style="background-color:rgb(244, 244, 244); text-align: end;"> {{ number_format($modalhutangactual, 2) }}</td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    @endif
-                                </tr>
                                 @endforeach
-                                <tr>
-                                    <td colspan="2" style="text-align: end; background-color:rgb(244, 244, 244); text-align: end;">Control :</td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
-                                    <td colspan="" style="background-color:rgb(244, 244, 244); text-align: end;"></td>
+                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
+                                    <th style="text-align: start;" colspan="2">Control Plan</th>
+                                    <th colspan="2">{{ $noteplan }}</th>
+                                    <th colspan="6"></th>
                                 </tr>
+                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
+                                    <th style="text-align: start;" colspan="2">Control Actual</th>
+                                    <th colspan="2">{{ $noteactual }}</th>
+                                    <th colspan="6"></th>
+                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -293,9 +300,9 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll("tr[data-toggle='collapse']").forEach(function(row) {
+        document.querySelectorAll("tr[data-bs-toggle='collapse']").forEach(function(row) {
             row.addEventListener("click", function() {
-                let targetId = this.getAttribute("data-target");
+                let targetId = this.getAttribute("data-bs-target");
                 let targetElement = document.querySelector(targetId);
 
                 if (targetElement) {
@@ -329,6 +336,11 @@
             tr[i].style.display = rowVisible ? "" : "none";
         }
     }
+
+    {{-- resources/views/components/script.blade.php --}}
+    console.log("Script file is loaded!");
+
+
 </script>
 
 @endsection

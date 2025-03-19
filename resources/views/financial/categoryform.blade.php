@@ -1,5 +1,5 @@
 @extends('template.main')
-@section('title', 'Deskripsi ')
+@section('title', 'Description ')
 @section('content')
 @extends('components.style')
 
@@ -31,9 +31,18 @@
                 <form action="{{ route('createcategoryneraca') }}" method="post">
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
+                    <div style="margin-bottom: 1rem;">
+                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
+                        <select id="kategori" name="jenis_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
+                            <option value="" disabled selected>-- Select Category --</option>
+                            @foreach($kat as $kategori)
+                            <option value="{{ $kategori->id }}">{{ $kategori->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="row g-3">
                         <div class="">
-                            <label for="kategori" class="form-label">Deskripsi</label>
+                            <label for="kategori" class="form-label">Description</label>
                             <input type="text" class="form-control" id="kategori" placeholder="e.g.Fix Assets, Current Assets Etc." value="" required name="namecategory">
                         </div>
                     </div>
