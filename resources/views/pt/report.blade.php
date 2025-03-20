@@ -6,7 +6,7 @@
 </div>
 
 <div class="container-fluid mt-4 ">
-    <div class="card w-100 ">
+    <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
                 <!-- @if(auth()->user()->role === 'admin')    
@@ -64,19 +64,19 @@
                     </div>
                     <!-- ama perusahaan berdasrkan role Admin -->
                     @if(auth()->user()->role === 'admin')
-                    <div class="col text-center">
+                    <div class="col text-center" style="position: relative; left: -100px;">
                         <h4>KPI</h4>
-                        <h4 id="selectedCompanyName">{{ $company->nama ?? 'No Company Selected' }}</h4>
+                        <h4 id="selectedCompanyName" >{{ $company->nama ?? 'No Company Selected' }}</h4>
                     </div>
                     @endif
                     
                     <!-- nama perusahaan berdasrkan role staff -->
                     @if(auth()->user()->role === 'staff')
-                    <div class="col text-center">
+                    <div class="col text-center" style="position: relative; left: -100px;">
                         <h4>KPI</h4>
                         
                         @if($companyName)
-                        <h4>
+                        <h4 >
                             <p> {{ $companyName->company_name }}</p>
                         </h4>
                         @else
@@ -93,7 +93,7 @@
                 <!-- Baris kedua untuk persen -->
                 <div class="row " style="border: 1px solid black; margin-bottom: 0.5rem; ">
                 </div>
-                <div class="row sidebar p-1 border rounded shadow-sm bg-light " style="">
+                <div class="row sidebar p-1 border rounded shadow-sm bg-light " >
                     <h6 class="text-muted text-center ">Please select a year to view the KPI performance.</h6>
                     
                     <form method="GET" action="{{ route('reportkpi') }}">
@@ -116,7 +116,7 @@
                 <div class="row mt-1" style="border: 2px solid black;">
                     
                     <div class="col" style="text-align: start">
-                        <h4 style="margin-top: 10px;">FINANCIAL PERSPECTIVE</h4>
+                        <h4 style="margin-top:10px;">FINANCIAL PERSPECTIVE</h4>
                     </div>
                     <div class="col text-end">
                         <h5 style="margin-top: 10px;">
@@ -602,11 +602,12 @@
                 <div class="row mt-1">
                     <!-- Persentase di sebelah kiri -->
                     <div class="col-2 d-flex justify-content-center align-items-center"
-                        style="background-color: #f4e2cd; font-size: 2em; font-weight: bold; text-align: center;
+                        style=" font-size: 2em; font-weight: bold; text-align: center;
                         @if ($indexmodalhutanactual<= 75)
                         background-color: black; color: white;
                         @elseif ($totalresultcostumer> 75 && $totalresultcostumer<= 90)
-                        background-color: rgb(206, 24, 24); color: white; /* Merah */                        @elseif ($totalresultcostumer> 90 && $totalresultcostumer<= 100)
+                        background-color: rgb(206, 24, 24); color: white; /* Merah */                        
+                        @elseif ($totalresultcostumer> 90 && $totalresultcostumer<= 100)
                         background-color: yellow; color: black; /* Kuning */
                         @elseif ($totalresultcostumer> 100 && $totalresultcostumer<= 190)
                         background-color: green; color: white; /* Hijau */
@@ -671,7 +672,7 @@
                             
                             <!-- Tabel tock jetty -->
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                                <thead style="background-color: rgb(107, 255, 149);">
+                                <thead ">
                                     <tr>
                                         <th colspan="2" style="text-align: center; vertical-align: middle;">stock jetty</th>
                                     </tr>
@@ -712,7 +713,7 @@
                             </table>
                             <!-- Tabel Barging -->
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                                <thead style="background-color: rgb(107, 255, 149);">
+                                <thead ">
                                     <tr>
                                         <th colspan="2" style="text-align: center; vertical-align: middle;">Barging</th>
                                     </tr>
@@ -754,7 +755,7 @@
 
                             <!-- Tabel Domestik -->
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                                <thead style="background-color: rgb(107, 255, 149);">
+                                <thead ">
                                     <tr>
                                         <th colspan="2" style="text-align: center; vertical-align: middle;">Domestik</th>
                                     </tr>
@@ -797,7 +798,7 @@
 
                             <!-- Tabel Ekspor -->
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                                <thead style="background-color: rgb(107, 255, 149);">
+                                <thead ">
                                     <tr>
                                         <th colspan="2" style="text-align: center; vertical-align: middle;">Ekspor</th>
                                     </tr>
@@ -858,7 +859,7 @@
                     <!-- Grid layout untuk tabel yang disusun secara horizontal -->
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 5px;"> <!-- Fleet Productivity (Coal) -->
                         <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                            <thead style="background-color: rgb(107, 255, 149);">
+                            <thead ">
                                 <tr>
                                     <th colspan="3" style="text-align: center; vertical-align: middle;">Fleet Productivity (Coal)</th>
                                 </tr>
@@ -897,7 +898,7 @@
                         </table>
                         <!-- Fleet Productivity (OB) -->
                         <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                            <thead style="background-color: rgb(107, 255, 149);">
+                            <thead ">
                                 <tr>
                                     <th colspan="3" style="text-align: center; vertical-align: middle;">Fleet Productivity (OB)</th>
                                 </tr>
@@ -937,7 +938,7 @@
                         <!-- Physical Availability (PA) Tables -->
                         @foreach($unitpa as $item)
                         <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                            <thead style="background-color: rgb(107, 255, 149);">
+                            <thead ">
                                 <tr>
                                     <th colspan="3" style="text-align: center; vertical-align: middle;">Physical Availability <br> PA {{ $item['units'] }}</th>
                                 </tr>
@@ -976,7 +977,7 @@
                         @endforeach
                         <!-- Mining Readiness -->
                         <table style="border: 1px solid black; border-collapse: collapse; width: 16rem;" class="table table-bordered">
-                            <thead style="background-color: rgb(107, 255, 149);">
+                            <thead ">
                                 <tr>
                                     <th colspan="3" style="text-align: center; vertical-align: middle;">Mining Readiness</th>
                                 </tr>
@@ -1026,8 +1027,9 @@
                 </div>                       
                 <div class="row mt-1">
                     <div class="col-2 d-flex justify-content-center align-items-center"
-                        style="background-color: #f4e2cd; font-size: 2em; font-weight: bold;                                
-                        @if ($indexpeople <= 75)
+                        style=" font-size: 2em; font-weight: bold;   
+                                                     
+                        @if ($resultlearning <= 75)
                         background-color: black; color: white;
                         @elseif ($resultlearning > 75 && $resultlearning <= 90)
                         background-color: rgb(206, 24, 24); color: white;
@@ -1046,7 +1048,7 @@
                             <!-- Tabel 1: People Readiness -->
                             <table class="table table-bordered"
                             style="border: 1px solid black; border-collapse: collapse; width: 100%; height: 100%;">
-                            <thead>
+                            <thead >
                                 <tr>
                                     <th colspan="2">People Readiness</th>
                                 </tr>
@@ -1125,7 +1127,7 @@
                                 
                                 <!-- Organizational Structure (Diturunkan sedikit) -->
                                 
-                                <div class="mt-3" style="width: 16rem; height: 2rem; background-color: rgb(107, 255, 149); border: 2px solid black; border-radius: 5px; display: flex; justify-content: center; align-items: center;">
+                                <div class="mt-3" style="width: 16rem; height: 2rem;  background-color: rgb(80, 200, 120);    #2C3E50;; border: 2px solid black; border-radius: 5px; display: flex; justify-content: center; align-items: center;">
                                     <a href="{{ route('struktur') }}" target="_blank" style="text-decoration: none; color: inherit;">
                                         Organizational Structure
                                     </a>
@@ -1161,43 +1163,53 @@ function updateCompanyName() {
 
 
 <style>
-                            .table {
-                                background-color: #f8f9fa;
-                                margin-top: 10px;
-                            }
+    .table-container {
+    margin-bottom: 15px; 
+    display: block; 
+}
 
-                            .table thead {
-                                font-family: "Poppins", sans-serif;
-                                font-weight: bold;
-                                text-transform: uppercase;
-                                font-size: 120%;
-                                background-color: rgb(107, 255, 149);
-                                text-align: center;
-                            }
+.table {
+    width: 100%;
+    background-color: #f8f9fa;
+    border-spacing: 0px;
+    table-layout: auto; }
 
-                            .table tbody td {
-                                color: black;
-                                font-family: "Arial", sans-serif;
-                                white-space: nowrap;
+.table thead {
+    font-family: "Poppins", sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 100%;
+    text-align: center;
+    background-color: rgb(80, 200, 120);
+    color: rgb(255, 255, 255);
+}
 
-                            }
+.table th, .table td {
+    padding: 8px 12px;
+    text-align: center;
+    max-width: 200px; 
+    word-wrap: break-word; 
+    white-space: normal; 
+}
 
-                            td:first-child {
-                                text-align: start;
-                                white-space: nowrap;
-                            }
+.table tbody td {
+    color: black;
+    font-family: "Arial", sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-                            td:last-child {
-                                text-align: end;
-                                white-space: nowrap;
-                            }
+td:first-child {
+    text-align: start;
+}
 
-                            th {
-                                padding: 5px;
-                                /* Kurangi padding */
-                                line-height: 1.5;
-                                /* Kurangi tinggi baris */
-                                text-align: center;
-                                /* Rata tengah */
-                            }
+td:last-child {
+    text-align: end;
+}
+
+th {
+    padding: 5px;
+    line-height: 1.5;
+}
+
 </style>
