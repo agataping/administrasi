@@ -189,7 +189,7 @@
                                                 <col style="width: 13%;">
                                                 <col style="width: 13%;">
                                                 <col style="width: 13%;">
-                                                <col style="width: %;">
+                                                <col style="width: ;">
                                                 <col style="width: 15%;">
                                                 <col style="width: 15%;">
                                             </colgroup>
@@ -305,7 +305,7 @@
                                         {{ number_format($verticallp, 2) }}%
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
-                                        {{ number_format($totalactualOp, 2) }}
+                                        {{ number_format($totalactualOp, 2) }} 
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($verticalsp, 2) }}%
@@ -319,7 +319,8 @@
                                     <th colspan="5" style="color:black; background-color:rgb(244, 244, 244); text-align: end;"></th>
                                     @elseif (strtolower(trim($jenis['jenis_name'])) == 'net profit')
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
-                                        {{ number_format($totalplanlb  , 2) }}
+                                        {{ number_format($totalplanlb  , 2) }} <br>
+                                        {{ number_format($totalnetprofitplan, 2) }}
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
 
@@ -328,7 +329,8 @@
                                         {{ number_format($verticallb , 2) }}%
                                     </th>
                                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
-                                        {{ number_format($totalactuallb, 2) }}
+                                        {{ number_format($totalactuallb, 2) }}<br>
+                                        {{ number_format($totalactualnetprofit, 2) }}
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($verticalslb , 2) }}%

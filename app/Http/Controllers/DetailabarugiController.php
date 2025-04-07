@@ -140,6 +140,32 @@ class DetailabarugiController extends Controller
             });
         // dd($actuallb );
 
+        $totalnetprofitplan = (clone $query)
+            ->where('jenis_labarugis.name', 'Net Profit')
+            ->get()
+            ->map(function ($item) {
+                return (float) str_replace(',', '', $item->nominalplan ?? 0);
+            })
+            ->values()
+            ->reduce(function ($carry, $nominal, $index) {
+                return $index === 0 ? $nominal : $carry - $nominal;
+            });
+
+
+
+        $totalactualnetprofit = (clone $query)
+            ->where('jenis_labarugis.name', 'Net Profit')
+            ->get()
+            ->map(function ($item) {
+                return (float) str_replace(',', '', $item->nominalactual ?? 0);
+            })
+            ->values()
+            ->reduce(function ($carry, $nominal, $index) {
+                return $index === 0 ? $nominal : $carry - $nominal;
+            });
+        // dd($totalnetprofitplan, $totalactualnetprofit);
+
+
         //laba rugi 
         $totalplanlr = $totalRevenuep - $totallkplan;
         $totalactuallr = $totalRevenuea - $totallkactual;
@@ -242,6 +268,8 @@ class DetailabarugiController extends Controller
 
 
         return view('labarugi.index', compact(
+            'totalactualnetprofit',
+            'totalnetprofitplan',
             'totals',
             'totalplanlr',
             'totalvertikal',
