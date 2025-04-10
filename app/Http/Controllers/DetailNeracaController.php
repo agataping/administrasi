@@ -161,8 +161,8 @@ class DetailNeracaController extends Controller
                     return $totals;
                 }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-            $totalplanliabiliti = $liabilititotal['debit'] - $liabilititotal['credit'];
-            $totalactualliabiliti = $liabilititotal['debit_actual'] - $liabilititotal['credit_actual'];
+            $totalplanliabiliti = $liabilititotal['credit'] - $liabilititotal['debit'];
+            $totalactualliabiliti = $liabilititotal['credit_actual'] - $liabilititotal['debit_actual'];
 
             $equitytotal = (clone $query)
                 ->where('jenis_neracas.name', 'EQUITY')
@@ -175,8 +175,8 @@ class DetailNeracaController extends Controller
                     return $totals;
                 }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-            $totalplanequity = abs ($equitytotal['debit'] - $equitytotal['credit']);
-            $totalactualequity = abs($equitytotal['debit_actual'] - $equitytotal['credit_actual']);
+            $totalplanequity = abs ($equitytotal['credit'] - $equitytotal['debit']);
+            $totalactualequity = abs($equitytotal['credit_actual'] - $equitytotal['debit_actual']);
             $totalplanmodalhutang = abs ($totalplanliabiliti + $totalplanequity); //plan
             $totalactualmodalhutang = abs ($totalactualliabiliti + $totalactualequity); //actual
 
