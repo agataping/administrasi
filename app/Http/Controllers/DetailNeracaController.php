@@ -175,10 +175,10 @@ class DetailNeracaController extends Controller
                     return $totals;
                 }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-            $totalplanequity = $equitytotal['debit'] - $equitytotal['credit'];
-            $totalactualequity = $equitytotal['debit_actual'] - $equitytotal['credit_actual'];
-            $totalplanmodalhutang = $totalplanliabiliti + $totalplanequity; //plan
-            $totalactualmodalhutang = $totalactualliabiliti + $totalactualequity; //actual
+            $totalplanequity = abs ($equitytotal['debit'] - $equitytotal['credit']);
+            $totalactualequity = abs($equitytotal['debit_actual'] - $equitytotal['credit_actual']);
+            $totalplanmodalhutang = abs ($totalplanliabiliti + $totalplanequity); //plan
+            $totalactualmodalhutang = abs ($totalactualliabiliti + $totalactualequity); //actual
 
             // Control Validasi Neraca
             $controlplan =round($totalplanmodalhutang - $totalplanasset);
