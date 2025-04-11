@@ -41,7 +41,9 @@ class OverberdenCoalController extends Controller
                 $query->whereRaw('users.id_company', $companyId);             
             }
         }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
         }
         
@@ -105,7 +107,9 @@ class OverberdenCoalController extends Controller
             }
         }
         
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
         }
         
@@ -170,7 +174,9 @@ class OverberdenCoalController extends Controller
                 $query->whereRaw('users.id_company', $companyId);             
             }
         }
-            if ($startDate && $endDate) {
+    if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
                 $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
             }
             
@@ -254,14 +260,7 @@ class OverberdenCoalController extends Controller
         ]);
         $type = $request->input('kategori_id', '2');
         // Format nominal untuk menghapus koma
-        function convertToCorrectNumber($value) {
-            if ($value === '' || $value === null) {
-                return 0; 
-            }
-            $value = str_replace('.', '', $value);  
-            $value = str_replace(',', '.', $value); 
-            return floatval($value); 
-        }
+
         
         // Tentukan mana yang diset null
         $validatedData['nominalplan'] = convertToCorrectNumber($validatedData['nominalplan']);
@@ -310,14 +309,7 @@ class OverberdenCoalController extends Controller
         $type = $request->input('type', '2');
         
         // Format nominal untuk menghapus koma
-        function convertToCorrectNumber($value) {
-            if ($value === '' || $value === null) {
-                return 0; 
-            }
-            $value = str_replace('.', '', $value);  
-            $value = str_replace(',', '.', $value); 
-            return floatval($value); 
-        }
+
         // Tentukan mana yang diset null
         $validatedData['nominalplan'] = convertToCorrectNumber($validatedData['nominalplan']);
         $validatedData['nominalactual'] = convertToCorrectNumber($validatedData['nominalactual']);
@@ -501,7 +493,9 @@ class OverberdenCoalController extends Controller
                 $query->whereRaw('users.id_company', $companyId);             
             }
         }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
        $data = $query->get();

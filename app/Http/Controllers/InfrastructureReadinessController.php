@@ -10,6 +10,7 @@ use App\Models\Picainfrastruktur;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\HistoryLog;
+use Carbon\Carbon;
 
 class InfrastructureReadinessController extends Controller
 {
@@ -36,7 +37,9 @@ class InfrastructureReadinessController extends Controller
             }
         }
 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         $data = $query->get();
@@ -175,7 +178,9 @@ class InfrastructureReadinessController extends Controller
                     $query->whereRaw('users.id_company', $companyId);             
                 }
             }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         $data = $query->get();        

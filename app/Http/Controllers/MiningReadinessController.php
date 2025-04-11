@@ -11,6 +11,7 @@ use App\Models\KategoriMiniR;
 use App\Models\MiningReadiness;
 use App\Models\PicaMining;
 use App\Models\HistoryLog;
+use Carbon\Carbon;
 
 class MiningReadinessController extends Controller
 {
@@ -38,7 +39,9 @@ class MiningReadinessController extends Controller
             }
         }
 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('mining_readinesses.tanggal', [$startDate, $endDate]);
         }
         $data = $query->get();
@@ -311,7 +314,9 @@ class MiningReadinessController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]);
         }
         $data = $query->get();

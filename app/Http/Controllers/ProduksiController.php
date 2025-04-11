@@ -14,6 +14,7 @@ use App\Models\PicaPaUa;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\HistoryLog;
+use Carbon\Carbon;
 
 class ProduksiController extends Controller
 {   //index menu
@@ -68,7 +69,9 @@ class ProduksiController extends Controller
                 }
             }    
         // Tambahkan filter tanggal jika tersedia
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryPas->whereBetween('produksi_pas.date', [$startDate, $endDate]);
             $queryUas->whereBetween('produksi_uas.date', [$startDate, $endDate]);
         }
@@ -139,7 +142,9 @@ class ProduksiController extends Controller
                 $query->whereRaw('users.id_company', $companyId);             
             }
         }
-            if ($startDate && $endDate) {
+    if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
                 $query->whereBetween('produksi_uas.date', [$startDate, $endDate]);
             }
             
@@ -195,7 +200,9 @@ class ProduksiController extends Controller
                 $query->whereRaw('users.id_company', $companyId);             
             }
         }
-            if ($startDate && $endDate) {
+    if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
                 $query->whereBetween('produksi_pas.date', [$startDate, $endDate]);
             }
             
@@ -285,14 +292,7 @@ class ProduksiController extends Controller
 
 
         ]);
-        function convertToCorrectNumber($value) {
-            if ($value === '' || $value === null) {
-                return 0; 
-            }
-            $value = str_replace('.', '', $value);  
-            $value = str_replace(',', '.', $value); 
-            return floatval($value); 
-        }
+
         
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
@@ -332,14 +332,7 @@ class ProduksiController extends Controller
 
 
         ]);
-        function convertToCorrectNumber($value) {
-            if ($value === '' || $value === null) {
-                return 0; 
-            }
-            $value = str_replace('.', '', $value);  
-            $value = str_replace(',', '.', $value); 
-            return floatval($value); 
-        }
+
         
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
@@ -476,14 +469,7 @@ class ProduksiController extends Controller
             'file' => 'nullable|file',
 
         ]);
-        function convertToCorrectNumber($value) {
-            if ($value === '' || $value === null) {
-                return 0; 
-            }
-            $value = str_replace('.', '', $value);  
-            $value = str_replace(',', '.', $value); 
-            return floatval($value); 
-        }
+
         
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
@@ -520,14 +506,7 @@ class ProduksiController extends Controller
             'file' => 'nullable|file',
 
         ]);
-        function convertToCorrectNumber($value) {
-            if ($value === '' || $value === null) {
-                return 0; 
-            }
-            $value = str_replace('.', '', $value);  
-            $value = str_replace(',', '.', $value); 
-            return floatval($value); 
-        }
+
         
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
@@ -635,7 +614,9 @@ class ProduksiController extends Controller
                 $query->whereRaw('users.id_company', $companyId);             
             }
         }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
         }
         
@@ -743,4 +724,11 @@ class ProduksiController extends Controller
 
         
         
-        
+if (!function_exists('convertToCorrectNumber')) {
+    function convertToCorrectNumber($value) {
+        if ($value === '' || $value === null) return 0;
+        $value = str_replace('.', '', $value);
+        $value = str_replace(',', '.', $value);
+        return floatval($value);
+    }
+}

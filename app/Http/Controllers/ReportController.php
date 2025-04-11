@@ -70,7 +70,7 @@ class ReportController extends Controller
         $data = $query->orderBy('jenis_neracas.created_at', 'asc')
             ->get()
             ->groupBy(['jenis_name', 'category', 'sub_category']);
-            
+
 
         //total jenis asset
         $fixAssetTotals = (clone $query)
@@ -192,7 +192,7 @@ class ReportController extends Controller
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
         $actualcogs = $totalRevenuea ? round(($totalactualcogas / $totalRevenuea) * 100, 2) : 0;
-        $plancogs = $totalRevenuep ? round (($totalplancogas / $totalRevenuep) * 100, 2) : 0;
+        $plancogs = $totalRevenuep ? round(($totalplancogas / $totalRevenuep) * 100, 2) : 0;
         // dd($query->where('category_labarugis.namecategory', 'Cost of Goods Sold')->get());
 
         // dd($plancogs,$totalplancogas,$totalRevenuep);
@@ -211,12 +211,12 @@ class ReportController extends Controller
                 return (float)str_replace(',', '', trim($item->nominalplan ?? 0));
             });
 
-        $actualcoe = $totalRevenuea ? round (($totactualsalary / $totalRevenuea) * 100, 2) : 0;
-        $plancoe = $totalRevenuep ? round (($totplansalary / $totalRevenuep) * 100, 2) : 0;
+        $actualcoe = $totalRevenuea ? round(($totactualsalary / $totalRevenuea) * 100, 2) : 0;
+        $plancoe = $totalRevenuep ? round(($totplansalary / $totalRevenuep) * 100, 2) : 0;
 
         //csr
         $totactualscsr = (clone $query)
-            ->whereIn('category_labarugis.namecategory', ['Social & CSR', 'Biaya adm dan Umum'])
+            ->where('category_labarugis.namecategory', 'like', '%CSR%')
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
@@ -227,8 +227,8 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
-        $actualcsr = $totalRevenuea ? round (($totactualscsr / $totalRevenuea) * 100, 2) : 0;
-        $plancsr = $totalRevenuep ? round (($totplanscsr / $totalRevenuep) * 100, 2) : 0;
+        $actualcsr = $totalRevenuea ? round(($totactualscsr / $totalRevenuea) * 100, 2) : 0;
+        $plancsr = $totalRevenuep ? round(($totplanscsr / $totalRevenuep) * 100, 2) : 0;
         // dd($plancsr);
         // Menghitung Profit Margin (Laba Kotor)
         $totallkactual = (clone $query)
@@ -264,6 +264,29 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
+            $totalnetprofitplan = (clone $query)
+            ->where('jenis_labarugis.name', 'Net Profit')
+            ->get()
+            ->map(function ($item) {
+                return (float) str_replace(',', '', $item->nominalplan ?? 0);
+            })
+            ->values()
+            ->reduce(function ($carry, $nominal, $index) {
+                return $index === 0 ? $nominal : $carry - $nominal;
+            });
+
+
+
+        $totalactualnetprofit = (clone $query)
+            ->where('jenis_labarugis.name', 'Net Profit')
+            ->get()
+            ->map(function ($item) {
+                return (float) str_replace(',', '', $item->nominalactual ?? 0);
+            })
+            ->values()
+            ->reduce(function ($carry, $nominal, $index) {
+                return $index === 0 ? $nominal : $carry - $nominal;
+            });
 
         // Menghitung Net Profit (Laba Bersih)
         $planlb = (clone $query)
@@ -282,29 +305,36 @@ class ReportController extends Controller
 
         $totalplanlr = $totalRevenuep - $totallkplan;
         $totalactuallr = $totalRevenuea - $totallkactual;
-        $totalvertikal = ($totalplanlr && $totalRevenuep > 0) ? round ( ($totalplanlr / $totalRevenuep) * 100, 2) : 0;
-        $totalvertikals = ($totalRevenuea > 0) ? round (($totalactuallr / $totalRevenuea) * 100, 2) : 0;
+        $totalvertikal = ($totalplanlr && $totalRevenuep > 0) ? round(($totalplanlr / $totalRevenuep) * 100, 2) : 0;
+        $totalvertikals = ($totalRevenuea > 0) ? round(($totalactuallr / $totalRevenuea) * 100, 2) : 0;
         $deviasilr = $totalplanlr - $totalactuallr;
-        // dd($totalactuallr);
-        $persenlr = $totalplanlr ? round (($totalactuallr / $totalplanlr) * 100, 2) : 0;
+        $persenlr = $totalplanlr ? round(($totalactuallr / $totalplanlr) * 100, 2) : 0;
         // dd($actualoppersen);
         //operating profit
         $totalplanlp = $totalplanlr - $planoperasional;
-        $totalactualOp = $actualoperasional - $totalactuallr;
-        $verticallp = $totalRevenuep ? round (($totalplanlp / $totalRevenuep) * 100, 2) : 0;
-        $verticalop = $totalRevenuea ? round (($totalactualOp / $totalRevenuea) * 100, 2) : 0;
+        $totalactualOp = $totalactuallr - $actualoperasional;
+        $verticallp = $totalRevenuep ? round(($totalplanlp / $totalRevenuep) * 100, 2) : 0;
+        $verticalop = $totalRevenuea ? round(($totalactualOp / $totalRevenuea) * 100, 2) : 0;
+        // $vertikalactualop = ($totalRevenuea && $totalRevenuea != 0) ? round(($actualoperasional / $totalRevenuea) * 100, 2) : 0;
+
+        // dd($totalRevenuea,$totalactualOp,$verticalop);
         $deviasiop = $totalplanlp - $totalactualOp;
-        $persenop = $totalplanlp ? round (($totalactualOp / $totalplanlp) * 100, 2) : 0;
+        $persenop = $totalplanlp ? round(($totalactualOp / $totalplanlp) * 100, 2) : 0;
         //operasional
-        $planoppersen = $totalRevenuep ? round (($planoperasional / $totalRevenuep) * 100, 2) : 0;
-        $actualoppersen = $totalRevenuep ? round (($totalactualOp / $totalRevenuea) * 100, 2) : 0;
+        $planoppersen = $totalRevenuep ? round(($planoperasional / $totalRevenuep) * 100, 2) : 0;
+        $actualoppersen = $totalRevenuep ? round(($actualoperasional / $totalRevenuea) * 100, 2) : 0;
+        // dd($actualoppersen);
+
         //lababersih
         $totalplanlb = $planlb - $planoperasional;
         $totalactuallb = $actualoperasional - $actuallb;
-        $verticallb = $totalRevenuep ? round (($totalplanlb / $totalRevenuep) * 100, 2) : 0; //plan
-        $verticalslb = $totalRevenuea ? round (($totalactuallb / $totalRevenuea) * 100, 2) : 0; //actual
+        $verticallb = $totalRevenuep ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0; //plan
+        $verticalslb = $totalRevenuea ? round(($totalactuallb / $totalRevenuea) * 100, 2) : 0; //actual
         $deviasilb = $totalplanlb - $totalactuallb;
-        $persenlb = $totalplanlb ? round (($totalactuallb / $totalplanlb) * 100, 2) : 0;
+        $persenlb = $totalplanlb ? round(($totalactuallb / $totalplanlb) * 100, 2) : 0;
+        $vertikalplanetprofit=($totalRevenuep) ? round(($totalnetprofitplan / $totalRevenuep) * 100 , 2) : 0;
+        $vertalactualnetprofit=($totalRevenuea) ? round(($totalactualnetprofit / $totalRevenuea) * 100 , 2) : 0;
+
         // Mengatur nilai null jika total revenue adalah 0 atau null
         if ($totalRevenuea === 0 || !$totalRevenuea) {
             $totalRevenuea = null;
@@ -324,9 +354,9 @@ class ReportController extends Controller
         // Perhitungan persen revenue dan weight (plan)
         $persenassetplan = ($ongkosplan != 0) ? round(($totalplanasset / $ongkosplan) * 100, 2) : 0;/* asset*/
         $weightasset = round(($persenassetplan / 35.00) * 100, 2);
-        $persenmodalhutangplan = ($ongkosplan != 0) ? round(($totalplanmodalhutang/ $ongkosplan) * 100, 2) : 0;/* libili equaity*/
+        $persenmodalhutangplan = ($ongkosplan != 0) ? round(($totalplanmodalhutang / $ongkosplan) * 100, 2) : 0;/* libili equaity*/
         $weightmodalhutang = round(($persenmodalhutangplan / 35.00) * 100, 2);
-        $persenrevenue = ($ongkosplan != 0) ? round(($totalRevenuep / $ongkosplan) * 100,2) : 0;/* revenue*/
+        $persenrevenue = ($ongkosplan != 0) ? round(($totalRevenuep / $ongkosplan) * 100, 2) : 0;/* revenue*/
         $weightrevenue = round(($persenrevenue / 35.00) * 100, 2);
         $persencogs = ($ongkosplan != 0) ? round(($totalplancogas / $ongkosplan) * 100, 2) : 0;/* cogs*/
         $weightcogs = round(($persencogs / 35.00) * 100, 2);
@@ -344,14 +374,14 @@ class ReportController extends Controller
         $weightnetprofitmargin = round(($persennetprofitmargin / 35.00) * 100, 2);
 
         // Perhitungan persen actual dan index result (index * weight)
-        $psersenactualasset = ($ongkosactual != 0) ? round(($totalactualasset / $ongkosactual) * 100,2) : 0;/* asset*/
+        $psersenactualasset = ($ongkosactual != 0) ? round(($totalactualasset / $ongkosactual) * 100, 2) : 0;/* asset*/
         $indexactualasset = ($persenassetplan != 0) ? round(($psersenactualasset / $persenassetplan) * 100, 2) : 0;
 
         $resultasset = round($indexactualasset * ($weightasset / 100), 2);
-        $persenactualmodalhutang = ($ongkosactual != 0) ? round(($totalactualmodalhutang / $ongkosactual) * 100,2) : 0;/* liabiliti equity*/
+        $persenactualmodalhutang = ($ongkosactual != 0) ? round(($totalactualmodalhutang / $ongkosactual) * 100, 2) : 0;/* liabiliti equity*/
         $indexmodalhutanactual = ($persenmodalhutangplan != 0) ? round(($persenactualmodalhutang / $persenmodalhutangplan) * 100, 2) : 0;
         $resultequity = round($indexmodalhutanactual * ($weightmodalhutang / 100), 2);
-        $persenactualrevenue = ($ongkosactual != 0) ? round(($totalRevenuea / $ongkosactual) * 100,2) : 0; /* revenue*/
+        $persenactualrevenue = ($ongkosactual != 0) ? round(($totalRevenuea / $ongkosactual) * 100, 2) : 0; /* revenue*/
         $indexrevenue = ($persenrevenue != 0) ? round(($persenactualrevenue / $persenrevenue) * 100, 2) : 0;
         // dd($indexrevenue,$persenactualrevenue,$persenrevenue,$totalRevenuep,$ongkosplan);
         $resultrevenue = round($indexrevenue *  ($weightrevenue / 100), 2);
@@ -364,13 +394,13 @@ class ReportController extends Controller
         $pserenactualcostemploye = ($ongkosactual != 0) ? round(($totactualsalary / $ongkosactual) * 100, 2) : 0;/* saleri cost employe*/
         $indexcostemlpoye = ($persencostemploye != 0) ? round(($pserenactualcostemploye / $persencostemploye) * 100, 2) : 0;
         $resultemploye = round($indexcostemlpoye * ($weightcostemploye / 100), 2);
-        $persenactualcsr = ($ongkosactual != 0) ? round (($totactualscsr / $ongkosactual) * 100, 2) : 0;/* csr*/
+        $persenactualcsr = ($ongkosactual != 0) ? round(($totactualscsr / $ongkosactual) * 100, 2) : 0;/* csr*/
         $indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;
         $resultcsr = round($indexcsr *  ($weightcsr / 100), 2);
         $persenactualoperatincost = ($ongkosactual != 0) ? round(($actualoperasional / $ongkosactual) * 100, 2) : 0;/*operasional cost*/
         $indexoperatingcost = ($persenopratingcost != 0) ? round(($persenactualoperatincost / $persenopratingcost) * 100, 2) : 0;
         $ressultoperasionalcost = round($indexoperatingcost * ($weightopratingcost / 100), 2);
-        $persenactualoperasionalpmg = ($ongkosactual != 0) ? round (($totalactualOp / $ongkosactual) * 100, 2) : 0;/* opersional profit mg*/
+        $persenactualoperasionalpmg = ($ongkosactual != 0) ? round(($totalactualOp / $ongkosactual) * 100, 2) : 0;/* opersional profit mg*/
         $indexoperasionalpmg = ($persenoperatingprofitmargin != 0) ? round(($persenactualoperasionalpmg / $persenoperatingprofitmargin) * 100, 2) : 0;
         $resultgrosspm = round($indexoperasionalpmg * ($weightopratingmg / 100), 2);
         $persenactualnetprofitmg = ($ongkosactual != 0) ? round(($actuallb / $ongkosactual) * 100, 2) : 0;/*net profit*/
@@ -379,7 +409,7 @@ class ReportController extends Controller
         //financial perspectif 
         $totalindexfinancial = $resultrevenue + $resultcogs + $resultemploye + $resultcsr + $resultgrosspm + $ressultoperasionalcost + $resultoperatingpm + $resultnetpm + $resultasset + $resultequity;
         $totalresultfinancial = round(($totalindexfinancial / 35.00) * 100, 2);
-            // dd($totalresultfinancial,$totalindexfinancial, $resultrevenue , $resultcogs , $resultemploye , $resultcsr , $resultgrosspm , $ressultoperasionalcost , $resultoperatingpm , $resultnetpm , $resultasset , $resultequity,);
+        // dd($totalresultfinancial,$totalindexfinancial, $resultrevenue , $resultcogs , $resultemploye , $resultcsr , $resultgrosspm , $ressultoperasionalcost , $resultoperatingpm , $resultnetpm , $resultasset , $resultequity,);
 
         // Memetakan data untuk menampilkan laporan KPI
         $totals = $data->map(function ($categories, $jenisName) use ($totalRevenuep, $totalRevenuea) {
@@ -445,7 +475,7 @@ class ReportController extends Controller
         $totalActualAll = $data->sum(function ($d) {
             return floatval(str_replace(',', '', $d->quantity));
         });
-        $index = $totalPlanAll ? round (($totalActualAll / $totalPlanAll) * 100, 2) : 0;
+        $index = $totalPlanAll ? round(($totalActualAll / $totalPlanAll) * 100, 2) : 0;
         $index = round($index, 2);
 
         $results['total'] = [
@@ -464,7 +494,7 @@ class ReportController extends Controller
             $totalActual = $filteredData->sum(function ($d) {
                 return floatval(str_replace(',', '', $d->quantity));
             });
-            $index = $totalPlan ? round (($totalActual / $totalPlan) * 100, 2) : 0;
+            $index = $totalPlan ? round(($totalActual / $totalPlan) * 100, 2) : 0;
             $index = round($index, 2);
             $resultkuota = round($index * (5 / 100), 2);
             // dd($resultkuota);
@@ -506,7 +536,7 @@ class ReportController extends Controller
         $totalActualcoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
-        $indexcoalgetting = ($totalActualcoal != 0) ? round (($totalPlancoal / $totalActualcoal) * 100, 2) : 0;
+        $indexcoalgetting = ($totalActualcoal != 0) ? round(($totalPlancoal / $totalActualcoal) * 100, 2) : 0;
         // Inisialisasi total nilai untuk Over Burden
         $totalPlanob = $data->where('kategori_name', 'Over Burden')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
@@ -807,6 +837,8 @@ class ReportController extends Controller
 
 
         return view('pt.report', compact(
+            //net profit
+            'vertalactualnetprofit','vertikalplanetprofit',
             //l&g
             'resultlearning',
             'totals',

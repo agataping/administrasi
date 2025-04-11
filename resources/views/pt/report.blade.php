@@ -339,7 +339,7 @@
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td class="text-end">{{ number_format($verticalop, 2) }}%</td>
+                                        <td class="text-end">{{ number_format($totalvertikals, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>
@@ -409,11 +409,11 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td class="text-end">{{ number_format($totalvertikal, 2) }}%</td>
+                                        <td class="text-end">{{ number_format($vertikalplanetprofit, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td class="text-end">{{number_format($verticalop, 2) }}%</td>
+                                        <td class="text-end">{{number_format($vertalactualnetprofit, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>

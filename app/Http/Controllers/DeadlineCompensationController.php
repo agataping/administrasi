@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PeopleReadiness;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use App\Models\DeadlineCompensation;
@@ -37,7 +38,9 @@ class DeadlineCompensationController extends Controller
                     $query->whereRaw('users.id_company', $companyId);             
                 }
             } 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]);
         }
         
@@ -154,7 +157,9 @@ class DeadlineCompensationController extends Controller
         }
 
 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
        $data = $query->get();

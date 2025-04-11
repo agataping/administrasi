@@ -13,6 +13,7 @@ use App\Models\SubNeraca;
 use App\Models\HistoryLog;
 use App\Models\JenisNeraca;
 use Termwind\Components\Dd;
+use Carbon\Carbon;
 
 class DetailNeracaController extends Controller
 {
@@ -54,7 +55,9 @@ class DetailNeracaController extends Controller
             }
         }
 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('detail_neracas.tanggal', [$startDate, $endDate]);
         }
         $data = $query->orderBy('jenis_neracas.created_at', 'asc')
@@ -299,15 +302,6 @@ class DetailNeracaController extends Controller
         ]);
 
         // Format nominal untuk menghapus koma
-        function convertToCorrectNumber($value)
-        {
-            if ($value === '' || $value === null) {
-                return 0;
-            }
-            $value = str_replace('.', '', $value);
-            $value = str_replace(',', '.', $value);
-            return floatval($value);
-        }
         if ($request->hasFile('fileactual')) {
             $fileActual = $request->file('fileactual');
             $fileActualPath = $fileActual->store('uploads', 'public');

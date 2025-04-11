@@ -11,6 +11,7 @@ use App\Models\kategoriHse;
 use App\Models\Hse;
 use App\Models\PicaHse;
 use App\Models\HistoryLog;
+use Carbon\Carbon;
 
 class HseController extends Controller
 {
@@ -36,7 +37,9 @@ class HseController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('hses.date', [$startDate, $endDate]);
         }
 
@@ -119,15 +122,6 @@ class HseController extends Controller
             'kategori_id' => 'required',
 
         ]);
-        function convertToCorrectNumber($value)
-        {
-            if ($value === '' || $value === null) {
-                return 0;
-            }
-            $value = str_replace('.', '', $value);
-            $value = str_replace(',', '.', $value);
-            return floatval($value);
-        }
 
         // Tentukan mana yang diset null
         $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
@@ -213,15 +207,6 @@ class HseController extends Controller
             'keterangan' => 'nullable',
             'kategori_id' => 'required',
         ]);
-        function convertToCorrectNumber($value)
-        {
-            if ($value === '' || $value === null) {
-                return 0;
-            }
-            $value = str_replace('.', '', $value);
-            $value = str_replace(',', '.', $value);
-            return floatval($value);
-        }
 
         // Tentukan mana yang diset null
         $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
@@ -301,7 +286,9 @@ class HseController extends Controller
             }
         }
 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]);
         }
 

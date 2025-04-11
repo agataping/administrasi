@@ -249,7 +249,7 @@
                                         {{ number_format($actualoperasional, 2) }}
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
-                                        {{ number_format($vertikalactualop, 2) }}
+                                        {{ number_format($vertikalactualop, 2) }}%
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($deviasitotalgeneral, 2) }}
@@ -316,10 +316,10 @@
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($persenop, 2) }}%
                                     </th>
-                                    <th colspan="5" style="color:black; background-color:rgb(244, 244, 244); text-align: end;"></th>
+                                    <th colspan="5" rowspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;"></th>
                                     @elseif (strtolower(trim($jenis['jenis_name'])) == 'net profit')
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
-                                        {{ number_format($totalplanlb  , 2) }} <br>
+                                        {{ number_format($totalplanlb  , 2) }}
                                         {{ number_format($totalnetprofitplan, 2) }}
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
@@ -327,13 +327,15 @@
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($verticallb , 2) }}%
+                                        {{ number_format($vertikalplanetprofit , 2) }}% 
                                     </th>
                                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
-                                        {{ number_format($totalactuallb, 2) }}<br>
+                                        {{ number_format($totalactuallb, 2) }}
                                         {{ number_format($totalactualnetprofit, 2) }}
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($verticalslb , 2) }}%
+                                        {{ number_format($vertalactualnetprofit , 2) }}%
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($deviasilb, 2) }}
@@ -414,6 +416,35 @@
             tr[i].style.display = rowVisible ? "" : "none";
         }
     }
+    
+    const list = document.getElementById('kategori-list');
+
+    new Sortable(list, {
+        animation: 150,
+        onEnd: function () {
+            const urutan = [];
+            list.querySelectorAll('tr').forEach(tr => {
+                urutan.push(tr.dataset.kategori);
+            });
+
+            // Simpan ke localStorage atau hidden input
+            localStorage.setItem('urutanKategori', JSON.stringify(urutan));
+            console.log('Urutan baru:', urutan);
+        }
+    });
+
+    // Saat load halaman, atur ulang urutan kalau sudah disimpan
+    window.addEventListener('DOMContentLoaded', () => {
+        const saved = JSON.parse(localStorage.getItem('urutanKategori') || '[]');
+        if (saved.length) {
+            const trs = Array.from(list.querySelectorAll('tr'));
+            saved.forEach(nama => {
+                const found = trs.find(tr => tr.dataset.kategori === nama);
+                if (found) list.appendChild(found);
+            });
+        }
+    });
+
 </script>
 
 @endsection

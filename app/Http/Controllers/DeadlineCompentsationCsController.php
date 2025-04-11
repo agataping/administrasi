@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DeadlineCompentsationCostumers;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DeadlineCompentsationCsController extends Controller
 {
@@ -18,7 +20,9 @@ class DeadlineCompentsationCsController extends Controller
             ->where('pica_bargings.created_by', auth()->user()->username); 
 
         
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]); 
         }
         

@@ -13,6 +13,7 @@ use App\Models\PicaEwhFuel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\HistoryLog;
+use Carbon\Carbon;
 
 class ControllerEwhFuel extends Controller
 {
@@ -64,7 +65,9 @@ class ControllerEwhFuel extends Controller
                 $queryFuel->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryEwh->whereBetween('ewhs.date', [$startDate, $endDate]);
             $queryFuel->whereBetween('fuels.date', [$startDate, $endDate]);
         }
@@ -139,7 +142,9 @@ class ControllerEwhFuel extends Controller
                 $queryewh->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryewh->whereBetween('ewhs.date', [$startDate, $endDate]);
         }
 
@@ -200,7 +205,9 @@ class ControllerEwhFuel extends Controller
                 $queryewh->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryewh->whereBetween('fuels.date', [$startDate, $endDate]);
         }
 
@@ -258,15 +265,6 @@ class ControllerEwhFuel extends Controller
 
 
         ]);
-        function convertToCorrectNumber($value)
-        {
-            if ($value === '' || $value === null) {
-                return 0;
-            }
-            $value = str_replace('.', '', $value);
-            $value = str_replace(',', '.', $value);
-            return floatval($value);
-        }
 
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
@@ -309,15 +307,6 @@ class ControllerEwhFuel extends Controller
 
 
         ]);
-        function convertToCorrectNumber($value)
-        {
-            if ($value === '' || $value === null) {
-                return 0;
-            }
-            $value = str_replace('.', '', $value);
-            $value = str_replace(',', '.', $value);
-            return floatval($value);
-        }
 
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
@@ -357,7 +346,7 @@ class ControllerEwhFuel extends Controller
     {
 
         $unit = Unit::all();
-        $data = Fuels::findOrFail($id);
+        $data = Fuel::findOrFail($id);
         return view('ewh_fuels.updatedatafuel', compact('unit', 'data'));
     }
     public function updateewh(Request $request, $id)
@@ -372,15 +361,6 @@ class ControllerEwhFuel extends Controller
 
 
         ]);
-        function convertToCorrectNumber($value)
-        {
-            if ($value === '' || $value === null) {
-                return 0;
-            }
-            $value = str_replace('.', '', $value);
-            $value = str_replace(',', '.', $value);
-            return floatval($value);
-        }
 
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
@@ -420,15 +400,6 @@ class ControllerEwhFuel extends Controller
 
 
         ]);
-        function convertToCorrectNumber($value)
-        {
-            if ($value === '' || $value === null) {
-                return 0;
-            }
-            $value = str_replace('.', '', $value);
-            $value = str_replace(',', '.', $value);
-            return floatval($value);
-        }
 
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
@@ -521,7 +492,9 @@ class ControllerEwhFuel extends Controller
         }
 
 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryewh->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
         }
 
@@ -622,5 +595,13 @@ class ControllerEwhFuel extends Controller
             'user_id' => auth()->id(),
         ]);
         return redirect('/picaewhfuel')->with('success', 'Data deleted successfully.');
+    }
+}
+if (!function_exists('convertToCorrectNumber')) {
+    function convertToCorrectNumber($value) {
+        if ($value === '' || $value === null) return 0;
+        $value = str_replace('.', '', $value);
+        $value = str_replace(',', '.', $value);
+        return floatval($value);
     }
 }

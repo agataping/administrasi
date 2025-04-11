@@ -63,7 +63,9 @@ class BargingController extends Controller
         }
 
         // Filter berdasarkan tanggal jika ada input
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
         }
 
@@ -127,7 +129,9 @@ class BargingController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
         }
 
@@ -469,7 +473,9 @@ class BargingController extends Controller
             }
         }
 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('pica_bargings.tanggal', [$startDate, $endDate]);
         }
 

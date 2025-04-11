@@ -11,6 +11,7 @@ use App\Models\PeopleReadiness;
 use App\Models\picaPeople;
 use App\Models\Gambar;
 use App\Models\HistoryLog;
+use Carbon\Carbon;
 
 class PeopleReadinessController extends Controller
 {
@@ -55,7 +56,9 @@ class PeopleReadinessController extends Controller
             }
         }
 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
         }
 
@@ -230,7 +233,9 @@ class PeopleReadinessController extends Controller
             }
         }
 
-        if ($startDate && $endDate) {
+if ($startDate && $endDate) {
+    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]);
         }
         $data = $query->get();
