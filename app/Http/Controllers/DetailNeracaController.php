@@ -182,7 +182,7 @@ if ($startDate && $endDate) {
             $totalactualequity = abs($equitytotal['credit_actual'] - $equitytotal['debit_actual']);
             $totalplanmodalhutang = abs ($totalplanliabiliti + $totalplanequity); //plan
             $totalactualmodalhutang = abs ($totalactualliabiliti + $totalactualequity); //actual
-
+            // dd($totalplanmodalhutang,  $totalactualmodalhutang,$totalplanliabiliti , $totalplanequity);
             // Control Validasi Neraca
             $controlplan =round($totalplanmodalhutang - $totalplanasset);
             $controlactual = round($totalactualmodalhutang - $totalactualasset);
@@ -570,5 +570,13 @@ if ($startDate && $endDate) {
             'user_id' => auth()->id(),
         ]);
         return redirect()->back()->with('success', 'Data deleted successfully.');
+    }
+}
+if (!function_exists('convertToCorrectNumber')) {
+    function convertToCorrectNumber($value) {
+        if ($value === '' || $value === null) return 0;
+        $value = str_replace('.', '', $value);
+        $value = str_replace(',', '.', $value);
+        return floatval($value);
     }
 }

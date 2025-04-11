@@ -104,38 +104,38 @@ class ReportController extends Controller
         $totalplanasset = $totalplanfixasset + $totalplancurrentasset; //plan asset
         $totalactualasset = $totalactualfixtasset + $totalactualcurrentasset; //actual asset
 
-        //modal hutang
-        $liabilititotal = (clone $query)
-            ->where('jenis_neracas.name', 'LIABILITIES')
-            ->get()
-            ->reduce(function ($totals, $item) {
-                $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
-                $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
-                $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
-                $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
-                return $totals;
-            }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
+            //modal hutang
+            $liabilititotal = (clone $query)
+                ->where('jenis_neracas.name', 'LIABILITIES')
+                ->get()
+                ->reduce(function ($totals, $item) {
+                    $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                    $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                    $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                    $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                    return $totals;
+                }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-        $totalplanliabiliti = $liabilititotal['debit'] - $liabilititotal['credit'];
-        $totalactualliabiliti = $liabilititotal['debit_actual'] - $liabilititotal['credit_actual'];
+            $totalplanliabiliti = $liabilititotal['credit'] - $liabilititotal['debit'];
+            $totalactualliabiliti = $liabilititotal['credit_actual'] - $liabilititotal['debit_actual'];
 
-        $equitytotal = (clone $query)
-            ->where('jenis_neracas.name', 'EQUITY')
-            ->get()
-            ->reduce(function ($totals, $item) {
-                $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
-                $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
-                $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
-                $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
-                return $totals;
-            }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
+            $equitytotal = (clone $query)
+                ->where('jenis_neracas.name', 'EQUITY')
+                ->get()
+                ->reduce(function ($totals, $item) {
+                    $totals['debit'] += (float)str_replace(',', '', $item->debit ?? 0);
+                    $totals['credit'] += (float)str_replace(',', '', $item->credit ?? 0);
+                    $totals['debit_actual'] += (float)str_replace(',', '', $item->debit_actual ?? 0);
+                    $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
+                    return $totals;
+                }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-        $totalplanequity = $equitytotal['debit'] - $equitytotal['credit'];
-        $totalactualequity = $equitytotal['debit_actual'] - $equitytotal['credit_actual'];
-        $totalplanmodalhutang = $totalplanliabiliti + $totalplanequity; //plan
-        $totalactualmodalhutang = $totalactualliabiliti + $totalactualequity; //actual
-        $planlavarge = ($totalactualequity != 0) ? ceil($totalactualliabiliti / $totalactualequity * 100) / 100 : 2;
-        // dd($totalactualliabiliti / $totalactualequity);
+            $totalplanequity = abs ($equitytotal['credit'] - $equitytotal['debit']);
+            $totalactualequity = abs($equitytotal['credit_actual'] - $equitytotal['debit_actual']);
+            $totalplanmodalhutang = abs ($totalplanliabiliti + $totalplanequity); //plan
+            $totalactualmodalhutang = abs ($totalactualliabiliti + $totalactualequity); //actual
+            $planlavarge = ($totalactualequity != 0) ? ceil($totalactualliabiliti / $totalactualequity * 100) / 100 : 2;
+        // dd($totalplanmodalhutang,  $totalplanequity);
 
 
         $query = DB::table('detailabarugis')
@@ -348,13 +348,14 @@ class ReportController extends Controller
             + $totactualscsr + $actualoperasional + $totalactualOp + $actuallb + $totalactualasset + $totalactualmodalhutang;
         // (total seluruh plan) yang belum - Return On Assets - Return On Equity 
         $ongkosplan = $totalRevenuep + $totalplancogas + $totallkplan +
-            $totplansalary + $totplanscsr + $planoperasional + $totalplanlp + $planlb + $totalplanasset + $totalplanmodalhutang;  // (total seluruh plan) yang belum - Return On Assets - Return On Equity */
+            $totplansalary + $totplanscsr + $planoperasional + $totalplanlp + $planlb + $totalplanmodalhutang + $totalplanequity;  // (total seluruh plan) yang belum - Return On Assets - Return On Equity */
 
 
         // Perhitungan persen revenue dan weight (plan)
-        $persenassetplan = ($ongkosplan != 0) ? round(($totalplanasset / $ongkosplan) * 100, 2) : 0;/* asset*/
+        $persenassetplan = ($totalplanmodalhutang != 0) ? round(($totalnetprofitplan/$totalplanmodalhutang) * 100, 2) : 0;/* asset*/
         $weightasset = round(($persenassetplan / 35.00) * 100, 2);
-        $persenmodalhutangplan = ($ongkosplan != 0) ? round(($totalplanmodalhutang / $ongkosplan) * 100, 2) : 0;/* libili equaity*/
+            // dd( $persenassetplan, $totalnetprofitplan, $totalplanmodalhutang);
+            $persenmodalhutangplan = ($totalplanequity != 0) ? round(($totalnetprofitplan/$totalplanequity) * 100, 2) : 0;/* libili equaity*/
         $weightmodalhutang = round(($persenmodalhutangplan / 35.00) * 100, 2);
         $persenrevenue = ($ongkosplan != 0) ? round(($totalRevenuep / $ongkosplan) * 100, 2) : 0;/* revenue*/
         $weightrevenue = round(($persenrevenue / 35.00) * 100, 2);
