@@ -103,7 +103,7 @@ class ReportController extends Controller
 
         $totalplanasset = $totalplanfixasset + $totalplancurrentasset; //plan asset
         $totalactualasset = $totalactualfixtasset + $totalactualcurrentasset; //actual asset
-
+            // dd( $totalplanasset);
             //modal hutang
             $liabilititotal = (clone $query)
                 ->where('jenis_neracas.name', 'LIABILITIES')
@@ -352,11 +352,17 @@ class ReportController extends Controller
 
 
         // Perhitungan persen revenue dan weight (plan)
-        $persenassetplan = ($totalplanmodalhutang != 0) ? round(($totalnetprofitplan/$totalplanmodalhutang) * 100, 2) : 0;/* asset*/
+        
+        $planreturnonasset = ($totalplanmodalhutang != 0) ? round(($totalnetprofitplan/$totalplanmodalhutang) * 100, 2) : 0;/* asset*/
+        $persenassetplan = ($ongkosplan != 0) ? round(($totalplanasset/$ongkosplan) * 100, 2) : 0;/* asset*/
         $weightasset = round(($persenassetplan / 35.00) * 100, 2);
-            // dd( $persenassetplan, $totalnetprofitplan, $totalplanmodalhutang);
-            $persenmodalhutangplan = ($totalplanequity != 0) ? round(($totalnetprofitplan/$totalplanequity) * 100, 2) : 0;/* libili equaity*/
+                // dd( $weightasset,$persenassetplan);
+
+        $persenreturnonequity = ($totalplanequity != 0) ? round(($totalnetprofitplan/$totalplanequity) * 100, 2) : 0;/* libili equaity*/
+        $persenmodalhutangplan = ($ongkosplan != 0) ? round(($totalplanmodalhutang/$ongkosplan) * 100, 2) : 0;/* asset*/
+
         $weightmodalhutang = round(($persenmodalhutangplan / 35.00) * 100, 2);
+
         $persenrevenue = ($ongkosplan != 0) ? round(($totalRevenuep / $ongkosplan) * 100, 2) : 0;/* revenue*/
         $weightrevenue = round(($persenrevenue / 35.00) * 100, 2);
         $persencogs = ($ongkosplan != 0) ? round(($totalplancogas / $ongkosplan) * 100, 2) : 0;/* cogs*/
@@ -375,13 +381,19 @@ class ReportController extends Controller
         $weightnetprofitmargin = round(($persennetprofitmargin / 35.00) * 100, 2);
 
         // Perhitungan persen actual dan index result (index * weight)
-        $psersenactualasset = ($ongkosactual != 0) ? round(($totalactualasset / $ongkosactual) * 100, 2) : 0;/* asset*/
-        $indexactualasset = ($persenassetplan != 0) ? round(($psersenactualasset / $persenassetplan) * 100, 2) : 0;
+        $actualreturnonasset = ($ongkosactual != 0) ? round(($totalactualasset / $ongkosactual) * 100, 2) : 0;/* asset*/
+        $persenactualasset = ($totalactualasset != 0) ? round(($totalactualnetprofit/$totalactualasset) * 100, 2) : 0;/* asset*/
+        $indexactualasset = ($actualreturnonasset != 0) ? round(($persenassetplan/$actualreturnonasset) * 100, 2) : 0;
 
         $resultasset = round($indexactualasset * ($weightasset / 100), 2);
-        $persenactualmodalhutang = ($ongkosactual != 0) ? round(($totalactualmodalhutang / $ongkosactual) * 100, 2) : 0;/* liabiliti equity*/
-        $indexmodalhutanactual = ($persenmodalhutangplan != 0) ? round(($persenactualmodalhutang / $persenmodalhutangplan) * 100, 2) : 0;
-        $resultequity = round($indexmodalhutanactual * ($weightmodalhutang / 100), 2);
+        $actualreturnonequaity = ($ongkosactual != 0) ? round(($totalactualmodalhutang / $ongkosactual) * 100, 2) : 0;/* liabiliti equity*/
+        $persenactualmodalhutang = ($totalactualequity != 0) ? round(($totalactualnetprofit / $totalactualequity) * 100, 2) : 0;/* liabiliti equity*/
+        
+        $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($persenmodalhutangplan/$actualreturnonequaity) * 100, 2) : 0;
+        // $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity / $persenmodalhutangplan) * 100, 2) : 0;
+
+        // dd($indexmodalhutangactual,$actualreturnonequaity,$persenmodalhutangplan);
+        $resultequity = round($indexmodalhutangactual * ($weightmodalhutang / 100), 2);
         $persenactualrevenue = ($ongkosactual != 0) ? round(($totalRevenuea / $ongkosactual) * 100, 2) : 0; /* revenue*/
         $indexrevenue = ($persenrevenue != 0) ? round(($persenactualrevenue / $persenrevenue) * 100, 2) : 0;
         // dd($indexrevenue,$persenactualrevenue,$persenrevenue,$totalRevenuep,$ongkosplan);
@@ -845,14 +857,14 @@ class ReportController extends Controller
             'totals',
             //neraca
             'planlavarge',
-            'persenassetplan',
-            'psersenactualasset',
+            'planreturnonasset',
+            'actualreturnonasset',
             'indexactualasset',
-            'weightasset', //assets
-            'persenactualmodalhutang',
-            'indexmodalhutanactual',
+            'weightasset','persenactualasset', //assets
+            'actualreturnonequaity',
+            'indexmodalhutangactual',
             'weightmodalhutang',
-            'persenmodalhutangplan', //modal hutang
+            'persenreturnonequity','persenactualmodalhutang', //modal hutang
             //nama perusahaan
             'companyName',
             'user',

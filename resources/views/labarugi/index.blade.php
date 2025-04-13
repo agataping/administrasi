@@ -293,7 +293,7 @@
                                         {{ number_format($persenlr, 2) }}%
                                     </th>
 
-                                    <th colspan="5" style="color:black; background-color:rgb(244, 244, 244); text-align: ;"></th>
+                                    <th colspan="5" style="color:black; background-color:rgb(244, 244, 244); text-align:"></th>
                                     @elseif($jenis['jenis_name'] == 'Operating Profit')
                                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($totalplanlp, 2) }}

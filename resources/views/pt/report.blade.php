@@ -485,11 +485,11 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td class="text-end">{{ number_format($persenassetplan, 2) }}%</td>
+                                        <td class="text-end">{{ number_format($planreturnonasset, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td class="text-end">{{ number_format($psersenactualasset, 2) }}%</td>
+                                        <td class="text-end">{{ number_format($persenactualasset, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>
@@ -508,7 +508,7 @@
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end">{{ number_format($weightasset , 2) }}%</td>
+                                        <td class="text-end">{{ number_format($weightasset, 2) }}%</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -521,7 +521,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td class="text-end">{{ number_format($persenmodalhutangplan  , 2) }}%</td>
+                                        <td class="text-end">{{ number_format($persenreturnonequity  , 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
@@ -530,16 +530,16 @@
                                     <tr>
                                         <td>Index</td>
                                         <td style="vertical-align: middle; 
-                                            @if ($indexmodalhutanactual<= 75)
+                                            @if ($indexmodalhutangactual<= 75)
                                             background-color: black; color: white;
-                                            @elseif ($indexmodalhutanactual> 75 && $indexmodalhutanactual<= 90)
-                                            background-color: rgb(206, 24, 24); color: white; /* Merah */                                                            @elseif ($indexmodalhutanactual> 90 && $indexmodalhutanactual<= 100)
+                                            @elseif ($indexmodalhutangactual> 75 && $indexmodalhutangactual<= 90)
+                                            background-color: rgb(206, 24, 24); color: white; /* Merah */                                                            @elseif ($indexmodalhutangactual> 90 && $indexmodalhutangactual<= 100)
                                             background-color: yellow; color: black; /* Kuning */
-                                            @elseif ($indexmodalhutanactual> 100 && $indexmodalhutanactual<= 190)
+                                            @elseif ($indexmodalhutangactual> 100 && $indexmodalhutangactual<= 190)
                                             background-color: green; color: white; /* Hijau */
-                                            @elseif ($indexmodalhutanactual> 190 )
+                                            @elseif ($indexmodalhutangactual> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif"> {{ number_format($indexmodalhutanactual  , 2) }}%
+                                            @endif"> {{ number_format($indexmodalhutangactual  , 2) }}%
                                         </td>
                                     </tr>
                                     <tr>
@@ -603,7 +603,7 @@
                     <!-- Persentase di sebelah kiri -->
                     <div class="col-2 d-flex justify-content-center align-items-center"
                         style=" font-size: 2em; font-weight: bold; text-align: center;
-                        @if ($indexmodalhutanactual<= 75)
+                        @if ($indexmodalhutangactual<= 75)
                         background-color: black; color: white;
                         @elseif ($totalresultcostumer> 75 && $totalresultcostumer<= 90)
                         background-color: rgb(206, 24, 24); color: white; /* Merah */                        
