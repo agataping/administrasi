@@ -35,9 +35,6 @@
     </ul>
 </div>
 @endif
-
-
-                @endif
                                 <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('formkategoriobc') }}" method="get">

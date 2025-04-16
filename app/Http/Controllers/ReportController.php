@@ -137,7 +137,7 @@ class ReportController extends Controller
         $actuallavarge = $totalactualequity ? round(($totalactualliabiliti / $totalactualequity) * 100, 2) : 0;
         $planlavarge = $totalactualequity ? round(($totalplanliabiliti / $totalplanequity) * 100, 2) : 0;
 
-        dd($totalactualliabiliti,  $totalactualequity);
+        // dd($totalactualliabiliti,  $totalactualequity);
 
 
         $query = DB::table('detailabarugis')
@@ -395,7 +395,7 @@ class ReportController extends Controller
         $actualreturnonequaity = ($ongkosactual != 0) ? round(($totalactualmodalhutang / $ongkosactual) * 100, 2) : 0;/* liabiliti equity*/
         $persenactualmodalhutang = ($totalactualequity != 0) ? round(($totalactualnetprofit / $totalactualequity) * 100, 2) : 0;/* liabiliti equity*/
 
-        $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity/$persenmodalhutangplan) * 100, 2) : 0;
+        $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity / $persenmodalhutangplan) * 100, 2) : 0;
         // $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity / $persenmodalhutangplan) * 100, 2) : 0;
 
         // dd($indexmodalhutangactual,$actualreturnonequaity,$persenmodalhutangplan);
@@ -797,12 +797,15 @@ class ReportController extends Controller
         // dd($averagePerformance,$indexinfra);
 
         //stock jetty
-        $query = DB::table('stock_jts')
-            ->select('stock_jts.*')
-            ->join('users', 'stock_jts.created_by', '=', 'users.username')
+        // $startDate = $request->input('start_date');
+        // $endDate = $request->input('end_date');
+
+        $query = DB::table('bargings')
+            ->select('bargings.*')
+            ->join('users', 'bargings.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
         if ($user->role !== 'admin') {
-            $query->where('users.id_company', $companyId);
+            $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
@@ -810,14 +813,55 @@ class ReportController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+
+        // Filter berdasarkan tanggal jika ada input
+        if (!empty($tahun)) {
+            $query->whereBetween('bargings.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
+        }
+
+
+        $data = $query->get();
+        $totalQuantity = 0;
+        $count = 0;
+
+        foreach ($data as $d) {
+            $quantity = str_replace(['.', ','], ['', '.'], $d->quantity);
+            $quantity = floatval($quantity);
+
+            if (is_numeric($quantity)) {
+                $totalQuantity += $quantity;
+                $count++;
+            }
+        }
+        $data = $data->map(function ($d) {
+            $d->formatted_quantity = number_format(floatval(str_replace(['.', ','], ['', '.'], $d->quantity)), 0, ',', '.');
+            return $d;
+        });
+        // dd($totalQuantity);
+
+
+        $query = DB::table('stock_jts')
+            ->select('stock_jts.*')
+            ->join('users', 'stock_jts.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            }
+        }
         if (!empty($tahun)) {
             $query->whereBetween('stock_jts.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
 
         $data = $query->get();
-        $planNominalsj = $data->sum(function ($p) {
+
+        $planNominal = $data->sum(function ($p) {
             return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
         });
+
         $data->transform(function ($item) {
             $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
             return $item;
@@ -826,34 +870,51 @@ class ReportController extends Controller
         $data->each(function ($item) {
             $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
         });
-        //  dd($data);
-        $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
-        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
 
+        $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+
+        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
         $akumulasi = $stokAwal;
 
-        $data->map(function ($stock, $index) use (&$akumulasi, &$stock_akhir) {
+
+        $akumulasiStokMasuk = $data->where('date', '<=',)->sum(function ($item) {
+            return floatval($item->sotckawal) + floatval($item->totalhauling);
+        });
+        $akumulasiStokMasuk = 0;
+        $data->each(function ($stock, $index) use ($akumulasiStokMasuk) {
             $stock->sotckawal = floatval($stock->sotckawal ?? 0);
             $stock->totalhauling = floatval($stock->totalhauling ?? 0);
             $stock->stockout = floatval($stock->stockout ?? 0);
+
             if ($index === 0) {
-                $akumulasi = $stock->sotckawal;
+                $akumulasiStokMasuk = $stock->sotckawal;
             }
-            $akumulasi += $stock->totalhauling;
-            $stock->akumulasi_stock = $akumulasi;
-            $akumulasi -= $stock->stockout;
-            $stock->stock_akhir = $akumulasi;
-            $stock_akhir = $stock->stock_akhir;
-            return $stock;
+
+                $akumulasiStokMasuk += $stock->totalhauling;
+
+            $stock->akumulasi_stock = $akumulasiStokMasuk;
         });
-        $grandTotal = optional($data->last())->stock_akhir ?? 0;
-        $indexstockjetty = $planNominalsj ? round(($grandTotal / $planNominalsj) * 100, 2) : 0;
+
+        $prevStockAkhir = 0;
+        $totalStockOut = 0; // Variabel untuk menyimpan total stockout
+
+        $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut) {
+            $stock->sotckawal = $stock->sotckawal > 0 ? $stock->sotckawal : $prevStockAkhir;
+
+            $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;
+
+            $totalStockOut += $stock->stockout;
+
+            $prevStockAkhir = $stock->stock_akhir;
+        });
+
+        // dd($totalStockOut);
 
 
-
-
-
-
+        // dd($data->toArray());
+        $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
+        $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
+        // dd($grandTotalstockakhir);
 
         return view('pt.report', compact(
             //lavarge
@@ -883,8 +944,8 @@ class ReportController extends Controller
             'companyId',
             //stock jetty
             'grandTotal',
-            'planNominalsj',
-            'indexstockjetty',
+            'grandTotalstockakhir',
+            // 'indexstockjetty',
             //cs perspect
             'totalresultcostumer',
             //financial weight & index 

@@ -37,9 +37,9 @@ class StockJtController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('stock_jts.date', [$startDate, $endDate]);
         }
 
@@ -109,7 +109,7 @@ if ($startDate && $endDate) {
 
         $percen = ($planNominal != 0) ? ($stock_akhir / $planNominal) * 100 : 0;
         $grandTotal = optional($data->last())->stock_akhir ?? 0;
-        return view('stockjt.indexmenu', compact('data', 'akumulasiStokMasuk','totalHauling', 'grandTotal', 'perusahaans', 'companyId', 'planNominal', 'deviasi', 'percen'));
+        return view('stockjt.indexmenu', compact('data', 'akumulasiStokMasuk', 'totalHauling', 'grandTotal', 'perusahaans', 'companyId', 'planNominal', 'deviasi', 'percen'));
     }
 
 
@@ -137,9 +137,9 @@ if ($startDate && $endDate) {
         }
 
         // Filter berdasarkan tanggal jika ada input
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
         }
 
@@ -176,9 +176,9 @@ if ($startDate && $endDate) {
             }
         }
 
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('stock_jts.date', [$startDate, $endDate])
                 ->orderBy('stock_jts.date', 'asc');
         }
@@ -463,9 +463,9 @@ if ($startDate && $endDate) {
                 $query->whereRaw('users.id_company', $companyId); // Mencegah admin melihat semua data secara default
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]);
         }
 

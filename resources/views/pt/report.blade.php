@@ -565,11 +565,11 @@
                                     </tr>
                                     <tr>
                                         <td>Index</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">0%</td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">0%</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -680,28 +680,14 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td>{{ number_format($planNominalsj, 2) }}</td>
+                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td>{{ number_format($grandTotal, 2) }}</td>
+                                        <td>{{ number_format($grandTotalstockakhir, 2) }}</td>
                                     </tr>
-                                    <tr>
-                                        <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
-                                            @if ($indexstockjetty<= 75)
-                                            background-color: black; color: white;
-                                            @elseif ($indexstockjetty> 75 && $indexstockjetty<= 90)
-                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
-                                            @elseif ($indexstockjetty> 90 && $indexstockjetty<= 100)
-                                            background-color: yellow; color: black; /* Kuning */
-                                            @elseif ($indexstockjetty> 100 && $indexstockjetty<= 190)
-                                            background-color: green; color: white; /* Hijau */
-                                            @elseif ($indexstockjetty> 190 )
-                                            background-color: blue; color: white; /* Hijau */
-                                            @endif">
-                                            {{ $indexstockjetty }}%
-                                        </td>
+                                    <tr >
+                                        <td style="text-align: start;">Index</td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
@@ -747,7 +733,7 @@
                                     <tr>
                                         <td>Weight</td>
                                         <td class="text-end" style=" vertical-align: middle; color: white;">
-                                            5,00%
+                                            %
                                         </td>
                                     </tr>
                                 </tbody>

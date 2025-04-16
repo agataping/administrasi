@@ -34,9 +34,6 @@
     </ul>
 </div>
 @endif
-
-
-                @endif
                 <div class="row">
                     <div class="col-sm-">
                         <a href="/formpicadeadline" class="btn btn-custom">Add data </a>

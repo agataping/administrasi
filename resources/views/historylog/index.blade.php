@@ -36,9 +36,6 @@
 @endif
 
 
-                @endif
-
-
                 <form method="GET" action="{{ route('historylog') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div>
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
