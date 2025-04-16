@@ -344,17 +344,17 @@
                                     <tr>
                                         <td>Index</td>
                                         <td style="vertical-align: middle; 
-                                            @if ($indexoperasionalpmg<= 75)
+                                            @if ($indexprofitmg<= 75)
                                                             background-color: black; color: white;
-                                            @elseif ($indexoperasionalpmg> 75 && $indexoperasionalpmg<= 90)
+                                            @elseif ($indexprofitmg> 75 && $indexprofitmg<= 90)
                                                             background-color: rgb(206, 24, 24); color: white; /* Merah */
-                                                            @elseif ($indexoperasionalpmg> 90 && $indexoperasionalpmg<= 100)
+                                                            @elseif ($indexprofitmg> 90 && $indexprofitmg<= 100)
                                             background-color: yellow; color: black; /* Kuning */
-                                            @elseif ($indexoperasionalpmg> 100 && $indexoperasionalpmg<= 190)
+                                            @elseif ($indexprofitmg> 100 && $indexprofitmg<= 190)
                                             background-color: green; color: white; /* Hijau */
-                                            @elseif ($indexoperasionalpmg> 190 )
+                                            @elseif ($indexprofitmg> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">{{ number_format($indexoperasionalpmg, 2) }}%
+                                            @endif">{{ number_format($indexprofitmg, 2) }}%
                                         </td>
                                     </tr>
                                     <tr>

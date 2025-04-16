@@ -117,7 +117,9 @@ class ReportController extends Controller
             }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
         $totalplanliabiliti = $liabilititotal['credit'] - $liabilititotal['debit'];
-        $totalactualliabiliti = $liabilititotal['credit_actual'] - $liabilititotal['debit_actual'];
+        // $totalactualliabiliti =  $liabilititotal['debit_actual']-$liabilititotal['credit_actual'] ;
+        $totalactualliabiliti = abs($liabilititotal['credit_actual'] - $liabilititotal['debit_actual']);
+
 
         $equitytotal = (clone $query)
             ->where('jenis_neracas.name', 'EQUITY')
@@ -133,7 +135,7 @@ class ReportController extends Controller
         $totalplanequity = abs($equitytotal['credit'] - $equitytotal['debit']);
         $totalactualequity = abs($equitytotal['credit_actual'] - $equitytotal['debit_actual']);
         $totalplanmodalhutang = abs($totalplanliabiliti + $totalplanequity); //plan
-        $totalactualmodalhutang = abs($totalactualliabiliti + $totalactualequity); //actual
+        $totalactualmodalhutang = $totalactualliabiliti + $totalactualequity; //actual
         $actuallavarge = $totalactualequity ? round(($totalactualliabiliti / $totalactualequity) * 100, 2) : 0;
         $planlavarge = $totalactualequity ? round(($totalplanliabiliti / $totalplanequity) * 100, 2) : 0;
 
@@ -270,8 +272,7 @@ class ReportController extends Controller
             ->where('jenis_labarugis.name', 'Net Profit')
             ->get()
             ->reduce(function ($carry, $item) {
-                $nominal = floatval($item->nominalplan);
-
+                $nominal = floatval(str_replace(',', '', $item->nominalplan));
                 if (is_null($carry)) {
                     return $nominal;
                 }
@@ -279,14 +280,15 @@ class ReportController extends Controller
                 return $carry - $nominal;
             });
 
+
         $totalactualnetprofit = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
             ->get()
             ->reduce(function ($carry, $item) {
-                $nominal = floatval($item->nominalactual);
+                $nominal = floatval(str_replace(',', '', $item->nominalactual));
 
                 if (is_null($carry)) {
-                    return $nominal; // item pertama sebagai nilai awal
+                    return $nominal;
                 }
 
                 return $carry - $nominal;
@@ -349,32 +351,60 @@ class ReportController extends Controller
         }
         //kpi jtn & pengukuran 
         //total ongkosplan dan ongkos actual financial
-        $ongkosactual = $totalRevenuea + $totalactualcogas + $totallkactual + $totactualsalary
-            + $totactualscsr + $actualoperasional + $totalactualOp + $actuallb + $totalactualasset + $totalactualmodalhutang;
+        $ongkosactual = $totalRevenuea + $totalactualcogas + $totalactuallr + $totactualsalary
+            + $totactualscsr + $actualoperasional + $totalactualOp + $totalactualnetprofit + $totalactualasset + $totalactualmodalhutang;
+            // dd([
+            //     'totalRevenuea' => $totalRevenuea,
+            //     'totalactualcogas' => $totalactualcogas,
+            //     'totallkactual' => $totalactuallr,
+            //     'totactualsalary' => $totactualsalary,
+            //     'totactualscsr' => $totactualscsr,
+            //     'actualoperasional' => $actualoperasional,
+            //     'totalactualOp' => $totalactualOp,
+            //     'actuallb' => $totalactualnetprofit,
+            //     'totalactualasset' => $totalactualasset,
+            //     'totalactualmodalhutang' => $totalactualmodalhutang,$totalactualliabiliti,$totalactualequity,
+            //     'ongkosactual (total semua)' => $ongkosactual,
+            // ]);
+            
         // (total seluruh plan) yang belum - Return On Assets - Return On Equity 
-        $ongkosplan = $totalRevenuep + $totalplancogas + $totallkplan +
-            $totplansalary + $totplanscsr + $planoperasional + $totalplanlp + $planlb + $totalplanmodalhutang + $totalplanequity;  // (total seluruh plan) yang belum - Return On Assets - Return On Equity */
-
-
+        $ongkosplan = $totalRevenuep + $totalplancogas + $totalplanlr +
+            $totplansalary + $totplanscsr + $planoperasional + $totalplanlp + $totalnetprofitplan + $totalplanasset +$totalplanmodalhutang ;  // (total seluruh plan) yang belum - Return On Assets - Return On Equity */
+            // dd([
+            //     'totalRevenuep' => $totalRevenuep,
+            //     'totalplancogas' => $totalplancogas,
+            //     'totallkplan' => $totalplanlr,
+            //     'totplansalary' => $totplansalary,
+            //     'totplanscsr' => $totplanscsr,
+            //     'planoperasional' => $planoperasional,
+            //     'totalplanlp' => $totalplanlp,
+            //     'planlb' => $totalnetprofitplan,
+            //     'roa' => $totalplanasset,
+            //     'totalplanmodalhutang' => $totalplanmodalhutang,
+            //     'ongkosplan (total semua)' => $ongkosplan,
+            // ]);
+            
         // Perhitungan persen revenue dan weight (plan)
 
         $planreturnonasset = ($totalplanasset != 0) ? round(($totalnetprofitplan / $totalplanasset) * 100, 2) : 0;/* asset*/
         $persenassetplan = ($ongkosplan != 0) ? round(($totalplanasset / $ongkosplan) * 100, 2) : 0;/* asset*/
         $weightasset = round(($persenassetplan / 35.00) * 100, 2);
-        // dd( $weightasset,$persenassetplan);
+        // dd( $weightasset,$totalplanasset,$ongkosplan,$persenassetplan);
 
+        
         $persenreturnonequity = ($totalplanmodalhutang != 0) ? round(($totalnetprofitplan / $totalplanmodalhutang) * 100, 2) : 0;/* libili equaity*/
         $persenmodalhutangplan = ($ongkosplan != 0) ? round(($totalplanmodalhutang / $ongkosplan) * 100, 2) : 0;/* asset*/
-        // dd( $weightasset,$persenassetplan);
-
         $weightmodalhutang = round(($persenmodalhutangplan / 35.00) * 100, 2);
+        // dd( $weightmodalhutang,$persenmodalhutangplan,$ongkosplan,$totalplanmodalhutang);
 
         $persenrevenue = ($ongkosplan != 0) ? round(($totalRevenuep / $ongkosplan) * 100, 2) : 0;/* revenue*/
         $weightrevenue = round(($persenrevenue / 35.00) * 100, 2);
         $persencogs = ($ongkosplan != 0) ? round(($totalplancogas / $ongkosplan) * 100, 2) : 0;/* cogs*/
         $weightcogs = round(($persencogs / 35.00) * 100, 2);
-        $persenprofitmargin = ($ongkosplan != 0) ? round(($totallkplan / $ongkosplan) * 100, 2) : 0;/* profit margin*/
+        $persenprofitmargin = ($ongkosplan != 0) ? round(($totalplanlr / $ongkosplan) * 100, 2) : 0;/* profit margin*/
         $weightprofitmargin = round(($persenprofitmargin / 35.00) * 100, 2);
+                // dd( $weightprofitmargin,$persenprofitmargin,$ongkosplan,$totalplanlr);
+
         $persencostemploye = ($ongkosplan != 0) ? round(($totplansalary / $ongkosplan) * 100, 2) : 0;/* saleri cost employe*/
         $weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
         $persencsr = ($ongkosplan != 0) ? round(($totplanscsr / $ongkosplan) * 100, 2) : 0;/* csr*/
@@ -383,20 +413,22 @@ class ReportController extends Controller
         $weightopratingcost = round(($persenopratingcost / 35.00) * 100, 2);
         $persenoperatingprofitmargin = ($ongkosplan != 0) ? round(($totalplanlp / $ongkosplan) * 100, 2) : 0;/* opersional profit mg*/
         $weightopratingmg = round(($persenoperatingprofitmargin / 35.00) * 100, 2);
-        $persennetprofitmargin = ($ongkosplan != 0) ? round(($planlb / $ongkosplan) * 100, 2) : 0;/*net profit*/
+        $persennetprofitmargin = ($ongkosplan != 0) ? round(($totalnetprofitplan / $ongkosplan) * 100, 2) : 0;/*net profit*/
         $weightnetprofitmargin = round(($persennetprofitmargin / 35.00) * 100, 2);
 
         // Perhitungan persen actual dan index result (index * weight)
         $actualreturnonasset = ($ongkosactual != 0) ? round(($totalactualasset / $ongkosactual) * 100, 2) : 0;/* asset*/
         $persenactualasset = ($totalactualasset != 0) ? round(($totalactualnetprofit / $totalactualasset) * 100, 2) : 0;/* asset*/
         $indexactualasset = ($actualreturnonasset != 0) ? round(($persenassetplan / $actualreturnonasset) * 100, 2) : 0;
+                // dd( $actualreturnonasset,$indexactualasset,$ongkosactual,$totalactualasset);
 
         $resultasset = round($indexactualasset * ($weightasset / 100), 2);
         $actualreturnonequaity = ($ongkosactual != 0) ? round(($totalactualmodalhutang / $ongkosactual) * 100, 2) : 0;/* liabiliti equity*/
         $persenactualmodalhutang = ($totalactualequity != 0) ? round(($totalactualnetprofit / $totalactualequity) * 100, 2) : 0;/* liabiliti equity*/
 
-        $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity / $persenmodalhutangplan) * 100, 2) : 0;
+        $indexmodalhutangactual = ($actualreturnonequaity != 0) ? round(($persenmodalhutangplan/$actualreturnonequaity  ) * 100, 2) : 0;
         // $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity / $persenmodalhutangplan) * 100, 2) : 0;
+                // dd( $indexmodalhutangactual,$persenmodalhutangplan,$actualreturnonequaity,$persenmodalhutangplan);
 
         // dd($indexmodalhutangactual,$actualreturnonequaity,$persenmodalhutangplan);
         $resultequity = round($indexmodalhutangactual * ($weightmodalhutang / 100), 2);
@@ -407,8 +439,10 @@ class ReportController extends Controller
         $persenactualcogs = ($ongkosactual != 0) ? round(($totalactualcogas / $ongkosactual) * 100, 2) : 0;/* cogs*/
         $indexcogs = ($persencogs != 0) ? round(($persenactualcogs / $persencogs) * 100, 2) : 0;
         $resultcogs = round($indexcogs * ($weightcogs / 100), 2);
-        $persenactualprofitmg = ($ongkosactual != 0) ? round(($totallkactual / $ongkosactual) * 100, 2) : 0;/* profit margin*/
+        $persenactualprofitmg = ($ongkosactual != 0) ? round(($totalactuallr / $ongkosactual) * 100, 2) : 0;/* profit margin*/
         $indexprofitmg = ($persenprofitmargin != 0) ? round(($persenactualprofitmg / $persenprofitmargin) * 100, 2) : 0;
+                // dd($totalactuallr,$indexprofitmg,$persenprofitmargin,$persenactualprofitmg,$totalRevenuep,$ongkosplan);
+
         $resultoperatingpm = round($indexprofitmg * ($weightprofitmargin / 100), 2);
         $pserenactualcostemploye = ($ongkosactual != 0) ? round(($totactualsalary / $ongkosactual) * 100, 2) : 0;/* saleri cost employe*/
         $indexcostemlpoye = ($persencostemploye != 0) ? round(($pserenactualcostemploye / $persencostemploye) * 100, 2) : 0;
@@ -890,7 +924,7 @@ class ReportController extends Controller
                 $akumulasiStokMasuk = $stock->sotckawal;
             }
 
-                $akumulasiStokMasuk += $stock->totalhauling;
+            $akumulasiStokMasuk += $stock->totalhauling;
 
             $stock->akumulasi_stock = $akumulasiStokMasuk;
         });

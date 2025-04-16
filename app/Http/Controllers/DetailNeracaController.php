@@ -163,9 +163,10 @@ if ($startDate && $endDate) {
                     $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
                     return $totals;
                 }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
-
+                // dd($liabilititotal);
             $totalplanliabiliti = $liabilititotal['credit'] - $liabilititotal['debit'];
-            $totalactualliabiliti = $liabilititotal['credit_actual'] - $liabilititotal['debit_actual'];
+            // $totalactualliabiliti = $liabilititotal['debit_actual']  - $liabilititotal ['credit_actual'];
+            $totalactualliabiliti = abs($liabilititotal['credit_actual'] - $liabilititotal['debit_actual']);
 
             $equitytotal = (clone $query)
                 ->where('jenis_neracas.name', 'EQUITY')

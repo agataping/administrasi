@@ -14,6 +14,7 @@ use App\Models\subkategoriLabarugi;
 use App\Models\PicalabaRugi;
 use App\Models\HistoryLog;
 use Carbon\Carbon;
+
 class DetailabarugiController extends Controller
 {
     //detail
@@ -54,12 +55,12 @@ class DetailabarugiController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
             $startDateFormatted = Carbon::parse($startDate)->startOfDay();
             $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+
             $query->whereBetween('detailabarugis.tanggal', [$startDateFormatted, $endDateFormatted]);
         }
         // $query->orderBy('detailabarugis.tanggal', 'asc');
@@ -128,7 +129,7 @@ if ($startDate && $endDate) {
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
-            // dd($actualoperasional);
+        // dd($actualoperasional);
 
         //lababersih
         $planlb = (clone $query)
@@ -137,7 +138,7 @@ if ($startDate && $endDate) {
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
-            // dd($planlb );
+        // dd($planlb );
 
         $actuallb = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
@@ -148,63 +149,68 @@ if ($startDate && $endDate) {
         // dd($actuallb );
 
         // $totalnetprofitplan = (clone $query)
-        //     ->where('jenis_labarugis.name', 'Net Profit')
-        //     ->get()
-        //     ->map(function ($item) {
-        //         return (float) str_replace(',', '', $item->nominalplan ?? 0);
-        //     })
-        //     ->values()
-        //     ->reduce(function ($carry, $nominal, $index) {
-        //         return $index === 0 ? $nominal : $carry - $nominal;
-        //     });
-        $totalnetprofitplan = (clone $query)
-        ->where('jenis_labarugis.name', 'Net Profit')
-        ->get()
-        ->reduce(function ($carry, $item) {
-            $nominal = floatval($item->nominalplan);
-    
-            if (is_null($carry)) {
-                return $nominal; 
-            }
-    
-            return $carry - $nominal;
-        });
+        // ->where('jenis_labarugis.name', 'Net Profit')
+        // ->get()
+        // ->reduce(function ($carry, $item) {
+        //     $nominal = floatval($item->nominalplan);
 
-            $totalactualnetprofit = (clone $query)
+        //     if (is_null($carry)) {
+        //         return $nominal; 
+        //     }
+
+        //     return $carry - $nominal;
+        // });
+        $totalnetprofitplan = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
+            ->orderBy('id') // tetap aman pakai orderBy
             ->get()
             ->reduce(function ($carry, $item) {
-                $nominal = floatval($item->nominalactual);
-        
+                $nominal = floatval(str_replace(',', '', $item->nominalplan)); 
                 if (is_null($carry)) {
-                    return $nominal; // item pertama sebagai nilai awal
+                    return $nominal;
                 }
-        
+
                 return $carry - $nominal;
             });
-        
+
+
+        $totalactualnetprofit = (clone $query)
+            ->where('jenis_labarugis.name', 'Net Profit')
+            ->orderBy('id') 
+            ->get()
+            ->reduce(function ($carry, $item) {
+                $nominal = floatval(str_replace(',', '', $item->nominalactual)); 
+
+                if (is_null($carry)) {
+                    return $nominal;
+                }
+
+                return $carry - $nominal;
+            });
+
+
         // dd($totalnetprofitplan, $totalactualnetprofit);
 
 
         //laba rugi 
         $totalplanlr = $totalRevenuep - $totallkplan;
         $totalactuallr = $totalRevenuea - $totallkactual;
-        $totalvertikal = ($totalRevenuep && $totalRevenuep != 0) ? round(($totalplanlr / $totalRevenuep) * 100 , 2) : 0;
-        $totalvertikals = ($totalRevenuea) ? round(($totalactuallr / $totalRevenuea) * 100 , 2) : 0;
+        $totalvertikal = ($totalRevenuep && $totalRevenuep != 0) ? round(($totalplanlr / $totalRevenuep) * 100, 2) : 0;
+        $totalvertikals = ($totalRevenuea) ? round(($totalactuallr / $totalRevenuea) * 100, 2) : 0;
         $deviasilr = $totalplanlr - $totalactuallr;
-        $persenlr = ($totalplanlr) ? round(($totalactuallr / $totalplanlr) * 100 , 2) : 0;
+        $persenlr = ($totalplanlr) ? round(($totalactuallr / $totalplanlr) * 100, 2) : 0;
         //operasional
         $totalplanlp = $totalplanlr - $planoperasional;
         $totalactualOp = $totalactuallr - $actualoperasional;
-        $verticallp = ($totalRevenuep) ? round(($totalplanlp / $totalRevenuep) * 100 , 2) : 0;
-        $verticalsp = ($totalRevenuea) ? round(($totalactualOp / $totalRevenuea) * 100 , 2) : 0;
+        $verticallp = ($totalRevenuep) ? round(($totalplanlp / $totalRevenuep) * 100, 2) : 0;
+        $verticalsp = ($totalRevenuea) ? round(($totalactualOp / $totalRevenuea) * 100, 2) : 0;
         $deviasiop = $totalplanlp - $totalactualOp;
-        $persenop = ($totalplanlp) ? round(($totalactualOp / $totalplanlp) * 100 , 2) : 0;
-        $vertikalplanop = ($totalRevenuep && $totalRevenuep != 0) ? round (($planoperasional / $totalRevenuep) * 100, 2) : 0;
+        $persenop = ($totalplanlp) ? round(($totalactualOp / $totalplanlp) * 100, 2) : 0;
+        $vertikalplanop = ($totalRevenuep && $totalRevenuep != 0) ? round(($planoperasional / $totalRevenuep) * 100, 2) : 0;
         $vertikalactualop = ($totalRevenuea && $totalRevenuea != 0) ? round(($actualoperasional / $totalRevenuea) * 100, 2) : 0;
-                // dd($vertikalactualop, $verticalsp,$actualoperasional,$totalRevenuep);
+        // dd($vertikalactualop, $verticalsp,$actualoperasional,$totalRevenuep);
         $deviasitotalgeneral = $planoperasional - $actualoperasional;
-        $persengeneralop = ($planoperasional) ? round(($actualoperasional / $planoperasional) * 100 , 2) : 0;
+        $persengeneralop = ($planoperasional) ? round(($actualoperasional / $planoperasional) * 100, 2) : 0;
 
         //lababersih
         // $totalplanlb = $totalplanlp - $planlb;
@@ -212,12 +218,12 @@ if ($startDate && $endDate) {
         // dd($totalplanlb,$totalplanlp,$planlb );
 
         $totalactuallb = $actualoperasional - $actuallb;
-        $verticallb = ($totalRevenuep) ? round(($totalplanlb / $totalRevenuep) * 100 , 2) : 0;
-        $verticalslb = ($totalRevenuea) ? round(($totalactuallb / $totalRevenuea) * 100 , 2) : 0;
+        $verticallb = ($totalRevenuep) ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0;
+        $verticalslb = ($totalRevenuea) ? round(($totalactuallb / $totalRevenuea) * 100, 2) : 0;
         $deviasilb = $totalplanlb - $totalactuallb;
-        $persenlb = ($totalplanlb) ? round(($totalactuallb / $totalplanlb) * 100 , 2) : 0;
-        $vertikalplanetprofit=($totalRevenuep) ? round(($totalnetprofitplan / $totalRevenuep) * 100 , 2) : 0;
-        $vertalactualnetprofit=($totalRevenuea) ? round(($totalactualnetprofit / $totalRevenuea) * 100 , 2) : 0;
+        $persenlb = ($totalplanlb) ? round(($totalactuallb / $totalplanlb) * 100, 2) : 0;
+        $vertikalplanetprofit = ($totalRevenuep) ? round(($totalnetprofitplan / $totalRevenuep) * 100, 2) : 0;
+        $vertalactualnetprofit = ($totalRevenuea) ? round(($totalactualnetprofit / $totalRevenuea) * 100, 2) : 0;
         // dd($vertalactualnetprofit,$totalactualnetprofit,$vertikalplanetprofit, $totalactuallb, $verticallb, $verticalslb, $persenlb);
 
         if ($totalRevenuea === 0 || !$totalRevenuea) {
@@ -247,9 +253,9 @@ if ($startDate && $endDate) {
                     $categoryTotalActual += $totalActual;
 
                     $deviation = $totalPlan - $totalActual;
-                    $percentage = ($totalPlan != 0) ? round(($totalActual / $totalPlan) * 100 ,2):0;
-                    $vertikalanalisis = $totalRevenuep ? round (($totalPlan / $totalRevenuep) * 100 ,2):0;
-                    $vertikalanalisiss = $totalRevenuea ? round (($totalPlan / $totalRevenuea) * 100,2):0;
+                    $percentage = ($totalPlan != 0) ? round(($totalActual / $totalPlan) * 100, 2) : 0;
+                    $vertikalanalisis = $totalRevenuep ? round(($totalPlan / $totalRevenuep) * 100, 2) : 0;
+                    $vertikalanalisiss = $totalRevenuea ? round(($totalPlan / $totalRevenuea) * 100, 2) : 0;
                     // dd($categoryTotalPlan, $totalActual, $deviation,$totalPlan,$categoryTotalActual);
 
                     return [
@@ -276,10 +282,10 @@ if ($startDate && $endDate) {
                     'total_plan' => $categoryTotalPlan,
                     'total_actual' => $categoryTotalActual,
                     'deviation' => $categoryTotalPlan - $categoryTotalActual,
-                    'vertikal' => ($totalRevenuep) ? round(($categoryTotalPlan / $totalRevenuep) * 100 ,2):0,
-                    'vertikals' => ($totalRevenuea) ? round(($categoryTotalActual / $totalRevenuea) * 100 ,2):0,
+                    'vertikal' => ($totalRevenuep) ? round(($categoryTotalPlan / $totalRevenuep) * 100, 2) : 0,
+                    'vertikals' => ($totalRevenuea) ? round(($categoryTotalActual / $totalRevenuea) * 100, 2) : 0,
                     // 'percentage' => $percentage,
-                    'percen' => ($categoryTotalPlan > 0) ? round ((($categoryTotalPlan - $categoryTotalActual) / $categoryTotalPlan) * 100 ,2):0,
+                    'percen' => ($categoryTotalPlan > 0) ? round((($categoryTotalPlan - $categoryTotalActual) / $categoryTotalPlan) * 100, 2) : 0,
 
                 ];
             });
@@ -292,7 +298,9 @@ if ($startDate && $endDate) {
 
 
         return view('labarugi.index', compact(
-            'totalactualnetprofit','vertikalplanetprofit','vertalactualnetprofit',
+            'totalactualnetprofit',
+            'vertikalplanetprofit',
+            'vertalactualnetprofit',
             'totalnetprofitplan',
             'totals',
             'totalplanlr',
@@ -553,9 +561,9 @@ if ($startDate && $endDate) {
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]);
         }
 
