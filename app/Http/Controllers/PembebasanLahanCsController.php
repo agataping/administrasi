@@ -46,7 +46,7 @@ class PembebasanLahanCsController extends Controller
         $validatedData['created_by'] = auth()->user()->username;
         PembebasanLahanCs::create($validatedData);
 
-        return redirect('/indexPembebasanLahanCs')->with('success', 'data berhasil disimpan.');
+        return redirect('/indexPembebasanLahanCs')->with('success', 'Data saved successfully..');
 
     }
 
@@ -75,7 +75,7 @@ class PembebasanLahanCsController extends Controller
 
         $PembebasanLahanCs = PembebasanLahanCs::findOrFail($id);
         $PembebasanLahanCs->update($validatedData);
-        return redirect('/indexPembebasanLahanCs')->with('success', 'data berhasil disimpan.');
+        return redirect('/indexPembebasanLahanCs')->with('success', 'Data saved successfully..');
 
     }
 

@@ -237,15 +237,7 @@ if ($startDate && $endDate) {
             $validatedData['fileplan'] = $filePlanPath;
         }
 
-        function convertToCorrectNumber($value)
-        {
-            if ($value === '' || $value === null) {
-                return 0; // Jika kosong, set ke 0
-            }
-            $value = str_replace('.', '', $value);  // Hapus titik pemisah ribuan
-            $value = str_replace(',', '.', $value); // Ubah koma desimal ke titik (format internasional)
-            return floatval($value); // Pastikan menjadi angka
-        }
+
 
 
         $validatedData['debit'] = convertToCorrectNumber($validatedData['debit']);
@@ -334,7 +326,7 @@ if ($startDate && $endDate) {
             'old_data' => json_encode($oldData),
             'new_data' => json_encode($validatedData),
         ]);
-        return redirect('/indexfinancial')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indexfinancial')->with('success', 'Data saved successfully..');
     }
 
     //categori
@@ -421,7 +413,7 @@ if ($startDate && $endDate) {
             'old_data' => json_encode($oldData),
             'new_data' => json_encode($validatedData),
         ]);
-        return redirect('/indexfinancial')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indexfinancial')->with('success', 'Data saved successfully..');
     }
     public function deltecategoryneraca($id)
     {
@@ -529,7 +521,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
         ]);
 
-        return redirect('/indexfinancial')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indexfinancial')->with('success', 'Data saved successfully..');
     }
 
     public function deletefinancial($id)

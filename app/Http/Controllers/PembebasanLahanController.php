@@ -123,7 +123,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indexPembebasanLahan')->with('success', 'data berhasil disimpan.');
+        return redirect('/indexPembebasanLahan')->with('success', 'Data saved successfully..');
     }
     public function deletepembebasanlahan($id)
     {
@@ -246,7 +246,7 @@ if ($startDate && $endDate) {
             'user_id' => auth()->id(),
         ]);
 
-        return redirect('/picapl')->with('success', 'data berhasil disimpan.');
+        return redirect('/picapl')->with('success', 'Data saved successfully..');
     }
 
     public function deletepicapl($id)

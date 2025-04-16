@@ -572,7 +572,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/picaobc')->with('success', 'Data berhasil disimpan.');
+        return redirect('/picaobc')->with('success', 'Data saved successfully..');
     }
 
     public function deletepicaobc ($id)

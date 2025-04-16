@@ -4,6 +4,67 @@
 @section('title', 'Balence sheet')
 @section('content')
 
+
+{{-- Success Notification --}}
+@if (session('success'))
+<div id="notif-success" style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #28a745;
+                
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                z-index: 9999;
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                transition: opacity 0.5s ease;
+                ">
+    {{ session('success') }}
+</div>
+@endif
+
+{{-- Error Notification --}}
+@if ($errors->any())
+<div id="notif-error" style="
+                position: fixed;
+                top: 60px; /* Biar nggak nabrak success */
+                right: 20px;
+                background-color: #dc3545;
+                
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                z-index: 9999;
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                transition: opacity 0.5s ease;
+                ">
+    <ul style="margin: 0; padding-left: 20px;">
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
+
+{{-- Script untuk menghilangkan notifikasi --}}
+<script>
+    setTimeout(function() {
+        let notifSuccess = document.getElementById("notif-success");
+        let notifError = document.getElementById("notif-error");
+
+        if (notifSuccess) {
+            notifSuccess.style.opacity = '0';
+            setTimeout(() => notifSuccess.remove(), 500);
+        }
+
+        if (notifError) {
+            notifError.style.opacity = '0';
+            setTimeout(() => notifError.remove(), 500);
+        }
+    }, 3000);
+</script>
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-2">
@@ -11,22 +72,7 @@
         <div class="card-body">
             <div class="col-12">
                 <h3 class="mb-3">Balance sheet</h3>
-                @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-                @endif
 
-                @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-
-                @endif
                 <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('categoryneraca') }}" method="get">
@@ -114,11 +160,14 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                $loopnumber = 1;
+                                @endphp
                                 @foreach ($data as $jenis_name => $categories)
                                 @foreach ($categories as $category => $sub_categories)
 
                                 <tr>
-                                    <th style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                                    <th style="vertical-align: middle;">{{ $loopnumber }}</th>
                                     <td colspan="" class=""><strong>{{ $category }}</strong></td>
                                     <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['debit'] ?? 0, 2) }}</strong></td>
                                     <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['credit'] ?? 0, 2) }}</strong></td>
@@ -133,10 +182,13 @@
                                         </form>
                                     </td>
                                 </tr>
+                                @php
+                                $loopnumber++;
+                                @endphp
                                 @foreach ($sub_categories as $sub_category => $details)
                                 <tr data-bs-toggle="collapse" data-bs-target="#detail-{{ Str::slug($details->first()->sub_category, '-') }}" style="cursor: pointer;">
 
-                                    <td>{{ $loop->parent->iteration ?? 0 }}.{{ $loop->iteration }}</td>
+                                    <td>{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</td>
                                     <td colspan="">
                                         {{ $sub_category }}
 
@@ -164,7 +216,7 @@
                                     </td>
                                 </tr>
                                 <tr id="detail-{{ Str::slug($details->first()->sub_category, '-') }}" class="d-none">
-                                    <td colspan="11">
+                                    <td colspan="9">
                                         <table class="table table-bordered">
                                             @foreach ($details as $detail)
                                             <tr>
@@ -230,11 +282,11 @@
                                     <th colspan="2">{{ number_format($totalactualcurrentasset, 2) }}</th>
                                     <th colspan="3"></th>
                                 </tr>
-                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;"">
+                                <tr style="color:black; background-color:rgb(244, 244, 244);"">
                                     <th colspan=" 2">Total Assets</th>
-                                    <th colspan="2">{{ number_format($totalplanasset, 2) }}</th>
+                                    <th colspan="2" style="text-align: end;">{{ number_format($totalplanasset, 2) }}</th>
                                     <th></th>
-                                    <th colspan="2">{{ number_format($totalactualasset, 2) }}</th>
+                                    <th colspan="2" style="text-align: end;">{{ number_format($totalactualasset, 2) }}</th>
                                     <th colspan="3"></th>
                                 </tr>
 
@@ -337,10 +389,12 @@
         }
     }
 
-    {{-- resources/views/components/script.blade.php --}}
+    {
+        {
+            --resources / views / components / script.blade.php--
+        }
+    }
     console.log("Script file is loaded!");
-
-
 </script>
 
 @endsection

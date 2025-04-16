@@ -108,7 +108,7 @@ class DetailIsiSuratController extends Controller
         ]);
 
 
-        return redirect('/index')->with('success', 'Surat berhasil disimpan.');
+        return redirect('/index')->with('success', 'Data saved successfully.');
     }
 
     //hapus data

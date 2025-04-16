@@ -35,23 +35,23 @@
     let tr = table.getElementsByTagName("tr");
 
     for (let i = 1; i < tr.length; i++) {
-        let td = tr[i].getElementsByTagName("td");
-        let rowVisible = false;
+      let td = tr[i].getElementsByTagName("td");
+      let rowVisible = false;
 
-        for (let j = 0; j < td.length; j++) {
-            if (td[j]) {
-                let txtValue = td[j].textContent || td[j].innerText;
-                console.log("Checking:", txtValue); // Debugging
-                if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                    rowVisible = true;
-                    break;
-                }
-            }
+      for (let j = 0; j < td.length; j++) {
+        if (td[j]) {
+          let txtValue = td[j].textContent || td[j].innerText;
+          console.log("Checking:", txtValue); // Debugging
+          if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            rowVisible = true;
+            break;
+          }
         }
+      }
 
-        tr[i].style.display = rowVisible ? "" : "none";
+      tr[i].style.display = rowVisible ? "" : "none";
     }
-}
+  }
 
   //select option serach
   $(document).ready(function() {

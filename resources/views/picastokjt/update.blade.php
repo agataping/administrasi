@@ -11,21 +11,68 @@
                 <a href="/picastockjt" class=" text-decoration-none " style="color: black;">
                     <h3 class="mb-3">Update Data PICA Stock Jetty</h3>
                 </a>
-                @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-                @endif
 
-                @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
+{{-- Success Notification --}}
+@if (session('success'))
+<div id="notif-success" style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #28a745;
+                
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                z-index: 9999;
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                transition: opacity 0.5s ease;
+                ">
+    {{ session('success') }}
+</div>
+@endif
+
+{{-- Error Notification --}}
+@if ($errors->any())
+<div id="notif-error" style="
+                position: fixed;
+                top: 60px; /* Biar nggak nabrak success */
+                right: 20px;
+                background-color: #dc3545;
+                
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                z-index: 9999;
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                transition: opacity 0.5s ease;
+                ">
+    <ul style="margin: 0; padding-left: 20px;">
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
+
+{{-- Script untuk menghilangkan notifikasi --}}
+<script>
+    setTimeout(function() {
+        let notifSuccess = document.getElementById("notif-success");
+        let notifError = document.getElementById("notif-error");
+
+        if (notifSuccess) {
+            notifSuccess.style.opacity = '0';
+            setTimeout(() => notifSuccess.remove(), 500);
+        }
+
+        if (notifError) {
+            notifError.style.opacity = '0';
+            setTimeout(() => notifError.remove(), 500);
+        }
+    }, 3000);
+</script>
+
 
                 <form action="{{ route('updatesjt',$data->id) }}" method="post">
                     @csrf

@@ -158,16 +158,19 @@ if ($startDate && $endDate) {
 
 
 
-        $totalactualnetprofit = (clone $query)
+            $totalactualnetprofit = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
             ->get()
             ->map(function ($item) {
-                return (float) str_replace(',', '', $item->nominalactual ?? 0);
+                $nominal = str_replace('.', '', $item->nominalactual ?? 0); // hapus titik ribuan
+                $nominal = str_replace(',', '.', $nominal); // ubah koma jadi titik desimal
+                return (float) $nominal;
             })
             ->values()
             ->reduce(function ($carry, $nominal, $index) {
                 return $index === 0 ? $nominal : $carry - $nominal;
             });
+        
         // dd($totalnetprofitplan, $totalactualnetprofit);
 
 

@@ -385,7 +385,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indeewh')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indeewh')->with('success', 'Data saved successfully..');
     }
 
     public function updatefuel(Request $request, $id)
@@ -424,7 +424,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indexfuel')->with('success', 'Data berhasil disimpan.');
+        return redirect('/indexfuel')->with('success', 'Data saved successfully..');
     }
 
 
@@ -574,7 +574,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/picaewhfuel')->with('success', 'Surat berhasil disimpan.');
+        return redirect('/picaewhfuel')->with('success', 'Data saved successfully.');
     }
 
     public function deletepicaewhfuel($id)

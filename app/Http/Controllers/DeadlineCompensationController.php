@@ -110,7 +110,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/indexdeadline')->with('success', 'data berhasil disimpan.');
+        return redirect('/indexdeadline')->with('success', 'Data saved successfully..');
     }
 
     public function deletedeadline ($id)
@@ -235,7 +235,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/picadeadline')->with('success', 'Surat berhasil disimpan.');
+        return redirect('/picadeadline')->with('success', 'Data saved successfully.');
     }
 
     public function deletepicadeadline ($id)

@@ -64,7 +64,7 @@ class HPPController extends Controller
 
         ]);
     }
-        return redirect('/indexhpp')->with('success', 'Surat berhasil disimpan.');
+        return redirect('/indexhpp')->with('success', 'Data saved successfully.');
     }
     // $categories = HargaPokoPenjualan::with('children')->whereNull('parent_id')->get();
     // return view('kategori.index', compact('categories'));

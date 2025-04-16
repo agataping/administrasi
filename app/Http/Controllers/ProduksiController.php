@@ -697,7 +697,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/picapaua')->with('success', 'Surat berhasil disimpan.');
+        return redirect('/picapaua')->with('success', 'Data saved successfully.');
     }
     
     public function deletepicapaua ($id)
