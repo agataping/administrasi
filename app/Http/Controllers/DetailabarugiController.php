@@ -137,6 +137,8 @@ if ($startDate && $endDate) {
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
+            // dd($planlb );
+
         $actuallb = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
             ->get()
@@ -145,30 +147,40 @@ if ($startDate && $endDate) {
             });
         // dd($actuallb );
 
+        // $totalnetprofitplan = (clone $query)
+        //     ->where('jenis_labarugis.name', 'Net Profit')
+        //     ->get()
+        //     ->map(function ($item) {
+        //         return (float) str_replace(',', '', $item->nominalplan ?? 0);
+        //     })
+        //     ->values()
+        //     ->reduce(function ($carry, $nominal, $index) {
+        //         return $index === 0 ? $nominal : $carry - $nominal;
+        //     });
         $totalnetprofitplan = (clone $query)
-            ->where('jenis_labarugis.name', 'Net Profit')
-            ->get()
-            ->map(function ($item) {
-                return (float) str_replace(',', '', $item->nominalplan ?? 0);
-            })
-            ->values()
-            ->reduce(function ($carry, $nominal, $index) {
-                return $index === 0 ? $nominal : $carry - $nominal;
-            });
-
-
+        ->where('jenis_labarugis.name', 'Net Profit')
+        ->get()
+        ->reduce(function ($carry, $item) {
+            $nominal = floatval($item->nominalplan);
+    
+            if (is_null($carry)) {
+                return $nominal; 
+            }
+    
+            return $carry - $nominal;
+        });
 
             $totalactualnetprofit = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
             ->get()
-            ->map(function ($item) {
-                $nominal = str_replace('.', '', $item->nominalactual ?? 0); // hapus titik ribuan
-                $nominal = str_replace(',', '.', $nominal); // ubah koma jadi titik desimal
-                return (float) $nominal;
-            })
-            ->values()
-            ->reduce(function ($carry, $nominal, $index) {
-                return $index === 0 ? $nominal : $carry - $nominal;
+            ->reduce(function ($carry, $item) {
+                $nominal = floatval($item->nominalactual);
+        
+                if (is_null($carry)) {
+                    return $nominal; // item pertama sebagai nilai awal
+                }
+        
+                return $carry - $nominal;
             });
         
         // dd($totalnetprofitplan, $totalactualnetprofit);
@@ -195,9 +207,11 @@ if ($startDate && $endDate) {
         $persengeneralop = ($planoperasional) ? round(($actualoperasional / $planoperasional) * 100 , 2) : 0;
 
         //lababersih
-        $totalplanlb = $totalplanlp - $planlb;
+        // $totalplanlb = $totalplanlp - $planlb;
+        $totalplanlb = floatval($totalplanlp ?? 0) - floatval($planlb ?? 0);
+        // dd($totalplanlb,$totalplanlp,$planlb );
+
         $totalactuallb = $actualoperasional - $actuallb;
-        // dd($totalactuallb );
         $verticallb = ($totalRevenuep) ? round(($totalplanlb / $totalRevenuep) * 100 , 2) : 0;
         $verticalslb = ($totalRevenuea) ? round(($totalactuallb / $totalRevenuea) * 100 , 2) : 0;
         $deviasilb = $totalplanlb - $totalactuallb;

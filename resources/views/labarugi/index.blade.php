@@ -11,22 +11,49 @@
         <div class="card-body">
             <div class="col-12">
                 <h3 class="mb-3">Profit & Loss</h3>
-                @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-                @endif
 
-                @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+                {{-- Success Notification --}}
+@if (session('success'))
+<div id="notif-success" style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #28a745;
+                
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                z-index: 9999;
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                transition: opacity 0.5s ease;
+                ">
+    {{ session('success') }}
+</div>
+@endif
 
-                @endif
+{{-- Error Notification --}}
+@if ($errors->any())
+<div id="notif-error" style="
+                position: fixed;
+                top: 60px; /* Biar nggak nabrak success */
+                right: 20px;
+                background-color: #dc3545;
+                
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                z-index: 9999;
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                transition: opacity 0.5s ease;
+                ">
+    <ul style="margin: 0; padding-left: 20px;">
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+               
                 <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('categorylabarugi') }}" method="get">

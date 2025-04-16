@@ -561,7 +561,7 @@
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td class="text-end">%</td>
+                                        <td class="text-end">{{ number_format($actuallavarge, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>
