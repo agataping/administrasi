@@ -177,19 +177,16 @@ class DetailabarugiController extends Controller
             ->orderBy('id')
             ->get()
             ->filter(function ($item) {
-                // Buang item yang nominalnya 0
                 return floatval(str_replace(',', '', $item->nominalplan)) != 0;
             })
-            ->values() // reset index array
+            ->values() 
             ->reduce(function ($carry, $item) {
                 $nominal = floatval(str_replace(',', '', $item->nominalplan));
 
-                // Kalau carry masih null (item pertama), jadikan sebagai nilai awal
                 if (is_null($carry)) {
                     return $nominal;
                 }
 
-                // Kurangi nominal dari carry
                 return $carry - $nominal;
             });
 
@@ -200,19 +197,16 @@ class DetailabarugiController extends Controller
             ->orderBy('id')
             ->get()
             ->filter(function ($item) {
-                // Buang item yang nominalnya 0
                 return floatval(str_replace(',', '', $item->nominalactual)) != 0;
             })
-            ->values() // reset index array
+            ->values() 
             ->reduce(function ($carry, $item) {
                 $nominal = floatval(str_replace(',', '', $item->nominalactual));
 
-                // Kalau carry masih null (item pertama), jadikan sebagai nilai awal
                 if (is_null($carry)) {
                     return $nominal;
                 }
 
-                // Kurangi nominal dari carry
                 return $carry - $nominal;
             });
 

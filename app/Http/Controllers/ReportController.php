@@ -268,11 +268,17 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
-        $totalnetprofitplan = (clone $query)
+            $totalnetprofitplan = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
+            ->orderBy('id')
             ->get()
+            ->filter(function ($item) {
+                return floatval(str_replace(',', '', $item->nominalplan)) != 0;
+            })
+            ->values() 
             ->reduce(function ($carry, $item) {
                 $nominal = floatval(str_replace(',', '', $item->nominalplan));
+
                 if (is_null($carry)) {
                     return $nominal;
                 }
@@ -281,9 +287,15 @@ class ReportController extends Controller
             });
 
 
+
         $totalactualnetprofit = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
+            ->orderBy('id')
             ->get()
+            ->filter(function ($item) {
+                return floatval(str_replace(',', '', $item->nominalactual)) != 0;
+            })
+            ->values() 
             ->reduce(function ($carry, $item) {
                 $nominal = floatval(str_replace(',', '', $item->nominalactual));
 
@@ -293,7 +305,6 @@ class ReportController extends Controller
 
                 return $carry - $nominal;
             });
-
 
         // Menghitung Net Profit (Laba Bersih)
         $planlb = (clone $query)
