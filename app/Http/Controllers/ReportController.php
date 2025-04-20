@@ -270,7 +270,6 @@ class ReportController extends Controller
             });
             $totalnetprofitplan = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
-            ->orderBy('id')
             ->get()
             ->filter(function ($item) {
                 return floatval(str_replace(',', '', $item->nominalplan)) != 0;
