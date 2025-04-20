@@ -176,12 +176,18 @@ class StockJtController extends Controller
             }
         }
 
+
         if ($startDate && $endDate) {
             $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('stock_jts.date', [$startDate, $endDate])
+            $endDateFormatted   = Carbon::parse($endDate)->endOfDay();
+
+            $query->where(function ($q) use ($startDateFormatted, $endDateFormatted) {
+                $q->whereBetween('stock_jts.date', [$startDateFormatted, $endDateFormatted])
+                    ->orWhere('stock_jts.sotckawal', '!=', null); 
+            })
                 ->orderBy('stock_jts.date', 'asc');
         }
+
 
         $data = $query->get();
 
