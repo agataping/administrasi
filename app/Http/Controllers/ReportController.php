@@ -220,22 +220,26 @@ class ReportController extends Controller
 
         //csr
         $totactualscsr = (clone $query)
-        ->where(function ($q) {
-            $q->where('category_labarugis.namecategory', 'like', '%CSR%')
-              ->orWhere('category_labarugis.namecategory', 'like', '%PPM%')
-              ->orWhere('category_labarugis.namecategory', 'like', '%Sosial%');
-        })
-                    ->get()
+            // ->where(function ($q) {
+            //     $q->where('category_labarugis.namecategory', 'like', '%CSR%')
+            //         ->orWhere('category_labarugis.namecategory', 'like', '%PPM%')
+            //         ->orWhere('category_labarugis.namecategory', 'like', '%Sosial%');
+            // })
+            ->whereRaw("category_labarugis.namecategory COLLATE utf8mb4_general_ci LIKE ?", ['%CSR%'])
+
+            ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
         $totplanscsr = (clone $query)
-        ->where(function ($q) {
-            $q->where('category_labarugis.namecategory', 'like', '%CSR%')
-              ->orWhere('category_labarugis.namecategory', 'like', '%PPM%')
-              ->orWhere('category_labarugis.namecategory', 'like', '%Sosial%');
-        })
-                ->get()
+            // ->where(function ($q) {
+            //     $q->where('category_labarugis.namecategory', 'like', '%CSR%')
+            //         ->orWhere('category_labarugis.namecategory', 'like', '%PPM%')
+            //         ->orWhere('category_labarugis.namecategory', 'like', '%Sosial%');
+            // })
+            ->whereRaw("category_labarugis.namecategory COLLATE utf8mb4_general_ci LIKE ?", ['%CSR%'])
+
+            ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
