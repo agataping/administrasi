@@ -53,7 +53,7 @@ if ($startDate && $endDate) {
         $validatedData['created_by'] = auth()->user()->username;
         DeadlineCompentsationCostumers::create($validatedData);
 
-        return redirect('/indexdeadlineCostumers')->with('success', 'Data saved successfully..');
+        return redirect('/indexdeadlineCostumers')->with('success', 'Data saved successfully.');
     }
 
         //update data
@@ -82,7 +82,7 @@ if ($startDate && $endDate) {
             
             $DeadlineCompentsationCostumers = DeadlineCompentsationCostumers::findOrFail($id);
             $DeadlineCompentsationCostumers->update($validatedData);
-            return redirect('/indexdeadlineCostumers')->with('success', 'Data saved successfully..');
+            return redirect('/indexdeadlineCostumers')->with('success', 'Data saved successfully.');
         }
 
     

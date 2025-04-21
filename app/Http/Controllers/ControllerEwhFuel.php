@@ -385,7 +385,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indeewh')->with('success', 'Data saved successfully..');
+        return redirect('/indexewh')->with('success', 'Data saved successfully..');
     }
 
     public function updatefuel(Request $request, $id)
@@ -445,7 +445,7 @@ if ($startDate && $endDate) {
             'new_data' => null,
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indexpaua')->with('success', 'Data deleted successfully.');
+        return redirect()->back()->with('success', 'Data deleted successfully.');
     }
 
     public function deleteewh($id)
@@ -465,7 +465,7 @@ if ($startDate && $endDate) {
             'new_data' => null,
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indexpaua')->with('success', 'Data deleted successfully.');
+        return redirect()->back()->with('success', 'Data deleted successfully.');
     }
 
     public function picaewhfuel(Request $request)

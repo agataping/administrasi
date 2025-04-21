@@ -540,71 +540,87 @@ class ReportController extends Controller
 
 
         //Cs barging
-        $query = DB::table('bargings')
-            ->join('users', 'bargings.created_by', '=', 'users.username')
-            ->leftJoin('plan_bargings', function ($join) {
-                $join->on('bargings.kuota', '=', 'plan_bargings.kuota')
-                    ->groupBy('bargings.kuota');
-            });
-        // ->select('bargings.*', 'plan_bargings.nominal', 'bargings.kuota')
+        $query = DB::table('plan_bargings')
+            ->join('users', 'plan_bargings.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
+
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
+
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+        $data = $query->get();
+        $totalplanbarging = $data->sum(function ($p) {
+            return floatval(str_replace(['.', ','], ['', '.'], $p->nominal));
+        });
+        //plan ekspor
+        $totalplanekspor = (clone $query)
+            ->where('plan_bargings.kuota', 'Ekspor')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace('.', '', $item->nominal ?? 0);
+            });
+        $totalplandomestik = (clone $query)
+            ->where('plan_bargings.kuota', 'Domestik')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace('.', '', $item->nominal ?? 0);
+            });
 
+        //barging
+        $query = DB::table('bargings')
+            ->join('users', 'bargings.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')->select('bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
+
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('users.id_company', $companyId);
+            }
+        }
         if (!empty($tahun)) {
             $query->whereBetween('bargings.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
         $data = $query->get();
-        // dd($data);
-        $categories = ['Ekspor', 'Domestik'];
-        $results = [];
-
-        $totalPlanAll = $data->sum('nominal');
-        // dd($totalPlanAll);
-        $totalActualAll = $data->sum(function ($d) {
-            return floatval(str_replace(',', '', $d->quantity));
+        $totalactualbarging = $data->sum(function ($p) {
+            return floatval(str_replace(['.', ','], ['', '.'], $p->quantity));
         });
-        $index = $totalPlanAll ? round(($totalActualAll / $totalPlanAll) * 100, 2) : 0;
-        $index = round($index, 2);
-
-        $results['total'] = [
-            'Plan' => number_format($totalPlanAll, 2, ',', '.'),
-            'Actual' => number_format($totalActualAll, 2, ',', '.'),
-            'Index' => $index
-
-        ];
-
-        foreach ($categories as $category) {
-            $filteredData = collect($data)->where('kuota', $category);
-            // dd($filteredData);
-
-
-            $totalPlan = $filteredData->sum('nominal');
-            $totalActual = $filteredData->sum(function ($d) {
-                return floatval(str_replace(',', '', $d->quantity));
+        //actual ekspor
+        $totalactualekspor = (clone $query)
+            ->where('bargings.kuota', 'Ekspor')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace('.', '', $item->quantity ?? 0);
             });
-            $index = $totalPlan ? round(($totalActual / $totalPlan) * 100, 2) : 0;
-            $index = round($index, 2);
-            $resultkuota = round($index * (5 / 100), 2);
-            // dd($resultkuota);
-            $results[$category] = [
-                'Plan' => number_format($totalPlan, 2, ',', '.'),
-                'Actual' => number_format($totalActual, 2, ',', '.'),
-                'Index' => $index,
-                'resultkuota' => $resultkuota
+            $indexekspor = ($totalplanekspor != 0) ? round(($totalactualekspor / $totalplanekspor) * 100, 2) : 0;
+            $resultekspor = round(($indexekspor * 0.05), 2);
+            $totalactualdomestik = (clone $query)
+            ->where('bargings.kuota', 'Domestik')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace('.', '', $item->quantity ?? 0);
+            });
+            $indexdomestik= ($totalplandomestik != 0) ? round(($totalactualdomestik / $totalplandomestik) * 100, 2) : 0;
+            $resultdomestik = round(($indexdomestik * 0.05) , 2);
+            // dd($resultdomestik);
+        // dd($resulutdomestik,$resultekspor,$indexdomestik,$totalactualdomestik);
 
-            ];
-        }
-        //cs perspect
-        $totalindexcostumer = round(array_sum(array_column($results, 'resultkuota')), 2);
-        $totalresultcostumer = round($totalindexcostumer * 0.15, 2);
+        $totalresultcp= round (3.00 +0.56+ $resultdomestik+ $resultekspor);
+        $totalresultcostumer = round(($totalresultcp / 0.15), 2);
 
+        // dd($totalresultcostumer);
+
+
+        
         //internal proses ob coal
         $query = DB::table('overberden_coal')
             ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
@@ -993,6 +1009,16 @@ class ReportController extends Controller
         // dd($grandTotalstockakhir);
 
         return view('pt.report', compact(
+            //barging
+            'totalresultcostumer',
+            'totalactualbarging',
+            'totalplanbarging',
+            'totalplandomestik',
+            'totalplanekspor',
+            'totalactualekspor',
+            'totalactualdomestik',
+            'indexekspor',
+            'indexdomestik',
             //lavarge
             'planlavarge',
             //net profit
@@ -1023,7 +1049,6 @@ class ReportController extends Controller
             'grandTotalstockakhir',
             // 'indexstockjetty',
             //cs perspect
-            'totalresultcostumer',
             //financial weight & index 
             'totalresultfinancial',
             'weightrevenue',
@@ -1056,7 +1081,6 @@ class ReportController extends Controller
             'deviasilb',
             'persenlr', //net profit
             'data',
-            'results',
             'planoppersen',
             'actualoppersen', //Operasional Cost 
             //cogs

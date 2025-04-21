@@ -24,20 +24,41 @@ class BargingController extends Controller
         $endDate = $request->input('end_date');
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+        $query = DB::table('plan_bargings')
+            ->join('users', 'plan_bargings.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
+
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('users.id_company', $companyId);
+            }
+        }
+        $data = $query->get();
+        $data->each(function ($item) {
+            $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+        });
+        $totalplanbarging = $data->sum(function ($p) {
+            return floatval(str_replace(['.', ','], ['', '.'], $p->nominal));
+        });
 
         // plan
-        $planNominal = null;
-        $queryPlan = DB::table('plan_bargings')
-            ->whereIn('created_by', function ($query) use ($companyId, $user) {
-                $query->select('username')->from('users')->whereNotNull('id_company');
+        // $planNominal = null;
+        // $queryPlan = DB::table('plan_bargings')
+        //     ->whereIn('created_by', function ($query) use ($companyId, $user) {
+        //         $query->select('username')->from('users')->whereNotNull('id_company');
 
-                if ($user->role !== 'admin' || $companyId) {
-                    $query->where('id_company', $companyId);
-                }
-            });
+        //         if ($user->role !== 'admin' || $companyId) {
+        //             $query->where('id_company', $companyId);
+        //         }
+        //     });
 
-        $planNominal = $queryPlan->sum(DB::raw("CAST(REPLACE(REPLACE(nominal, '.', ''), ',', '.') AS DECIMAL(15,2))"));
-
+        // $planNominal = $queryPlan->sum(DB::raw("CAST(REPLACE(REPLACE(nominal, '.', ''), ',', '.') AS DECIMAL(15,2))"));
+        // dd($totalplanbarging);
         $query = DB::table('bargings')
             ->join('users', 'bargings.created_by', '=', 'users.username')
             ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id')
@@ -63,9 +84,9 @@ class BargingController extends Controller
         }
 
         // Filter berdasarkan tanggal jika ada input
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
         }
 
@@ -86,8 +107,8 @@ if ($startDate && $endDate) {
         }
 
         $quantity = ($count > 0) ? $totalQuantity : 0;
-        $deviasi = $planNominal - $quantity;
-        $percen = ($planNominal != 0) ? ($quantity / $planNominal) * 100 : 0;
+        $deviasi = $totalplanbarging - $quantity;
+        $percen = ($totalplanbarging != 0) ? ($quantity / $totalplanbarging) * 100 : 0;
         // Format quantity
         $data = $data->map(function ($d) {
             $d->formatted_quantity = number_format(floatval(str_replace(['.', ','], ['', '.'], $d->quantity)), 0, ',', '.');
@@ -95,7 +116,7 @@ if ($startDate && $endDate) {
         });
 
 
-        return view('barging.index', compact('data', 'quantity', 'planNominal', 'deviasi', 'percen', 'perusahaans', 'companyId'));
+        return view('barging.index', compact('totalplanbarging','data', 'quantity', 'deviasi', 'percen', 'perusahaans', 'companyId'));
     }
 
 
@@ -129,9 +150,9 @@ if ($startDate && $endDate) {
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
         }
 
@@ -188,23 +209,24 @@ if ($startDate && $endDate) {
             'notifyaddres' => 'required',
             'initialsurvei' => 'required',
             'finalsurvey' => 'required',
-            'quantity' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'quantity' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
 
             'kuota' => 'required|string',
             'tanggal' => 'required|date',
             'file' => 'nullable|file',
 
         ]);
-            // Format nominal untuk menghapus koma
-            $validatedData['quantity'] = isset($validatedData['quantity'])
-                ? floatval(str_replace(',', '.', preg_replace('/[^\d.-]/', '', $validatedData['quantity'])))
-                : null;
-            //file
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $filePath = $file->store('uploads', 'public');
-                $validatedData['file'] = $filePath;
-                // Tentukan mana yang diset null
+        // Format nominal untuk menghapus koma
+        $validatedData['quantity'] = isset($validatedData['quantity'])
+            ? floatval(str_replace(',', '.', preg_replace('/[^\d.-]/', '', $validatedData['quantity'])))
+            : null;
+
+        //file
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $validatedData['file'] = $filePath;
+            // Tentukan mana yang diset null
 
         }
 
@@ -246,7 +268,7 @@ if ($startDate && $endDate) {
             'notifyaddres' => 'required',
             'initialsurvei' => 'required',
             'finalsurvey' => 'required',
-            'quantity' => 'nullable|regex:/^-?[0-9.,]+$/',
+            'quantity' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
 
             'tanggal' => 'required',
             'kuota' => 'required|string',
@@ -254,9 +276,7 @@ if ($startDate && $endDate) {
 
 
         ]);
-        $validatedData['quantity'] = isset($validatedData['quantity'])
-        ? floatval(str_replace(',', '.', preg_replace('/[^\d.-]/', '', $validatedData['quantity'])))
-        : null;
+
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
@@ -278,7 +298,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indexmenu')->with('success', 'data berhasil diperbarui.');
+        return redirect('/indexmenu')->with('success', 'Data saved successfully.');
     }
 
     public function deletebarging($id)
@@ -424,7 +444,7 @@ if ($startDate && $endDate) {
             'user_id' => auth()->id(),
         ]);
 
-        return redirect('/indexPlan')->with('success', 'Data berhasil diperbarui.');
+        return redirect('/indexPlan')->with('success', 'Data saved successfully.');
     }
 
 
@@ -473,9 +493,9 @@ if ($startDate && $endDate) {
             }
         }
 
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('pica_bargings.tanggal', [$startDate, $endDate]);
         }
 
@@ -575,5 +595,14 @@ if ($startDate && $endDate) {
             'user_id' => auth()->id(),
         ]);
         return redirect('/indexpicabarging')->with('success', '');
+    }
+}
+if (!function_exists('convertToCorrectNumber')) {
+    function convertToCorrectNumber($value)
+    {
+        if ($value === '' || $value === null) return 0;
+        $value = str_replace('.', '', $value);
+        $value = str_replace(',', '.', $value);
+        return floatval($value);
     }
 }

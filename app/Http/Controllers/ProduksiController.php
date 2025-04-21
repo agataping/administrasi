@@ -550,7 +550,7 @@ if ($startDate && $endDate) {
             'new_data' => null, 
             'user_id' => auth()->id(), 
         ]);
-        return redirect('/indexpaua')->with('success', 'Data deleted successfully.');
+        return redirect()->back()->with('success', 'Data deleted successfully.');
     }
     public function deleteproduksiua ($id)
     {

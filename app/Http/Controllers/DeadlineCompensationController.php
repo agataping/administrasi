@@ -110,7 +110,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/indexdeadline')->with('success', 'Data saved successfully..');
+        return redirect('/indexdeadline')->with('success', 'Data saved successfully.');
     }
 
     public function deletedeadline ($id)

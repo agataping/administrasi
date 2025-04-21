@@ -133,7 +133,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);      
-        return redirect('/indexInfrastructureReadiness')->with('success', 'Data berhasil diperbarui.');
+        return redirect('/indexInfrastructureReadiness')->with('success', 'Data saved successfully.');
     }
     
     public function deleteinfrastruktur ($id)

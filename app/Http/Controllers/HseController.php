@@ -165,7 +165,7 @@ if ($startDate && $endDate) {
             'user_id' => auth()->id(),
         ]);
 
-        return redirect('/indexhse')->with('success', 'Data saved successfully..');
+        return redirect('/indexhse')->with('success', 'Data saved successfully.');
     }
     public function formupdatecategoryhse($id)
     {
@@ -194,7 +194,7 @@ if ($startDate && $endDate) {
             'user_id' => auth()->id(),
         ]);
 
-        return redirect('/indexhse')->with('success', 'Data saved successfully..');
+        return redirect('/indexhse')->with('success', 'Data saved successfully.');
     }
 
     public function updatehse(Request $request, $id)
@@ -231,7 +231,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indexhse')->with('success', 'Data berhasil diperbarui.');
+        return redirect('/indexhse')->with('success', 'Data saved successfully.');
     }
 
     public function formupdatehse($id)

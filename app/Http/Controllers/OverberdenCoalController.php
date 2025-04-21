@@ -336,9 +336,9 @@ if ($startDate && $endDate) {
         ]);  
         $type = $request->input('kategori_id', '2');
         if ($type === '2') {
-            return redirect('/indexcoal')->with('success', 'Data berhasil diperbarui.');
+            return redirect('/indexcoal')->with('success', 'Data saved successfully.');
         } else {
-            return redirect('/indexob')->with('success', 'Data berhasil diperbarui.');
+            return redirect('/indexob')->with('success', 'Data saved successfully.');
         }
         
     }
@@ -572,7 +572,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData), 
             'user_id' => auth()->id(), 
         ]);        
-        return redirect('/picaobc')->with('success', 'Data saved successfully..');
+        return redirect('/picaobc')->with('success', 'Data saved successfully.');
     }
 
     public function deletepicaobc ($id)

@@ -327,7 +327,7 @@ if ($startDate && $endDate) {
             'old_data' => json_encode($oldData),
             'new_data' => json_encode($validatedData),
         ]);
-        return redirect('/indexfinancial')->with('success', 'Data saved successfully..');
+        return redirect('/indexfinancial')->with('success', 'Data saved successfully.');
     }
 
     //categori
@@ -414,7 +414,7 @@ if ($startDate && $endDate) {
             'old_data' => json_encode($oldData),
             'new_data' => json_encode($validatedData),
         ]);
-        return redirect('/indexfinancial')->with('success', 'Data saved successfully..');
+        return redirect('/indexfinancial')->with('success', 'Data saved successfully.');
     }
     public function deltecategoryneraca($id)
     {
@@ -522,7 +522,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
         ]);
 
-        return redirect('/indexfinancial')->with('success', 'Data saved successfully..');
+        return redirect('/indexfinancial')->with('success', 'Data saved successfully.');
     }
 
     public function deletefinancial($id)

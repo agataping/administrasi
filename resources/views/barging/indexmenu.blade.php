@@ -14,9 +14,9 @@
                     <h3 class="mb-3">Barging</h3>
                 </a>
 
-{{-- Success Notification --}}
-@if (session('success'))
-<div id="notif-success" style="
+                {{-- Success Notification --}}
+                @if (session('success'))
+                <div id="notif-success" style="
                 position: fixed;
                 top: 20px;
                 right: 20px;
@@ -29,13 +29,13 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    {{ session('success') }}
-</div>
-@endif
+                    {{ session('success') }}
+                </div>
+                @endif
 
-{{-- Error Notification --}}
-@if ($errors->any())
-<div id="notif-error" style="
+                {{-- Error Notification --}}
+                @if ($errors->any())
+                <div id="notif-error" style="
                 position: fixed;
                 top: 60px; /* Biar nggak nabrak success */
                 right: 20px;
@@ -48,32 +48,32 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    <ul style="margin: 0; padding-left: 20px;">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
 
-{{-- Script untuk menghilangkan notifikasi --}}
-<script>
-    setTimeout(function() {
-        let notifSuccess = document.getElementById("notif-success");
-        let notifError = document.getElementById("notif-error");
+                {{-- Script untuk menghilangkan notifikasi --}}
+                <script>
+                    setTimeout(function() {
+                        let notifSuccess = document.getElementById("notif-success");
+                        let notifError = document.getElementById("notif-error");
 
-        if (notifSuccess) {
-            notifSuccess.style.opacity = '0';
-            setTimeout(() => notifSuccess.remove(), 500);
-        }
+                        if (notifSuccess) {
+                            notifSuccess.style.opacity = '0';
+                            setTimeout(() => notifSuccess.remove(), 500);
+                        }
 
-        if (notifError) {
-            notifError.style.opacity = '0';
-            setTimeout(() => notifError.remove(), 500);
-        }
-    }, 3000);
-</script>
+                        if (notifError) {
+                            notifError.style.opacity = '0';
+                            setTimeout(() => notifError.remove(), 500);
+                        }
+                    }, 3000);
+                </script>
 
 
 
@@ -139,6 +139,7 @@
                             <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                                 <tr>
                                     <th rowspan="2" style="vertical-align: middle;">No</th>
+                                    <th rowspan="2" style="vertical-align: middle;">Data Date </th>                                 
                                     <th rowspan="2" style="vertical-align: middle;">LAYCAN </th>
                                     <th rowspan="2" style="vertical-align: middle;">FILE </th>
                                     <th rowspan="2" style="vertical-align: middle;">KOUTA </th>
@@ -157,6 +158,7 @@
                                 @foreach($data as $d)
                                 <tr>
                                     <th rowspan="" style="vertical-align: middle; color:black; text-align: center;">{{ $loop->iteration }}</th>
+                                    <td style="text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($d->tanggal)->format('d-m-Y') }}</td>
                                     <td style="text-align: center; vertical-align: middle;">{{ $d->laycan }}</td>
                                     <td>
                                         @php

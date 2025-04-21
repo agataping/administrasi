@@ -58,7 +58,7 @@
                                 <a href="{{ route('indexPlan') }}" class="cardcost text-decoration-none">
                                     <h4 style="color:white;">Plan</h4>
                                     <div class="percentage-box">
-                                        <strong></strong> <span> {{ number_format($planNominal, 0, ',', '.') }}</span>
+                                        <strong></strong> <span> {{ number_format($totalplanbarging, 0, ',', '.') }}</span>
                                     </div>
                                 </a>
                             </div>

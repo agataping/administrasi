@@ -90,7 +90,7 @@ class CSMothnlyProductionController extends Controller
             $validatedData['created_by'] = auth()->user()->username;
             CSMothnlyProduction::create($request->all());
 
-            return redirect('/indexmproduction')->with('success', 'Data saved successfully..');
+            return redirect('/indexmproduction')->with('success', 'Data saved successfully.');
           }
           public function formUpdateMProduksi($id)
           {
@@ -122,6 +122,6 @@ class CSMothnlyProductionController extends Controller
             $CSMothnlyProduction->update($validatedData);
             
 
-            return redirect('/indexmproduction')->with('success', 'Data saved successfully..');
+            return redirect('/indexmproduction')->with('success', 'Data saved successfully.');
           }
 }

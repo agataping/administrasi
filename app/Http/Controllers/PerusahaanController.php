@@ -31,7 +31,7 @@ class PerusahaanController extends Controller
         
                 Perusahaan::create($validatedData);
         
-            return back()->with('success', 'Data saved successfully..');
+            return back()->with('success', 'Data saved successfully.');
             }
         
         }

@@ -707,33 +707,21 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td>{{ $results['total']['Plan'] }}</td>
+                                        <td>{{ number_format($totalplanbarging, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td>{{ $results['total']['Actual'] }}</td>
+                                        <td>{{ number_format ($totalactualbarging,2)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
-                                            @if ($results['total']['Index'] <= 75)
-                                            background-color: black; color: white;
-                                            @elseif ($results['total']['Index'] > 75 && $results['total']['Index'] <= 90)
-                                            background-color: rgb(206, 24, 24); color: white; /* Merah */
-                                            @elseif ($results['total']['Index'] > 90 && $results['total']['Index'] <= 100)
-                                            background-color: yellow; color: black; /* Kuning */
-                                            @elseif ($results['total']['Index'] > 100 && $results['total']['Index'] <= 190)
-                                            background-color: green; color: white; /* Hijau */
-                                            @elseif ($results['total']['Index'] > 190 )
-                                            background-color: blue; color: white; /* Hijau */
-                                            @endif">
-                                            {{ $results['total']['Index'] }}%
+                                        <td>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
                                         <td class="text-end" style=" vertical-align: middle; color: white;">
-                                            %
+                                            
                                         </td>
                                     </tr>
                                 </tbody>
@@ -749,33 +737,32 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td>{{ $results['Domestik']['Plan'] }}</td>
+                                        <td>{{ number_format ($totalplandomestik,2)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td>{{ $results['Domestik']['Actual'] }}</td>
+                                        <td>{{ number_format ($totalactualdomestik,2)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
-                                            @if ($results['Domestik']['Index'] <= 75)
+                                        <td style="vertical-align: middle; 
+                                            @if ($indexdomestik<= 75)
                                             background-color: black; color: white;
-                                            @elseif ($results['Domestik']['Index'] > 75 && $results['Domestik']['Index'] <= 90)
+                                            @elseif ($indexdomestik> 75 && $indexdomestik<= 90)
                                             background-color: rgb(206, 24, 24); color: white; /* Merah */
-                                            @elseif ($results['Domestik']['Index'] > 90 && $results['Domestik']['Index'] <= 100)
+                                            @elseif ($indexdomestik> 90 && $indexdomestik<= 100)
                                             background-color: yellow; color: black; /* Kuning */
-                                            @elseif ($results['Domestik']['Index'] > 100 && $results['Domestik']['Index'] <= 190)
+                                            @elseif ($indexdomestik> 100 && $indexdomestik<= 190)
                                             background-color: green; color: white; /* Hijau */
-                                            @elseif ($results['Domestik']['Index'] > 190 )
+                                            @elseif ($indexdomestik> 190 )
                                             background-color: blue; color: white; /* Hijau */
-                                            @endif">
-                                            {{ $results['Domestik']['Index'] }}%
+                                            @endif"> {{ number_format($indexdomestik, 2) }}%
                                         </td>
                                     </tr>
                                     
                                     <tr>
                                         <td>Weight</td>
-                                        <td class="text-end" style=" vertical-align: middle; color: white;">
+                                        <td class="text-end">
                                             5,00%
                                         </td>
                                     </tr>
@@ -792,25 +779,25 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td class="text-end">{{ $results['Ekspor']['Plan'] }}</td>
+                                        <td class="text-end">{{ number_format ($totalplanekspor,2)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td class="text-end"> {{ $results['Ekspor']['Actual'] }}</td>
+                                        <td class="text-end"> {{ number_format ($totalactualekspor,2)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>
                                         <td class="text-end" style="vertical-align: middle; 
-                                            @if ($results['Ekspor']['Index'] <= 75)
+                                            @if ($indexekspor <= 75)
                                             background-color: black; color: white;
-                                            @elseif ($results['Ekspor']['Index'] > 75 && $results['Ekspor']['Index'] <= 90)
+                                            @elseif ($indexekspor > 75 && $indexekspor <= 90)
                                             background-color: rgb(206, 24, 24); color: white; /* Merah */
-                                            @elseif ($results['Ekspor']['Index'] > 90 && $results['Ekspor']['Index'] <= 100)
+                                            @elseif ($indexekspor > 90 && $indexekspor <= 100)
                                             background-color: yellow; color: black; /* Kuning */
-                                            @elseif ($results['Ekspor']['Index'] > 100 && $results['Ekspor']['Index'] <= 190)
+                                            @elseif ($indexekspor > 100 && $indexekspor <= 190)
                                             background-color: rgb(0, 255, 72); color: white; /* Hijau */
                                             @endif">
-                                            {{ $results['Ekspor']['Index']}}% </td>
+                                            {{ number_format ($indexekspor,2)}}% </td>
                                     </tr>
                                     <tr>
                                         <td>Weight</td>
@@ -956,7 +943,7 @@
                                 </tr>
                                 <tr>
                                     <td>Weight</td>
-                                    <td class="text-end">6 F,00%</td>
+                                    <td class="text-end">6,00%</td>
                                 </tr>
                             </tbody>
                         </table>

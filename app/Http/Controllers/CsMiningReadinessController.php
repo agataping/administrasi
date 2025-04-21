@@ -119,7 +119,7 @@ class CsMiningReadinessController extends Controller
                 KategoriCsMining::create(['kategori' => $nama]);
             }
           
-            return redirect('/indexCSmining')->with('success', 'Data saved successfully..');
+            return redirect('/indexCSmining')->with('success', 'Data saved successfully.');
           }
           
         //UNTUK MENAMPILAKN FORM dan ADD DATA NAMA LABA RUGI
@@ -145,7 +145,7 @@ class CsMiningReadinessController extends Controller
 
             csMiningReadiness::create($validatedData);
     
-            return redirect('/indexCSmining')->with('success', 'Data saved successfully..');
+            return redirect('/indexCSmining')->with('success', 'Data saved successfully.');
         }
 
                 //update data
@@ -176,7 +176,7 @@ class CsMiningReadinessController extends Controller
                     $mining = csMiningReadiness::findOrFail($id);
                     $mining->update($validatedData);
                     
-                    return redirect('/indexCSmining')->with('success', 'Data berhasil diperbarui.');
+                    return redirect('/indexCSmining')->with('success', 'Data saved successfully.');
                 }
         
 

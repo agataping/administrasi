@@ -145,7 +145,7 @@ if ($startDate && $endDate) {
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indexPeople')->with('success', 'Data berhasil diperbarui.');
+        return redirect('/indexPeople')->with('success', 'Data saved successfully.');
     }
 
     public function createDataPR(Request $request)
