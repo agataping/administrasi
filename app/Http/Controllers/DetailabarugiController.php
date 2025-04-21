@@ -148,30 +148,6 @@ class DetailabarugiController extends Controller
             });
         // dd($actuallb );
 
-        // $totalnetprofitplan = (clone $query)
-        // ->where('jenis_labarugis.name', 'Net Profit')
-        // ->get()
-        // ->reduce(function ($carry, $item) {
-        //     $nominal = floatval($item->nominalplan);
-
-        //     if (is_null($carry)) {
-        //         return $nominal; 
-        //     }
-
-        //     return $carry - $nominal;
-        // });
-        // $totalnetprofitplan = (clone $query)
-        //     ->where('jenis_labarugis.name', 'Net Profit')
-        //     ->orderBy('id') // tetap aman pakai orderBy
-        //     ->get()
-        //     ->reduce(function ($carry, $item) {
-        //         $nominal = floatval(str_replace(',', '', $item->nominalplan));
-        //         if (is_null($carry)) {
-        //             return $nominal;
-        //         }
-
-        //         return $carry - $nominal;
-        //     });
         $totalnetprofitplan = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
             ->orderBy('id')

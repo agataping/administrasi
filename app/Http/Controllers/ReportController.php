@@ -226,8 +226,8 @@ class ReportController extends Controller
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
         $totplanscsr = (clone $query)
-            ->whereIn('category_labarugis.namecategory', ['Social & CSR', 'Biaya adm dan Umum'])
-            ->get()
+        ->where('category_labarugis.namecategory', 'like', '%CSR%')
+        ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
@@ -418,6 +418,9 @@ class ReportController extends Controller
         $weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
         $persencsr = ($ongkosplan != 0) ? round(($totplanscsr / $ongkosplan) * 100, 2) : 0;/* csr*/
         $weightcsr = round(($persencsr / 35.00) * 100, 2);
+        // dd($totplanscsr,$ongkosplan,$persencsr);
+        // dd($ongkosplan);
+
         $persenopratingcost = ($ongkosplan != 0) ? round(($planoperasional / $ongkosplan) * 100, 2) : 0;/*operasional cost*/
         $weightopratingcost = round(($persenopratingcost / 35.00) * 100, 2);
         $persenoperatingprofitmargin = ($ongkosplan != 0) ? round(($totalplanlp / $ongkosplan) * 100, 2) : 0;/* opersional profit mg*/
@@ -459,6 +462,7 @@ class ReportController extends Controller
         $persenactualcsr = ($ongkosactual != 0) ? round(($totactualscsr / $ongkosactual) * 100, 2) : 0;/* csr*/
         $indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;
         $resultcsr = round($indexcsr *  ($weightcsr / 100), 2);
+        // dd($indexcsr,$persencsr,$persenactualcsr);
         $persenactualoperatincost = ($ongkosactual != 0) ? round(($actualoperasional / $ongkosactual) * 100, 2) : 0;/*operasional cost*/
         $indexoperatingcost = ($persenopratingcost != 0) ? round(($persenactualoperatincost / $persenopratingcost) * 100, 2) : 0;
         $ressultoperasionalcost = round($indexoperatingcost * ($weightopratingcost / 100), 2);
