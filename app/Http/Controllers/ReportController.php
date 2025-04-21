@@ -238,11 +238,12 @@ class ReportController extends Controller
             //         ->orWhere('category_labarugis.namecategory', 'like', '%Sosial%');
             // })
             ->whereRaw("category_labarugis.namecategory COLLATE utf8mb4_general_ci LIKE ?", ['%CSR%'])
-
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
+            dd($totplanscsr,$totactualscsr);
+
         $actualcsr = $totalRevenuea ? round(($totactualscsr / $totalRevenuea) * 100, 2) : 0;
         $plancsr = $totalRevenuep ? round(($totplanscsr / $totalRevenuep) * 100, 2) : 0;
         // dd($plancsr);
