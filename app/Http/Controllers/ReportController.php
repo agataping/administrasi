@@ -220,14 +220,22 @@ class ReportController extends Controller
 
         //csr
         $totactualscsr = (clone $query)
-            ->where('category_labarugis.namecategory', 'like', '%CSR%')
-            ->get()
+        ->where(function ($q) {
+            $q->where('category_labarugis.namecategory', 'like', '%CSR%')
+              ->orWhere('category_labarugis.namecategory', 'like', '%PPM%')
+              ->orWhere('category_labarugis.namecategory', 'like', '%Sosial%');
+        })
+                    ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
         $totplanscsr = (clone $query)
-        ->where('category_labarugis.namecategory', 'like', '%CSR%')
-        ->get()
+        ->where(function ($q) {
+            $q->where('category_labarugis.namecategory', 'like', '%CSR%')
+              ->orWhere('category_labarugis.namecategory', 'like', '%PPM%')
+              ->orWhere('category_labarugis.namecategory', 'like', '%Sosial%');
+        })
+                ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
