@@ -601,26 +601,26 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace('.', '', $item->quantity ?? 0);
             });
-            $indexekspor = ($totalplanekspor != 0) ? round(($totalactualekspor / $totalplanekspor) * 100, 2) : 0;
-            $resultekspor = round(($indexekspor * 0.05), 2);
-            $totalactualdomestik = (clone $query)
+        $indexekspor = ($totalplanekspor != 0) ? round(($totalactualekspor / $totalplanekspor) * 100, 2) : 0;
+        $resultekspor = round(($indexekspor * 0.05), 2);
+        $totalactualdomestik = (clone $query)
             ->where('bargings.kuota', 'Domestik')
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace('.', '', $item->quantity ?? 0);
             });
-            $indexdomestik= ($totalplandomestik != 0) ? round(($totalactualdomestik / $totalplandomestik) * 100, 2) : 0;
-            $resultdomestik = round(($indexdomestik * 0.05) , 2);
-            // dd($resultdomestik);
+        $indexdomestik = ($totalplandomestik != 0) ? round(($totalactualdomestik / $totalplandomestik) * 100, 2) : 0;
+        $resultdomestik = round(($indexdomestik * 0.05), 2);
+        // dd($resultdomestik);
         // dd($resulutdomestik,$resultekspor,$indexdomestik,$totalactualdomestik);
 
-        $totalresultcp= round (3.00 +0.56+ $resultdomestik+ $resultekspor);
+        $totalresultcp = round(3.00 + 0.56 + $resultdomestik + $resultekspor);
         $totalresultcostumer = round(($totalresultcp / 0.15), 2);
 
         // dd($totalresultcostumer);
 
 
-        
+
         //internal proses ob coal
         $query = DB::table('overberden_coal')
             ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
@@ -647,16 +647,22 @@ class ReportController extends Controller
         $totalActualcoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
-        $indexcoalgetting = ($totalActualcoal != 0) ? round(($totalPlancoal / $totalActualcoal) * 100, 2) : 0;
+        $indexcoalgetting = ($totalPlancoal != 0) ? round($totalActualcoal / $totalPlancoal, 2) : 0;
+        $resultcoal = round(($indexcoalgetting * 0.02), 2); //result coal
+        $resultcoalmt = round(($indexcoalgetting * 0.03), 2); //result coal mt
+        
         // Inisialisasi total nilai untuk Over Burden
         $totalPlanob = $data->where('kategori_name', 'Over Burden')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
         });
-        // dd($totalPlanob);
         $totalActualob = $data->where('kategori_name', 'Over Burden')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
-        $indexoverburder = $totalActualob != 0 ? round(($totalPlanob / $totalActualob) * 100, 2) : 0;
+        $indexoverburder = $totalPlanob != 0 ? round(($totalActualob / $totalPlanob) * 100, 2) : 0;
+        $resultob = round(($indexoverburder * 0.02), 2); //result ob
+        $resultobbcm = round(($indexoverburder * 0.03), 2); //result ob bcm
+        // dd($resultob);
+
 
         //PA 
         $query = DB::table('units')
@@ -681,6 +687,22 @@ class ReportController extends Controller
         }
 
         $data = $query->get();
+        // $totalactualunithauler=
+        $totalactualunithauler = (clone $query)
+            ->where('units.unit', 'UNIT HAULER')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->pas_actual ?? 0);
+            });
+        $totalplanunithauler = (clone $query)
+            ->where('units.unit', 'UNIT HAULER')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->pas_plan ?? 0);
+            });
+        // dd($totalactualunithauler);
+        $resultpa = round(($indexoverburder * 0.06), 2); //result PA
+
 
         // Group the data by 'units'
         $groupedData = $data->groupBy('units');
@@ -697,6 +719,7 @@ class ReportController extends Controller
 
             $indexpa = $totalPasPlan != 0 ? round(($totalPasActual / $totalPasPlan) * 100, 2) : 0;
             // dd($totalPasPlan, $totalPasActual, $indexpa);
+
             return [
                 'units' => $unit,
                 'total_pas_plan' => $totalPasPlan,
@@ -705,6 +728,52 @@ class ReportController extends Controller
                 'details' => $items,
             ];
         });
+        // Hitung rata-rata total plan dan actual (Physical Availability)
+        $averagePasPlan = $unitpa->avg('total_pas_plan');
+        $averagePasActual = $unitpa->avg('total_pas_actual');
+        // dd($averagePasPlan);
+        //ua
+        $query = DB::table('produksi_uas')
+            ->join('units', 'produksi_uas.unit_id', '=', 'units.id')
+            ->join('users', 'produksi_uas.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->select(
+                'produksi_uas.*',
+                'units.unit as units'
+            );
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('users.id_company', $companyId);
+            }
+        }
+        if (!empty($tahun)) {
+            $query->whereBetween('produksi_uas.date', ["$tahun-01-01", "$tahun-12-31"]);
+        }
+        $data = $query->get();
+        $totalactualuaunithauler = (clone $query)
+            ->where('units.unit', 'UNIT HAULER')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->actual ?? 0);
+            });
+        $totalplanuaunithauler = (clone $query)
+            ->where('units.unit', 'UNIT HAULER')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->plan ?? 0);
+            });
+            
+        $resultua = round(($indexoverburder * 0.04), 2); //result PA
+        // dd($totalactualuaunithauler);
+
+
+        // $data = $query->orderBy('units.unit')
+        //     ->get()
+        //     ->groupBy('units');
 
         // Pembebasan Lahan
         $query = DB::table('pembebasan_lahans')
@@ -782,6 +851,7 @@ class ReportController extends Controller
 
         $finalAverage = ($totalAspect + $averageAchievement) / 2;
         $indexmining = $finalAverage != 0 ? round(($finalAverage * 100) / 100, 2) : 0;
+        $resultmining = round(($indexmining * 0.03), 2); //result mining
 
 
         //people readiness
@@ -839,15 +909,7 @@ class ReportController extends Controller
         } else {
             $totalpr = 0;
         }
-        // dd("Total Data:", $totalQuantity, $totalQuality);
 
-        // dd(
-        //     $totalpr,
-        //     $averageQuality,
-        //     $averageQuantity,
-        //     $qualityPlan,
-        //     $quantityPlan
-        // );
         $indexpeople = $totalpr != 0 ? round(($totalpr * 100) / 100, 2) : 0;
         $resultpeople = round($indexpeople * (10 / 100), 2);
 
@@ -1008,7 +1070,80 @@ class ReportController extends Controller
         $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
         // dd($grandTotalstockakhir);
 
+        //ewh
+        $queryewh = DB::table('ewhs')
+            ->join('units', 'ewhs.unit_id', '=', 'units.id')
+            ->join('users', 'ewhs.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->select('ewhs.*', 'units.unit as units');
+        if ($user->role !== 'admin') {
+            $queryewh->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $queryewh->where('users.id_company', $companyId);
+            } else {
+                $queryewh->whereRaw('users.id_company', $companyId);
+            }
+        }
+        if (!empty($tahun)) {
+            $query->whereBetween('ewhs.date', ["$tahun-01-01", "$tahun-12-31"]);
+        }
+
+        $data = $queryewh
+            ->get();
+        $totalplanewh = $data->sum(function ($p) {
+            return (float) str_replace(',', '', $p->plan ?? 0);
+        });
+        $totalactualewh = $data->sum(function ($p) {
+            return (float) str_replace(',', '', $p->actual ?? 0);
+        });
+        $resultewh = round(($indexoverburder * 0.04), 2); //result ewh
+
+        //fuel
+        $queryfuels = DB::table('fuels')
+            ->join('units', 'fuels.unit_id', '=', 'units.id')
+            ->join('users', 'fuels.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->select(
+                'fuels.*',
+                'units.unit as units'
+            );
+        if ($user->role !== 'admin') {
+            $queryfuels->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $queryfuels->where('users.id_company', $companyId);
+            } else {
+                $queryfuels->whereRaw('users.id_company', $companyId);
+            }
+        }
+        if (!empty($tahun)) {
+            $query->whereBetween('fuels.date', ["$tahun-01-01", "$tahun-12-31"]);
+        }
+        $data = $queryfuels->get();
+        $totalplanfuel = $data->sum(function ($p) {
+            return (float) str_replace(',', '', $p->plan ?? 0);
+        });
+        $totalactualfuel = $data->sum(function ($p) {
+            return (float) str_replace(',', '', $p->actual ?? 0);
+        });
+        $resultfuel= round(($indexoverburder * 0.03), 2); //result fuel
+        $resultIPP=$resultcoal+$resultob+$resultewh+$resultua+$resultpa+$resultfuel+$resultcoalmt+$resultobbcm+$resultmining;
+        $totalresultIPP = round(($totalindexfinancial / 30.00) * 100, 2);
+        $totalresultcompany= round(($totalresultfinancial+$totalresultcostumer+$totalresultIPP+$resultlearning)/4,2);
+        // dd($totalresultcompany);
+
+
         return view('pt.report', compact(
+            //total result
+            'totalresultcompany',
+            'totalresultIPP',
+            //fuels
+            'totalplanfuel',
+            'totalactualfuel',
+            //ewh
+            'totalplanewh',
+            'totalactualewh',
             //barging
             'totalresultcostumer',
             'totalactualbarging',
@@ -1103,8 +1238,13 @@ class ReportController extends Controller
             'totalActualob',
             'indexoverburder',
             'indexcoalgetting',
+            //ua
+            'totalactualuaunithauler',
             //pa
+            'averagePasActual',
+            'averagePasPlan',
             'unitpa',
+            'totalactualunithauler',
             // pembebasan lahan dan mining
             'finalAverage',
             'indexmining',

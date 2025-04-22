@@ -59,8 +59,18 @@
                             <h6 class="fw-bold text-light m-0">WEIGHT: <span class="text-warning">100%</span></h6>
                         </div>
                     </div>
-                    <div class="mt-1 col-2 d-flex justify-content-center align-items-center" style="border-radius: 5px; background-color:rgb(221, 255, 0); font-size: 2em; font-weight: bold;">
-                        %
+                    <div class="mt-1 col-2 d-flex justify-content-center align-items-center"  style="background-color: #f4e2cd; font-size: 2em;
+                        @if ($totalresultIPP<= 75)background-color: black; color: white;
+                        @elseif ($totalresultIPP> 75 && $totalresultIPP<= 90)
+                        background-color: rgb(206, 24, 24); color: white; /* Merah */
+                        @elseif ($totalresultIPP> 90 && $totalresultIPP<= 100)
+                        background-color: yellow; color: black; /* Kuning */
+                        @elseif ($totalresultIPP> 100 && $totalresultIPP<= 190)
+                        background-color: green; color: white; /* Hijau */
+                        @elseif ($totalresultIPP> 190 )
+                        background-color: blue; color: white; /* Hijau */
+                        @endif">
+                        {{ number_format($totalresultcompany, 2) }}%
                     </div>
                     <!-- ama perusahaan berdasrkan role Admin -->
                     @if(auth()->user()->role === 'admin')
@@ -822,12 +832,19 @@
                 </div>
                 <div class="row mt-1">
                     <!-- Persentase di sebelah kiri -->
-                    <div class="col-2 d-flex justify-content-center align-items-center"
-                    style="background-color: #f4e2cd; font-size: 2em; font-weight: bold; text-align: center;">
-                    59%
-                </div>
-                
-                
+                    <div class="col-2 d-flex justify-content-center align-items-center" style="background-color: #f4e2cd; font-size: 2em;
+                        @if ($totalresultIPP<= 75)background-color: black; color: white;
+                        @elseif ($totalresultIPP> 75 && $totalresultIPP<= 90)
+                        background-color: rgb(206, 24, 24); color: white; /* Merah */
+                        @elseif ($totalresultIPP> 90 && $totalresultIPP<= 100)
+                        background-color: yellow; color: black; /* Kuning */
+                        @elseif ($totalresultIPP> 100 && $totalresultIPP<= 190)
+                        background-color: green; color: white; /* Hijau */
+                        @elseif ($totalresultIPP> 190 )
+                        background-color: blue; color: white; /* Hijau */
+                        @endif">
+                        {{ number_format($totalresultIPP, 2) }}%
+                    </div>
                 <div class="col">
                     <!-- Grid layout untuk tabel yang disusun secara horizontal -->
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 5px;"> <!-- Fleet Productivity (Coal) -->
@@ -860,7 +877,7 @@
                                         background-color: rgb(0, 255, 72); color: white;
                                         @elseif ($indexcoalgetting > 190)
                                         background-color: rgb(0, 60, 255); color: white;
-                                        @endif">{{ number_format($indexcoalgetting, 0, ',', '.') }}%
+                                        @endif">{{ number_format($indexcoalgetting, 2, ',', '.') }}%
                                     </td>
                                 </tr>
                                 <tr>
@@ -883,7 +900,7 @@
                                 </tr>
                                 <tr>
                                     <td>Actual</td>
-                                    <td>{{ number_format($totalPlanob, 0, ',', '.') }}</td>
+                                    <td>{{ number_format($totalActualob, 0, ',', '.') }}</td>
                                 </tr>
                                 <tr>
                                     <td>Index</td>
@@ -898,7 +915,7 @@
                                         background-color: rgb(0, 255, 72); color: white;
                                         @elseif ($indexoverburder > 190)
                                         background-color: rgb(0, 42, 255); color: white;
-                                        @endif">{{ number_format($indexoverburder, 0, ',', '.') }}%
+                                        @endif">{{ number_format($indexoverburder, 2, ',', '.') }}%
                                     </td>
                                 </tr>
                                 <tr>
@@ -907,6 +924,165 @@
                                 </tr>
                             </tbody>
                         </table>
+
+                        <!-- evectitive EWH  -->
+                        <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                            <thead ">
+                                <tr>
+                                    <th colspan="3" style="text-align: center; vertical-align: middle;">Effective Working Hour</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Plan</td>
+                                    <td>{{ number_format($totalplanewh, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Actual</td>
+                                    <td>{{ number_format($totalactualewh, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Index</td>
+                                    <td class="text-end" style="vertical-align: middle; 
+                                        @if ($indexoverburder <= 75)
+                                        background-color: black; color: white;
+                                        @elseif ($indexoverburder > 75 && $indexoverburder <= 90)
+                                        background-color: rgb(206, 24, 24); color: white;
+                                        @elseif ($indexoverburder > 90 && $indexoverburder <= 100)
+                                        background-color: yellow; color: black;
+                                        @elseif ($indexoverburder > 100 && $indexoverburder <= 190)
+                                        background-color: rgb(0, 255, 72); color: white;
+                                        @elseif ($indexoverburder > 190)
+                                        background-color: rgb(0, 42, 255); color: white;
+                                        @endif">{{ number_format($indexoverburder, 2, ',', '.') }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Weight</td>
+                                    <td class="text-end">6,00%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Utilization of Availability	  -->
+                        <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                            <thead ">
+                                <tr>
+                                    <th colspan="3" style="text-align: center; vertical-align: middle;">Utilization of Availability	</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Plan</td>
+                                    <td>{{ number_format($totalactualunithauler, 2) }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>Actual</td>
+                                    <td>{{ number_format($totalactualuaunithauler, 2) }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>Index</td>
+                                    <td class="text-end" style="vertical-align: middle; 
+                                        @if ($indexoverburder <= 75)
+                                        background-color: black; color: white;
+                                        @elseif ($indexoverburder > 75 && $indexoverburder <= 90)
+                                        background-color: rgb(206, 24, 24); color: white;
+                                        @elseif ($indexoverburder > 90 && $indexoverburder <= 100)
+                                        background-color: yellow; color: black;
+                                        @elseif ($indexoverburder > 100 && $indexoverburder <= 190)
+                                        background-color: rgb(0, 255, 72); color: white;
+                                        @elseif ($indexoverburder > 190)
+                                        background-color: rgb(0, 42, 255); color: white;
+                                        @endif">{{ number_format($indexoverburder, 2, ',', '.') }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Weight</td>
+                                    <td class="text-end">6,00%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- fuels ratio	  -->
+                        <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                            <thead ">
+                                <tr>
+                                    <th colspan="3" style="text-align: center; vertical-align: middle;">Fuel Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Plan</td>
+                                    <td>{{ number_format($totalplanfuel, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Actual</td>
+                                    <td>{{ number_format($totalactualfuel, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Index</td>
+                                    <td class="text-end" style="vertical-align: middle; 
+                                        @if ($indexoverburder <= 75)
+                                        background-color: black; color: white;
+                                        @elseif ($indexoverburder > 75 && $indexoverburder <= 90)
+                                        background-color: rgb(206, 24, 24); color: white;
+                                        @elseif ($indexoverburder > 90 && $indexoverburder <= 100)
+                                        background-color: yellow; color: black;
+                                        @elseif ($indexoverburder > 100 && $indexoverburder <= 190)
+                                        background-color: rgb(0, 255, 72); color: white;
+                                        @elseif ($indexoverburder > 190)
+                                        background-color: rgb(0, 42, 255); color: white;
+                                        @endif">{{ number_format($indexoverburder, 2, ',', '.') }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Weight</td>
+                                    <td class="text-end">6,00%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- fPhysical Availability	  -->
+                        <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                            <thead ">
+                                <tr>
+                                    <th colspan="3" style="text-align: center; vertical-align: middle;">Physical Availability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Plan</td>
+                                    <td>{{ number_format($averagePasPlan, 2) }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>Actual</td>
+                                    <td>{{ number_format($averagePasActual, 2) }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>Index</td>
+                                    <td class="text-end" style="vertical-align: middle; 
+                                        @if ($indexoverburder <= 75)
+                                        background-color: black; color: white;
+                                        @elseif ($indexoverburder > 75 && $indexoverburder <= 90)
+                                        background-color: rgb(206, 24, 24); color: white;
+                                        @elseif ($indexoverburder > 90 && $indexoverburder <= 100)
+                                        background-color: yellow; color: black;
+                                        @elseif ($indexoverburder > 100 && $indexoverburder <= 190)
+                                        background-color: rgb(0, 255, 72); color: white;
+                                        @elseif ($indexoverburder > 190)
+                                        background-color: rgb(0, 42, 255); color: white;
+                                        @endif">{{ number_format($indexoverburder, 2, ',', '.') }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Weight</td>
+                                    <td class="text-end">6,00%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        
                         
                         <!-- Physical Availability (PA) Tables -->
                         @foreach($unitpa as $item)
@@ -919,11 +1095,11 @@
                             <tbody>
                                 <tr>
                                     <td>Plan</td>
-                                    <td>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}</td>
+                                    <td>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}%</td>
                                 </tr>
                                 <tr>
                                     <td>Actual</td>
-                                    <td>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}</td>
+                                    <td>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}%</td>
                                 </tr>
                                 <tr>
                                     <td>Index</td>
@@ -962,7 +1138,7 @@
                                 </tr>
                                 <tr>
                                     <td>Actual</td>
-                                    <td>{{ number_format($finalAverage, 0, ',', '.') }}%</td>
+                                    <td>{{ number_format($finalAverage, 2, ',', '.') }}%</td>
                                 </tr>
                                 <tr>
                                     <td>Index</td>
@@ -977,7 +1153,7 @@
                                         background-color: rgb(0, 255, 72); color: white;
                                         @elseif ($indexcoalgetting > 190)
                                         background-color: rgb(0, 60, 255); color: white;
-                                        @endif">{{ number_format($indexmining, 0, ',', '.') }}%
+                                        @endif">{{ number_format($indexmining, 2, ',', '.') }}%
                                     </td>
                                 </tr>
                                 <tr>

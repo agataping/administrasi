@@ -352,12 +352,12 @@ Route::get('/formproduksipa', [ProduksiController::class, 'formproduksipa'])->mi
 Route::get('/formproduksiua', [ProduksiController::class, 'formproduksiua'])->middleware('auth')->name('formproduksiua');
 Route::post('/createproduksiua', [ProduksiController::class, 'createproduksiua'])->middleware('auth')->name('createproduksiua');
 Route::post('/createproduksipa', [ProduksiController::class, 'createproduksipa'])->middleware('auth')->name('createproduksipa');
-Route::get('/formupdateproduksipa/{id}', [ProduksiController::class, 'formupdateproduksipa'])->middleware('auth')->name('formupdateproduksipa');
+Route::get('/formupdateproduksipa/{id_pa}', [ProduksiController::class, 'formupdateproduksipa'])->middleware('auth')->name('formupdateproduksipa');
 Route::get('/formupdateproduksiua/{id}', [ProduksiController::class, 'formupdateproduksiua'])->middleware('auth')->name('formupdateproduksiua');
-Route::post('/updateproduksipa/{id}', [ProduksiController::class, 'updateproduksipa'])->middleware('auth')->name('updateproduksipa');
+Route::post('/updateproduksipa/{id_pa}', [ProduksiController::class, 'updateproduksipa'])->middleware('auth')->name('updateproduksipa');
 Route::post('/updateproduksiua/{id}', [ProduksiController::class, 'updateproduksiua'])->middleware('auth')->name('updateproduksiua');
 Route::delete('/deleteproduksiua/{id}', [ProduksiController::class, 'deleteproduksiua'])->middleware('auth')->name('deleteproduksiua');
-Route::delete('/deleteproduksipa/{id}', [ProduksiController::class, 'deleteproduksipa'])->middleware('auth')->name('deleteproduksipa');
+Route::delete('/deleteproduksipa/{id_pa}', [ProduksiController::class, 'deleteproduksipa'])->middleware('auth')->name('deleteproduksipa');
 //unit
 Route::get('/indexunit', [ProduksiController::class, 'indexunit'])->middleware('auth')->name('indexunit');
 Route::get('/unit', [ProduksiController::class, 'unit'])->middleware('auth')->name('unit');

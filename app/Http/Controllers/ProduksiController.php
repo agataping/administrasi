@@ -20,7 +20,7 @@ class ProduksiController extends Controller
 {   //index menu
     public function indexpaua(Request $request)
     {
-        $user = Auth::user();  
+        $user = Auth::user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $companyId = $request->input('id_company');
@@ -30,7 +30,7 @@ class ProduksiController extends Controller
         $queryPas = DB::table('units')
             ->join('users', 'units.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-        
+
 
             ->leftJoin('produksi_pas', 'units.id', '=', 'produksi_pas.unit_id')
             ->select(
@@ -38,16 +38,16 @@ class ProduksiController extends Controller
                 'produksi_pas.plan as pas_plan',
                 'produksi_pas.actual as pas_actual'
             );
-            if ($user->role !== 'admin') {
-                $queryPas->where('users.id_company', $user->id_company);
+        if ($user->role !== 'admin') {
+            $queryPas->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $queryPas->where('users.id_company', $companyId);
             } else {
-                if ($companyId) {
-                    $queryPas->where('users.id_company', $companyId);
-                } else {
-                    $queryPas->whereRaw('users.id_company', $companyId);             
-                }
-            }    
-            
+                $queryPas->whereRaw('users.id_company', $companyId);
+            }
+        }
+
         // Query produksi_uas
         $queryUas = DB::table('units')
             ->join('users', 'units.created_by', '=', 'users.username')
@@ -59,37 +59,37 @@ class ProduksiController extends Controller
                 'produksi_uas.plan as uas_plan',
                 'produksi_uas.actual as uas_actual'
             );
-            if ($user->role !== 'admin') {
-                $queryUas->where('users.id_company', $user->id_company);
+        if ($user->role !== 'admin') {
+            $queryUas->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $queryUas->where('users.id_company', $companyId);
             } else {
-                if ($companyId) {
-                    $queryUas->where('users.id_company', $companyId);
-                } else {
-                    $queryUas->whereRaw('users.id_company', $companyId);             
-                }
-            }    
+                $queryUas->whereRaw('users.id_company', $companyId);
+            }
+        }
         // Tambahkan filter tanggal jika tersedia
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryPas->whereBetween('produksi_pas.date', [$startDate, $endDate]);
             $queryUas->whereBetween('produksi_uas.date', [$startDate, $endDate]);
         }
-    
+
         // Ambil data produksi_pas dan produksi_uas terpisah
         $dataPas = $queryPas->orderBy('units.unit')->get()->groupBy('units');
         $dataUas = $queryUas->orderBy('units.unit')->get()->groupBy('units');
-    
+
         // Hitung total untuk produksi_pas
         $totalsPas = $dataPas->map(function ($items, $unit) {
             $totalPasPlan = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->pas_plan ?? 0);
             });
-    
+
             $totalPasActual = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->pas_actual ?? 0);
             });
-    
+
             return [
                 'units' => $unit,
                 'total_pas_plan' => $totalPasPlan,
@@ -97,17 +97,17 @@ if ($startDate && $endDate) {
                 'details' => $items,
             ];
         });
-    
+
         // Hitung total untuk produksi_uas
         $totalsUas = $dataUas->map(function ($items, $unit) {
             $totalUasPlan = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->uas_plan ?? 0);
             });
-    
+
             $totalUasActual = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->uas_actual ?? 0);
             });
-    
+
             return [
                 'units' => $unit,
                 'total_uas_plan' => $totalUasPlan,
@@ -115,123 +115,129 @@ if ($startDate && $endDate) {
                 'details' => $items,
             ];
         });
-    
-        return view('PA_UA.index', compact('dataPas', 'dataUas', 'totalsPas', 'totalsUas', 'startDate', 'endDate','perusahaans', 'companyId'));
+
+        return view('PA_UA.index', compact('dataPas', 'dataUas', 'totalsPas', 'totalsUas', 'startDate', 'endDate', 'perusahaans', 'companyId'));
     }
-            
+
     public function indexproduksiua(Request $request)
     {
-        $user = Auth::user();  
+        $user = Auth::user();
 
-        $startDate = $request->input('start_date'); 
-        $endDate = $request->input('end_date');    
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('produksi_uas')
-        ->join('units', 'produksi_uas.unit_id', '=', 'units.id')
-        ->join('users', 'produksi_uas.created_by', '=', 'users.username')
-        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-        ->select('produksi_uas.*',
-        'units.unit as units');
+            ->join('units', 'produksi_uas.unit_id', '=', 'units.id')
+            ->join('users', 'produksi_uas.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->select(
+                'produksi_uas.*',
+                'units.unit as units'
+            );
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('users.id_company', $companyId);             
+                $query->whereRaw('users.id_company', $companyId);
             }
         }
-    if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-                $query->whereBetween('produksi_uas.date', [$startDate, $endDate]);
-            }
-            
-            $data = $query->orderBy('units.unit')
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+            $query->whereBetween('produksi_uas.date', [$startDate, $endDate]);
+        }
+
+        $data = $query->orderBy('units.unit')
             ->get()
-            ->groupBy('units');    
-            $data->each(function ($items) {
-                $items->each(function ($item) {
-                    $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
-                });
-            });        
-            $totals = $data->map(function ($items, $category) {
-                // Hitung total_plan dan total_actual
-                $totalPlan = $items->sum(function ($item) {
-                    return (float)str_replace(',', '', $item->plan ?? 0);
-                });
-                $totalActual = $items->sum(function ($item) {
-                    return (float)str_replace(',', '', $item->actual ?? 0);
-                });
-            
-                return [
-                    'units' => $category, // Nama grup dari groupBy
-                    'total_plan' => $totalPlan,
-                    'total_actual' => $totalActual,
-                    'details' => $items,
-                ];
+            ->groupBy('units');
+        $data->each(function ($items) {
+            $items->each(function ($item) {
+                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
             });
-            // dd($totals);
-                    return view('PA_UA.indexua', compact('data', 'startDate', 'endDate','totals','perusahaans', 'companyId'));
+        });
+        $totals = $data->map(function ($items, $category) {
+            // Hitung total_plan dan total_actual
+            $totalPlan = $items->sum(function ($item) {
+                return (float)str_replace(',', '', $item->plan ?? 0);
+            });
+            $totalActual = $items->sum(function ($item) {
+                return (float)str_replace(',', '', $item->actual ?? 0);
+            });
+
+            return [
+                'units' => $category, // Nama grup dari groupBy
+                'total_plan' => $totalPlan,
+                'total_actual' => $totalActual,
+                'details' => $items,
+            ];
+        });
+        // dd($totals);
+        return view('PA_UA.indexua', compact('data', 'startDate', 'endDate', 'totals', 'perusahaans', 'companyId'));
     }
 
     public function indexproduksipa(Request $request)
     {
-        $user = Auth::user();  
+        $user = Auth::user();
 
-        $startDate = $request->input('start_date'); 
-        $endDate = $request->input('end_date');    
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
         $query = DB::table('produksi_pas')
-        ->join('units', 'produksi_pas.unit_id', '=', 'units.id')
-        ->join('users', 'produksi_pas.created_by', '=', 'users.username')
-        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-        ->select('produksi_pas.*','units.*',
-        'units.unit as units');
+            ->join('units', 'produksi_pas.unit_id', '=', 'units.id')
+            ->join('users', 'produksi_pas.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->select(
+                'produksi_pas.*',
+                'produksi_pas.id as id_pa',
+                'units.*',
+                'units.unit as units'
+            );
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('users.id_company', $companyId);             
+                $query->whereRaw('users.id_company', $companyId);
             }
         }
-    if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-                $query->whereBetween('produksi_pas.date', [$startDate, $endDate]);
-            }
-            
-            $data = $query->orderBy('units.unit')
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+            $query->whereBetween('produksi_pas.date', [$startDate, $endDate]);
+        }
+
+        $data = $query->orderBy('units.unit')
             ->get()
-            ->groupBy('units');  
-            $data->each(function ($items) {
-                $items->each(function ($item) {
-                    $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
-                });
-            });          
-            $totals = $data->map(function ($items, $category) {
-                // Hitung total_plan dan total_actual
-                $totalPlan = $items->sum(function ($item) {
-                    return (float)str_replace(',', '', $item->plan ?? 0);
-                });
-                $totalActual = $items->sum(function ($item) {
-                    return (float)str_replace(',', '', $item->actual ?? 0);
-                });
-            
-                return [
-                    'units' => $category, // Nama grup dari groupBy
-                    'total_plan' => $totalPlan,
-                    'total_actual' => $totalActual,
-                    'details' => $items,
-                ];
+            ->groupBy('units');
+        $data->each(function ($items) {
+            $items->each(function ($item) {
+                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
             });
-            // dd($totals);
-            return view('PA_UA.indexpa', compact('data', 'startDate', 'endDate','totals','perusahaans', 'companyId'));
+        });
+        $totals = $data->map(function ($items, $category) {
+            // Hitung total_plan dan total_actual
+            $totalPlan = $items->sum(function ($item) {
+                return (float)str_replace(',', '', $item->plan ?? 0);
+            });
+            $totalActual = $items->sum(function ($item) {
+                return (float)str_replace(',', '', $item->actual ?? 0);
+            });
+
+            return [
+                'units' => $category, // Nama grup dari groupBy
+                'total_plan' => $totalPlan,
+                'total_actual' => $totalActual,
+                'details' => $items,
+            ];
+        });
+        // dd($totals);
+        return view('PA_UA.indexpa', compact('data', 'startDate', 'endDate', 'totals', 'perusahaans', 'companyId'));
     }
 
 
@@ -239,61 +245,60 @@ if ($startDate && $endDate) {
     {
         return view('PA_UA.addUnit');
     }
-    
+
     public function formproduksipa()
     {
-        $unit= Unit::all();
-        return view('PA_UA.addproduksipa',compact('unit'));
-        
+        $unit = Unit::all();
+        return view('PA_UA.addproduksipa', compact('unit'));
     }
 
     public function formproduksiua()
     {
-        $unit= Unit::all();
-        return view('PA_UA.addproduksiua',compact('unit'));
-        
+        $unit = Unit::all();
+        return view('PA_UA.addproduksiua', compact('unit'));
     }
 
     //unit
-    public function indexunit(Request $request){
-        $user = Auth::user(); 
-        $companyId = $request->input('company_id'); 
-    
+    public function indexunit(Request $request)
+    {
+        $user = Auth::user();
+        $companyId = $request->input('company_id');
+
         $query = DB::table('units')
             ->select('units.*')
             ->join('users', 'units.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
-    
+
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('users.id_company', $companyId); 
+                $query->whereRaw('users.id_company', $companyId);
             }
         }
-    
-        $data = $query->get(); 
-    
-        return view('PA_UA.indexunit',compact('data'));
 
+        $data = $query->get();
+
+        return view('PA_UA.indexunit', compact('data'));
     }
-    
+
     //create
-    public function createproduksipa(Request $request) {
+    public function createproduksipa(Request $request)
+    {
         $validatedData = $request->validate([
-            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
-            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
-            'date' => 'required|date',  
-            'desc' => 'required|string|max:255',  
-            'unit_id' => 'required',  
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'date' => 'required|date',
+            'desc' => 'required|string|max:255',
+            'unit_id' => 'required',
             'file' => 'nullable|file',
 
 
         ]);
 
-        
+
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
         $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
@@ -303,37 +308,37 @@ if ($startDate && $endDate) {
             $validatedData['file'] = $filePath;
         }
         $validatedData['created_by'] = auth()->user()->username;
-        
-        $data=ProduksiPa::create($validatedData);        
+
+        $data = ProduksiPa::create($validatedData);
         HistoryLog::create([
-            'table_name' => 'produksi_pas', 
-            'record_id' => $data->id, 
+            'table_name' => 'produksi_pas',
+            'record_id' => $data->id,
             'action' => 'create',
-            'old_data' => null, 
-            'new_data' => json_encode($validatedData), 
-            'user_id' => auth()->id(), 
+            'old_data' => null,
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
         ]);
         if ($request->input('action') == 'save') {
             return redirect('/indexproduksipa')->with('success', 'Data added successfully.');
         }
-    
-        return redirect()->back()->with('success', 'Data added successfully.');
 
+        return redirect()->back()->with('success', 'Data added successfully.');
     }
 
-    public function createproduksiua(Request $request) {
+    public function createproduksiua(Request $request)
+    {
         $validatedData = $request->validate([
-            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
-            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
-            'date' => 'required|date',  
-            'desc' => 'required|string|max:255',  
-            'unit_id' => 'required',  
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'date' => 'required|date',
+            'desc' => 'required|string|max:255',
+            'unit_id' => 'required',
             'file' => 'nullable|file',
 
 
         ]);
 
-        
+
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
         $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
@@ -343,23 +348,23 @@ if ($startDate && $endDate) {
             $validatedData['file'] = $filePath;
         }
         $validatedData['created_by'] = auth()->user()->username;
-        
-        $data=ProduksiUa::create($validatedData);        
+
+        $data = ProduksiUa::create($validatedData);
         HistoryLog::create([
-            'table_name' => 'produksi_uas', 
-            'record_id' => $data->id, 
+            'table_name' => 'produksi_uas',
+            'record_id' => $data->id,
             'action' => 'create',
-            'old_data' => null, 
-            'new_data' => json_encode($validatedData), 
-            'user_id' => auth()->id(), 
+            'old_data' => null,
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
         ]);
         if ($request->input('action') == 'save') {
             return redirect('/indexproduksiua')->with('success', 'Data added successfully.');
         }
-    
+
         return redirect()->back()->with('success', 'Data added successfully.');
     }
-    
+
 
 
     public function createunit(Request $request)
@@ -367,12 +372,12 @@ if ($startDate && $endDate) {
         $validatedData = $request->validate([
             'unit' => 'required|string|max:255',
         ]);
-    
+
         $validatedData['created_by'] = auth()->user()->username;
         Unit::create($validatedData);
-    
+
         $redirectTo = $request->input('redirect_to');
-    
+
         // redirect berdasarkan halaman sebelumnya
         if (!$redirectTo) {
             if (url()->previous() == route('indexproduksipa')) {
@@ -387,38 +392,39 @@ if ($startDate && $endDate) {
                 $redirectTo = route('indexproduksipa'); // Default redirect
             }
         }
-    
+
         if ($request->input('action') == 'save') {
             return redirect($redirectTo)->with('success', 'Data added successfully.');
         }
-    
+
         return redirect()->back()->with('success', 'Data added successfully.');
     }
-        
+
     //update
-    public function formupdateproduksipa($id)
+    public function formupdateproduksipa($id_pa)
     {
-        
-        $unit= Unit::all();
-        $data= ProduksiPa::findOrFail($id);
-        return view('PA_UA.updatedatapa',compact('unit','data'));   
+
+        $unit = Unit::all();
+        $data = ProduksiPa::findOrFail($id_pa);
+        return view('PA_UA.updatedatapa', compact('unit', 'data'));
     }
 
     public function formupdateproduksiua($id)
     {
-        
-        $unit= Unit::all();
-        $data= ProduksiUa::findOrFail($id);
-        return view('PA_UA.updatedataua',compact('unit','data'));   
+
+        $unit = Unit::all();
+        $data = ProduksiUa::findOrFail($id);
+        return view('PA_UA.updatedataua', compact('unit', 'data'));
     }
 
     public function formupadteunit($id)
-    { 
-        $data= Unit::findOrFail($id);
-        return view('PA_UA.updateunit',compact('data'));   
+    {
+        $data = Unit::findOrFail($id);
+        return view('PA_UA.updateunit', compact('data'));
     }
 
-    public function updateunit(Request $request, $id) {
+    public function updateunit(Request $request, $id)
+    {
         $validatedData = $request->validate([
             'unit' => 'required|string|max:255',
 
@@ -426,18 +432,18 @@ if ($startDate && $endDate) {
         $validatedData['updated_by'] = auth()->user()->username;
         $unit = Unit::findOrFail($id);
         $oldData = $unit->toArray();
-        
+
         $unit->update($validatedData);
-        
+
         HistoryLog::create([
-            'table_name' => 'units', 
-            'record_id' => $id, 
-            'action' => 'update', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => json_encode($validatedData), 
-            'user_id' => auth()->id(), 
+            'table_name' => 'units',
+            'record_id' => $id,
+            'action' => 'update',
+            'old_data' => json_encode($oldData),
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
         ]);
-        $redirectTo = $request->input('redirect_to');        
+        $redirectTo = $request->input('redirect_to');
         if (!$redirectTo) {
             if (url()->previous() == route('indexproduksipa')) {
                 $redirectTo = route('indexproduksipa');
@@ -451,18 +457,18 @@ if ($startDate && $endDate) {
                 $redirectTo = route('indexproduksipa'); // Default redirect
             }
         }
-    
+
         if ($request->input('action') == 'save') {
             return redirect($redirectTo)->with('success', 'Data saved successfully.');
         }
-    
     }
 
 
-    public function updateproduksipa(Request $request, $id) {
+    public function updateproduksipa(Request $request, $id_pa)
+    {
         $validatedData = $request->validate([
-            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
-            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
             'date' => 'required',
             'desc' => 'required',
             'unit_id' => 'required',
@@ -470,7 +476,7 @@ if ($startDate && $endDate) {
 
         ]);
 
-        
+
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
         $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
@@ -480,26 +486,27 @@ if ($startDate && $endDate) {
             $validatedData['file'] = $filePath;
         }
         $validatedData['updated_by'] = auth()->user()->username;
-        $Produksi = ProduksiPa::findOrFail($id);
+        $Produksi = ProduksiPa::findOrFail($id_pa);
         $oldData = $Produksi->toArray();
-        
+
         $Produksi->update($validatedData);
-        
+
         HistoryLog::create([
-            'table_name' => 'prpoduksi_pas', 
-            'record_id' => $id, 
-            'action' => 'update', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => json_encode($validatedData), 
-            'user_id' => auth()->id(), 
-        ]);        
+            'table_name' => 'prpoduksi_pas',
+            'record_id' => $id_pa,
+            'action' => 'update',
+            'old_data' => json_encode($oldData),
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
+        ]);
         return redirect('/indexproduksipa')->with('success', 'Data saved successfully.');
     }
 
-    public function updateproduksiua(Request $request, $id) {
+    public function updateproduksiua(Request $request, $id)
+    {
         $validatedData = $request->validate([
-            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',  
-            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/', 
+            'actual' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
+            'plan' => 'nullable|regex:/^[\d,]+(\.\d{1,2})?$/',
             'date' => 'required',
             'desc' => 'required',
             'unit_id' => 'required',
@@ -507,7 +514,7 @@ if ($startDate && $endDate) {
 
         ]);
 
-        
+
         // Tentukan mana yang diset null
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
         $validatedData['actual'] = convertToCorrectNumber($validatedData['actual']);
@@ -519,74 +526,74 @@ if ($startDate && $endDate) {
         $validatedData['updated_by'] = auth()->user()->username;
         $Produksi = ProduksiUa::findOrFail($id);
         $oldData = $Produksi->toArray();
-        
+
         $Produksi->update($validatedData);
-        
+
         HistoryLog::create([
-            'table_name' => 'prpoduksi_uas', 
-            'record_id' => $id, 
-            'action' => 'update', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => json_encode($validatedData), 
-            'user_id' => auth()->id(), 
-        ]);        
+            'table_name' => 'prpoduksi_uas',
+            'record_id' => $id,
+            'action' => 'update',
+            'old_data' => json_encode($oldData),
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
+        ]);
         return redirect('/indexproduksiua')->with('success', 'Data saved successfully.');
     }
 
-    public function deleteproduksipa ($id)
+    public function deleteproduksipa($id_pa)
     {
-        $data = ProduksiPa::findOrFail($id);
+        $data = ProduksiPa::findOrFail($id_pa);
         $oldData = $data->toArray();
-        
+
         // Hapus data dari tabel 
         $data->delete();
-        
+
         // Simpan log ke tabel history_logs
         HistoryLog::create([
-            'table_name' => 'produksi_pas', 
-            'record_id' => $id, 
-            'action' => 'delete', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => null, 
-            'user_id' => auth()->id(), 
+            'table_name' => 'produksi_pas',
+            'record_id' => $id_pa,
+            'action' => 'delete',
+            'old_data' => json_encode($oldData),
+            'new_data' => null,
+            'user_id' => auth()->id(),
         ]);
         return redirect()->back()->with('success', 'Data deleted successfully.');
     }
-    public function deleteproduksiua ($id)
+    public function deleteproduksiua($id)
     {
         $data = ProduksiUa::findOrFail($id);
         $oldData = $data->toArray();
-        
+
         // Hapus data dari tabel 
         $data->delete();
-        
+
         // Simpan log ke tabel history_logs
         HistoryLog::create([
-            'table_name' => 'produksi_uas', 
-            'record_id' => $id, 
-            'action' => 'delete', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => null, 
-            'user_id' => auth()->id(), 
+            'table_name' => 'produksi_uas',
+            'record_id' => $id,
+            'action' => 'delete',
+            'old_data' => json_encode($oldData),
+            'new_data' => null,
+            'user_id' => auth()->id(),
         ]);
-        return redirect('/indexpaua')->with('success', 'Data deleted successfully.');
+        return redirect()->back()->with('success', 'Data deleted successfully.');
     }
     public function deleteunit($id)
     {
         $data = Unit::findOrFail($id);
         $oldData = $data->toArray();
-        
+
         // Hapus data dari tabel 
         $data->delete();
-        
+
         // Simpan log ke tabel history_logs
         HistoryLog::create([
-            'table_name' => 'units', 
-            'record_id' => $id, 
-            'action' => 'delete', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => null, 
-            'user_id' => auth()->id(), 
+            'table_name' => 'units',
+            'record_id' => $id,
+            'action' => 'delete',
+            'old_data' => json_encode($oldData),
+            'new_data' => null,
+            'user_id' => auth()->id(),
         ]);
         return redirect()->back()->with('success', 'Data deleted successfully.');
     }
@@ -594,16 +601,16 @@ if ($startDate && $endDate) {
 
     public function picapaua(Request $request)
     {
-        $user = Auth::user();  
+        $user = Auth::user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
-        $query = DB::table('pica_pa_uas') 
-        ->select('pica_pa_uas.*')
-        ->join('users', 'pica_pa_uas.created_by', '=', 'users.username')
-        ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+        $query = DB::table('pica_pa_uas')
+            ->select('pica_pa_uas.*')
+            ->join('users', 'pica_pa_uas.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
 
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
@@ -611,32 +618,31 @@ if ($startDate && $endDate) {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
             } else {
-                $query->whereRaw('users.id_company', $companyId);             
+                $query->whereRaw('users.id_company', $companyId);
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
         }
-        
-       $data = $query->get();
-        
-        
-        return view('picapaua.index', compact('data','perusahaans', 'companyId'));
-        
+
+        $data = $query->get();
+
+
+        return view('picapaua.index', compact('data', 'perusahaans', 'companyId'));
     }
-    
+
     public function formpicapaua()
     {
-        $user = Auth::user();  
+        $user = Auth::user();
         return view('picapaua.addData');
     }
-    
+
     public function createpicapaua(Request $request)
     {
         // dd($request->all());
-        
+
         $validatedData = $request->validate([
             'problem' => 'required|string',
             'corectiveaction' => 'required|string',
@@ -648,28 +654,28 @@ if ($startDate && $endDate) {
             'tanggal' => 'required|date',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
-        $data=PicaPaUa::create($validatedData);   
+        $data = PicaPaUa::create($validatedData);
         HistoryLog::create([
-            'table_name' => 'pica_pa_uas ', 
-            'record_id' => $data->id, 
+            'table_name' => 'pica_pa_uas ',
+            'record_id' => $data->id,
             'action' => 'create',
-            'old_data' => null, 
-            'new_data' => json_encode($validatedData), 
-            'user_id' => auth()->id(), 
-        ]);  
+            'old_data' => null,
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
+        ]);
         if ($request->input('action') == 'save') {
             return redirect('/picapaua')->with('success', 'Data added successfully.');
-        }   
+        }
         return redirect()->back()->with('success', 'Data added successfully.');
-   
     }
-    
-    public function formupdatepicapaua($id){
+
+    public function formupdatepicapaua($id)
+    {
         $data = PicaPaUa::findOrFail($id);
         return view('picapaua.update', compact('data'));
     }
-    
-    public function updatepicapaua (Request $request, $id)
+
+    public function updatepicapaua(Request $request, $id)
     {
         // dd($request->all());
         $validatedData = $request->validate([
@@ -683,49 +689,49 @@ if ($startDate && $endDate) {
             'tanggal' => 'required|date',
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
-        
-        $data =PicaPaUa::findOrFail($id);
+
+        $data = PicaPaUa::findOrFail($id);
         $oldData = $data->toArray();
-        
+
         $data->update($validatedData);
-        
+
         HistoryLog::create([
-            'table_name' => 'pica_pa_uas ', 
-            'record_id' => $id, 
-            'action' => 'update', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => json_encode($validatedData), 
-            'user_id' => auth()->id(), 
-        ]);        
+            'table_name' => 'pica_pa_uas ',
+            'record_id' => $id,
+            'action' => 'update',
+            'old_data' => json_encode($oldData),
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
+        ]);
         return redirect('/picapaua')->with('success', 'Data saved successfully.');
     }
-    
-    public function deletepicapaua ($id)
+
+    public function deletepicapaua($id)
     {
         $data = PicaPaUa::findOrFail($id);
         $oldData = $data->toArray();
-        
+
         // Hapus data dari tabel 
         $data->delete();
-        
+
         // Simpan log ke tabel history_logs
         HistoryLog::create([
-            'table_name' => 'pica_pa_uas ', 
-            'record_id' => $id, 
-            'action' => 'delete', 
-            'old_data' => json_encode($oldData), 
-            'new_data' => null, 
-            'user_id' => auth()->id(), 
+            'table_name' => 'pica_pa_uas ',
+            'record_id' => $id,
+            'action' => 'delete',
+            'old_data' => json_encode($oldData),
+            'new_data' => null,
+            'user_id' => auth()->id(),
         ]);
         return redirect('/picapaua')->with('success', 'Data deleted successfully.');
     }
-    
 }
 
-        
-        
+
+
 if (!function_exists('convertToCorrectNumber')) {
-    function convertToCorrectNumber($value) {
+    function convertToCorrectNumber($value)
+    {
         if ($value === '' || $value === null) return 0;
         $value = str_replace('.', '', $value);
         $value = str_replace(',', '.', $value);

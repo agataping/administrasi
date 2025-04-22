@@ -65,9 +65,9 @@ class ControllerEwhFuel extends Controller
                 $queryFuel->whereRaw('users.id_company', $companyId);
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryEwh->whereBetween('ewhs.date', [$startDate, $endDate]);
             $queryFuel->whereBetween('fuels.date', [$startDate, $endDate]);
         }
@@ -142,9 +142,9 @@ if ($startDate && $endDate) {
                 $queryewh->whereRaw('users.id_company', $companyId);
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryewh->whereBetween('ewhs.date', [$startDate, $endDate]);
         }
 
@@ -205,9 +205,9 @@ if ($startDate && $endDate) {
                 $queryewh->whereRaw('users.id_company', $companyId);
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryewh->whereBetween('fuels.date', [$startDate, $endDate]);
         }
 
@@ -342,7 +342,7 @@ if ($startDate && $endDate) {
         $data = Ewh::findOrFail($id);
         return view('ewh_fuels.updatedataewh', compact('unit', 'data'));
     }
-    public function formupdatefuels($id)
+    public function formupdatefuel($id)
     {
 
         $unit = Unit::all();
@@ -492,9 +492,9 @@ if ($startDate && $endDate) {
         }
 
 
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
             $queryewh->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
         }
 
@@ -598,7 +598,8 @@ if ($startDate && $endDate) {
     }
 }
 if (!function_exists('convertToCorrectNumber')) {
-    function convertToCorrectNumber($value) {
+    function convertToCorrectNumber($value)
+    {
         if ($value === '' || $value === null) return 0;
         $value = str_replace('.', '', $value);
         $value = str_replace(',', '.', $value);

@@ -64,7 +64,7 @@
 
                     </div>
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal Plan</label>
+                        <label for="plan">Nominal actual</label>
                         <input type="text" class="form-control" value="{{$data->actual}}" id="plan" name="actual">
                     </div>
 

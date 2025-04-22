@@ -142,14 +142,17 @@
                                     <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
                                 </td>
                                 <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
+                              
 
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                    <form action="{{ route('formupdateproduksipa', ['id' => $detail->id]) }}">
+                                    <form action="{{ route('formupdateproduksipa', ['id_pa' => $detail->id_pa]) }}">
+
                                         <button type="submit" class="btn btn-primary btn-sm">Edit</button>
                                     </form>
                                 </td>
+                                
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                    <form action="{{ route('deleteproduksipa', $detail->id) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                    <form action="{{ route('deleteproduksipa', $detail->id_pa) }}" method="POST" onsubmit="return confirmDelete(event)">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>

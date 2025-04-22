@@ -11,9 +11,9 @@
                 <h3 class="mb-3" onclick="window.history.back()" style="cursor: pointer;">OverBurden & Coal getting</h3>
 
 
-{{-- Success Notification --}}
-@if (session('success'))
-<div id="notif-success" style="
+                {{-- Success Notification --}}
+                @if (session('success'))
+                <div id="notif-success" style="
                 position: fixed;
                 top: 20px;
                 right: 20px;
@@ -26,13 +26,13 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    {{ session('success') }}
-</div>
-@endif
+                    {{ session('success') }}
+                </div>
+                @endif
 
-{{-- Error Notification --}}
-@if ($errors->any())
-<div id="notif-error" style="
+                {{-- Error Notification --}}
+                @if ($errors->any())
+                <div id="notif-error" style="
                 position: fixed;
                 top: 60px; /* Biar nggak nabrak success */
                 right: 20px;
@@ -45,32 +45,32 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    <ul style="margin: 0; padding-left: 20px;">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
 
-{{-- Script untuk menghilangkan notifikasi --}}
-<script>
-    setTimeout(function() {
-        let notifSuccess = document.getElementById("notif-success");
-        let notifError = document.getElementById("notif-error");
+                {{-- Script untuk menghilangkan notifikasi --}}
+                <script>
+                    setTimeout(function() {
+                        let notifSuccess = document.getElementById("notif-success");
+                        let notifError = document.getElementById("notif-error");
 
-        if (notifSuccess) {
-            notifSuccess.style.opacity = '0';
-            setTimeout(() => notifSuccess.remove(), 500);
-        }
+                        if (notifSuccess) {
+                            notifSuccess.style.opacity = '0';
+                            setTimeout(() => notifSuccess.remove(), 500);
+                        }
 
-        if (notifError) {
-            notifError.style.opacity = '0';
-            setTimeout(() => notifError.remove(), 500);
-        }
-    }, 3000);
-</script>
+                        if (notifError) {
+                            notifError.style.opacity = '0';
+                            setTimeout(() => notifError.remove(), 500);
+                        }
+                    }, 3000);
+                </script>
 
 
                 <form action="{{ route('updateovercoal',$data->id) }}" method="post" enctype="multipart/form-data">
@@ -126,14 +126,15 @@
 
                     <!-- Buttons for Plan and Actual -->
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="button" id="planBtn" class="btn btn-custom">Add Plan</button>
-                        <button type="button" id="actualBtn" class="btn btn-custom ml-2">Add Actual</button>
+                        <button type="button" id="planBtn" class="btn ">Add Plan</button>
+                        <button type="button" id="actualBtn" class="btn ">Add Actual</button>
                     </div>
 
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn-block btn-lg gradient-custom-4"
                             style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
-                            border-radius: 5px; font-weight: bold;"">Update</button>                    </div>
+                            border-radius: 5px; font-weight: bold;"">Update</button>                    
+                            </div>
                 </form>
             </div>
         </div>
@@ -172,20 +173,19 @@
     // Menentukan input mana yang pertama kali tampil berdasarkan kondisi nilai
     window.onload = function() {
         const planValue = " {{ $data->nominalplan }}";
-        const actualValue="{{ $data->nominalactual }}" ;
-        const fileValue="{{ $data->file}}" ; // file
-        if (planValue && !actualValue && !fileValue) {
-            document.getElementById('planBtn').click();
-        } else if (planValue && fileValue && !actualValue) {
-            document.getElementById('planFileBtn').click();
-        } else if (actualValue) {
-            document.getElementById('actualBtn').click();
-        }
-        
-        
-    };
-    
-    
-</script>
-@endsection
-                            
+                            const actualValue="{{ $data->nominalactual }}" ;
+                            const fileValue="{{ $data->file}}" ; // file
+                            if (planValue && !actualValue && !fileValue) {
+                            document.getElementById('planBtn').click();
+                            } else if (planValue && fileValue && !actualValue) {
+                            document.getElementById('planFileBtn').click();
+                            } else if (actualValue) {
+                            document.getElementById('actualBtn').click();
+                            }
+
+
+                            };
+
+
+                            </script>
+                            @endsection
