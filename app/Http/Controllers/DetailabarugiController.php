@@ -149,42 +149,54 @@ class DetailabarugiController extends Controller
         // dd($actuallb );
 
         $totalnetprofitplan = (clone $query)
-            ->where('jenis_labarugis.name', 'Net Profit')
-            ->orderBy('id')
-            ->get()
-            ->filter(function ($item) {
-                return floatval(str_replace(',', '', $item->nominalplan)) != 0;
-            })
-            ->values() 
-            ->reduce(function ($carry, $item) {
-                $nominal = floatval(str_replace(',', '', $item->nominalplan));
-
-                if (is_null($carry)) {
-                    return $nominal;
-                }
-
-                return $carry - $nominal;
-            });
-
-
+        ->where('jenis_labarugis.name', 'Net Profit')
+        ->orderBy('id')
+        ->get()
+        ->values() 
+        ->reduce(function ($carry, $item) {
+            $nominal = floatval(str_replace(',', '', $item->nominalplan));
+    
+            if (is_null($carry)) {
+                return $nominal;
+            }
+    
+            return $carry - $nominal;
+        });
 
         $totalactualnetprofit = (clone $query)
-            ->where('jenis_labarugis.name', 'Net Profit')
-            ->orderBy('id')
-            ->get()
-            ->filter(function ($item) {
-                return floatval(str_replace(',', '', $item->nominalactual)) != 0;
-            })
-            ->values() 
-            ->reduce(function ($carry, $item) {
-                $nominal = floatval(str_replace(',', '', $item->nominalactual));
+        ->where('jenis_labarugis.name', 'Net Profit')
+        ->orderBy('id')
+        ->get()
+        ->values() 
+        ->reduce(function ($carry, $item) {
+            $nominal = floatval(str_replace(',', '', $item->nominalactual));
+    
+            if (is_null($carry)) {
+                return $nominal;
+            }
+    
+            return $carry - $nominal;
+        });
+    
 
-                if (is_null($carry)) {
-                    return $nominal;
-                }
 
-                return $carry - $nominal;
-            });
+        // $totalactualnetprofit = (clone $query)
+        //     ->where('jenis_labarugis.name', 'Net Profit')
+        //     ->orderBy('id')
+        //     ->get()
+        //     ->filter(function ($item) {
+        //         return floatval(str_replace(',', '', $item->nominalactual)) != 0;
+        //     })
+        //     ->values() 
+        //     ->reduce(function ($carry, $item) {
+        //         $nominal = floatval(str_replace(',', '', $item->nominalactual));
+
+        //         if (is_null($carry)) {
+        //             return $nominal;
+        //         }
+
+        //         return $carry - $nominal;
+        //     });
 
 
 

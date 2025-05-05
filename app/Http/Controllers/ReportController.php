@@ -136,8 +136,8 @@ class ReportController extends Controller
         $totalactualequity = abs($equitytotal['credit_actual'] - $equitytotal['debit_actual']);
         $totalplanmodalhutang = abs($totalplanliabiliti + $totalplanequity); //plan
         $totalactualmodalhutang = $totalactualliabiliti + $totalactualequity; //actual
-        $actuallavarge = $totalactualequity ? round(($totalactualliabiliti / $totalactualequity) * 100, 2) : 0;
-        $planlavarge = $totalactualequity ? round(($totalplanliabiliti / $totalplanequity) * 100, 2) : 0;
+        $planlavarge = $totalplanliabiliti ? round(($totalplanequity / $totalplanliabiliti) * 100, 2) : 0;
+        $actuallavarge = $totalactualliabiliti ? round(($totalactualequity / $totalactualliabiliti) * 100, 2) : 0;
 
         // dd($totalactualliabiliti,  $totalactualequity);
 
@@ -297,39 +297,33 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
-        $totalnetprofitplan = (clone $query)
+            $totalnetprofitplan = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
+            ->orderBy('id')
             ->get()
-            ->filter(function ($item) {
-                return floatval(str_replace(',', '', $item->nominalplan)) != 0;
-            })
-            ->values()
+            ->values() 
             ->reduce(function ($carry, $item) {
                 $nominal = floatval(str_replace(',', '', $item->nominalplan));
-
+        
                 if (is_null($carry)) {
                     return $nominal;
                 }
-
+        
                 return $carry - $nominal;
             });
-
-
-
-        $totalactualnetprofit = (clone $query)
+    
+            $totalactualnetprofit = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
+            ->orderBy('id')
             ->get()
-            ->filter(function ($item) {
-                return floatval(str_replace(',', '', $item->nominalactual)) != 0;
-            })
-            ->values()
+            ->values() 
             ->reduce(function ($carry, $item) {
                 $nominal = floatval(str_replace(',', '', $item->nominalactual));
-
+        
                 if (is_null($carry)) {
                     return $nominal;
                 }
-
+        
                 return $carry - $nominal;
             });
 
@@ -1156,6 +1150,7 @@ class ReportController extends Controller
             'indexdomestik',
             //lavarge
             'planlavarge',
+            'actuallavarge',
             //net profit
             'vertalactualnetprofit',
             'vertikalplanetprofit',
@@ -1163,7 +1158,6 @@ class ReportController extends Controller
             'resultlearning',
             'totals',
             //neraca
-            'actuallavarge',
             'planreturnonasset',
             'actualreturnonasset',
             'indexactualasset',
