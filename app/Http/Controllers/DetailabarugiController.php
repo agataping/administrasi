@@ -64,9 +64,11 @@ class DetailabarugiController extends Controller
             $query->whereBetween('detailabarugis.tanggal', [$startDateFormatted, $endDateFormatted]);
         }
         // $query->orderBy('detailabarugis.tanggal', 'asc');
-        $data = $query->orderBy('category_labarugis.created_at', 'asc')
+        $data = $query->orderBy('category_labarugis.id', 'asc')
             ->get()
             ->groupBy(['jenis_name', 'kategori_name']);
+                        // dd($query->orderBy('category_labarugis.id', 'asc')->get());
+
         $data->each(function ($items) {
             $items->each(function ($subItems) {
                 $subItems->each(function ($item) {
