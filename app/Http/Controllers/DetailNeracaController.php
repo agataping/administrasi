@@ -54,16 +54,17 @@ class DetailNeracaController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('detail_neracas.tanggal', [$startDate, $endDate]);
+        if ($startDate && $endDate) {
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+        
+            $query->whereBetween('detail_neracas.tanggal', [$startDateFormatted, $endDateFormatted]);
         }
+        
         $data = $query->orderBy('jenis_neracas.created_at', 'asc')
             ->get()
             ->groupBy(['jenis_name', 'category', 'sub_category']);
-            // dd($data);
+        
 
         $totalPerJenis = [];
         $totalPlan = [

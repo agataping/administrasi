@@ -317,11 +317,6 @@
                                 @endif
                                 @endforeach
                                 <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
-                                    <th style="text-align: start;" colspan="2">Control Plan</th>
-                                    <th colspan="2">{{ $noteplan }}</th>
-                                    <th colspan="6"></th>
-                                </tr>
-                                <tr style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                     <th style="text-align: start;" colspan="2">Control Actual</th>
                                     <th colspan="2">{{ $noteactual }}</th>
                                     <th colspan="6"></th>
