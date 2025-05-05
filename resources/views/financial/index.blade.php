@@ -160,12 +160,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-
                                 @foreach ($data as $jenis_name => $categories)
+                                @php $categorynumber = 1; @endphp
                                 @foreach ($categories as $category => $sub_categories)
-
                                 <tr>
-                                    <th style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                                    <th style="vertical-align: middle;">{{ $categorynumber }}</th>
                                     <td colspan="" class=""><strong>{{ $category }}</strong></td>
                                     <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['debit'] ?? 0, 2) }}</strong></td>
                                     <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['credit'] ?? 0, 2) }}</strong></td>
@@ -181,10 +180,11 @@
                                     </td>
                                 </tr>
 
+                                @php $subCounter = 1; @endphp
                                 @foreach ($sub_categories as $sub_category => $details)
                                 <tr data-bs-toggle="collapse" data-bs-target="#detail-{{ Str::slug($details->first()->sub_category, '-') }}" style="cursor: pointer;">
 
-                                    <td>{{ $loop->parent ? $loop->parent->iteration : '0' }}.{{ $loop->iteration }}</td>
+                                     <td>{{ $categorynumber }}.{{ $subCounter }}</td>
                                     <td colspan="">
                                         {{ $sub_category }}
 
@@ -214,9 +214,11 @@
                                 <tr id="detail-{{ Str::slug($details->first()->sub_category, '-') }}" class="d-none">
                                     <td colspan="9">
                                         <table class="table table-bordered">
+                                        @php $detailnumber = 1; @endphp
+
                                             @foreach ($details as $detail)
                                             <tr>
-                                                <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
+                                            <td>{{ $categorynumber }}.{{ $subCounter }}.{{ $detailnumber }}</td>
                                                 <td>{{ $detail->name }}</td>
                                                 <td style="text-align: end;">{{ number_format($detail->debit,2 ) }}</td>
                                                 <td style="text-align: end;">{{ number_format($detail->credit,2 ) }}</td>
@@ -254,12 +256,18 @@
                                                     </form>
                                                 </td>
                                             </tr>
+                                            @php $detailnumber++; @endphp
                                             @endforeach
+
                                         </table>
                                     </td>
                                 </tr>
+                                @php $subCounter++; @endphp
                                 @endforeach
+
+                                @php $categorynumber++; @endphp
                                 @endforeach
+
                                 <tr>
                                     <!-- <td colspan="5" class="table-primary"><strong>{{ $jenis_name }}</strong></td> -->
                                     @if ($jenis_name === 'FIX ASSETS')
