@@ -436,13 +436,13 @@ class ReportController extends Controller
 
         // Perhitungan persen actual dan index result (index * weight)
         $actualreturnonasset = ($ongkosactual != 0) ? round(($totalactualasset / $ongkosactual) * 100, 2) : 0;/* asset*/
-        $persenactualasset = ($totalactualasset != 0) ? round(($totalactualnetprofit / $totalactualasset) * 100, 2) : 0;/* asset*/
+        $persenactualasset = ($totalactualasset != 0) ? round(($totalactuallb / $totalactualasset) * 100, 2) : 0;/* asset*/
         $indexactualasset = ($actualreturnonasset != 0) ? round(($persenassetplan / $actualreturnonasset) * 100, 2) : 0;
         // dd( $actualreturnonasset,$indexactualasset,$ongkosactual,$totalactualasset);
 
         $resultasset = round($indexactualasset * ($weightasset / 100), 2);
         $actualreturnonequaity = ($ongkosactual != 0) ? round(($totalactualmodalhutang / $ongkosactual) * 100, 2) : 0;/* liabiliti equity*/
-        $persenactualmodalhutang = ($totalactualequity != 0) ? round(($totalactualnetprofit / $totalactualequity) * 100, 2) : 0;/* liabiliti equity*/
+        $persenactualmodalhutang = ($totalactualequity != 0) ? round(($totalactuallb / $totalactualequity) * 100, 2) : 0;/* liabiliti equity*/
 
         $indexmodalhutangactual = ($actualreturnonequaity != 0) ? round(($persenmodalhutangplan / $actualreturnonequaity) * 100, 2) : 0;
         // $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity / $persenmodalhutangplan) * 100, 2) : 0;
