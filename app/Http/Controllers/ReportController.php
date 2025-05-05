@@ -291,6 +291,13 @@ class ReportController extends Controller
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
 
+        $actualoperasional = (clone $query)
+            ->where('jenis_labarugis.name', 'Operating Profit')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalactual ?? 0);
+            });
+
         $totalnetprofitplan = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
             ->get()
@@ -303,7 +310,6 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
             });
-
         // Menghitung Net Profit (Laba Bersih)
         $planlb = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
@@ -342,7 +348,7 @@ class ReportController extends Controller
         // dd($actualoppersen);
 
         //lababersih
-        $totalplanlb = $planlb - $planoperasional;
+        $totalplanlb =  $totalplanlp -$planlb ;
         $totalactuallb = $totalactuallr + $actualoperasional - $actuallb;
         $verticallb = $totalRevenuep ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0; //plan
         $verticalslb = $totalRevenuea ? round(($totalactuallb / $totalRevenuea) * 100, 2) : 0; //actual
