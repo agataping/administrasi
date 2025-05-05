@@ -61,7 +61,7 @@ class DetailNeracaController extends Controller
             $query->whereBetween('detail_neracas.tanggal', [$startDateFormatted, $endDateFormatted]);
         }
         
-        $data = $query->orderBy('jenis_neracas.created_at', 'asc')
+        $data = $query->orderBy('jenis_neracas.id', 'asc')
             ->get()
             ->groupBy(['jenis_name', 'category', 'sub_category']);
             dd($query->orderBy('jenis_neracas.created_at', 'asc')->get());
