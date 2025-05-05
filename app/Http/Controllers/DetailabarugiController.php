@@ -67,7 +67,7 @@ class DetailabarugiController extends Controller
         $data = $query->orderBy('category_labarugis.id', 'asc')
             ->get()
             ->groupBy(['jenis_name', 'kategori_name']);
-                        // dd($query->orderBy('category_labarugis.id', 'asc')->get());
+                        // dd($query->orderBy('jenis_neracas.created_at', 'asc')->get());
 
         $data->each(function ($items) {
             $items->each(function ($subItems) {

@@ -160,14 +160,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                $loopnumber = 1;
-                                @endphp
+
                                 @foreach ($data as $jenis_name => $categories)
                                 @foreach ($categories as $category => $sub_categories)
 
                                 <tr>
-                                    <th style="vertical-align: middle;">{{ $loopnumber }}</th>
+                                    <th style="vertical-align: middle;">{{ $loop->iteration }}</th>
                                     <td colspan="" class=""><strong>{{ $category }}</strong></td>
                                     <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['debit'] ?? 0, 2) }}</strong></td>
                                     <td style="text-align: end;"><strong>{{ number_format($categoryTotals[$category]['credit'] ?? 0, 2) }}</strong></td>
@@ -182,9 +180,7 @@
                                         </form>
                                     </td>
                                 </tr>
-                                @php
-                                $loopnumber++;
-                                @endphp
+
                                 @foreach ($sub_categories as $sub_category => $details)
                                 <tr data-bs-toggle="collapse" data-bs-target="#detail-{{ Str::slug($details->first()->sub_category, '-') }}" style="cursor: pointer;">
 
