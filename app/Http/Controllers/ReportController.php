@@ -291,38 +291,17 @@ class ReportController extends Controller
                 return (float)str_replace(',', '', $item->nominalplan ?? 0);
             });
 
-        $actualoperasional = (clone $query)
-            ->where('jenis_labarugis.name', 'Operating Profit')
+        $totalnetprofitplan = (clone $query)
+            ->where('jenis_labarugis.name', 'Net Profit')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalplan ?? 0);
+            });
+        $totalactualnetprofit = (clone $query)
+            ->where('jenis_labarugis.name', 'Net Profit')
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->nominalactual ?? 0);
-            });
-            $totalnetprofitplan = (clone $query)
-            ->where('jenis_labarugis.name', 'Net Profit')
-            ->get()
-            ->values() 
-            ->reduce(function ($carry, $item) {
-                $nominal = floatval(str_replace(',', '', $item->nominalplan));
-        
-                if (is_null($carry)) {
-                    return $nominal;
-                }
-        
-                return $carry - $nominal;
-            });
-    
-            $totalactualnetprofit = (clone $query)
-            ->where('jenis_labarugis.name', 'Net Profit')
-            ->get()
-            ->values() 
-            ->reduce(function ($carry, $item) {
-                $nominal = floatval(str_replace(',', '', $item->nominalactual));
-        
-                if (is_null($carry)) {
-                    return $nominal;
-                }
-        
-                return $carry - $nominal;
             });
 
         // Menghitung Net Profit (Laba Bersih)
@@ -364,7 +343,7 @@ class ReportController extends Controller
 
         //lababersih
         $totalplanlb = $planlb - $planoperasional;
-        $totalactuallb = $actualoperasional - $actuallb;
+        $totalactuallb = $totalactuallr + $actualoperasional - $actuallb;
         $verticallb = $totalRevenuep ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0; //plan
         $verticalslb = $totalRevenuea ? round(($totalactuallb / $totalRevenuea) * 100, 2) : 0; //actual
         $deviasilb = $totalplanlb - $totalactuallb;
@@ -416,13 +395,13 @@ class ReportController extends Controller
 
         // Perhitungan persen revenue dan weight (plan)
 
-        $planreturnonasset = ($totalplanasset != 0) ? round(($totalnetprofitplan / $totalplanasset) * 100, 2) : 0;/* asset*/
+        $planreturnonasset = ($totalplanasset != 0) ? round(($totalplanlb / $totalplanasset) * 100, 2) : 0;/* asset*/
         $persenassetplan = ($ongkosplan != 0) ? round(($totalplanasset / $ongkosplan) * 100, 2) : 0;/* asset*/
         $weightasset = round(($persenassetplan / 35.00) * 100, 2);
         // dd( $weightasset,$totalplanasset,$ongkosplan,$persenassetplan);
 
 
-        $persenreturnonequity = ($totalplanequity  != 0) ? round(($totalnetprofitplan / $totalplanequity ) * 100, 2) : 0;/* libili equaity*/
+        $persenreturnonequity = ($totalplanequity  != 0) ? round(($totalplanlb / $totalplanequity) * 100, 2) : 0;/* libili equaity*/
         $persenmodalhutangplan = ($ongkosplan != 0) ? round(($totalplanmodalhutang / $ongkosplan) * 100, 2) : 0;/* asset*/
         $weightmodalhutang = round(($persenmodalhutangplan / 35.00) * 100, 2);
         // dd( $weightmodalhutang,$persenmodalhutangplan,$ongkosplan,$totalplanmodalhutang);
@@ -642,7 +621,7 @@ class ReportController extends Controller
         $indexcoalgetting = ($totalPlancoal != 0) ? round($totalActualcoal / $totalPlancoal, 2) : 0;
         $resultcoal = round(($indexcoalgetting * 0.02), 2); //result coal
         $resultcoalmt = round(($indexcoalgetting * 0.03), 2); //result coal mt
-        
+
         // Inisialisasi total nilai untuk Over Burden
         $totalPlanob = $data->where('kategori_name', 'Over Burden')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
@@ -758,7 +737,7 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace(',', '', $item->plan ?? 0);
             });
-            
+
         $resultua = round(($indexoverburder * 0.04), 2); //result PA
         // dd($totalactualuaunithauler);
 
@@ -1119,10 +1098,10 @@ class ReportController extends Controller
         $totalactualfuel = $data->sum(function ($p) {
             return (float) str_replace(',', '', $p->actual ?? 0);
         });
-        $resultfuel= round(($indexoverburder * 0.03), 2); //result fuel
-        $resultIPP=$resultcoal+$resultob+$resultewh+$resultua+$resultpa+$resultfuel+$resultcoalmt+$resultobbcm+$resultmining;
+        $resultfuel = round(($indexoverburder * 0.03), 2); //result fuel
+        $resultIPP = $resultcoal + $resultob + $resultewh + $resultua + $resultpa + $resultfuel + $resultcoalmt + $resultobbcm + $resultmining;
         $totalresultIPP = round(($totalindexfinancial / 30.00) * 100, 2);
-        $totalresultcompany= round(($totalresultfinancial+$totalresultcostumer+$totalresultIPP+$resultlearning)/4,2);
+        $totalresultcompany = round(($totalresultfinancial + $totalresultcostumer + $totalresultIPP + $resultlearning) / 4, 2);
         // dd($totalresultcompany);
 
 

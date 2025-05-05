@@ -150,36 +150,18 @@ class DetailabarugiController extends Controller
             });
         // dd($actuallb );
 
-        $totalnetprofitplan = (clone $query)
-        ->where('jenis_labarugis.name', 'Net Profit')
-        ->orderBy('id')
-        ->get()
-        ->values() 
-        ->reduce(function ($carry, $item) {
-            $nominal = floatval(str_replace(',', '', $item->nominalplan));
-    
-            if (is_null($carry)) {
-                return $nominal;
-            }
-    
-            return $carry - $nominal;
-        });
-
+        $totalnetprofitplan= (clone $query)
+            ->where('jenis_labarugis.name', 'Net Profit')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalplan ?? 0);
+            });
         $totalactualnetprofit = (clone $query)
-        ->where('jenis_labarugis.name', 'Net Profit')
-        ->orderBy('id')
-        ->get()
-        ->values() 
-        ->reduce(function ($carry, $item) {
-            $nominal = floatval(str_replace(',', '', $item->nominalactual));
-    
-            if (is_null($carry)) {
-                return $nominal;
-            }
-    
-            return $carry - $nominal;
-        });
-    
+            ->where('jenis_labarugis.name', 'Net Profit')
+            ->get()
+            ->sum(function ($item) {
+                return (float)str_replace(',', '', $item->nominalactual ?? 0);
+            });
 
 
         // $totalactualnetprofit = (clone $query)
@@ -230,7 +212,8 @@ class DetailabarugiController extends Controller
         $totalplanlb = floatval($totalplanlp ?? 0) - floatval($planlb ?? 0);
         // dd($totalplanlb,$totalplanlp,$planlb );
 
-        $totalactuallb = $actualoperasional - $actuallb;
+        $totalactuallb = $totalactuallr+$actualoperasional - $actuallb;
+        // dd($totalactualOp,$actualoperasional);
         $verticallb = ($totalRevenuep) ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0;
         $verticalslb = ($totalRevenuea) ? round(($totalactuallb / $totalRevenuea) * 100, 2) : 0;
         $deviasilb = $totalplanlb - $totalactuallb;
