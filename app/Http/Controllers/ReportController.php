@@ -136,8 +136,8 @@ class ReportController extends Controller
         $totalactualequity = abs($equitytotal['credit_actual'] - $equitytotal['debit_actual']);
         $totalplanmodalhutang = abs($totalplanliabiliti + $totalplanequity); //plan
         $totalactualmodalhutang = $totalactualliabiliti + $totalactualequity; //actual
-        $planlavarge = $totalplanliabiliti ? round(($totalplanequity / $totalplanliabiliti) * 100, 2) : 0;
-        $actuallavarge = $totalactualliabiliti ? round(($totalactualequity / $totalactualliabiliti) * 100, 2) : 0;
+        $planlavarge = $totalplanequity ? round(($totalplanliabiliti / $totalplanequity) * 100, 2) : 0;
+        $actuallavarge = $totalactualequity ? round(($totalactualliabiliti / $totalactualequity) * 100, 2) : 0;
 
         // dd($totalactualliabiliti,  $totalactualequity);
 
@@ -299,7 +299,6 @@ class ReportController extends Controller
             });
             $totalnetprofitplan = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
-            ->orderBy('id')
             ->get()
             ->values() 
             ->reduce(function ($carry, $item) {
@@ -314,7 +313,6 @@ class ReportController extends Controller
     
             $totalactualnetprofit = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
-            ->orderBy('id')
             ->get()
             ->values() 
             ->reduce(function ($carry, $item) {
@@ -424,7 +422,7 @@ class ReportController extends Controller
         // dd( $weightasset,$totalplanasset,$ongkosplan,$persenassetplan);
 
 
-        $persenreturnonequity = ($totalplanmodalhutang != 0) ? round(($totalnetprofitplan / $totalplanmodalhutang) * 100, 2) : 0;/* libili equaity*/
+        $persenreturnonequity = ($totalplanequity  != 0) ? round(($totalnetprofitplan / $totalplanequity ) * 100, 2) : 0;/* libili equaity*/
         $persenmodalhutangplan = ($ongkosplan != 0) ? round(($totalplanmodalhutang / $ongkosplan) * 100, 2) : 0;/* asset*/
         $weightmodalhutang = round(($persenmodalhutangplan / 35.00) * 100, 2);
         // dd( $weightmodalhutang,$persenmodalhutangplan,$ongkosplan,$totalplanmodalhutang);
