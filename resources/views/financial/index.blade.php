@@ -160,8 +160,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($data as $jenis_name => $categories)
                                 @php $categorynumber = 1; @endphp
+                                @foreach ($data as $jenis_name => $categories)
                                 @foreach ($categories as $category => $sub_categories)
                                 <tr>
                                     <th style="vertical-align: middle;">{{ $categorynumber }}</th>
@@ -180,11 +180,10 @@
                                     </td>
                                 </tr>
 
-                                @php $subCounter = 1; @endphp
                                 @foreach ($sub_categories as $sub_category => $details)
                                 <tr data-bs-toggle="collapse" data-bs-target="#detail-{{ Str::slug($details->first()->sub_category, '-') }}" style="cursor: pointer;">
 
-                                     <td>{{ $categorynumber }}.{{ $subCounter }}</td>
+                                    <td>{{ $categorynumber }}.{{ $loop->iteration }}</td>
                                     <td colspan="">
                                         {{ $sub_category }}
 
@@ -214,11 +213,11 @@
                                 <tr id="detail-{{ Str::slug($details->first()->sub_category, '-') }}" class="d-none">
                                     <td colspan="9">
                                         <table class="table table-bordered">
-                                        @php $detailnumber = 1; @endphp
+                                            @php $detailnumber = 1; @endphp
 
                                             @foreach ($details as $detail)
                                             <tr>
-                                            <td>{{ $categorynumber }}.{{ $subCounter }}.{{ $detailnumber }}</td>
+                                                <td>{ $categorynumber }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} </td>
                                                 <td>{{ $detail->name }}</td>
                                                 <td style="text-align: end;">{{ number_format($detail->debit,2 ) }}</td>
                                                 <td style="text-align: end;">{{ number_format($detail->credit,2 ) }}</td>
@@ -256,16 +255,16 @@
                                                     </form>
                                                 </td>
                                             </tr>
-                                            @php $detailnumber++; @endphp
                                             @endforeach
 
                                         </table>
                                     </td>
                                 </tr>
-                                @php $subCounter++; @endphp
                                 @endforeach
 
-                                @php $categorynumber++; @endphp
+                                @php
+                                $categorynumber++; // Increment untuk kategori berikutnya
+                                @endphp
                                 @endforeach
 
                                 <tr>
