@@ -212,7 +212,7 @@ class DetailabarugiController extends Controller
         $totalplanlb = floatval($totalplanlp ?? 0) - floatval($planlb ?? 0);
         // dd($totalplanlb,$totalplanlp,$planlb );
 
-        $totalactuallb = $totalactuallr+$actualoperasional - $actuallb;
+        $totalactuallb = $totalactuallr+ - $actuallb -$actualoperasional;
         // dd($totalactualOp,$actualoperasional);
         $verticallb = ($totalRevenuep) ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0;
         $verticalslb = ($totalRevenuea) ? round(($totalactuallb / $totalRevenuea) * 100, 2) : 0;

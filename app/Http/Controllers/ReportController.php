@@ -349,7 +349,7 @@ class ReportController extends Controller
 
         //lababersih
         $totalplanlb =  $totalplanlp -$planlb ;
-        $totalactuallb = $totalactuallr + $actualoperasional - $actuallb;
+        $totalactuallb = $totalactuallr +  - $actuallb -$actualoperasional;
         $verticallb = $totalRevenuep ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0; //plan
         $verticalslb = $totalRevenuea ? round(($totalactuallb / $totalRevenuea) * 100, 2) : 0; //actual
         $deviasilb = $totalplanlb - $totalactuallb;
