@@ -103,16 +103,17 @@
                     @endif -->
 
                 <div class="" style="overflow-x:auto;">
+
                     <form method="GET" action="{{ route('indexmenu') }}" style="text-transform: uppercase; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                        <div style="display: flex; align-items: center; gap: 7px;">
+                    <div style="display: flex; align-items: center; gap: 7px;">
                             <label for="category" style="font-weight: bold;">Filter category:</label>
-                            <select name="kuota" id="category" class="form-control" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; min-width: 200px;">
+                            <select name="kuota" id="category" onchange="this.form.submit()" class="form-control" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; min-width: 200px;">
                                 <option value="">--All Categories --</option>
-                                <option value="Ekspor">Ekspor</option>
-                                <option value="Domestik">Domestik</option>
+                                <option value="Ekspor" {{ request('kuota') == 'Ekspor' ? 'selected' : '' }}>Ekspor</option>
+                                <option value="Domestik" {{ request('kuota') == 'Domestik' ? 'selected' : '' }}>Domestik</option>
                             </select>
-                        </div>
-                        <div>
+                        </div>   
+                    <div>
                             <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
                             <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}"
                                 style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
@@ -139,7 +140,7 @@
                             <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                                 <tr>
                                     <th rowspan="2" style="vertical-align: middle;">No</th>
-                                    <th rowspan="2" style="vertical-align: middle;">Data Date </th>                                 
+                                    <th rowspan="2" style="vertical-align: middle;">Data Date </th>
                                     <th rowspan="2" style="vertical-align: middle;">LAYCAN </th>
                                     <th rowspan="2" style="vertical-align: middle;">FILE </th>
                                     <th rowspan="2" style="vertical-align: middle;">KOUTA </th>
