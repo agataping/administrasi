@@ -338,7 +338,7 @@ class ReportController extends Controller
         $verticallp = $totalRevenuep ? round(($totalplanlp / $totalRevenuep) * 100, 2) : 0;
         $verticalop = $totalRevenuea ? round(($totalactualOp / $totalRevenuea) * 100, 2) : 0;
         // $vertikalactualop = ($totalRevenuea && $totalRevenuea != 0) ? round(($actualoperasional / $totalRevenuea) * 100, 2) : 0;
-
+            // dd($totalplanlp);
         // dd($totalRevenuea,$totalactualOp,$verticalop);
         $deviasiop = $totalplanlp - $totalactualOp;
         $persenop = $totalplanlp ? round(($totalactualOp / $totalplanlp) * 100, 2) : 0;
@@ -348,8 +348,10 @@ class ReportController extends Controller
         // dd($actualoppersen);
 
         //lababersih
-        $totalplanlb =  $totalplanlp -$planlb ;
+        $totalplanlb = floatval($totalplanlp ?? 0) - floatval($planlb ?? 0);
         $totalactuallb = $totalactuallr +  - $actuallb -$actualoperasional;
+        $verticallb = ($totalRevenuep) ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0;
+
         $verticallb = $totalRevenuep ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0; //plan
         $verticalslb = $totalRevenuea ? round(($totalactuallb / $totalRevenuea) * 100, 2) : 0; //actual
         $deviasilb = $totalplanlb - $totalactuallb;
@@ -1152,6 +1154,7 @@ class ReportController extends Controller
             'persenreturnonequity',
             'persenactualmodalhutang', //modal hutang
             //nama perusahaan
+
             'companyName',
             'user',
             'perusahaans',
@@ -1162,6 +1165,9 @@ class ReportController extends Controller
             // 'indexstockjetty',
             //cs perspect
             //financial weight & index 
+            'verticallb',
+            'verticalop',
+            'verticalslb',
             'totalresultfinancial',
             'weightrevenue',
             'weightcogs',
@@ -1186,7 +1192,6 @@ class ReportController extends Controller
             'totalvertikal',
             'totalvertikals',
             'persenlb', //laba rugi
-            'verticalop',
             'verticallp',
             'persenop', //Operating Profit Margin
             'verticalslb',
