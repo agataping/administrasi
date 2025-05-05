@@ -64,6 +64,7 @@ class DetailNeracaController extends Controller
         $data = $query->orderBy('jenis_neracas.created_at', 'asc')
             ->get()
             ->groupBy(['jenis_name', 'category', 'sub_category']);
+            dd($query->orderBy('jenis_neracas.created_at', 'asc')->get());
         
 
         $totalPerJenis = [];
