@@ -40,6 +40,15 @@ class BargingController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
+        }
+        $query->whereBetween('plan_bargings.tanggal', [$startDate, $endDate]);
+
         $data = $query->get();
         $data->each(function ($item) {
             $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
@@ -93,8 +102,8 @@ class BargingController extends Controller
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
-            $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
-        
+        $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
+
 
         $data = $query->get();
 
@@ -122,7 +131,7 @@ class BargingController extends Controller
         });
 
 
-        return view('barging.index', compact('endDate','startDate','totalplanbarging', 'data', 'quantity', 'deviasi', 'percen', 'perusahaans', 'companyId'));
+        return view('barging.index', compact('endDate', 'startDate', 'totalplanbarging', 'data', 'quantity', 'deviasi', 'percen', 'perusahaans', 'companyId'));
     }
 
 
@@ -164,8 +173,8 @@ class BargingController extends Controller
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
-            $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
-        
+        $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
+
 
         // Tambahkan Old Password:ori jika ada
         if ($kuota) {
@@ -199,7 +208,7 @@ class BargingController extends Controller
             return $d;
         });
 
-        return view('barging.indexmenu', compact('endDate','startDate','data', 'perusahaans', 'companyId', 'quantity', 'deviasi', 'percen'));
+        return view('barging.indexmenu', compact('endDate', 'startDate', 'data', 'perusahaans', 'companyId', 'quantity', 'deviasi', 'percen'));
     }
 
 
@@ -339,7 +348,7 @@ class BargingController extends Controller
     {
         $user = Auth::user();
         $tahun = Carbon::now()->year;
-        $kuota = $request->input('kuota'); 
+        $kuota = $request->input('kuota');
         $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
         $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
@@ -526,11 +535,11 @@ class BargingController extends Controller
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
-            $query->whereBetween('pica_bargings.tanggal', [$startDate, $endDate]);
-        
+        $query->whereBetween('pica_bargings.tanggal', [$startDate, $endDate]);
+
 
         $data = $query->get();
-        return view('picabarging.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
+        return view('picabarging.index', compact('startDate', 'endDate', 'data', 'perusahaans', 'companyId'));
     }
     public function formpicabarging()
     {

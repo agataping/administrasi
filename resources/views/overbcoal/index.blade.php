@@ -86,18 +86,18 @@
                         <div class="metrics-grid">
                             <div class="metric">
                                 <a href="/indexcoal" class="cardcost text-decoration-none">
-                                    <h4>Actual</h4>
-                                </a>
-                                <div class="percentage-box">
-                                    <strong></strong> <span>{{ number_format($totalActualcoal, 0, ',', '.') }}</span>
-                                </div>
-                            </div>
-                            <div class="metric">
-                                <a href="/indexcoal" class="cardcost text-decoration-none">
                                     <h4>Plan</h4>
                                 </a>
                                 <div class="percentage-box">
                                     <strong></strong> <span>{{ number_format($totalPlancoal, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <a href="/indexcoal" class="cardcost text-decoration-none">
+                                    <h4>Actual</h4>
+                                </a>
+                                <div class="percentage-box">
+                                    <strong></strong> <span>{{ number_format($totalActualcoal, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                             <div class="metric">

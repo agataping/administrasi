@@ -48,8 +48,8 @@ class OverberdenCoalController extends Controller
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
-            $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
-        
+        $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
+
 
         $data = $query->orderBy('kategori_overcoals.name')
             ->get()
@@ -83,7 +83,7 @@ class OverberdenCoalController extends Controller
         });
         // dd($totals);
 
-        return view('overbcoal.indexcoal', compact('startDate', 'endDate','totals', 'perusahaans', 'companyId'));
+        return view('overbcoal.indexcoal', compact('startDate', 'endDate', 'totals', 'perusahaans', 'companyId'));
     }
 
     public function indexob(Request $request)
@@ -288,13 +288,16 @@ class OverberdenCoalController extends Controller
         // Format nominal untuk menghapus koma
 
 
-        // Tentukan mana yang diset null
-        $validatedData['nominalplan'] = convertToCorrectNumber($validatedData['nominalplan']);
-        $validatedData['nominalactual'] = convertToCorrectNumber($validatedData['nominalactual']);
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filePath = $file->store('uploads', 'public');
             $validatedData['file'] = $filePath;
+        }
+        if (!$request->filled('nominalplan')) {
+            unset($validatedData['nominalplan']);
+        }
+        if (!$request->filled('nominalactual')) {
+            unset($validatedData['nominalactual']);
         }
         $validatedData['created_by'] = auth()->user()->username;
         $data = OverbardenCoal::create($validatedData);
@@ -337,13 +340,18 @@ class OverberdenCoalController extends Controller
         // Format nominal untuk menghapus koma
 
         // Tentukan mana yang diset null
-        $validatedData['nominalplan'] = convertToCorrectNumber($validatedData['nominalplan']);
-        $validatedData['nominalactual'] = convertToCorrectNumber($validatedData['nominalactual']);
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filePath = $file->store('uploads', 'public');
             $validatedData['file'] = $filePath;
         }
+        if (!$request->filled('nominalplan')) {
+            unset($validatedData['nominalplan']);
+        }
+        if (!$request->filled('nominalactual')) {
+            unset($validatedData['nominalactual']);
+        }
+        
 
         $validatedData['updated_by'] = auth()->user()->username;
 
@@ -500,7 +508,8 @@ class OverberdenCoalController extends Controller
         $user = Auth::user();
         $tahun = Carbon::now()->year;
         $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
-        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;        $companyId = $request->input('id_company');
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
+        $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
 
@@ -525,11 +534,11 @@ class OverberdenCoalController extends Controller
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
-        
+        $query->whereBetween('tanggal', [$startDate, $endDate]);
+
         $data = $query->get();
 
-        return view('picaobc.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
+        return view('picaobc.index', compact('startDate', 'endDate', 'data', 'perusahaans', 'companyId'));
     }
 
     public function formpicaobc()
@@ -625,12 +634,12 @@ class OverberdenCoalController extends Controller
         return redirect('/picaobc')->with('success', 'Data  berhasil Dihapus.');
     }
 }
-if (!function_exists('convertToCorrectNumber')) {
-    function convertToCorrectNumber($value)
-    {
-        if ($value === '' || $value === null) return 0;
-        $value = str_replace('.', '', $value);
-        $value = str_replace(',', '.', $value);
-        return floatval($value);
-    }
+function convertToCorrectNumber($value)
+{
+    if ($value === '' || $value === null) return 0;
+    $value = str_replace('.', '', $value);
+    $value = str_replace(',', '.', $value);
+    return floatval($value);
 }
+
+

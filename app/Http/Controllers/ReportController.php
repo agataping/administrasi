@@ -533,7 +533,14 @@ class ReportController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+        if (!empty($tahun)) {
+            $query->whereBetween('plan_bargings.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
+        }
+
         $data = $query->get();
+        $data->each(function ($item) {
+            $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+        });
         $totalplanbarging = $data->sum(function ($p) {
             return floatval(str_replace(['.', ','], ['', '.'], $p->nominal));
         });
@@ -603,9 +610,13 @@ class ReportController extends Controller
         //internal proses ob coal
         $query = DB::table('overberden_coal')
             ->join('kategori_overcoals', 'overberden_coal.kategori_id', '=', 'kategori_overcoals.id')
-            ->leftJoin('users', 'overberden_coal.created_by', '=', 'users.username')
+            ->join('users', 'overberden_coal.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
 
-            ->select('kategori_overcoals.name as kategori_name', 'overberden_coal.*');
+            ->select(
+                'kategori_overcoals.name as kategori_name',
+                'overberden_coal.*'
+            );
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
@@ -619,10 +630,17 @@ class ReportController extends Controller
             $query->whereBetween('overberden_coal.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
 
+
+
+        // Ambil data dari query
         $data = $query->get();
+
+        // Inisialisasi total nilai untuk Coal Getting
+
         $totalPlancoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
         });
+
         $totalActualcoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
