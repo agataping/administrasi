@@ -34,13 +34,12 @@
                 <form method="GET" action="{{ route('dashboardstockjt') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;" class="mt-3 filter-date">
                     <div>
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}"
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
                             style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
                     </div>
-
                     <div>
                         <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}"
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
                             style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
                     </div>
 

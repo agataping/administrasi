@@ -105,24 +105,23 @@
                 <div class="" style="overflow-x:auto;">
 
                     <form method="GET" action="{{ route('indexmenu') }}" style="text-transform: uppercase; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                    <div style="display: flex; align-items: center; gap: 7px;">
+                        <div style="display: flex; align-items: center; gap: 7px;">
                             <label for="category" style="font-weight: bold;">Filter category:</label>
                             <select name="kuota" id="category" onchange="this.form.submit()" class="form-control" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; min-width: 200px;">
                                 <option value="">--All Categories --</option>
                                 <option value="Ekspor" {{ request('kuota') == 'Ekspor' ? 'selected' : '' }}>Ekspor</option>
                                 <option value="Domestik" {{ request('kuota') == 'Domestik' ? 'selected' : '' }}>Domestik</option>
                             </select>
-                        </div>   
-                    <div>
+                        </div>
+                        <div>
                             <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}"
+                            <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
                                 style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
                         </div>
-
-                        <div style="display: flex; align-items: center; gap: 7px;">
-                            <label for="end_date" style="font-weight: bold;">End Date:</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; min-width: 200px;">
+                        <div>
+                            <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                            <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
+                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
                         </div>
                         <button type="submit"
                             style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">

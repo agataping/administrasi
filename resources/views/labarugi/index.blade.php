@@ -13,8 +13,8 @@
                 <h3 class="mb-3">Profit & Loss</h3>
 
                 {{-- Success Notification --}}
-@if (session('success'))
-<div id="notif-success" style="
+                @if (session('success'))
+                <div id="notif-success" style="
                 position: fixed;
                 top: 20px;
                 right: 20px;
@@ -27,13 +27,13 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    {{ session('success') }}
-</div>
-@endif
+                    {{ session('success') }}
+                </div>
+                @endif
 
-{{-- Error Notification --}}
-@if ($errors->any())
-<div id="notif-error" style="
+                {{-- Error Notification --}}
+                @if ($errors->any())
+                <div id="notif-error" style="
                 position: fixed;
                 top: 60px; /* Biar nggak nabrak success */
                 right: 20px;
@@ -46,14 +46,14 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    <ul style="margin: 0; padding-left: 20px;">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
-               
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
                 <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('categorylabarugi') }}" method="get">
@@ -104,17 +104,18 @@
                     <form method="GET" action="{{ route('labarugi') }}" style="text-transform: uppercase; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                         <div>
                             <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}"
+                            <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
                                 style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
                         </div>
                         <div>
                             <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}"
+                            <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
                                 style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
                         </div>
                         <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                             Filter
                         </button>
+
 
                     </form>
                     <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..." style="margin-bottom: 10px; padding: 5px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
@@ -332,7 +333,7 @@
                                         {{ number_format($verticallp, 2) }}%
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
-                                        {{ number_format($totalactualOp, 2) }} 
+                                        {{ number_format($totalactualOp, 2) }}
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($verticalsp, 2) }}%
@@ -347,22 +348,18 @@
                                     @elseif (strtolower(trim($jenis['jenis_name'])) == 'net profit')
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($totalplanlb  , 2) }}
-                                        {{ number_format($totalnetprofitplan, 2) }}
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
 
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($verticallb , 2) }}%
-                                        {{ number_format($vertikalplanetprofit , 2) }}% 
                                     </th>
                                     <th colspan="" style="background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($totalactuallb, 2) }}
-                                        {{ number_format($totalactualnetprofit, 2) }}
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($verticalslb , 2) }}%
-                                        {{ number_format($vertalactualnetprofit , 2) }}%
                                     </th>
                                     <th colspan="" style="color:black; background-color:rgb(244, 244, 244); text-align: end;">
                                         {{ number_format($deviasilb, 2) }}
@@ -443,12 +440,12 @@
             tr[i].style.display = rowVisible ? "" : "none";
         }
     }
-    
+
     const list = document.getElementById('kategori-list');
 
     new Sortable(list, {
         animation: 150,
-        onEnd: function () {
+        onEnd: function() {
             const urutan = [];
             list.querySelectorAll('tr').forEach(tr => {
                 urutan.push(tr.dataset.kategori);
@@ -471,7 +468,6 @@
             });
         }
     });
-
 </script>
 
 @endsection

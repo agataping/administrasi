@@ -18,9 +18,9 @@ class PembebasanLahanController extends Controller
     public function indexPembebasanLahan(Request $request)
     {
         $user = Auth::user();
-
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -39,18 +39,22 @@ class PembebasanLahanController extends Controller
         }
 
 
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        
         $data = $query->get();
 
         $averageAchievement = $data->average(function ($item) {
             return (float)str_replace('%', '', $item->Achievement);
         });
 
-        return view('pembebasanlahan.index', compact('data', 'averageAchievement', 'perusahaans', 'companyId'));
+        return view('pembebasanlahan.index', compact('startDate', 'endDate', 'data', 'averageAchievement', 'perusahaans', 'companyId'));
     }
 
     public function formlahan()
@@ -145,8 +149,9 @@ if ($startDate && $endDate) {
     public function picapl(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -167,14 +172,18 @@ if ($startDate && $endDate) {
 
 
 
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        
         $data = $query->get();
 
-        return view('picapl.index', compact('data', 'perusahaans', 'companyId'));
+        return view('picapl.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
     }
 
     public function formpicapl()

@@ -21,8 +21,9 @@ class ProduksiController extends Controller
     public function indexpaua(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -69,12 +70,16 @@ class ProduksiController extends Controller
             }
         }
         // Tambahkan filter tanggal jika tersedia
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $queryPas->whereBetween('produksi_pas.date', [$startDate, $endDate]);
-            $queryUas->whereBetween('produksi_uas.date', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $queryPas->whereBetween('produksi_pas.date', [$startDate, $endDate]);
+        $queryUas->whereBetween('produksi_uas.date', [$startDate, $endDate]);
+
 
         // Ambil data produksi_pas dan produksi_uas terpisah
         $dataPas = $queryPas->orderBy('units.unit')->get()->groupBy('units');
@@ -123,8 +128,9 @@ class ProduksiController extends Controller
     {
         $user = Auth::user();
 
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('produksi_uas')
@@ -144,11 +150,15 @@ class ProduksiController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('produksi_uas.date', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('produksi_uas.date', [$startDate, $endDate]);
+
 
         $data = $query->orderBy('units.unit')
             ->get()
@@ -181,9 +191,9 @@ class ProduksiController extends Controller
     public function indexproduksipa(Request $request)
     {
         $user = Auth::user();
-
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -206,11 +216,15 @@ class ProduksiController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('produksi_pas.date', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('produksi_pas.date', [$startDate, $endDate]);
+
 
         $data = $query->orderBy('units.unit')
             ->get()
@@ -602,8 +616,9 @@ class ProduksiController extends Controller
     public function picapaua(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -621,16 +636,20 @@ class ProduksiController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
-        }
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
+        }            
+        $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        
 
         $data = $query->get();
 
 
-        return view('picapaua.index', compact('data', 'perusahaans', 'companyId'));
+        return view('picapaua.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
     }
 
     public function formpicapaua()

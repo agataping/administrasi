@@ -22,9 +22,11 @@ class DetailabarugiController extends Controller
     {
         $user = Auth::user();
 
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
+        $tahun = Carbon::now()->year;
+
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
         $data = detailabarugi::paginate(10);
@@ -55,19 +57,27 @@ class DetailabarugiController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
 
-            $query->whereBetween('detailabarugis.tanggal', [$startDateFormatted, $endDateFormatted]);
+        $tahun = Carbon::now()->year;
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+
+        $query->whereBetween('detailabarugis.tanggal', [$startDate, $endDate]);
+
         // $query->orderBy('detailabarugis.tanggal', 'asc');
-        $data = $query->orderBy('category_labarugis.id', 'asc')
+        $data = $query
+            ->orderBy('category_labarugis.id', 'asc')
+            ->orderBy('sub_labarugis.created_at', 'asc')
+            ->orderBy('detailabarugis.created_at', 'asc')
             ->get()
+
             ->groupBy(['jenis_name', 'kategori_name']);
-                        // dd($query->orderBy('jenis_neracas.created_at', 'asc')->get());
+        // dd($query->orderBy('jenis_neracas.created_at', 'asc')->get());
 
         $data->each(function ($items) {
             $items->each(function ($subItems) {
@@ -150,7 +160,7 @@ class DetailabarugiController extends Controller
             });
         // dd($actuallb );
 
-        $totalnetprofitplan= (clone $query)
+        $totalnetprofitplan = (clone $query)
             ->where('jenis_labarugis.name', 'Net Profit')
             ->get()
             ->sum(function ($item) {
@@ -212,7 +222,7 @@ class DetailabarugiController extends Controller
         $totalplanlb = floatval($totalplanlp ?? 0) - floatval($planlb ?? 0);
         // dd($totalplanlb,$totalplanlp,$planlb );
 
-        $totalactuallb = $totalactuallr+ - $actuallb -$actualoperasional;
+        $totalactuallb = $totalactuallr + -$actuallb - $actualoperasional;
         // dd($totalactualOp,$actualoperasional);
         $verticallb = ($totalRevenuep) ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0;
         $verticalslb = ($totalRevenuea) ? round(($totalactuallb / $totalRevenuea) * 100, 2) : 0;
@@ -294,6 +304,8 @@ class DetailabarugiController extends Controller
 
 
         return view('labarugi.index', compact(
+            'startDate',
+            'endDate',
             'totalactualnetprofit',
             'vertikalplanetprofit',
             'vertalactualnetprofit',
@@ -424,7 +436,9 @@ class DetailabarugiController extends Controller
             }
         }
 
-        $kat = $query->get();
+        $kat = $query
+        ->orderBy('category_labarugis.id', 'asc')
+        ->get();
 
         return view('labarugi.indexcategory', compact('kat', 'companyId', 'perusahaans'));
     }
@@ -500,7 +514,9 @@ class DetailabarugiController extends Controller
             }
         }
 
-        $kat = $query->get();
+        $kat = $query
+        ->orderBy('sub_labarugis.id', 'asc')
+        ->get();
         return view('labarugi.indexsub', compact('kat', 'companyId', 'perusahaans'));
     }
     public function sublr()
@@ -538,8 +554,9 @@ class DetailabarugiController extends Controller
     public function picalr(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -557,15 +574,19 @@ class DetailabarugiController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('tanggal', [$startDate, $endDate]);
+
 
         $data = $query->get();
 
-        return view('picakeuangan.index', compact('data', 'perusahaans', 'companyId'));
+        return view('picakeuangan.index', compact('startDate', 'endDate', 'data', 'perusahaans', 'companyId'));
     }
 
     public function formpicalr()

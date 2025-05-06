@@ -20,8 +20,10 @@ class BargingController extends Controller
     public function indexbarging(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('plan_bargings')
@@ -84,11 +86,15 @@ class BargingController extends Controller
         }
 
         // Filter berdasarkan tanggal jika ada input
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+            $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
+        
 
         $data = $query->get();
 
@@ -116,17 +122,18 @@ class BargingController extends Controller
         });
 
 
-        return view('barging.index', compact('totalplanbarging','data', 'quantity', 'deviasi', 'percen', 'perusahaans', 'companyId'));
+        return view('barging.index', compact('endDate','startDate','totalplanbarging', 'data', 'quantity', 'deviasi', 'percen', 'perusahaans', 'companyId'));
     }
 
 
     public function indexmenu(Request $request)
     {
         $user = Auth::user();
+        $tahun = Carbon::now()->year;
 
         $plan = planBargings::all();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $kuota = $request->input('kuota');
@@ -150,11 +157,15 @@ class BargingController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+            $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
+        
 
         // Tambahkan Old Password:ori jika ada
         if ($kuota) {
@@ -188,7 +199,7 @@ class BargingController extends Controller
             return $d;
         });
 
-        return view('barging.indexmenu', compact('data', 'perusahaans', 'companyId', 'quantity', 'deviasi', 'percen'));
+        return view('barging.indexmenu', compact('endDate','startDate','data', 'perusahaans', 'companyId', 'quantity', 'deviasi', 'percen'));
     }
 
 
@@ -327,9 +338,10 @@ class BargingController extends Controller
     public function indexPlan(Request $request)
     {
         $user = Auth::user();
-
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $kuota = $request->input('kuota'); 
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('plan_bargings')
@@ -346,6 +358,19 @@ class BargingController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+        if (!$startDate || !$endDate) {
+            $tahun = Carbon::now()->year;
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
+        }
+        $query->whereBetween('plan_bargings.tanggal', [$startDate, $endDate]);
+        if ($kuota && $kuota !== 'all') {
+            $query->where('plan_bargings.kuota', $kuota);
+        }
+
         $data = $query->get();
         $data->each(function ($item) {
             $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
@@ -472,8 +497,9 @@ class BargingController extends Controller
     public function indexpicabarging(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
 
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
@@ -493,14 +519,18 @@ class BargingController extends Controller
             }
         }
 
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('pica_bargings.tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+            $query->whereBetween('pica_bargings.tanggal', [$startDate, $endDate]);
+        
 
         $data = $query->get();
-        return view('picabarging.index', compact('data', 'perusahaans', 'companyId'));
+        return view('picabarging.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
     }
     public function formpicabarging()
     {

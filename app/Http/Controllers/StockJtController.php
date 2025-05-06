@@ -20,8 +20,9 @@ class StockJtController extends Controller
     public function dashboardstockjt(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('stock_jts')
@@ -37,11 +38,15 @@ class StockJtController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('stock_jts.date', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('stock_jts.date', [$startDate, $endDate]);
+
 
         $data = $query->get();
         $planNominal = $data->sum(function ($p) {
@@ -109,15 +114,16 @@ class StockJtController extends Controller
 
         $percen = ($planNominal != 0) ? ($stock_akhir / $planNominal) * 100 : 0;
         $grandTotal = optional($data->last())->stock_akhir ?? 0;
-        return view('stockjt.indexmenu', compact('data', 'akumulasiStokMasuk', 'totalHauling', 'grandTotal', 'perusahaans', 'companyId', 'planNominal', 'deviasi', 'percen'));
+        return view('stockjt.indexmenu', compact('startDate', 'endDate','data', 'akumulasiStokMasuk', 'totalHauling', 'grandTotal', 'perusahaans', 'companyId', 'planNominal', 'deviasi', 'percen'));
     }
 
 
     public function stockjt(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date') ?? date('Y-m-d');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -137,11 +143,15 @@ class StockJtController extends Controller
         }
 
         // Filter berdasarkan tanggal jika ada input
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('bargings.tanggal', [$startDate, $endDate]);
+
 
         $data = $query->get();
         $totalQuantity = 0;
@@ -177,16 +187,20 @@ class StockJtController extends Controller
         }
 
 
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted   = Carbon::parse($endDate)->endOfDay();
-
-            $query->where(function ($q) use ($startDateFormatted, $endDateFormatted) {
-                $q->whereBetween('stock_jts.date', [$startDateFormatted, $endDateFormatted])
-                    ->orWhere('stock_jts.sotckawal', '!=', null); 
-            })
-                ->orderBy('stock_jts.date', 'asc');
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+
+        $query->where(function ($q) use ($startDate, $endDate) {
+            $q->whereBetween('stock_jts.date', [$startDate, $endDate])
+                ->orWhere('stock_jts.sotckawal', '!=', null);
+        })
+            ->orderBy('stock_jts.date', 'asc');
+
 
 
         $data = $query->get();
@@ -258,7 +272,7 @@ class StockJtController extends Controller
         $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
         $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
 
-        return view('stockjt.index', compact(
+        return view('stockjt.index', compact('startDate', 'endDate',
             'data',
             'totalHauling',
             'grandTotal',
@@ -449,8 +463,10 @@ class StockJtController extends Controller
     public function picastockjt(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
+
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -469,16 +485,20 @@ class StockJtController extends Controller
                 $query->whereRaw('users.id_company', $companyId); // Mencegah admin melihat semua data secara default
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('tanggal', [$startDate, $endDate]);
+
 
         $data = $query->get();
 
 
-        return view('picastokjt.index', compact('data', 'perusahaans', 'companyId'));
+        return view('picastokjt.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
     }
 
     public function formpicasjt()

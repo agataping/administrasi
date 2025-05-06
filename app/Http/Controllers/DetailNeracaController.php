@@ -22,8 +22,9 @@ class DetailNeracaController extends Controller
     {
         $user = Auth::user();
 
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         // Query data
@@ -54,18 +55,24 @@ class DetailNeracaController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-        
-            $query->whereBetween('detail_neracas.tanggal', [$startDateFormatted, $endDateFormatted]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
-        
-        $data = $query->orderBy('jenis_neracas.id', 'asc')
+        $query->whereBetween('detail_neracas.tanggal', [$startDate, $endDate]);
+
+
+        $data = $query
+            ->orderBy('jenis_neracas.id', 'asc')
+            ->orderBy('sub_neracas.created_at', 'asc')
+            ->orderBy('detail_neracas.created_at', 'asc')
             ->get()
             ->groupBy(['jenis_name', 'category', 'sub_category']);
-            // dd($query->orderBy('jenis_neracas.created_at', 'asc')->get());
-        
+        // dd($query->orderBy('jenis_neracas.created_at', 'asc')->get());
+
 
         $totalPerJenis = [];
         $totalPlan = [
@@ -165,7 +172,7 @@ class DetailNeracaController extends Controller
                     $totals['credit_actual'] += (float)str_replace(',', '', $item->credit_actual ?? 0);
                     return $totals;
                 }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
-                // dd($liabilititotal);
+            // dd($liabilititotal);
             $totalplanliabiliti = $liabilititotal['credit'] - $liabilititotal['debit'];
             // $totalactualliabiliti = $liabilititotal['debit_actual']  - $liabilititotal ['credit_actual'];
             $totalactualliabiliti = abs($liabilititotal['credit_actual'] - $liabilititotal['debit_actual']);
@@ -181,13 +188,13 @@ class DetailNeracaController extends Controller
                     return $totals;
                 }, ['debit' => 0, 'credit' => 0, 'debit_actual' => 0, 'credit_actual' => 0]);
 
-            $totalplanequity = abs ($equitytotal['credit'] - $equitytotal['debit']);
+            $totalplanequity = abs($equitytotal['credit'] - $equitytotal['debit']);
             $totalactualequity = abs($equitytotal['credit_actual'] - $equitytotal['debit_actual']);
-            $totalplanmodalhutang = abs ($totalplanliabiliti + $totalplanequity); //plan
-            $totalactualmodalhutang = abs ($totalactualliabiliti + $totalactualequity); //actual
+            $totalplanmodalhutang = abs($totalplanliabiliti + $totalplanequity); //plan
+            $totalactualmodalhutang = abs($totalactualliabiliti + $totalactualequity); //actual
             // dd($totalplanmodalhutang,  $totalactualmodalhutang,$totalplanliabiliti , $totalplanequity);
             // Control Validasi Neraca
-            $controlplan =round($totalplanmodalhutang - $totalplanasset);
+            $controlplan = round($totalplanmodalhutang - $totalplanasset);
             $controlactual = round($totalactualmodalhutang - $totalactualasset);
 
             $noteplan = $controlplan == 0 ? "Valid" : "Invalid: $controlplan";
@@ -195,14 +202,28 @@ class DetailNeracaController extends Controller
             // dd($controlactual, $noteactual, $totalactualmodalhutang, $totalactualliabiliti, $totalplanliabiliti);
         }
         return view('financial.index', compact(
-            'totalplanfixasset', 'totalactualfixtasset', 
-            'totalplancurrentasset', 'totalactualcurrentasset', 
-            'totalplanasset', 'totalactualasset', 
-            'totalplanliabiliti', 'totalactualliabiliti', 
-            'totalplanequity', 'totalactualequity', 
-            'totalplanmodalhutang', 'totalactualmodalhutang', 
-            'noteplan', 'noteactual',
-            'categoryTotals', 'subCategoryTotals', 'data', 'perusahaans', 'startDate', 'endDate', 'companyId'));
+            'totalplanfixasset',
+            'totalactualfixtasset',
+            'totalplancurrentasset',
+            'totalactualcurrentasset',
+            'totalplanasset',
+            'totalactualasset',
+            'totalplanliabiliti',
+            'totalactualliabiliti',
+            'totalplanequity',
+            'totalactualequity',
+            'totalplanmodalhutang',
+            'totalactualmodalhutang',
+            'noteplan',
+            'noteactual',
+            'categoryTotals',
+            'subCategoryTotals',
+            'data',
+            'perusahaans',
+            'startDate',
+            'endDate',
+            'companyId'
+        ));
     }
     public function formfinanc(Request $request)
     {
@@ -355,7 +376,10 @@ class DetailNeracaController extends Controller
             }
         }
 
-        $kat = $query->get();
+        $kat = $query
+        ->orderBy('category_neracas.id', 'asc')
+
+        ->get();
 
         return view('financial.indexcategory', compact('kat', 'companyId', 'perusahaans'));
     }
@@ -462,7 +486,9 @@ class DetailNeracaController extends Controller
             }
         }
 
-        $kat = $query->get();
+        $kat = $query
+        ->orderBy('sub_neracas.id', 'asc')
+        ->get();
 
         return view('financial.indexsub', compact('kat', 'companyId', 'perusahaans'));
     }
@@ -568,7 +594,8 @@ class DetailNeracaController extends Controller
     }
 }
 if (!function_exists('convertToCorrectNumber')) {
-    function convertToCorrectNumber($value) {
+    function convertToCorrectNumber($value)
+    {
         if ($value === '' || $value === null) return 0;
         $value = str_replace('.', '', $value);
         $value = str_replace(',', '.', $value);

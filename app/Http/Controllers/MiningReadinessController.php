@@ -18,9 +18,9 @@ class MiningReadinessController extends Controller
     public function indexmining(Request $request)
     {
         $user = Auth::user();
-
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -39,11 +39,15 @@ class MiningReadinessController extends Controller
             }
         }
 
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('mining_readinesses.tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('mining_readinesses.tanggal', [$startDate, $endDate]);
+
         $data = $query->get();
 
 
@@ -90,7 +94,7 @@ if ($startDate && $endDate) {
             }
             return $items;
         });
-        return view('mining.index', compact('groupedData', 'totalAspect', 'perusahaans', 'companyId'));
+        return view('mining.index', compact('startDate', 'endDate', 'groupedData', 'totalAspect', 'perusahaans', 'companyId'));
     }
 
     public function FormKategori()
@@ -150,7 +154,7 @@ if ($startDate && $endDate) {
 
         return redirect('/indexmining')->with('success', 'Data savedsuccessfully.');
     }
-    public function deletecategorymining ($id)
+    public function deletecategorymining($id)
     {
         $data = KategoriMiniR::findOrFail($id);
         $oldData = $data->toArray();
@@ -176,10 +180,10 @@ if ($startDate && $endDate) {
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
         $query = DB::table('kategori_mini_r_s')
-        ->select('kategori_mini_r_s.*')
-        ->leftJoin('users', 'kategori_mini_r_s.created_by', '=', 'users.username')
-        ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id');
-    
+            ->select('kategori_mini_r_s.*')
+            ->leftJoin('users', 'kategori_mini_r_s.created_by', '=', 'users.username')
+            ->leftJoin('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
@@ -189,9 +193,9 @@ if ($startDate && $endDate) {
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-    
-        $data = $query->get(); 
-        
+
+        $data = $query->get();
+
         // dd($data);
         return view('mining.indexcategory', compact('data'));
     }
@@ -294,8 +298,9 @@ if ($startDate && $endDate) {
     public function picamining(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -314,14 +319,18 @@ if ($startDate && $endDate) {
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('tanggal', [$startDate, $endDate]);
+
         $data = $query->get();
 
-        return view('picamining.index', compact('data', 'perusahaans', 'companyId'));
+        return view('picamining.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
     }
 
     public function formpicamining()

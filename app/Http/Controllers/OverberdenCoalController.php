@@ -20,10 +20,9 @@ class OverberdenCoalController extends Controller
     public function indexcoal(Request $request)
     {
         $user = Auth::user();
-
-
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('overberden_coal')
@@ -42,11 +41,15 @@ class OverberdenCoalController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+            $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
+        
 
         $data = $query->orderBy('kategori_overcoals.name')
             ->get()
@@ -80,15 +83,16 @@ class OverberdenCoalController extends Controller
         });
         // dd($totals);
 
-        return view('overbcoal.indexcoal', compact('totals', 'perusahaans', 'companyId'));
+        return view('overbcoal.indexcoal', compact('startDate', 'endDate','totals', 'perusahaans', 'companyId'));
     }
 
     public function indexob(Request $request)
     {
         $user = Auth::user();
 
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         $query = DB::table('overberden_coal')
@@ -110,11 +114,15 @@ class OverberdenCoalController extends Controller
             }
         }
 
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
+
 
         $data = $query->orderBy('kategori_overcoals.name')
             ->get()
@@ -154,8 +162,9 @@ class OverberdenCoalController extends Controller
     {
         $user = Auth::user();
 
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -177,18 +186,22 @@ class OverberdenCoalController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+        $query->whereBetween('overberden_coal.tanggal', [$startDate, $endDate]);
+
 
 
         // Ambil data dari query
         $data = $query->get();
 
         // Inisialisasi total nilai untuk Coal Getting
-        
+
         $totalPlancoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalplan ?? 0);
         });
@@ -200,7 +213,7 @@ class OverberdenCoalController extends Controller
         //     $data->where('kategori_name', 'Coal Getting')->pluck('nominalplan'),
         //     $data->where('kategori_name', 'Coal Getting')->pluck('nominalactual')
         // );
-        
+
         // Hitung deviasi dan persen untuk Over Burden
         $deviationactual = $totalPlancoal - $totalActualcoal;
         $percentageactual = $totalPlancoal != 0 ? ($totalActualcoal / $totalPlancoal) * 100 : 0;
@@ -225,6 +238,8 @@ class OverberdenCoalController extends Controller
         $sractual = $totalActualcoal != 0 ? ($totalActualob / $totalActualcoal) * 100 : 0;
 
         return view('overbcoal.index', compact(
+            'startDate',
+            'endDate',
             'totalPlancoal',
             'totalActualcoal',
             'totalPlanob',
@@ -483,9 +498,9 @@ class OverberdenCoalController extends Controller
     public function picaobc(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $companyId = $request->input('id_company');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;        $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
 
@@ -503,14 +518,18 @@ class OverberdenCoalController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
-        if ($startDate && $endDate) {
-            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        
         $data = $query->get();
 
-        return view('picaobc.index', compact('data', 'perusahaans', 'companyId'));
+        return view('picaobc.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
     }
 
     public function formpicaobc()

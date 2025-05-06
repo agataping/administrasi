@@ -37,8 +37,9 @@ class PeopleReadinessController extends Controller
         $totalQuality = 0;
         $totalQuantity = 0;
         $count = 0;
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -56,11 +57,15 @@ class PeopleReadinessController extends Controller
             }
         }
 
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+        
 
         $data = $query->get();
 
@@ -94,7 +99,7 @@ if ($startDate && $endDate) {
         }
 
 
-        return view('peoplereadiness.index', compact('data', 'averageQuality', 'averageQuantity', 'tot', 'perusahaans', 'companyId'));
+        return view('peoplereadiness.index', compact('startDate', 'endDate','data', 'averageQuality', 'averageQuantity', 'tot', 'perusahaans', 'companyId'));
     }
 
     public function formPR()
@@ -213,8 +218,9 @@ if ($startDate && $endDate) {
     public function indexpicapeople(Request $request)
     {
         $user = Auth::user();
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
 
@@ -233,13 +239,17 @@ if ($startDate && $endDate) {
             }
         }
 
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
+            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        
         $data = $query->get();
-        return view('picapeople.index', compact('data', 'perusahaans', 'companyId'));
+        return view('picapeople.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
     }
 
     public function formpicapeople()

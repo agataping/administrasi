@@ -14,9 +14,9 @@
                 <a href="/indexewhfuel" class=" text-decoration-none " style="color: black;">
                     <h3 class="mb-3">FUEL</h3>
                 </a>
-{{-- Error Notification --}}
-@if ($errors->any())
-<div id="notif-error" style="
+                {{-- Error Notification --}}
+                @if ($errors->any())
+                <div id="notif-error" style="
                 position: fixed;
                 top: 60px; /* Biar nggak nabrak success */
                 right: 20px;
@@ -29,13 +29,13 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    <ul style="margin: 0; padding-left: 20px;">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
                 <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('unit') }}" method="get">
@@ -74,12 +74,12 @@
                 <form method="GET" action="{{ route('indexfuel') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div>
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ?? '' }}"
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
                             style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
                     </div>
                     <div>
                         <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ?? '' }}"
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
                             style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
                     </div>
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
@@ -87,7 +87,7 @@
                     </button>
                 </form>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
-                        style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
+                    style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
 
                 <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
                     <table id="myTable" class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
@@ -201,13 +201,14 @@
         document.getElementById('planInput').style.display = 'block';
         document.getElementById('actualInput').style.display = 'none';
     });
+
     function searchTable() {
         let input = document.getElementById("searchInput");
         let filter = input.value.toLowerCase();
         let table = document.getElementById("myTable");
         let tr = table.getElementsByTagName("tr");
 
-        for (let i = 1; i < tr.length; i++) { 
+        for (let i = 1; i < tr.length; i++) {
             let td = tr[i].getElementsByTagName("td");
             let rowVisible = false;
 
@@ -224,6 +225,5 @@
             tr[i].style.display = rowVisible ? "" : "none";
         }
     }
-
 </script>
 @endsection
