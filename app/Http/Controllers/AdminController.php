@@ -15,24 +15,28 @@ class AdminController extends Controller
     public function historylog(Request $request)
     {
         $user = Auth::user(); // Ambil user yang sedang login
-        $startDate = $request->input('start_date'); 
-        $endDate = $request->input('end_date');  
-    
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
+
         $query = DB::table('history_logs')
             ->join('users', 'history_logs.user_id', '=', 'users.id')
             ->select('history_logs.*', 'users.username')
             ->where('users.id_company', $user->id_company); // Filter berdasarkan id_company user yang login
-    
-if ($startDate && $endDate) {
-    $startDateFormatted = Carbon::parse($startDate)->startOfDay();
-    $endDateFormatted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('history_logs.created_at', [$startDate, $endDate]);
+
+
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
-    
+        $query->whereBetween('history_logs.created_at', [$startDate, $endDate]);
+
+
         $data = $query->paginate(15);
-    
-        return view('historylog.index', compact('data'));
+
+        return view('historylog.index', compact('data','startDate','endDate'));
     }
-        
-    
 }
