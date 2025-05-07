@@ -13,9 +13,9 @@
                 <a href="/indexovercoal" class=" text-decoration-none " style="color: black;">
                     <h3 class="mb-3">Coal getting</h3>
                 </a>
-{{-- Error Notification --}}
-@if ($errors->any())
-<div id="notif-error" style="
+                {{-- Error Notification --}}
+                @if ($errors->any())
+                <div id="notif-error" style="
                 position: fixed;
                 top: 60px; /* Biar nggak nabrak success */
                 right: 20px;
@@ -28,14 +28,14 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    <ul style="margin: 0; padding-left: 20px;">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
-                                <div class="row justify-content-start mb-0">
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('formkategoriobc') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                                <div class="row justify-content-start mb-0">
+                <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <a href="/indexcategoryobcoal">View Description Data</a>
                     </div>
@@ -75,16 +75,16 @@
                 </form>
                 @endif -->
                 <form method="GET" action="{{ route('indexcoal') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                        <div>
-                            <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
-                        <div>
-                            <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
+                    <div>
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
@@ -141,15 +141,14 @@
                                 <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
                                 <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d F Y') }}</td>
                                 <td>{{ $detail->desc }}</td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format(floatval(str_replace(',', '', $detail->nominalplan)), 2, ',', '.') }}</td>
+                                <td style="vertical-align: middle; text-align: end;">{{ number_format($detail->nominalplan,  2, ',', '.') }}</td>
                                 <td>
                                     @php
                                     $fileExtension = $detail->file_extension;
                                     @endphp
                                     <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
                                 </td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format(floatval(str_replace(',', '', $detail->nominalactual)), 2, ',', '.') }}
-                                </td>
+                                <td style="vertical-align: middle; text-align: end;">{{ number_format($detail->nominalactual,  2, ',', '.') }}</td>
                                 <td></td>
                                 <td></td>
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">

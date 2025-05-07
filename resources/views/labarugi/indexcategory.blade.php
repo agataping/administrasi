@@ -56,8 +56,8 @@
                         </select>
                     </form>
                     @endif -->
-                    <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
-                        style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
+                    style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
 
                 <div class="" style="overflow-x:auto;">
                     <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
@@ -73,7 +73,7 @@
                             <tbody>
                                 @foreach($kat as $d)
                                 <tr>
-                                    <th rowspan="" style="vertical-align: middle;">{{ $loop->iteration }}</th>
+                                    <th rowspan="" class="no" style="vertical-align: middle;">{{ $loop->iteration }}</th>
                                     <td style="text-align: ;">{{$d->namecategory}}</td>
 
                                     <td style="text-align: center; vertical-align: middle;" rowspan="">
@@ -126,30 +126,53 @@
 
     @endsection
     @section('scripts')
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <!-- jQuery UI 1.13.2 (VERSI STABIL) -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
     <script>
         function searchTable() {
-        let input = document.getElementById("searchInput");
-        let filter = input.value.toLowerCase();
-        let table = document.getElementById("myTable");
-        let tr = table.getElementsByTagName("tr");
+            let input = document.getElementById("searchInput");
+            let filter = input.value.toLowerCase();
+            let table = document.getElementById("myTable");
+            let tr = table.getElementsByTagName("tr");
 
-        for (let i = 1; i < tr.length; i++) { 
-            let td = tr[i].getElementsByTagName("td");
-            let rowVisible = false;
+            for (let i = 1; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName("td");
+                let rowVisible = false;
 
-            for (let j = 0; j < td.length; j++) {
-                if (td[j]) {
-                    let txtValue = td[j].textContent || td[j].innerText;
-                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                        rowVisible = true;
-                        break;
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        let txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                            rowVisible = true;
+                            break;
+                        }
                     }
                 }
+
+                tr[i].style.display = rowVisible ? "" : "none";
+            }
+        }
+
+
+        $(function() {
+            $("#myTable tbody").sortable({
+                update: function(event, ui) {
+                    updateNumbering();
+                }
+            });
+
+            function updateNumbering() {
+                $('#myTable tbody tr').each(function(index) {
+                    $(this).find('.no').text(index + 1);
+                });
             }
 
-            tr[i].style.display = rowVisible ? "" : "none";
-        }
-    }
-</script>
+            updateNumbering(); // inisialisasi awal
+        });
+    </script>
 
     @endsection

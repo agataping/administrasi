@@ -293,12 +293,9 @@ class OverberdenCoalController extends Controller
             $filePath = $file->store('uploads', 'public');
             $validatedData['file'] = $filePath;
         }
-        if (!$request->filled('nominalplan')) {
-            unset($validatedData['nominalplan']);
-        }
-        if (!$request->filled('nominalactual')) {
-            unset($validatedData['nominalactual']);
-        }
+        $validatedData['nominalplan'] = convertToCorrectNumber($request->input('nominalplan'));
+        $validatedData['nominalactual'] = convertToCorrectNumber($request->input('nominalactual'));
+
         $validatedData['created_by'] = auth()->user()->username;
         $data = OverbardenCoal::create($validatedData);
         HistoryLog::create([
@@ -338,20 +335,15 @@ class OverberdenCoalController extends Controller
         $type = $request->input('type', '2');
 
         // Format nominal untuk menghapus koma
-
+        $validatedData['nominalplan'] = convertToCorrectNumber($request->input('nominalplan'));
+        $validatedData['nominalactual'] = convertToCorrectNumber($request->input('nominalactual'));
         // Tentukan mana yang diset null
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filePath = $file->store('uploads', 'public');
             $validatedData['file'] = $filePath;
         }
-        if (!$request->filled('nominalplan')) {
-            unset($validatedData['nominalplan']);
-        }
-        if (!$request->filled('nominalactual')) {
-            unset($validatedData['nominalactual']);
-        }
-        
+
 
         $validatedData['updated_by'] = auth()->user()->username;
 
@@ -634,12 +626,15 @@ class OverberdenCoalController extends Controller
         return redirect('/picaobc')->with('success', 'Data  berhasil Dihapus.');
     }
 }
+
+
 function convertToCorrectNumber($value)
 {
-    if ($value === '' || $value === null) return 0;
-    $value = str_replace('.', '', $value);
+    if ($value === '' || $value === null) {
+        return 0;
+    }
+
     $value = str_replace(',', '.', $value);
-    return floatval($value);
+
+    return floatval(preg_replace('/[^\d.]/', '', $value));
 }
-
-

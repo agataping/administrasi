@@ -14,9 +14,9 @@
                 <a href="{{ route('dashboardstockjt') }}" class="text-decoration-none" style="color: black;">
                     <h3 class="mb-3">Stock Jetty</h3>
                 </a>
-{{-- Error Notification --}}
-@if ($errors->any())
-<div id="notif-error" style="
+                {{-- Error Notification --}}
+                @if ($errors->any())
+                <div id="notif-error" style="
                 position: fixed;
                 top: 60px; /* Biar nggak nabrak success */
                 right: 20px;
@@ -29,13 +29,13 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    <ul style="margin: 0; padding-left: 20px;">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
 
 
@@ -62,16 +62,16 @@
                 </form>
                 @endif -->
                 <form method="GET" action="{{ route('stockjt') }}" style="text-transform: uppercase;display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                        <div>
-                            <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
-                        <div>
-                            <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
+                    <div>
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
@@ -252,24 +252,24 @@
 @endsection
 @section('scripts')
 <SCript>
-      function filterByLocation() {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("myTablestockjetty");
-    tr = table.getElementsByTagName("tr");
+    function filterByLocation() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTablestockjetty");
+        tr = table.getElementsByTagName("tr");
 
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[10]; // Mengambil kolom lokasi
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[10]; // Mengambil kolom lokasi
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
         }
-      }
     }
-  }
 </SCript>
 @endsection

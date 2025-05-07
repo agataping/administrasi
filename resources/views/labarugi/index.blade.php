@@ -156,6 +156,7 @@
                                 @foreach ($jenis['sub_categories'] as $kategoriName => $total)
                                 {{-- Tampilkan Kategori--}}
                                 <tr>
+                                    <!-- <td><span class=" drag-handle">☰</span></td> -->
 
                                     <th style="color:black;vertical-align: middle;">{{ $loop->iteration }}</th>
                                     <td colspan="" style="text-align: start;vertical-align: middle;"><strong>{{$kategoriName}}</strong></td>
@@ -185,7 +186,6 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
-
                                     <td colspan="" style="text-align: center; vertical-align: middle;">
                                         <form action="{{ route('formupdatesublr', $subCategory['details'][0]->sub_id) }}">
                                             <button type="submit" class="btn btn-primary">Edit</button type="submit">
@@ -224,6 +224,7 @@
                                             <tbody>
                                                 @foreach ($subCategory['details'] as $detailIndex => $detail)
                                                 <tr>
+                                                    <td></td>
                                                     <td>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
                                                     <td>{{ $detail->desc }}</td>
                                                     <td style=" text-align: end;">{{ number_format($detail->nominalplan, 2) }}</td>
@@ -247,7 +248,7 @@
                                                         </form>
                                                     </td>
                                                     <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                                        <form action="{{ route('deletedetaillr', $detail->detail_id) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                                        <form action="{{ route('deletedetaillr', $detail->detail_id) }}" method="POST" onsubmit="return (event)">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-danger">Delete</button>
@@ -402,7 +403,15 @@
 
 @endsection
 @section('scripts')
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<!-- jQuery UI 1.13.2 (VERSI STABIL) -->
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
 <script>
+
+
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll("tr[data-bs-toggle='collapse']").forEach(function(row) {
             row.addEventListener("click", function() {

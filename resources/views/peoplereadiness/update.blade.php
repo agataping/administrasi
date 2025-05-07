@@ -1,4 +1,5 @@
 @extends('template.main')
+@extends('components.style')
 
 @section('title', 'Update People Readiness')
 @section('content')
@@ -14,9 +15,9 @@
                 </a>
 
 
-{{-- Success Notification --}}
-@if (session('success'))
-<div id="notif-success" style="
+                {{-- Success Notification --}}
+                @if (session('success'))
+                <div id="notif-success" style="
                 position: fixed;
                 top: 20px;
                 right: 20px;
@@ -29,13 +30,13 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    {{ session('success') }}
-</div>
-@endif
+                    {{ session('success') }}
+                </div>
+                @endif
 
-{{-- Error Notification --}}
-@if ($errors->any())
-<div id="notif-error" style="
+                {{-- Error Notification --}}
+                @if ($errors->any())
+                <div id="notif-error" style="
                 position: fixed;
                 top: 60px; /* Biar nggak nabrak success */
                 right: 20px;
@@ -48,32 +49,32 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    <ul style="margin: 0; padding-left: 20px;">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
 
-{{-- Script untuk menghilangkan notifikasi --}}
-<script>
-    setTimeout(function() {
-        let notifSuccess = document.getElementById("notif-success");
-        let notifError = document.getElementById("notif-error");
+                {{-- Script untuk menghilangkan notifikasi --}}
+                <script>
+                    setTimeout(function() {
+                        let notifSuccess = document.getElementById("notif-success");
+                        let notifError = document.getElementById("notif-error");
 
-        if (notifSuccess) {
-            notifSuccess.style.opacity = '0';
-            setTimeout(() => notifSuccess.remove(), 500);
-        }
+                        if (notifSuccess) {
+                            notifSuccess.style.opacity = '0';
+                            setTimeout(() => notifSuccess.remove(), 500);
+                        }
 
-        if (notifError) {
-            notifError.style.opacity = '0';
-            setTimeout(() => notifError.remove(), 500);
-        }
-    }, 3000);
-</script>
+                        if (notifError) {
+                            notifError.style.opacity = '0';
+                            setTimeout(() => notifError.remove(), 500);
+                        }
+                    }, 3000);
+                </script>
 
                 <form action="{{ route('updatedata', $peopleReadiness->id) }}" method="POST">
                     @csrf

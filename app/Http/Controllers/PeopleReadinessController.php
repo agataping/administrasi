@@ -11,6 +11,7 @@ use App\Models\PeopleReadiness;
 use App\Models\picaPeople;
 use App\Models\Gambar;
 use App\Models\HistoryLog;
+use App\Models\PlanTambang;
 use Carbon\Carbon;
 
 class PeopleReadinessController extends Controller
@@ -64,8 +65,8 @@ class PeopleReadinessController extends Controller
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
-            $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
-        
+        $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
+
 
         $data = $query->get();
 
@@ -99,7 +100,7 @@ class PeopleReadinessController extends Controller
         }
 
 
-        return view('peoplereadiness.index', compact('startDate', 'endDate','data', 'averageQuality', 'averageQuantity', 'tot', 'perusahaans', 'companyId'));
+        return view('peoplereadiness.index', compact('startDate', 'endDate', 'data', 'averageQuality', 'averageQuantity', 'tot', 'perusahaans', 'companyId'));
     }
 
     public function formPR()
@@ -246,10 +247,10 @@ class PeopleReadinessController extends Controller
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
-        
+        $query->whereBetween('tanggal', [$startDate, $endDate]);
+
         $data = $query->get();
-        return view('picapeople.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
+        return view('picapeople.index', compact('startDate', 'endDate', 'data', 'perusahaans', 'companyId'));
     }
 
     public function formpicapeople()
@@ -278,7 +279,7 @@ class PeopleReadinessController extends Controller
             'tanggal' => 'required|date',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
-        PicaPeople::create($validatedData);
+        $peopleReadiness = PicaPeople::create($validatedData);
         HistoryLog::create([
             'table_name' => 'pica_people',
             'record_id' => $peopleReadiness->id,
@@ -310,7 +311,7 @@ class PeopleReadinessController extends Controller
         $validatedData['updated_by'] = auth()->user()->username;
         $PicaPeople = PicaPeople::findOrFail($id);
 
-        $oldData = $peopleReadiness->toArray();
+        $oldData = $PicaPeople->toArray();
         $PicaPeople->update($validatedData);
 
         HistoryLog::create([
@@ -349,10 +350,13 @@ class PeopleReadinessController extends Controller
 
 
     //gambar       
-    public function struktur()
+    public function struktur(Request $request)
     {
         $user = Auth::user();
-        $companyId = request()->input('id_company'); // Menangkap request id_company
+        $companyId = request()->input('id_company');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
 
         $query = DB::table('gambars')
             ->select('gambars.*')
@@ -368,9 +372,20 @@ class PeopleReadinessController extends Controller
                 $query->whereRaw('users.id_company', $companyId);
             }
         }
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
+        }
+        $query->whereBetween('tanggal', [$startDate, $endDate]);
 
-        $gambar = $query->latest()->first();
-        return view('peoplereadiness.organisasi.index', compact('gambar'));
+
+
+
+        $gambar = $query->get();
+        return view('peoplereadiness.organisasi.index', compact('startDate', 'endDate', 'gambar'));
     }
 
     public function formbagan()
@@ -380,20 +395,228 @@ class PeopleReadinessController extends Controller
 
     public function createbagan(Request $request)
     {
-        $request->validate([
-            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        $validatedData = $request->validate([
+            'path' => 'nullable|file',
+            'tanggal' => 'required|date',
         ]);
 
-        if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $path = $file->store('gambar', 'public');
-            Gambar::create([
-                'path' => $path,
-                'created_by' => auth()->user()->username,
-            ]);
-
-            return redirect('/struktur')->with('success', 'Image uploaded successfully.');
+        if ($request->hasFile('path')) {
+            $path = $request->file('path');
+            $gambarPath = $path->store('uploads', 'public');
+            $validatedData['path'] = $gambarPath;
         }
-        return back()->withErrors('Failed to upload image.');
+
+        $validatedData['created_by'] = auth()->user()->username;
+
+        $Gambar = Gambar::create($validatedData);
+
+        HistoryLog::create([
+            'table_name' => 'gambars',
+            'record_id' => $Gambar->id,
+            'action' => 'create',
+            'old_data' => null,
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data added successfully.');
+    }
+
+    public function formupdatestruktur($id)
+    {
+        $data = Gambar::FindOrFail($id);
+        return view('peoplereadiness.organisasi.update', compact('data'));
+    }
+
+    public function updatedatadatastruktur(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'path' => 'nullable|file',
+            'tanggal' => 'required|date',
+        ]);
+
+        $data = Gambar::findOrFail($id);
+        $oldData = $data->toArray();
+
+        if ($request->hasFile('path')) {
+            $path = $request->file('path');
+            $gambarPath = $path->store('uploads', 'public');
+            $validatedData['path'] = $gambarPath;
+        } else {
+            // Gunakan path lama jika tidak upload file baru
+            $validatedData['path'] = $data->path;
+        }
+
+        $validatedData['updated_by'] = auth()->user()->username;
+
+        $data->update($validatedData);
+
+        HistoryLog::create([
+            'table_name' => 'gambars',
+            'record_id' => $id,
+            'action' => 'update',
+            'old_data' => json_encode($oldData),
+            'new_data' => json_encode($validatedData),
+        ]);
+
+        return redirect('/struktur')->with('success', 'Data saved successfully.');
+    }
+
+    public function deletestruktur($id)
+    {
+        $data = Gambar::findOrFail($id);
+        $oldData = $data->toArray();
+
+        // Hapus data dari tabel 
+        $data->delete();
+
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'gambars',
+            'record_id' => $id,
+            'action' => 'delete',
+            'old_data' => json_encode($oldData),
+            'new_data' => null,
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data deleted successfully.');
+    }
+
+
+
+
+
+    public function indexplantambang(Request $request)
+    {
+        $user = Auth::user();
+        $companyId = request()->input('id_company');
+        $tahun = Carbon::now()->year;
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
+
+        $query = DB::table('planTambang')
+            ->select('planTambang.*')
+            ->join('users', 'planTambang.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if (!empty($companyId)) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('users.id_company', $companyId);
+            }
+        }
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
+        }
+        $query->whereBetween('tanggal', [$startDate, $endDate]);
+
+
+
+
+        $data = $query->get();
+
+        return view('plantambang.index', compact('data', 'endDate', 'startDate'));
+    }
+
+    public function formplantambang()
+    {
+        return view('plantambang.adddata');
+    }
+
+    public function createplantambang(Request $request)
+    {
+        $validatedData = $request->validate([
+            'path' => 'nullable|file',
+            'tanggal' => 'required|date',
+        ]);
+
+        if ($request->hasFile('path')) {
+            $path = $request->file('path');
+            $planTambang = $path->store('uploads', 'public');
+            $validatedData['path'] = $planTambang;
+        }
+
+        $validatedData['created_by'] = auth()->user()->username;
+
+        $data = PlanTambang::create($validatedData);
+
+        HistoryLog::create([
+            'table_name' => 'planTambang',
+            'record_id' => $data->id,
+            'action' => 'create',
+            'old_data' => null,
+            'new_data' => json_encode($validatedData),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->with('success', 'Data added successfully.');
+    }
+    public function formupdateplantambang($id)
+    {
+        $data = PlanTambang::FindOrFail($id);
+        return view('plantambang.update', compact('data'));
+    }
+
+    public function updateplantambang(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'path' => 'nullable|file',
+            'tanggal' => 'required|date',
+        ]);
+
+        $data = PlanTambang::findOrFail($id);
+        $oldData = $data->toArray();
+
+        if ($request->hasFile('path')) {
+            $path = $request->file('path');
+            $planTambang = $path->store('uploads', 'public');
+            $validatedData['path'] = $planTambang;
+        } else {
+            // Gunakan path lama jika tidak upload file baru
+            $validatedData['path'] = $data->path;
+        }
+
+        $validatedData['updated_by'] = auth()->user()->username;
+
+        $data->update($validatedData);
+
+        HistoryLog::create([
+            'table_name' => 'planTambang',
+            'record_id' => $id,
+            'action' => 'update',
+            'old_data' => json_encode($oldData),
+            'new_data' => json_encode($validatedData),
+        ]);
+
+        return redirect('/indexplantambang')->with('success', 'Data saved successfully.');
+    }
+
+
+    public function deleteplantambang($id)
+    {
+        $data = PlanTambang::findOrFail($id);
+        $oldData = $data->toArray();
+
+        // Hapus data dari tabel 
+        $data->delete();
+
+        // Simpan log ke tabel history_logs
+        HistoryLog::create([
+            'table_name' => 'planTambang',
+            'record_id' => $id,
+            'action' => 'delete',
+            'old_data' => json_encode($oldData),
+            'new_data' => null,
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data deleted successfully.');
     }
 }

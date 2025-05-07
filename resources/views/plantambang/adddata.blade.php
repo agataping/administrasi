@@ -1,6 +1,7 @@
 @extends('template.main')
-@section('title', 'Organisational Structure')
+@section('title', 'Organisational mining plan')
 @section('content')
+@extends('components.style')
 
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
@@ -8,8 +9,8 @@
     <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <a href="/struktur" class=" text-decoration-none " style="color: black;">
-                    <h2 class="mb-3">Add Data Organisational Structure</h2>
+                <a href="/indexplantambang" class=" text-decoration-none " style="color: black;">
+                    <h2 class="mb-3">Add Data mining plan</h2>
                 </a>
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -26,7 +27,7 @@
                     </ul>
                 </div>
                 @endif
-                <form action="{{ route('createbagan') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('createplantambang') }}" method="POST" enctype="multipart/form-data">
 
 
                     @csrf
@@ -45,7 +46,7 @@
                         <div class="d-flex justify-content-end  mt-3">
                             <button type="submit"
 
-                                class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save</button>
+                                class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Add</button>
                         </div>
 
 

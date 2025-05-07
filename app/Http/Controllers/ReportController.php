@@ -26,7 +26,9 @@ class ReportController extends Controller
         }
 
         //neraca
-        $tahun = $request->input('tahun', session('tahun'));
+        // $tahun = $request->input('tahun', session('tahun'));
+        // $tahun = $request->input('tahun', date('Y'));
+        $tahun = $request->input('tahun', date('Y'));
         $user = Auth::user();
         $companyId = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
@@ -338,7 +340,7 @@ class ReportController extends Controller
         $verticallp = $totalRevenuep ? round(($totalplanlp / $totalRevenuep) * 100, 2) : 0;
         $verticalop = $totalRevenuea ? round(($totalactualOp / $totalRevenuea) * 100, 2) : 0;
         // $vertikalactualop = ($totalRevenuea && $totalRevenuea != 0) ? round(($actualoperasional / $totalRevenuea) * 100, 2) : 0;
-            // dd($totalplanlp);
+        // dd($totalplanlp);
         // dd($totalRevenuea,$totalactualOp,$verticalop);
         $deviasiop = $totalplanlp - $totalactualOp;
         $persenop = $totalplanlp ? round(($totalactualOp / $totalplanlp) * 100, 2) : 0;
@@ -349,7 +351,7 @@ class ReportController extends Controller
 
         //lababersih
         $totalplanlb = floatval($totalplanlp ?? 0) - floatval($planlb ?? 0);
-        $totalactuallb = $totalactuallr +  - $actuallb -$actualoperasional;
+        $totalactuallb = $totalactuallr +  -$actuallb - $actualoperasional;
         $verticallb = ($totalRevenuep) ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0;
 
         $verticallb = $totalRevenuep ? round(($totalplanlb / $totalRevenuep) * 100, 2) : 0; //plan
@@ -561,7 +563,8 @@ class ReportController extends Controller
         //barging
         $query = DB::table('bargings')
             ->join('users', 'bargings.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')->select('bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->select('bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
 
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
@@ -587,6 +590,8 @@ class ReportController extends Controller
             ->sum(function ($item) {
                 return (float)str_replace('.', '', $item->quantity ?? 0);
             });
+            // dd($totalactualekspor);
+
         $indexekspor = ($totalplanekspor != 0) ? round(($totalactualekspor / $totalplanekspor) * 100, 2) : 0;
         $resultekspor = round(($indexekspor * 0.05), 2);
         $totalactualdomestik = (clone $query)

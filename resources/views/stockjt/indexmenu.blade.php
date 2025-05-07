@@ -54,50 +54,16 @@
                     <!-- Over Burden Section -->
                     <div class="section-card">
                         <h3 class="section-title">Plan & Actual</h3>
-                        <div class="metrics-grid">
-
-                            <div class="metric plan">
-                                <a href="{{ route('stockjt') }}" class="cardcost text-decoration-none">
-
-                                    <h4>Plan</h4>
-                                </a>
-                                <div class="percentage-box">
-                                    <strong></strong> <span> {{ number_format($planNominal, 2, ',', '.') }}</span>
-                                </div>
-                            </div>
                             <div class="metric actual">
-                                <a href="{{ route('stockjt') }}" class="cardcost text-decoration-none">
-                                    <h4>Actual</h4>
+                                
+                                <div class="percentage-box">
+                                    <a href="{{ route('stockjt') }}" class="cardcost text-decoration-none" class="text-decoration-none" style="color: black;">
+                                    <strong></strong> <span>{{ number_format($grandTotalstockakhir, 2, ',', '.') }}</span>
                                 </a>
-                                <div class="percentage-box">
-                                    <strong></strong> <span>{{ number_format($grandTotal, 2, ',', '.') }}</span>
 
                                 </div>
                             </div>
-                            <div class="metric">
-                                <h4>Deviasi</h4>
-                                <div class="percentage-box">
-                                    <strong></strong><span>{{ number_format($deviasi, 2, ',', '.') }}</span>
-
-                                </div>
-                            </div>
-                            <div class="metric">
-                                <h4>Percentage</h4>
-                                <div class="percentage-box">
-                                    <strong></strong> <span>{{ number_format($percen, 2, ',', '.') }}%</span>
-
-                                </div>
-                            </div>
-                            <div class="metric">
-                                <a href="{{ route('stockjt') }}" class="cardcost text-decoration-none">
-
-                                    <h4>stock</h4>
-                                </a>
-                                <div class="percentage-box">
-                                    <strong></strong> <span> {{ number_format($akumulasiStokMasuk, 2, ',', '.') }}</span>
-                                </div>
-                            </div>
-
+    
                         </div>
                     </div>
 

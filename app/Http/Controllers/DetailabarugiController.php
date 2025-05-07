@@ -40,6 +40,7 @@ class DetailabarugiController extends Controller
             ->select(
                 'category_labarugis.namecategory as kategori_name',
                 'category_labarugis.id as category_id',
+                'category_labarugis.ordernumber',
                 'jenis_labarugis.name as jenis_name',
                 'jenis_labarugis.name',
                 'sub_labarugis.id as sub_id',
@@ -71,9 +72,10 @@ class DetailabarugiController extends Controller
 
         // $query->orderBy('detailabarugis.tanggal', 'asc');
         $data = $query
-            ->orderBy('category_labarugis.id', 'asc')
-            ->orderBy('sub_labarugis.created_at', 'asc')
-            ->orderBy('detailabarugis.created_at', 'asc')
+            ->orderBy('jenis_labarugis.id', 'asc')
+            ->orderBy('category_labarugis.ordernumber', 'asc')
+            ->orderBy('sub_labarugis.ordernumber', 'asc')
+            ->orderBy('detailabarugis.ordernumber', 'asc')
             ->get()
 
             ->groupBy(['jenis_name', 'kategori_name']);
@@ -365,6 +367,8 @@ class DetailabarugiController extends Controller
             'desc' => 'required|string',
             'tanggal' => 'required|date',
             'file' => 'nullable|file',
+            'ordernumber' => 'nullable|numeric',
+
 
         ]);
 
@@ -387,11 +391,8 @@ class DetailabarugiController extends Controller
         }
 
         // Tentukan mana yang diset null
-        if ($request->has('nominalplan') && !$request->has('nominalactual')) {
-            $validatedData['nominalactual'] = null;
-        } elseif ($request->has('nominalactual') && !$request->has('nominalplan')) {
-            $validatedData['nominalplan'] = null;
-        }
+
+
 
 
         // Tambahkan created_by
@@ -437,8 +438,8 @@ class DetailabarugiController extends Controller
         }
 
         $kat = $query
-        ->orderBy('category_labarugis.id', 'asc')
-        ->get();
+            ->orderBy('category_labarugis.ordernumber ', 'asc')
+            ->get();
 
         return view('labarugi.indexcategory', compact('kat', 'companyId', 'perusahaans'));
     }
@@ -454,6 +455,7 @@ class DetailabarugiController extends Controller
         $validatedData = $request->validate([
             'namecategory' => 'required|string',
             'jenis_id' => 'required|string',
+            'ordernumber' => 'nullable|numeric',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
         $data = categoryLabarugi::create($validatedData);
@@ -515,8 +517,8 @@ class DetailabarugiController extends Controller
         }
 
         $kat = $query
-        ->orderBy('sub_labarugis.id', 'asc')
-        ->get();
+            ->orderBy('sub_labarugis.id', 'asc')
+            ->get();
         return view('labarugi.indexsub', compact('kat', 'companyId', 'perusahaans'));
     }
     public function sublr()
@@ -531,6 +533,8 @@ class DetailabarugiController extends Controller
         $validatedData = $request->validate([
             'namesub' => 'required|string',
             'kategori_id' => 'required|string',
+            'ordernumber' => 'nullable|numeric',
+
         ]);
         $validatedData['created_by'] = auth()->user()->username;
         $data = subkategoriLabarugi::create($validatedData);
@@ -684,6 +688,8 @@ class DetailabarugiController extends Controller
             'desc' => 'required|string',
             'tanggal' => 'required|date',
             'file' => 'nullable|file',
+            'ordernumber' => 'nullable|numeric',
+
 
         ]);
 
@@ -742,6 +748,8 @@ class DetailabarugiController extends Controller
         $validatedData = $request->validate([
             'namecategory' => 'required|string',
             'jenis_id' => 'required|string',
+            'ordernumber' => 'nullable|numeric    ',
+
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
 
@@ -776,6 +784,8 @@ class DetailabarugiController extends Controller
         $validatedData = $request->validate([
             'namesub' => 'required|string',
             'kategori_id' => 'required|string',
+            'ordernumber' => 'nullable|numeric',
+
         ]);
         $validatedData['updated_by'] = auth()->user()->username;
 

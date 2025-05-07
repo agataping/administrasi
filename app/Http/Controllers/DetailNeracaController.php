@@ -67,8 +67,9 @@ class DetailNeracaController extends Controller
 
         $data = $query
             ->orderBy('jenis_neracas.id', 'asc')
-            ->orderBy('sub_neracas.created_at', 'asc')
-            ->orderBy('detail_neracas.created_at', 'asc')
+            ->orderBy('category_neracas.ordernumber', 'asc')
+            ->orderBy('sub_neracas.ordernumber', 'asc')
+            ->orderBy('detail_neracas.ordernumber', 'asc')
             ->get()
             ->groupBy(['jenis_name', 'category', 'sub_category']);
         // dd($query->orderBy('jenis_neracas.created_at', 'asc')->get());
@@ -248,6 +249,8 @@ class DetailNeracaController extends Controller
             'name' => 'required|string',
             'sub_id' => 'required|string',
             'tanggal' => 'required|date',
+            'ordernumber' => 'nullable|numeric',
+
         ]);
         if ($request->hasFile('fileactual')) {
             $fileActual = $request->file('fileactual');
@@ -305,6 +308,7 @@ class DetailNeracaController extends Controller
     public function updatedetailfinan(Request $request, $id)
     {
         $validatedData = $request->validate([
+            'ordernumber' => 'nullable|numeric',
             'debit' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'credit' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
             'debit_actual' => 'nullable|regex:/^-?\d+(,\d+)?(\.\d{1,2})?$/',
@@ -377,9 +381,9 @@ class DetailNeracaController extends Controller
         }
 
         $kat = $query
-        ->orderBy('category_neracas.id', 'asc')
+            ->orderBy('category_neracas.id', 'asc')
 
-        ->get();
+            ->get();
 
         return view('financial.indexcategory', compact('kat', 'companyId', 'perusahaans'));
     }
@@ -395,6 +399,7 @@ class DetailNeracaController extends Controller
         $validatedData = $request->validate([
             'namecategory' => 'required|string',
             'jenis_id' => 'required|string',
+            'ordernumber' => 'nullable|numeric',
         ]);
         $validatedData['created_by'] = auth()->user()->username;
         $data = CategoryNeraca::create($validatedData);
@@ -423,6 +428,7 @@ class DetailNeracaController extends Controller
     public function updatecatneraca(Request $request, $id)
     {
         $validatedData = $request->validate([
+            'ordernumber' => 'nullable|numeric',
             'namecategory' => 'required|string',
             'jenis_id' => 'required|string',
 
@@ -487,8 +493,8 @@ class DetailNeracaController extends Controller
         }
 
         $kat = $query
-        ->orderBy('sub_neracas.id', 'asc')
-        ->get();
+            ->orderBy('sub_neracas.id', 'asc')
+            ->get();
 
         return view('financial.indexsub', compact('kat', 'companyId', 'perusahaans'));
     }
@@ -502,6 +508,7 @@ class DetailNeracaController extends Controller
     public function createsubneraca(Request $request)
     {
         $validatedData = $request->validate([
+            'ordernumber' => 'nullable|numeric',
             'namesub' => 'required|string',
             'kategori_id' => 'required|string',
         ]);
@@ -533,6 +540,7 @@ class DetailNeracaController extends Controller
     public function updatesubneraca(Request $request, $id)
     {
         $validatedData = $request->validate([
+            'ordernumber' => 'nullable|numeric',
             'namesub' => 'required|string',
             'kategori_id' => 'required|string',
         ]);

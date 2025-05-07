@@ -1,4 +1,19 @@
 <style>
+    /* table {
+        border-collapse: collapse;
+        width: 50%;
+    }
+
+    th,
+    td {
+        border: 1px solid #000;
+        padding: 8px;
+    }
+
+    tbody tr {
+        cursor: move;
+    } */
+
     thead {
         vertical-align: middle;
         text-align: center;

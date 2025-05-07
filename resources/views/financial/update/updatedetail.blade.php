@@ -13,9 +13,9 @@
                 </a>
 
 
-{{-- Success Notification --}}
-@if (session('success'))
-<div id="notif-success" style="
+                {{-- Success Notification --}}
+                @if (session('success'))
+                <div id="notif-success" style="
                 position: fixed;
                 top: 20px;
                 right: 20px;
@@ -28,13 +28,13 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    {{ session('success') }}
-</div>
-@endif
+                    {{ session('success') }}
+                </div>
+                @endif
 
-{{-- Error Notification --}}
-@if ($errors->any())
-<div id="notif-error" style="
+                {{-- Error Notification --}}
+                @if ($errors->any())
+                <div id="notif-error" style="
                 position: fixed;
                 top: 60px; /* Biar nggak nabrak success */
                 right: 20px;
@@ -47,42 +47,47 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    <ul style="margin: 0; padding-left: 20px;">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
 
-{{-- Script untuk menghilangkan notifikasi --}}
-<script>
-    setTimeout(function() {
-        let notifSuccess = document.getElementById("notif-success");
-        let notifError = document.getElementById("notif-error");
+                {{-- Script untuk menghilangkan notifikasi --}}
+                <script>
+                    setTimeout(function() {
+                        let notifSuccess = document.getElementById("notif-success");
+                        let notifError = document.getElementById("notif-error");
 
-        if (notifSuccess) {
-            notifSuccess.style.opacity = '0';
-            setTimeout(() => notifSuccess.remove(), 500);
-        }
+                        if (notifSuccess) {
+                            notifSuccess.style.opacity = '0';
+                            setTimeout(() => notifSuccess.remove(), 500);
+                        }
 
-        if (notifError) {
-            notifError.style.opacity = '0';
-            setTimeout(() => notifError.remove(), 500);
-        }
-    }, 3000);
-</script>
+                        if (notifError) {
+                            notifError.style.opacity = '0';
+                            setTimeout(() => notifError.remove(), 500);
+                        }
+                    }, 3000);
+                </script>
 
 
                 <form action="{{ route('updatedetailfinan',$data->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                     <div style="margin-bottom: 1rem;">
-                        <label for="tanggal" style="font-weight: bold; font-size: 1rem;">Tanggal:</label>
+                        <label for="tanggal" style="font-weight: bold; font-size: 1rem;">Data date:</label>
                         <input type="date" id="tanggal" name="tanggal" value="{{$data->tanggal}}" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;" required>
                     </div>
-
+                    <div class="row g-3">
+                        <div class="">
+                            <label for="" class="form-label">Order Number</label>
+                            <input type="number" class="form-control" id="" placeholder="" value="{{ $data->ordernumber}}" required name="ordernumber">
+                        </div>
+                    </div>
                     <div style="margin-bottom: 1rem;">
                         <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Category:</label>
                         <select id="kategori" name="sub_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
@@ -179,35 +184,35 @@
 
     });
     window.onload = function() {
-    const planValue = "{{ $data->nominalplan }}".trim(); // Nilai nominal plan
-    const actualValue = "{{ $data->nominalactual }}".trim(); // Nilai nominal actual
-    const filePlanValue = "{{ $data->fileplan }}".trim(); // File Plan
-    const fileActualValue = "{{ $data->fileactual }}".trim(); // File Actual
-    const debitPlanValue = "{{ $data->debit }}".trim(); // Debit Plan
-    const creditPlanValue = "{{ $data->credit }}".trim(); // Credit Plan
-    const debitActualValue = "{{ $data->debit_actual }}".trim(); // Debit Actual
-    const creditActualValue = "{{ $data->credit_actual }}".trim(); // Credit Actual
+    const planValue = " {{ $data->nominalplan }}".trim(); // Nilai nominal plan
+                            const actualValue="{{ $data->nominalactual }}" .trim(); // Nilai nominal actual
+                            const filePlanValue="{{ $data->fileplan }}" .trim(); // File Plan
+                            const fileActualValue="{{ $data->fileactual }}" .trim(); // File Actual
+                            const debitPlanValue="{{ $data->debit }}" .trim(); // Debit Plan
+                            const creditPlanValue="{{ $data->credit }}" .trim(); // Credit Plan
+                            const debitActualValue="{{ $data->debit_actual }}" .trim(); // Debit Actual
+                            const creditActualValue="{{ $data->credit_actual }}" .trim(); // Credit Actual
 
-    // Fungsi untuk mengecek apakah elemen ada sebelum klik
-    function safeClick(buttonId) {
-        const btn = document.getElementById(buttonId);
-        if (btn) btn.click();
-    }
+                            // Fungsi untuk mengecek apakah elemen ada sebelum klik
+                            function safeClick(buttonId) {
+                            const btn=document.getElementById(buttonId);
+                            if (btn) btn.click();
+                            }
 
-    // Logika untuk menampilkan elemen sesuai data
-    if (planValue !== "" && actualValue === "" && filePlanValue === "" && fileActualValue === "" 
-        && debitPlanValue !== "" && creditPlanValue !== "" && debitActualValue === "" && creditActualValue === "") {
-        safeClick('planBtn');
-    } 
-    else if (planValue !== "" && filePlanValue !== "" && actualValue === "" 
-        && debitPlanValue !== "" && creditPlanValue !== "" && debitActualValue === "" && creditActualValue === "") {
-        safeClick('planFileBtn');
-    } 
-    else if (actualValue !== "" || debitActualValue !== "" || creditActualValue !== "" || fileActualValue !== "") {
-        safeClick('actualBtn');
-    }
-};
+                            // Logika untuk menampilkan elemen sesuai data
+                            if (planValue !=="" && actualValue==="" && filePlanValue==="" && fileActualValue===""
+                            && debitPlanValue !=="" && creditPlanValue !=="" && debitActualValue==="" && creditActualValue==="" ) {
+                            safeClick('planBtn');
+                            }
+                            else if (planValue !=="" && filePlanValue !=="" && actualValue===""
+                            && debitPlanValue !=="" && creditPlanValue !=="" && debitActualValue==="" && creditActualValue==="" ) {
+                            safeClick('planFileBtn');
+                            }
+                            else if (actualValue !=="" || debitActualValue !=="" || creditActualValue !=="" || fileActualValue !=="" ) {
+                            safeClick('actualBtn');
+                            }
+                            };
 
 
-</script>
-@endsection
+                            </script>
+                            @endsection

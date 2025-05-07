@@ -1,15 +1,17 @@
 @extends('template.main')
-@section('title', 'Description ')
+
+@section('title', 'Update mining PLAN ')
 @section('content')
 @extends('components.style')
+
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-2">
     <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <a href="/indexfinancial" class=" text-decoration-none " style="color: black;">
-                    <h3 class="mb-3">Update Data Description Balnce sheet</h3>
+                <a href="/indexplantambang" class=" text-decoration-none " style="color: black;">
+                    <h3 class="mb-3">Update Data mining PLAN </h3>
                 </a>
 
 
@@ -56,7 +58,6 @@
                 @endif
 
 
-                {{-- Script untuk menghilangkan notifikasi --}}
                 <script>
                     setTimeout(function() {
                         let notifSuccess = document.getElementById("notif-success");
@@ -74,64 +75,36 @@
                     }, 3000);
                 </script>
 
-
-                <form action="{{ route('updatecatneraca',$data->id) }}" method="post">
+                <form action="{{ route('updatedatadatastruktur', $data->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="updeted_by_name" value="{{ Auth::user()->username }}">
-                    <div class="row g-3">
-                        <div class="">
-                            <label for="" class="form-label">Order Number</label>
-                            <input type="number" class="form-control" id="" placeholder="" value="{{ $data->ordernumber}}" required name="ordernumber">
-                        </div>
+
+                    <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
+                    <div class="form-group">
+                        <label for="tanggal">Data Date</label>
+                        <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ $data->tanggal }}" required>
                     </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label for="kategori" style="font-weight: bold; font-size: 1rem;">Select Caregory:</label>
-                        <select id="kategori" name="jenis_id" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;">
-                            <option value="" disabled selected>-- Select Caregory --</option>
-                            @foreach($kat as $kategori)
-                            <option value="{{ $kategori->id }}" {{ $kategori->id == $data->jenis_id ? 'selected' : '' }}>
-                                {{ $kategori->namecategory }} {{ $kategori->name }}
-                            </option>
-                            @endforeach
-                        </select>
+
+                    <div class="form-group">
+                        <label for="path">File</label>
+                        <input type="file" class="form-control" id="path" name="path">
+
+                        @if($data->path)
+                        <a href="{{ asset('storage/' . $data->path) }}" target="_blank"> ViewFile</a>
+                        @endif
                     </div>
-                    <div class="row g-3">
-                        <div class="">
-                            <label for="kategori" class="form-label">Description</label>
-                            <input type="text" class="form-control" value="{{$data->namecategory}}" id="kategori" placeholder="" value="" required name="namecategory">
-                        </div>
-                    </div>
+
+
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn-block btn-lg gradient-custom-4"
                             style=" background-color: rgb(0, 255, 42); color: white; border: none;padding: 10px 20px;font-size: 16px;cursor: pointer; 
                             border-radius: 5px; font-weight: bold;"">Update</button>
-                    </div>                    
+                    </div>
                 </form>
-                    
-                    
-                
             </div>
         </div>
     </div>
 </div>
-        
-        
-        
-        
-    
-    
-    
-        
-        
-        
-
-
-
-
-
-
-
 @endsection
-@section('scripts')
 
+@section('scripts')
 @endsection

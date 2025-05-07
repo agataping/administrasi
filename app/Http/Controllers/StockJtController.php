@@ -29,15 +29,16 @@ class StockJtController extends Controller
             ->select('stock_jts.*')
             ->join('users', 'stock_jts.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
                 $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
             }
         }
+
+
         if (!$startDate || !$endDate) {
             $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
             $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
@@ -45,13 +46,21 @@ class StockJtController extends Controller
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
-        $query->whereBetween('stock_jts.date', [$startDate, $endDate]);
+
+        $query->where(function ($q) use ($startDate, $endDate) {
+            $q->whereBetween('stock_jts.date', [$startDate, $endDate])
+                ->orWhere('stock_jts.sotckawal', '!=', null);
+        })
+            ->orderBy('stock_jts.date', 'asc');
+
 
 
         $data = $query->get();
+
         $planNominal = $data->sum(function ($p) {
             return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
         });
+
         $data->transform(function ($item) {
             $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
             return $item;
@@ -60,17 +69,17 @@ class StockJtController extends Controller
         $data->each(function ($item) {
             $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
         });
-        //  dd($data);
-        $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
-        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
 
+        $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+
+        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
         $akumulasi = $stokAwal;
+
         $endForStokMasuk = date('Y-m-d', strtotime($endDate . ' -1 day'));
         $dataStokMasuk = $data->filter(function ($item) use ($endForStokMasuk) {
             return isset($item->date) && $item->date <= $endForStokMasuk;
         });
 
-        // dd($akumulasiStokMasuk);
 
         if ($dataStokMasuk->isEmpty()) {
             $dataStokMasuk = collect();
@@ -95,26 +104,26 @@ class StockJtController extends Controller
             $stock->akumulasi_stock = $akumulasiStokMasuk;
         });
 
-        $data->map(function ($stock, $index) use (&$akumulasi, &$stock_akhir) {
-            $stock->sotckawal = floatval($stock->sotckawal ?? 0);
-            $stock->totalhauling = floatval($stock->totalhauling ?? 0);
-            $stock->stockout = floatval($stock->stockout ?? 0);
-            if ($index === 0) {
-                $akumulasi = $stock->sotckawal;
-            }
-            $akumulasi += $stock->totalhauling;
-            $stock->akumulasi_stock = $akumulasi;
-            $akumulasi -= $stock->stockout;
-            $stock->stock_akhir = $akumulasi;
-            $stock_akhir = $stock->stock_akhir;
-            return $stock;
+        $prevStockAkhir = 0;
+        $totalStockOut = 0; // Variabel untuk menyimpan total stockout
+
+        $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut) {
+            $stock->sotckawal = $stock->sotckawal > 0 ? $stock->sotckawal : $prevStockAkhir;
+
+            $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;
+
+            $totalStockOut += $stock->stockout;
+
+            $prevStockAkhir = $stock->stock_akhir;
         });
 
-        $deviasi = $planNominal - $stock_akhir;
+        // dd($totalStockOut);
 
-        $percen = ($planNominal != 0) ? ($stock_akhir / $planNominal) * 100 : 0;
-        $grandTotal = optional($data->last())->stock_akhir ?? 0;
-        return view('stockjt.indexmenu', compact('startDate', 'endDate','data', 'akumulasiStokMasuk', 'totalHauling', 'grandTotal', 'perusahaans', 'companyId', 'planNominal', 'deviasi', 'percen'));
+
+        // dd($data->toArray());
+        $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
+        $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
+        return view('stockjt.indexmenu', compact('startDate', 'endDate','data', 'grandTotalstockakhir'));
     }
 
 
@@ -305,16 +314,7 @@ class StockJtController extends Controller
 
         ]);
         // Format nominal untuk menghapus koma
-        function convertToCorrectNumber($value)
-        {
-            if ($value === '' || $value === null) {
-                return 0;
-            }
 
-            $value = str_replace(',', '.', $value);
-
-            return floatval(preg_replace('/[^\d.]/', '', $value));
-        }
 
 
         // Tentukan mana yang diset null
@@ -383,17 +383,7 @@ class StockJtController extends Controller
             // regex:/^-?[0-9.,]+$/
         ]);
 
-        function convertToCorrectNumber($value)
-        {
-            if (empty($value)) {
-                return 0;
-            }
 
-            $value = str_replace('.', '', $value);
-            $value = str_replace(',', '.', $value);
-
-            return floatval($value);
-        }
 
         $validatedData = $request->all();
 
@@ -591,4 +581,14 @@ class StockJtController extends Controller
         ]);
         return redirect('/picastockjt')->with('success', 'Data deleted successfully.');
     }
+}
+function convertToCorrectNumber($value)
+{
+    if ($value === '' || $value === null) {
+        return 0;
+    }
+
+    $value = str_replace(',', '.', $value);
+
+    return floatval(preg_replace('/[^\d.]/', '', $value));
 }

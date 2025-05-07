@@ -93,6 +93,18 @@ Route::delete('/deletepicapeole/{id}', [PeopleReadinessController::class, 'delet
 Route::get('/struktur', [PeopleReadinessController::class, 'struktur'])->middleware('auth')->name('struktur');
 Route::get('/formbagan', [PeopleReadinessController::class, 'formbagan'])->middleware('auth')->name('formbagan');
 Route::post('/createbagan', [PeopleReadinessController::class, 'createbagan'])->middleware('auth')->name('createbagan');
+Route::delete('/deletestruktur/{id}', [PeopleReadinessController::class, 'deletestruktur'])->middleware('auth')->name('deletestruktur');
+Route::get('/formupdatestruktur/{id}', [PeopleReadinessController::class, 'formupdatestruktur'])->middleware('auth')->name('formupdatestruktur');
+Route::post('/updatedatadatastruktur/{id}', [PeopleReadinessController::class, 'updatedatadatastruktur'])->middleware('auth')->name('updatedatadatastruktur');
+
+
+//plan tambang
+Route::get('/indexplantambang', [PeopleReadinessController::class, 'indexplantambang'])->middleware('auth')->name('indexplantambang');
+Route::get('/formplantambang', [PeopleReadinessController::class, 'formplantambang'])->middleware('auth')->name('formplantambang');
+Route::post('/createplantambang', [PeopleReadinessController::class, 'createplantambang'])->middleware('auth')->name('createplantambang');
+Route::delete('/deleteplantambang/{id}', [PeopleReadinessController::class, 'deleteplantambang'])->middleware('auth')->name('deleteplantambang');
+Route::get('/formupdateplantambang/{id}', [PeopleReadinessController::class, 'formupdateplantambang'])->middleware('auth')->name('formupdateplantambang');
+Route::post('/updateplantambang/{id}', [PeopleReadinessController::class, 'updateplantambang'])->middleware('auth')->name('updateplantambang');
 
 
 

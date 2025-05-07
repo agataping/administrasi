@@ -91,8 +91,9 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" aria-expanded="false">Learning & Growth Perspective</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="/struktur">Organizational Structure</a></li>
-                <li><a class="dropdown-item" href="/indexPeople">People Readiness</a></li>
+            <li><a class="dropdown-item" href="/struktur">Organizational Structure</a></li>
+            <li><a class="dropdown-item" href="/indexplantambang">Mining Plan</a></li>
+            <li><a class="dropdown-item" href="/indexPeople">People Readiness</a></li>
                 <li><a class="dropdown-item" href="/indexpicapeople">PICA People Readiness</a></li>
                 <li><a class="dropdown-item" href="/indexInfrastructureReadiness">Infrastructure Readiness</a></li>
                 <li><a class="dropdown-item" href="/picainfrastruktur">PICA Infrastructure Readiness</a></li>

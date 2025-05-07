@@ -1,7 +1,7 @@
 @extends('template.main')
 @extends('components.style')
 
-@section('title', 'Organisational Structure')
+@section('title', 'mining plan')
 @section('content')
 
 
@@ -11,7 +11,7 @@
     <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <h2 class="mb-3">Organisational Structure</h2>
+                <h2 class="mb-3">mining plan</h2>
                 @if ($errors->any())
                 <div id="notif-error" style="
                 position: fixed;
@@ -38,10 +38,10 @@
 
                 <div class="row">
                     <div class="col-sm-">
-                        <a href="/formbagan" class="btn btn-custom">Add</a>
+                        <a href="/formplantambang" class="btn btn-custom">Add Data</a>
                     </div>
                 </div>
-                <form method="GET" action="{{ route('struktur') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <form method="GET" action="{{ route('indexplantambang') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div>
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
                         <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
@@ -56,55 +56,51 @@
                         Filter
                     </button>
                 </form>
-                @foreach ($gambar as $file)
-                @php
-                $path = $file->path ?? '';
-                $extension = pathinfo($path, PATHINFO_EXTENSION);
-                $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
-                @endphp
+
 
                 <table class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
-                    <thead>
+                    <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                         <tr>
-                            <th colspan="3" class="text-center" style="background-color: rgba(9, 220, 37, 0.75); vertical-align: middle;">
-                                Organisational Structure
+                            <th>
+                                no
                             </th>
+                            <th>flie</th>
+                            <th colspan="2">action</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($data as $d)
+
                         <tr>
-                            <td colspan="3" class="text-center" style="background-color: #fff;">
-                                <div style="margin: 1rem auto; max-width: 100%;">
-                                    @if(in_array(strtolower($extension), $imageExtensions))
-                                    <img src="{{ asset('storage/' . $path) }}" alt="File"
-                                        style="max-width: 100%; height: auto; border-radius: 8px; object-fit: contain;">
-                                    @else
-                                    <a href="{{ asset('storage/' . $path) }}" target="_blank" class="btn btn-outline-primary">
-                                        📄 view file ({{ strtoupper($extension) }})
-                                    </a>
-                                    @endif
-                                </div>
+                            <td style="vertical-align: middle;">{{ $loop->iteration }}</td>
 
-                                {{-- Tombol aksi --}}
-                                <div class="mt-3">
-                                    <a href="{{ route('formupdatestruktur', $file->id) }}"class="btn btn-primary btn-sm">Update</a>
-
-                                    <form action="{{ route('deletestruktur', $file->id) }}" method="POST" style="display:inline-block;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"  onsubmit="return confirmDelete(event)">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
+                            <td>
+                                @php
+                                $fileExtension = $d->file_extension ?? 'unknown';
+                                @endphp
+                                <a href="{{ asset('storage/' . $d->path) }}" class="text-decoration-none" target="_blank">View File</a>
                             </td>
+                            <td style="text-align: center; vertical-align: middle;">
+                                <a href="{{ route('formupdateplantambang', $d->id) }}" class="btn btn-primary btn-sm">Update</a>
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;">
+                                <form action="{{ route('deleteplantambang', $d->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" onsubmit="return confirmDelete(event)">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+
                         </tr>
+                        @endforeach
+
                     </tbody>
                 </table>
 
 
 
-                @endforeach
 
             </div>
         </div>

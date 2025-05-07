@@ -54,7 +54,6 @@ class PerusahaanController extends Controller
                 ->select('perusahaans.*')
                 ->get();
             }
-
             return view('pt.iup', compact('data'));
         }
                 
