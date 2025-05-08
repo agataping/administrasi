@@ -425,3 +425,4 @@ Route::get('/dummy', [PerusahaanController::class, 'dummy'])->middleware('auth')
 
 //report kpi
 Route::get('/reportkpi', [ReportController::class, 'reportkpi'])->middleware('auth')->name('reportkpi');
+Route::get('/indexpengkuran', [ReportController::class, 'indexpengkuran'])->middleware('auth')->name('indexpengkuran');
