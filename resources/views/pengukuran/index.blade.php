@@ -121,87 +121,87 @@
                             <th rowspan="10">Financial Perspective</th>
                             <td style="text-align: start;" colspan="2">Revenue</td>
                             <td>{{ number_format($data['totalRevenuep'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenrevenue'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightrevenue'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenrevenue'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightrevenue'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totalRevenuea'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenactualrevenue'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenactualrevenue'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Cost Of Good Sold</td>
                             <td>{{ number_format($data['totalplancogas'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persencogs'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightcogs'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persencogs'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightcogs'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totalactualcogas'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenactualcogs'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenactualcogs'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Gross Profit Margin</td>
                             <td>{{ number_format($data['totalplanlr'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenprofitmargin'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightprofitmargin'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenprofitmargin'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightprofitmargin'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totalactuallr'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenactualprofitmg'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenactualprofitmg'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Cost of Employee</td>
                             <td>{{ number_format($data['totplansalary'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persencostemploye'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightcostemploye'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persencostemploye'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightcostemploye'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totactualsalary'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['pserenactualcostemploye'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['pserenactualcostemploye'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Corporate Social Responsibility</td>
                             <td>{{ number_format($data['totplanscsr'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persencsr'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightcsr'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persencsr'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightcsr'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totactualscsr'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenactualcsr'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenactualcsr'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Operating Cost</td>
                             <td>{{ number_format($data['planoperasional'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenopratingcost'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightopratingcost'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenopratingcost'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightopratingcost'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['actualoperasional'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenactualoperatincost'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenactualoperatincost'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Operating Profit Margin</td>
                             <td>{{ number_format($data['totalplanlp'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenoperatingprofitmargin'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightopratingmg'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenoperatingprofitmargin'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightopratingmg'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totalactualOp'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenactualoperasionalpmg'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenactualoperasionalpmg'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Net Profit Margin</td>
                             <td>{{ number_format($data['totalnetprofitplan'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persennetprofitmargin'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightnetprofitmargin'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persennetprofitmargin'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightnetprofitmargin'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totalactualnetprofit'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenactualnetprofitmg'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenactualnetprofitmg'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Return On Assets</td>
                             <td>{{ number_format($data['totalplanasset'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenassetplan'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightasset'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenassetplan'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightasset'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totalactualasset'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenactualasset'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenactualasset'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Return On Equity</td>
                             <td>{{ number_format($data['totalplanequity'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenmodalhutangplan'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['weightmodalhutang'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persenmodalhutangplan'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['weightmodalhutang'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totalactualequity'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['actualreturnonequaity'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['actualreturnonequaity'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr style="vertical-align: middle; background-color:rgb(176, 175, 175);  text-align: end;">
                             <th colspan="4"></th>
                             <td>{{ number_format($data['ongkosplan'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['totalpercenfinancial'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['totalpercenfinancial'], 2, ',', '.') }}%</td>
                             <td>35%</td>
                             <td>{{ number_format($data['ongkosactual'], 2, ',', '.') }}</td>
                             <td>{{ number_format($data['totalopersenactualfinancial'], 2, ',', '.') }}%</td>
