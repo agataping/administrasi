@@ -128,8 +128,8 @@
                         </tr>
                         <tr>
                             <td colspan="2">Cost Of Good Sold</td>
-                            <td>{{ number_format($data['plancogs'], 2, ',', '.') }}</td>
                             <td>{{ number_format($data['totalplancogas'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['persencogs'], 2, ',', '.') }}</td>
                             <td>{{ number_format($data['weightcogs'], 2, ',', '.') }}</td>
                             <td>{{ number_format($data['totalactualcogas'], 2, ',', '.') }}</td>
                             <td>{{ number_format($data['persenactualcogs'], 2, ',', '.') }}</td>
