@@ -9,6 +9,36 @@
         padding: 5px;
         font-family: Arial, sans-serif;
     }
+
+    .vard {
+        width: 100%;
+        background-color: #dddddd;
+    }
+
+    .vard ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .vard li {
+        float: left;
+    }
+
+    .vard li a {
+        display: block;
+        padding: 10px 16px;
+        /* isi nilai padding yang sesuai */
+        background-color: #dddddd;
+        text-decoration: none;
+        color: black;
+    }
+
+    .vard li a:hover {
+        background-color: #bbb;
+        /* efek saat hover */
+    }
 </style>
 
 
@@ -18,8 +48,9 @@
     <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <h3 class="mb-3">KPI </h3>
-                {{-- Error Notification --}}
+                <a href="{{ route('reportkpi') }}" class="text-decoration-none" style="color: black;">
+                    <h3 class="mb-3">KPI</h3>
+                </a> {{-- Error Notification --}}
                 @if ($errors->any())
                 <div id="notif-error" style="
                 position: fixed;
@@ -424,6 +455,22 @@
                 </table>
 
 
+                <div class="vard">
+                    <ul>
+                        <li><a href="/reportkpi">DASHBOARD</a></li>
+
+                        <li>
+                            <a href="/indexkpi">
+                                KPI
+                                @if(auth()->user()->role === 'staff' && isset($data['companyName']))
+                                {{ $data['companyName']->company_name }}
+                                @endif
+                            </a>
+                        </li>
+
+                        <li><a href="/indexpengkuran">MEASUREMENT</a></li>
+                    </ul>
+                </div>
 
             </div>
         </div>

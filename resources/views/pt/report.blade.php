@@ -1408,7 +1408,7 @@
                             </a>
                         </li>
 
-                        <li><a href="/indexpengkuran">Measurement</a></li>
+                        <li><a href="/indexpengkuran">MEASUREMENT</a></li>
                     </ul>
                 </div>
 
