@@ -127,8 +127,8 @@
                             <td>{{ number_format($data['weightrevenue'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['persenrevenue'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['persenactualrevenue'], 2, ',', '.') }}%</td>
-                            <td>{{ number_format($data['indexrevenue'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['resultrevenue'], 2, ',', '.') }}</td>
+                            <td>{{ number_format($data['indexrevenue'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['resultrevenue'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td>Cost Of Good Sold</td>
@@ -233,8 +233,8 @@
                             <td>5%</td>
                             <td>{{ number_format($data['totalplandomestik'], 2) }}%</td>
                             <td>{{ number_format($data['totalactualdomestik'], 2) }}%</td>
-                            <td>{{ number_format($data['indexdomestik'], 2) }}%%</td>
-                            <td>{{ number_format($data['resultdomestik'], 2) }}%%</td>
+                            <td>{{ number_format($data['indexdomestik'], 2) }}%</td>
+                            <td>{{ number_format($data['resultdomestik'], 2) }}%</td>
                         </tr>
                         <tr>
                             <td>Barging Ekspor</td>
@@ -283,8 +283,8 @@
                             <td>4%</td>
                             <td>{{ number_format($data['totalactualunithauler'], 2) }}%%</td>
                             <td>{{ number_format($data['totalactualuaunithauler'], 2) }}%</td>
-                            <td>{{ number_format($data['indexoverburder'], 2, ',', '.') }}  %</td>
-                            <td>{{ number_format($data['resultua'], 2, ',', '.') }}  %</td>
+                            <td>{{ number_format($data['indexoverburder'], 2, ',', '.') }} %</td>
+                            <td>{{ number_format($data['resultua'], 2, ',', '.') }} %</td>
                         </tr>
                         <tr>
                             <td>Physical Availability (Total)</td>
@@ -366,9 +366,13 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                        <th colspan="2" style="vertical-align: middle; background-color:rgb(244, 244, 244);  ">Total</th>
-                        <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  ">Total</th>
-                        <td style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"> 100%</td>
+                            <th colspan="2" style="vertical-align: middle; background-color:rgb(244, 244, 244);  ">Total</th>
+                            <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  ">Total</th>
+                            <td style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"> 100%</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ number_format($data['totalresult'], 2) }}%</td>
 
                         </tr>
                         <tr>

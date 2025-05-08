@@ -1130,14 +1130,15 @@ class ReportService
         });
         $resultfuel = round(($indexoverburder * 0.03), 2); //result fuel
         $resultIPP = $resultcoal + $resultob + $resultewh + $resultua + $resultpa + $resultfuel + $resultcoalmt + $resultobbcm + $resultmining;
-        $totalresultIPP = round(($totalindexfinancial / 30.00) * 100, 2);
+        $totalresultIPP = round(($resultIPP / 30.00) * 100, 2);
         $totalresultcompany = round(($totalresultfinancial + $totalresultcostumer + $totalresultIPP + $resultlearning) / 4, 2);
         // dd($totalresultcompany);
-
-        // dd($totalindexfinancial, $totalresultIPP, $totalresultfinancial, $totalresultcostumer, $resultlearning);
+        $totalresult= $totalindexfinancial + $totalresultcp + $resultIPP + $totalindexlearning;
+        // dd($totalindexfinancial, $resultIPP, $totalresultcp, $totalindexlearning);
 
         return compact(
-            //total resul'
+            //total 
+            'totalresult',
             'resultIPP',
             'totalresultcompany',
             'totalresultIPP',
