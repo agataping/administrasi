@@ -32,4 +32,10 @@ class ReportController extends Controller
 
         return view ('pengukuran.index', compact('data'));
     }
+    public function indexkpi(Request $request)
+    {
+        $data= $this->reportService->DataReport($request);
+
+        return view ('pengukuran.indexkpi', compact('data'));
+    }
 }

@@ -1137,7 +1137,8 @@ class ReportService
         // dd($totalindexfinancial, $totalresultIPP, $totalresultfinancial, $totalresultcostumer, $resultlearning);
 
         return compact(
-            //total result
+            //total resul'
+            'resultIPP',
             'totalresultcompany',
             'totalresultIPP',
             //fuels
@@ -1191,7 +1192,6 @@ class ReportService
             'verticallb',
             'verticalop',
             'verticalslb',
-            'totalresultfinancial',
             'weightrevenue',
             'weightcogs',
             'weightprofitmargin',
@@ -1315,6 +1315,41 @@ class ReportService
             'persenactualoperasionalpmg',
             'persenactualnetprofitmg',
             'totalopersenactualfinancial',
+            //result
+            'actualreturnonasset',
+            'resultrevenue',
+            'resultcogs',
+            'resultgrosspm',
+            'resultemploye',
+            'resultcsr',
+            'ressultoperasionalcost',
+            'resultoperatingpm',
+            'resultnetpm',
+            'resultasset',
+            'resultequity',
+            'totalindexlearning',
+            'resultpeople',
+            'resultlearning',
+            'resultinfrastruktur',
+            'resultmining',
+
+            'resultdomestik',
+            'resultekspor',
+            'resultob',
+            'resultobbcm',
+            'resultcoal',
+            'resultcoalmt',
+            'resultfuel',
+            'resultewh',
+            'resultpa',
+            'resultua',
+            'totalresultfinancial',
+            'totalresultcompany',
+            'totalresultcostumer',
+            'totalresultcp',
+            'totalindexfinancial',
+            
+
 
 
 

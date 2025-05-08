@@ -1400,7 +1400,7 @@
                 <div class="vard">
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="/indexkpi">
                                 KPI
                                 @if(auth()->user()->role === 'staff' && isset($data['companyName']))
                                 {{ $data['companyName']->company_name }}
