@@ -68,7 +68,7 @@ Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/signin', [loginController::class, 'authentication'])->middleware('guest');
 Route::post('/logout', [loginController::class, 'logout'])->middleware('auth');
 
-Route::get('/dashboard', [DetailIsiSuratController::class, 'dashboard'])->middleware('auth')->name('dashboard');
+// Route::get('/dashboard', [DetailIsiSuratController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 //history_logs
 Route::get('/historylog', [AdminController::class, 'historylog'])->middleware('auth')->name('historylog');
 
@@ -419,7 +419,7 @@ Route::get('/perusahaan', [PerusahaanController::class, 'perusahaan'])->middlewa
 Route::post('/createperusahaan', [PerusahaanController::class, 'createperusahaan'])->middleware('auth')->name('createperusahaan');
 Route::get('/iup', [PerusahaanController::class, 'iup'])->middleware('auth')->name('iup');
 Route::get('/kontraktor', [PerusahaanController::class, 'kontraktor'])->middleware('auth')->name('kontraktor');
-Route::get('/mineral', [PerusahaanController::class, 'mineral'])->middleware('auth')->name('mineral');
+Route::get('/marketing', [PerusahaanController::class, 'marketing'])->middleware('auth')->name('marketing');
 Route::get('/nonenergi', [PerusahaanController::class, 'nonenergi'])->middleware('auth')->name('nonenergi');
 Route::get('/dummy', [PerusahaanController::class, 'dummy'])->middleware('auth')->name('dummy');
 

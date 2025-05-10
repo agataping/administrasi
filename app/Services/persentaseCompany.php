@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class ReportService
+class persentaseCompany
 {
-    public function DataReport(Request $request)
+    public function DataReport(Request $request, $companyid)
     {
 
 
@@ -27,7 +27,7 @@ class ReportService
         // $tahun = $request->input('tahun', session('tahun'));
         // $tahun = $request->input('tahun', date('Y'));
         $tahun = $request->input('tahun', date('Y'));
-        $companyId = $request->input('id_company');
+        // $companyid = $request->input('id_company');
         $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
         if ($tahun) {
             session(['tahun' => $tahun]);
@@ -52,16 +52,8 @@ class ReportService
                 'sub_neracas.id as sub_id',
                 'category_neracas.id as category_id',
                 'detail_neracas.id as detail_id'
-            );
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            )
+            ->where('users.id_company', $companyid);
         if ($tahun) {
             $query->whereBetween('detail_neracas.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -152,17 +144,9 @@ class ReportService
                 'category_labarugis.id as category_id',
                 'detailabarugis.nominalplan',
                 'detailabarugis.nominalactual'
-            );
+            )
 
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('detailabarugis.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -522,18 +506,9 @@ class ReportService
         //Cs barging
         $query = DB::table('plan_bargings')
             ->join('users', 'plan_bargings.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan')
 
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            ->where('users.id_company',$companyid);
         if (!empty($tahun)) {
             $query->whereBetween('plan_bargings.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -563,18 +538,9 @@ class ReportService
         $query = DB::table('bargings')
             ->join('users', 'bargings.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-            ->select('bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan');
+            ->select('bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan')
 
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            ->where('users.id_company',$companyid);
         if (!empty($tahun)) {
             $query->whereBetween('bargings.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -585,6 +551,7 @@ class ReportService
         //actual ekspor
         $totalactualekspor = (clone $query)
             ->where('bargings.kuota', 'Ekspor')
+            
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace('.', '', $item->quantity ?? 0);
@@ -604,7 +571,9 @@ class ReportService
         // dd($resultdomestik);
         // dd($resulutdomestik,$resultekspor,$indexdomestik,$totalactualdomestik);
 
-        $totalresultcp = round(3.00 + 0.56 + $resultdomestik + $resultekspor);
+        //belum clear
+        $totalresultcp = round($resultdomestik + $resultekspor);
+        // $totalresultcp = round(3.00 + 0.56 + $resultdomestik + $resultekspor);
         $totalresultcostumer = round(($totalresultcp / 0.15), 2);
 
         // dd($totalresultcostumer);
@@ -620,16 +589,8 @@ class ReportService
             ->select(
                 'kategori_overcoals.name as kategori_name',
                 'overberden_coal.*'
-            );
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            )
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('overberden_coal.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -673,16 +634,8 @@ class ReportService
                 'units.unit as units',
                 'produksi_pas.plan as pas_plan',
                 'produksi_pas.actual as pas_actual',
-            );
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            )
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('produksi_pas.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -741,16 +694,8 @@ class ReportService
             ->select(
                 'produksi_uas.*',
                 'units.unit as units'
-            );
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            )
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('produksi_uas.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -780,16 +725,8 @@ class ReportService
         $query = DB::table('pembebasan_lahans')
             ->leftJoin('users', 'pembebasan_lahans.created_by', '=', 'users.username')
 
-            ->select('*');
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            ->select('*')
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('pembebasan_lahans.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -804,16 +741,8 @@ class ReportService
         $query = DB::table('mining_readinesses')
             ->join('kategori_mini_r_s', 'mining_readinesses.KatgoriDescription', '=', 'kategori_mini_r_s.kategori')
             ->join('users', 'mining_readinesses.created_by', '=', 'users.username')
-            ->select('kategori_mini_r_s.kategori', 'mining_readinesses.*');
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            ->select('kategori_mini_r_s.kategori', 'mining_readinesses.*')
+            ->where('users.id_company', $companyid);
 
         if (!empty($tahun)) {
             $query->whereBetween('mining_readinesses.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
@@ -863,16 +792,8 @@ class ReportService
         $query = DB::table('people_readinesses')
             ->select('people_readinesses.*')
             ->join('users', 'people_readinesses.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('people_readinesses.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -921,16 +842,8 @@ class ReportService
         $query = DB::table('infrastructure_readinesses')
             ->select('infrastructure_readinesses.*')
             ->join('users', 'infrastructure_readinesses.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('infrastructure_readinesses.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -958,16 +871,8 @@ class ReportService
         $query = DB::table('bargings')
             ->select('bargings.*')
             ->join('users', 'bargings.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->where('users.id_company', $companyid);
 
         // Filter berdasarkan tanggal jika ada input
         if (!empty($tahun)) {
@@ -998,15 +903,9 @@ class ReportService
         $query = DB::table('stock_jts')
             ->select('stock_jts.*')
             ->join('users', 'stock_jts.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
 
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            }
-        }
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('stock_jts.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -1076,16 +975,8 @@ class ReportService
             ->join('units', 'ewhs.unit_id', '=', 'units.id')
             ->join('users', 'ewhs.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-            ->select('ewhs.*', 'units.unit as units');
-        if ($user->role !== 'admin') {
-            $queryewh->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $queryewh->where('users.id_company', $companyId);
-            } else {
-                $queryewh->whereRaw('users.id_company', $companyId);
-            }
-        }
+            ->select('ewhs.*', 'units.unit as units')
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('ewhs.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -1108,16 +999,8 @@ class ReportService
             ->select(
                 'fuels.*',
                 'units.unit as units'
-            );
-        if ($user->role !== 'admin') {
-            $queryfuels->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $queryfuels->where('users.id_company', $companyId);
-            } else {
-                $queryfuels->whereRaw('users.id_company', $companyId);
-            }
-        }
+            )
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('fuels.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -1134,7 +1017,7 @@ class ReportService
         $totalresultcompany = round(($totalresultfinancial + $totalresultcostumer + $totalresultIPP + $resultlearning) / 4, 2);
         // dd($totalresultcompany);
         $totalresult = $totalindexfinancial + $totalresultcp + $resultIPP + $totalindexlearning;
-        // dd($totalindexfinancial, $resultIPP, $totalresultcp, $totalindexlearning);
+        // dd($totalresultcompany);
 
         return compact(
             //total 
@@ -1183,7 +1066,7 @@ class ReportService
             'companyName',
             'user',
             'perusahaans',
-            'companyId',
+            'companyid',
             //stock jetty
             'grandTotal',
             'grandTotalstockakhir',
@@ -1357,12 +1240,32 @@ class ReportService
         );
     }
 
-    public function DataReportFromCompanyId($companyId, $tahun = null)
-    {
-        // Ambil data berdasarkan id perusahaan dan tahun jika ada
-        $request = new \Illuminate\Http\Request();
-        $request->merge(['company_id' => $companyId, 'tahun' => $tahun]);  // Menambahkan tahun ke request
-        return $this->DataReport($request);
-        
-    }
+                // <!-- @if(auth()->user()->role === 'admin')    
+                // <form method="GET" action="{{ route('reportkpi') }}" id="filterForm">
+                //     <label for="id_company">Select Company:
+                //         <br>
+                //         <small><em>To view company KPI, please select a company from the list.</em></small>
+                //     </label>
+                //     <select name="id_company" id="id_company" onchange="updateCompanyName(); document.getElementById('filterForm').submit();">
+                //         <option value="">-- Select Company --</option>
+                //         @foreach ($perusahaans as $company)
+                //         <option value="{{ $company->id }}" data-nama="{{ $company->nama }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                //             {{ $company->nama }}
+                //         </option>
+                //         @endforeach
+                //     </select>
+                // </form>
+                // @endif -->
+                // <!-- <form method="GET" action="{{ route('reportkpi') }}">
+                //     <label for="tahun">Pilih Tahun:</label>
+                //     <select name="tahun" id="tahun" onchange="this.form.submit()">
+                //         @for ($i = date('Y'); $i >= 2019; $i--)
+                //         <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>
+                //             {{ $i }}
+                //         </option>
+                //         @endfor
+                //     </select>
+                // </form>
+                //  -->
+
 }

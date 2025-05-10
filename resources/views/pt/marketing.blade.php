@@ -7,34 +7,38 @@
 </div>
 <div class="card mb-3" style="background:  no-repeat center center/cover; border-radius: 12px; overflow: hidden; margin: 2rem auto; height: 80vh;">
     <div class="card-img-overlay d-flex align-items-center justify-content-center" style="background: color: white; text-align: center; ">
-        <div class="card-body">
+        <div>
 
-            <div class="col-12">
 
-                <h2 class="mb-3"></h2>
-                @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-                @endif
+            <div class="card-body">
+                <div class="col-12">
+                    <h2 class="mb-3"></h2>
 
-                @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-                <div style="position: relative;" style="width: auto; height: auto; object-fit: cover;">
+                    <!-- Tampilkan pesan sukses -->
+                    @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                    @endif
 
-                    <div class="cardcostum">
-                        <div class="cardcost">
-                            <a href="/dashboard" class="cardcost text-decoration-none">
+                    <!-- Tampilkan pesan error -->
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
 
-                                <h3 style="color: whitesmoke;"><b>NON ENERGI</b></h3>
-                                <div class="percentage-box" style="font-size: 2em; 
+                    <div style="position: relative; width: auto; height: auto; object-fit: cover;">
+                        <!-- Card IUP -->
+                        <div class="cardcostum">
+                            <div class="cardcost">
+                                <a href="/dashboard" class="cardcost text-decoration-none">
+                                    <h3 style="color: whitesmoke;"><b>MARKETING</b></h3>
+                                    <div class="percentage-box" style="font-size: 2em; 
                                             @if ($totalResultIndukPerInduk <= 75)
                                                 background-color: black; color: white;
                                             @elseif ($totalResultIndukPerInduk > 75 && $totalResultIndukPerInduk <= 90)
@@ -47,26 +51,28 @@
                                                 background-color: blue; color: white;
                                             @endif
                                         ">
-                                    <h3 style="color: white;">
-                                        {{ number_format($totalResultIndukPerInduk, 2) }}%
-                                    </h3>
-                                </div>
-                            </a>
+                                        <h3 style="color: white;">
+                                            {{ number_format($totalResultIndukPerInduk, 2) }}%
+                                        </h3>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    @if(auth()->user()->role === 'staff')
-                    <div class="grid-container justify-content-center">
-                        @foreach($data as $item)
-                        <div class="grid-item">
-                            <div class="cardcostum">
-                                <div class="cardcost">
-                                    @if ($item->id == auth()->user()->id_company)
-                                    <a href="/reportkpi" class="cardcost text-decoration-none">
-                                        @else
-                                        <a class="cardcost text-decoration-none disabled-link">
-                                            @endif
-                                            <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
-                                            <div class="percentage-box" style="font-size: 2em; 
+
+                        <!-- Grid Container -->
+                        @if(auth()->user()->role === 'staff')
+                        <div class="grid-container justify-content-center">
+                            @foreach($data as $item)
+                            <div class="grid-item">
+                                <div class="cardcostum">
+                                    <div class="cardcost">
+                                        @if ($item->id == auth()->user()->id_company)
+                                        <a href="/reportkpi" class="cardcost text-decoration-none">
+                                            @else
+                                            <a class="cardcost text-decoration-none disabled-link">
+                                                @endif
+                                                <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
+                                                <div class="percentage-box" style="font-size: 2em; 
                                                 @if ($datas[$item->id]['totalresultcompany'] <= 75)
                                                     background-color: black; color: white;
                                                 @elseif ($datas[$item->id]['totalresultcompany'] > 75 && $datas[$item->id]['totalresultcompany'] <= 90)
@@ -79,69 +85,66 @@
                                                     background-color: blue; color: white;
                                                 @endif
                                             ">
-                                                {{ number_format($datas[$item->id]['totalresultcompany'], 2) }}%
-                                            </div>
-                                        </a>
+                                                    {{ number_format($datas[$item->id]['totalresultcompany'], 2) }}%
+                                                </div>
+                                            </a>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+
+                        @elseif(auth()->user()->role === 'admin')
+                        <div class="grid-container  justify-content-center">
+
+                            @foreach($data as $item)
+                            <div class="grid-item">
+                                <div class="cardcostum">
+                                    <div class="cardcost">
+                                        @if($item->id == auth()->user()->id_company)
+                                        <a href="/reportkpi" class="cardcost text-decoration-none">
+                                            @else
+                                            <a class="cardcost text-decoration-none disabled-link">
+                                                @endif
+                                                <h4><b>
+                                                        <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
+
+                                                    </b></h4>
+                                                <div class="percentage-box" style="font-size: 2em; 
+                                                @if ($datas[$item->id]['totalresultcompany'] <= 75)
+                                                    background-color: black; color: white;
+                                                @elseif ($datas[$item->id]['totalresultcompany'] > 75 && $datas[$item->id]['totalresultcompany'] <= 90)
+                                                    background-color: rgb(206, 24, 24); color: white;
+                                                @elseif ($datas[$item->id]['totalresultcompany'] > 90 && $datas[$item->id]['totalresultcompany'] <= 100)
+                                                    background-color: yellow; color: black;
+                                                @elseif ($datas[$item->id]['totalresultcompany'] > 100 && $datas[$item->id]['totalresultcompany'] <= 190)
+                                                    background-color: green; color: white;
+                                                @elseif ($datas[$item->id]['totalresultcompany'] > 190)
+                                                    background-color: blue; color: white;
+                                                @endif
+                                            ">
+                                                    {{ number_format($datas[$item->id]['totalresultcompany'], 2) }}%
+                                            </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         @endforeach
                     </div>
-
-
-                    @elseif(auth()->user()->role === 'admin')
-                    <div class="grid-container  justify-content-center">
-
-                        @foreach($data as $item)
-                        <div class="grid-item">
-                            <div class="cardcostum">
-                                <div class="cardcost">
-                                    @if($item->id == auth()->user()->id_company)
-                                    <a href="/reportkpi" class="cardcost text-decoration-none">
-                                        @else
-                                        <a class="cardcost text-decoration-none disabled-link">
-                                            @endif
-                                            <h4><b>
-                                                    <h4><b>{{ $loop->iteration }}. {{ $item->nama }}</b></h4>
-
-                                                </b></h4>
-                                            <div class="percentage-box" style="font-size: 2em; 
-                                                @if ($datas[$item->id]['totalresultcompany'] <= 75)
-                                                    background-color: black; color: white;
-                                                @elseif ($datas[$item->id]['totalresultcompany'] > 75 && $datas[$item->id]['totalresultcompany'] <= 90)
-                                                    background-color: rgb(206, 24, 24); color: white;
-                                                @elseif ($datas[$item->id]['totalresultcompany'] > 90 && $datas[$item->id]['totalresultcompany'] <= 100)
-                                                    background-color: yellow; color: black;
-                                                @elseif ($datas[$item->id]['totalresultcompany'] > 100 && $datas[$item->id]['totalresultcompany'] <= 190)
-                                                    background-color: green; color: white;
-                                                @elseif ($datas[$item->id]['totalresultcompany'] > 190)
-                                                    background-color: blue; color: white;
-                                                @endif
-                                            ">
-                                                {{ number_format($datas[$item->id]['totalresultcompany'], 2) }}%
-                                        </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
+                    @endif
                 </div>
-                @endif
-
-
             </div>
         </div>
     </div>
 </div>
-
-
-
-
-
+</div>
 
 
 @endsection
 
 @section('scripts')
-
 @endsection
+
+<style>
+</style>

@@ -8,36 +8,6 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="col-12">
-                <!-- @if(auth()->user()->role === 'admin')    
-                <form method="GET" action="{{ route('reportkpi') }}" id="filterForm">
-                    <label for="id_company">Select Company:
-                        <br>
-                        <small><em>To view company KPI, please select a company from the list.</em></small>
-                    </label>
-                    <select name="id_company" id="id_company" onchange="updateCompanyName(); document.getElementById('filterForm').submit();">
-                        <option value="">-- Select Company --</option>
-                        @foreach ($perusahaans as $company)
-                        <option value="{{ $company->id }}" data-nama="{{ $company->nama }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                            {{ $company->nama }}
-                        </option>
-                        @endforeach
-                    </select>
-                </form>
-                @endif -->
-                <!-- <form method="GET" action="{{ route('reportkpi') }}">
-                    <label for="tahun">Pilih Tahun:</label>
-                    <select name="tahun" id="tahun" onchange="this.form.submit()">
-                        @for ($i = date('Y'); $i >= 2019; $i--)
-                        <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>
-                            {{ $i }}
-                        </option>
-                        @endfor
-                    </select>
-                </form>
-                 -->
-
-
-
                 <div class="row mt-1" style="margin-bottom: 0.5rem;">
                     <h4 class="text-center text-uppercase fw-bold text-primary mb-2">
                         KPI JTN Dashboard - {{ request('tahun', date('Y')) }}

@@ -64,7 +64,13 @@
 
 
 </header>
-
+<div class="card w-100" style="background-color: transparent; border-bottom: 2px solid white; margin-top: -24px;">
+    <div class="d-flex justify-content-start align-items-center ms-3 me-3 py-2">
+        <i onclick="history.back()" class="fa fa-arrow-left" style="cursor: pointer; font-size: 20px; color: white; margin-right: 7px;"></i>
+        <i onclick="history.forward()" class="fa fa-arrow-right" style="cursor: pointer; font-size: 20px; color: white; margin-right: 7px;"></i>
+        <i onclick="location.reload()" class="fa fa-sync" style="cursor: pointer; font-size: 20px; color: white;"></i>
+    </div>
+</div>
 <body>
     <div class="background-full" style="background:  url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
     </div>
@@ -77,7 +83,7 @@
                     <div class="cardcostum">
                         <div class="cardcost">
                             <h4><b>QUBAH GROUP </b></h4>
-                            <div class="percentage-box">98%</div>
+                            <div class="percentage-box">{{ number_format($avargequbahgroup, 2) }}%</div>
                         </div>
                     </div>
 
@@ -85,28 +91,39 @@
                         <div class="cardcostum">
                             <a href="/iup" class="cardcost text-decoration-none">
                                 <h4 class="text-black"><strong>IUP</strong></h4>
-                                <div class="percentage-box">100%</div>
+                                <div class="percentage-box">
+                                    {{ number_format($averageiup, 2) }}%
+                                </div>
+
                             </a>
                         </div>
 
                         <div class="cardcostum">
                             <a href="/kontraktor" class="cardcost text-decoration-none">
                                 <h4 class="text-black"><strong>Kontraktor</strong></h4>
-                                <div class="percentage-box">85%</div>
+                                <div class="percentage-box">
+                                    {{ number_format($averagekontraktor, 2) }}%
+
+                                </div>
                             </a>
                         </div>
 
                         <div class="cardcostum">
                             <a href="/nonenergi" class="cardcost text-decoration-none">
                                 <h4 class="text-black"><strong>Non Energi</strong></h4>
-                                <div class="percentage-box">90%</div>
+                                <div class="percentage-box">
+                                    {{ number_format($averagenonenergi, 2) }}%
+
+                                </div>
                             </a>
                         </div>
 
                         <div class="cardcostum">
-                            <a href="/mineral" class="cardcost text-decoration-none">
+                            <a href="/marketing" class="cardcost text-decoration-none">
                                 <h4 class="text-black"><strong>Marketing</strong></h4>
-                                <div class="percentage-box">95%</div>
+                                <div class="percentage-box">
+                                    {{ number_format($averagemarketing, 2) }}%
+                                </div>
                             </a>
                         </div>
                     </div>

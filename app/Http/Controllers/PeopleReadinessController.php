@@ -13,14 +13,150 @@ use App\Models\Gambar;
 use App\Models\HistoryLog;
 use App\Models\PlanTambang;
 use Carbon\Carbon;
+use App\Services\persentaseCompany as ServiceReportService;
 
 class PeopleReadinessController extends Controller
 {
-    public function dashboard()
+    protected $reportService;
+
+    public function __construct(ServiceReportService $reportService)
     {
+        $this->reportService = $reportService;
+    }
+
+    public function dashboard(Request $request)
+    {
+        //iup
+        $user = auth()->user();
+                if (auth()->user()->role === 'admin') {
+            $dataiup = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'IUP')
+                ->select('perusahaans.*')
+                ->get();
+        } else {
+            $dataiup = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'IUP')
+                ->select('perusahaans.*')
+                ->get();
+        }
+        $childiup = [];
+        $totalResultIndukiup = 0;
+        $totalCompanyCountiup = count($dataiup);
+
+        foreach ($dataiup as $company) {
+            $childiup[$company->id] = $this->reportService->DataReport($request, $company->id);
+
+            $totalResultIndukiup += $childiup[$company->id]['totalresultfinancial'] ?? 0;
+            $totalResultIndukiup += $childiup[$company->id]['totalresultcostumer'] ?? 0;
+            $totalResultIndukiup += $childiup[$company->id]['totalresultIPP'] ?? 0;
+            $totalResultIndukiup += $childiup[$company->id]['resultlearning'] ?? 0;
+        }
+
+        if ($totalCompanyCountiup > 0) {
+            $averageiup = round(($totalResultIndukiup / 4) / $totalCompanyCountiup, 2);
+        } else {
+            $averageiup = 0;
+        }
+
+        //NON energi 
+                if (auth()->user()->role === 'admin') {
+            $datanonenergi = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Non Energi')
+                ->select('perusahaans.*')
+                ->get();
+        } else {
+            $datanonenergi = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Non Energi')
+                ->select('perusahaans.*')
+                ->get();
+        }
+        $childnonenergi = [];
+        $totalResultInduknonenergi = 0;
+        $totalCompanyCountnonenergi = count($datanonenergi);
+
+        foreach ($datanonenergi as $company) {
+            $childnonenergi[$company->id] = $this->reportService->DataReport($request, $company->id);
+
+            $totalResultInduknonenergi += $childnonenergi[$company->id]['totalresultfinancial'] ?? 0;
+            $totalResultInduknonenergi += $childnonenergi[$company->id]['totalresultcostumer'] ?? 0;
+            $totalResultInduknonenergi += $childnonenergi[$company->id]['totalresultIPP'] ?? 0;
+            $totalResultInduknonenergi += $childnonenergi[$company->id]['resultlearning'] ?? 0;
+        }
+
+        if ($totalCompanyCountnonenergi > 0) {
+            $averagenonenergi = round(($totalResultInduknonenergi / 4) / $totalCompanyCountnonenergi, 2);
+        } else {
+            $averagenonenergi = 0;
+        }
+
+        //kontaktor
+                if (auth()->user()->role === 'admin') {
+            $datakontaktor = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Kontraktor')
+                ->select('perusahaans.*')
+                ->get();
+        } else {
+            $datakontaktor = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Kontraktor')
+                ->select('perusahaans.*')
+                ->get();
+        }
+        $dataskontraktor = [];
+        $totalResultIndukkontraktor = 0;
+        $totalCompanyCountkontraktor = count($datakontaktor);
+
+        foreach ($datakontaktor as $company) {
+            $dataskontraktor[$company->id] = $this->reportService->DataReport($request, $company->id);
+
+            $totalResultIndukkontraktor += $dataskontraktor[$company->id]['totalresultfinancial'] ?? 0;
+            $totalResultIndukkontraktor += $dataskontraktor[$company->id]['totalresultcostumer'] ?? 0;
+            $totalResultIndukkontraktor += $dataskontraktor[$company->id]['totalresultIPP'] ?? 0;
+            $totalResultIndukkontraktor += $dataskontraktor[$company->id]['resultlearning'] ?? 0;
+        }
+
+        if ($totalCompanyCountkontraktor > 0) {
+            $averagekontraktor = round(($totalResultIndukkontraktor / 4) / $totalCompanyCountkontraktor, 2);
+        } else {
+            $averagekontraktor = 0;
+        }
+
+        //marketing
+                if (auth()->user()->role === 'admin') {
+            $datamarketing = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Marketing')
+                ->select('perusahaans.*')
+                ->get();
+        } else {
+            $datamarketing = DB::table('perusahaans')
+                ->where('perusahaans.induk', 'Marketing')
+                ->select('perusahaans.*')
+                ->get();
+        }
+        $datasmarketting = [];
+        $totalResultmarketing = 0;
+        $totalCompanyCount = count($datamarketing);
+
+        foreach ($datamarketing as $company) {
+            $datasmarketting[$company->id] = $this->reportService->DataReport($request, $company->id);
+
+            $totalResultmarketing += $datasmarketting[$company->id]['totalresultfinancial'] ?? 0;
+            $totalResultmarketing += $datasmarketting[$company->id]['totalresultcostumer'] ?? 0;
+            $totalResultmarketing += $datasmarketting[$company->id]['totalresultIPP'] ?? 0;
+            $totalResultmarketing += $datasmarketting[$company->id]['resultlearning'] ?? 0;
+        }
+
+        if ($totalCompanyCount > 0) {
+            $averagemarketing = round(($totalResultmarketing / 4) / $totalCompanyCount, 2);
+        } else {
+            $averagemarketing = 0;
+        }
+
+
+
+        $avargequbahgroup= round(($averageiup+$averagekontraktor+$averagenonenergi+$averagemarketing)/4,2);
         if (Auth::check()) {
             $username = Auth::user()->name;
-            return view('components.main', ['username' => $username]);
+            return view('components.main',compact('username','averageiup','averagekontraktor','averagenonenergi','averagemarketing','avargequbahgroup'));
         } else {
             // Handle the case when the user is not authenticated
             return redirect('/login');
