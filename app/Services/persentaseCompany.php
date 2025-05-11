@@ -921,13 +921,9 @@ class persentaseCompany
             ->join('users', 'stock_jts.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
             ->whereNotNull('stock_jts.sotckawal')
-            ->whereDate('stock_jts.date', '<', "$tahun-01-01"); // sebelum tahun yang difilter
+            ->whereDate('stock_jts.date', '<', "$tahun-01-01")// sebelum tahun yang difilter
+            ->where('users.id_company', $companyid);
 
-        if ($user->role !== 'admin') {
-            $sotckAwalQuery->where('users.id_company', $user->id_company);
-        } elseif ($companyId) {
-            $sotckAwalQuery->where('users.id_company', $companyId);
-        }
 
         // Ambil stok awal paling terakhir sebelum tahun tersebut
         $stokAwal = $sotckAwalQuery
