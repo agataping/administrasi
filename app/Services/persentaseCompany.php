@@ -508,7 +508,7 @@ class persentaseCompany
             ->join('users', 'plan_bargings.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')->select('plan_bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan')
 
-            ->where('users.id_company',$companyid);
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('plan_bargings.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -540,7 +540,7 @@ class persentaseCompany
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
             ->select('bargings.*', 'users.id_company', 'perusahaans.nama as nama_perusahaan')
 
-            ->where('users.id_company',$companyid);
+            ->where('users.id_company', $companyid);
         if (!empty($tahun)) {
             $query->whereBetween('bargings.tanggal', ["$tahun-01-01", "$tahun-12-31"]);
         }
@@ -551,7 +551,7 @@ class persentaseCompany
         //actual ekspor
         $totalactualekspor = (clone $query)
             ->where('bargings.kuota', 'Ekspor')
-            
+
             ->get()
             ->sum(function ($item) {
                 return (float)str_replace('.', '', $item->quantity ?? 0);
@@ -900,18 +900,45 @@ class persentaseCompany
         // dd($totalQuantity);
 
 
+
+        // 1. Query utama: hanya untuk data dalam tahun filter
         $query = DB::table('stock_jts')
             ->select('stock_jts.*')
             ->join('users', 'stock_jts.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-
             ->where('users.id_company', $companyid);
+
+
         if (!empty($tahun)) {
             $query->whereBetween('stock_jts.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
 
         $data = $query->get();
 
+        // 2. Ambil sotckawal dari tahun-tahun sebelumnya (TANPA filter tahun)
+        $sotckAwalQuery = DB::table('stock_jts')
+            ->select('sotckawal', 'date')
+            ->join('users', 'stock_jts.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->whereNotNull('stock_jts.sotckawal')
+            ->whereDate('stock_jts.date', '<', "$tahun-01-01"); // sebelum tahun yang difilter
+
+        if ($user->role !== 'admin') {
+            $sotckAwalQuery->where('users.id_company', $user->id_company);
+        } elseif ($companyId) {
+            $sotckAwalQuery->where('users.id_company', $companyId);
+        }
+
+        // Ambil stok awal paling terakhir sebelum tahun tersebut
+        $stokAwal = $sotckAwalQuery
+            ->orderByDesc('date')
+            ->pluck('sotckawal')
+            ->map(function ($val) {
+                return floatval(str_replace(',', '.', str_replace('.', '', $val)));
+            })
+            ->first() ?? 0;
+
+        // Tambahkan stok awal ke data tahun itu
         $planNominal = $data->sum(function ($p) {
             return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
         });
@@ -921,52 +948,26 @@ class persentaseCompany
             return $item;
         });
 
-        $data->each(function ($item) {
-            $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
-        });
+        $totalHauling = $data->sum('totalhauling') ?? 0;
 
-        $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+        // Proses total stockout dan stock akhir
+        $prevStockAkhir = $stokAwal;
+        $totalStockOut = 0;
+        $totalStockAkhir = 0;
 
-        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
-        $akumulasi = $stokAwal;
+        $data = $data->sortBy('date')->values(); // urutkan dulu biar akurat
 
-
-        $akumulasiStokMasuk = $data->where('date', '<=',)->sum(function ($item) {
-            return floatval($item->sotckawal) + floatval($item->totalhauling);
-        });
-        $akumulasiStokMasuk = 0;
-        $data->each(function ($stock, $index) use ($akumulasiStokMasuk) {
-            $stock->sotckawal = floatval($stock->sotckawal ?? 0);
-            $stock->totalhauling = floatval($stock->totalhauling ?? 0);
-            $stock->stockout = floatval($stock->stockout ?? 0);
-
-            if ($index === 0) {
-                $akumulasiStokMasuk = $stock->sotckawal;
-            }
-
-            $akumulasiStokMasuk += $stock->totalhauling;
-
-            $stock->akumulasi_stock = $akumulasiStokMasuk;
-        });
-
-        $prevStockAkhir = 0;
-        $totalStockOut = 0; // Variabel untuk menyimpan total stockout
-
-        $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut) {
+        $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut, &$totalStockAkhir) {
             $stock->sotckawal = $stock->sotckawal > 0 ? $stock->sotckawal : $prevStockAkhir;
 
             $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;
 
             $totalStockOut += $stock->stockout;
-
             $prevStockAkhir = $stock->stock_akhir;
+            $totalStockAkhir = $stock->stock_akhir; // disimpan yang terakhir
         });
-
-        // dd($totalStockOut);
-
-
-        // dd($data->toArray());
         $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
+
         $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
         // dd($grandTotalstockakhir);
 
@@ -1240,32 +1241,32 @@ class persentaseCompany
         );
     }
 
-                // <!-- @if(auth()->user()->role === 'admin')    
-                // <form method="GET" action="{{ route('reportkpi') }}" id="filterForm">
-                //     <label for="id_company">Select Company:
-                //         <br>
-                //         <small><em>To view company KPI, please select a company from the list.</em></small>
-                //     </label>
-                //     <select name="id_company" id="id_company" onchange="updateCompanyName(); document.getElementById('filterForm').submit();">
-                //         <option value="">-- Select Company --</option>
-                //         @foreach ($perusahaans as $company)
-                //         <option value="{{ $company->id }}" data-nama="{{ $company->nama }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                //             {{ $company->nama }}
-                //         </option>
-                //         @endforeach
-                //     </select>
-                // </form>
-                // @endif -->
-                // <!-- <form method="GET" action="{{ route('reportkpi') }}">
-                //     <label for="tahun">Pilih Tahun:</label>
-                //     <select name="tahun" id="tahun" onchange="this.form.submit()">
-                //         @for ($i = date('Y'); $i >= 2019; $i--)
-                //         <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>
-                //             {{ $i }}
-                //         </option>
-                //         @endfor
-                //     </select>
-                // </form>
-                //  -->
+    // <!-- @if(auth()->user()->role === 'admin')    
+    // <form method="GET" action="{{ route('reportkpi') }}" id="filterForm">
+    //     <label for="id_company">Select Company:
+    //         <br>
+    //         <small><em>To view company KPI, please select a company from the list.</em></small>
+    //     </label>
+    //     <select name="id_company" id="id_company" onchange="updateCompanyName(); document.getElementById('filterForm').submit();">
+    //         <option value="">-- Select Company --</option>
+    //         @foreach ($perusahaans as $company)
+    //         <option value="{{ $company->id }}" data-nama="{{ $company->nama }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+    //             {{ $company->nama }}
+    //         </option>
+    //         @endforeach
+    //     </select>
+    // </form>
+    // @endif -->
+    // <!-- <form method="GET" action="{{ route('reportkpi') }}">
+    //     <label for="tahun">Pilih Tahun:</label>
+    //     <select name="tahun" id="tahun" onchange="this.form.submit()">
+    //         @for ($i = date('Y'); $i >= 2019; $i--)
+    //         <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>
+    //             {{ $i }}
+    //         </option>
+    //         @endfor
+    //     </select>
+    // </form>
+    //  -->
 
 }

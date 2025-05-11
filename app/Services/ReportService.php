@@ -994,46 +994,6 @@ class ReportService
         });
         // dd($totalQuantity);
 
-        // Ambil stok awal dari data sebelum tahun yang difilter
-        $stokAwalRecord = DB::table('stock_jts')
-            ->join('users', 'stock_jts.created_by', '=', 'users.username')
-            ->when($user->role !== 'admin', function ($q) use ($user) {
-                $q->where('users.id_company', $user->id_company);
-            }, function ($q) use ($companyId) {
-                if ($companyId) {
-                    $q->where('users.id_company', $companyId);
-                }
-            })
-            ->whereNotNull('stock_jts.sotckawal')
-            ->whereDate('stock_jts.date', '<', "$tahun-01-01")
-            ->orderBy('stock_jts.date', 'desc') // ambil stok awal terbaru sebelum tahun tersebut
-            ->select('stock_jts.sotckawal')
-            ->first();
-
-        $stokAwal = floatval(str_replace(',', '.', str_replace('.', '', $stokAwalRecord->sotckawal ?? 0)));
-
-        // Query utama untuk ambil data dalam tahun
-        $query = DB::table('stock_jts')
-            ->select('stock_jts.*')
-            ->join('users', 'stock_jts.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
-
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            }
-        }
-
-        if (!empty($tahun)) {
-            $query->whereBetween('stock_jts.date', ["$tahun-01-01", "$tahun-12-31"]);
-        }
-
-        $data = $query->get();
-
-        // Lanjutkan proses transformasi data dan perhitungan...
-
 
         // 1. Query utama: hanya untuk data dalam tahun filter
         $query = DB::table('stock_jts')
