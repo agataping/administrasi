@@ -13,6 +13,7 @@ use App\Models\StockJt;
 use App\Models\Barging;
 
 use App\Models\HistoryLog;
+use Illuminate\Support\Facades\Log;
 
 class StockJtController extends Controller
 {
@@ -38,7 +39,7 @@ class StockJtController extends Controller
             }
         }
 
-
+        // Mengatur tanggal filter jika tidak ada input
         if (!$startDate || !$endDate) {
             $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
             $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
@@ -47,83 +48,118 @@ class StockJtController extends Controller
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
 
-        $query->where(function ($q) use ($startDate, $endDate) {
-            $q->whereBetween('stock_jts.date', [$startDate, $endDate])
-                ->orWhere('stock_jts.sotckawal', '!=', null);
-        })
+        // Hanya ambil data tahun yang sesuai dengan filter
+        $query->whereBetween('stock_jts.date', [$startDate, $endDate])
             ->orderBy('stock_jts.date', 'asc');
 
+        // Ambil data stok awal (sotckawal) dari tahun sebelumnya, hanya yang terbaru
+        $stokAwalQuery = DB::table('stock_jts')
+            ->join('users', 'stock_jts.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
 
+            ->select('sotckawal', 'date')
+            ->whereNotNull('sotckawal')
+            ->whereDate('stock_jts.date', '<', "$tahun-01-01")
+            ->orderByDesc('date')
+            ->limit(1);
 
+        if ($user->role !== 'admin') {
+            $stokAwalQuery->where('users.id_company', $user->id_company);
+        } elseif ($companyId) {
+            $stokAwalQuery->where('users.id_company', $companyId);
+        }
+
+        // Ambil stok awal yang terbaru
+        $stokAwal = $stokAwalQuery->pluck('sotckawal')->first() ?? 0;
+
+        // Mengambil data utama
         $data = $query->get();
 
+        // Menghitung total plan nominal
         $planNominal = $data->sum(function ($p) {
             return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
         });
 
+        // Transformasi sotckawal menjadi angka float
         $data->transform(function ($item) {
             $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
             return $item;
         });
 
+        // Menambahkan ekstensi file jika ada
         $data->each(function ($item) {
             $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
         });
 
+        // Menghitung total hauling
         $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
-
-        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
-        $akumulasi = $stokAwal;
-
-        $endForStokMasuk = date('Y-m-d', strtotime($endDate . ' -1 day'));
-        $dataStokMasuk = $data->filter(function ($item) use ($endForStokMasuk) {
-            return isset($item->date) && $item->date <= $endForStokMasuk;
-        });
-
-
-        if ($dataStokMasuk->isEmpty()) {
-            $dataStokMasuk = collect();
-        }
-        $akumulasiStokMasuk = $data->where('date', '<=', $endDate)->sum(function ($item) {
-            return floatval($item->sotckawal) + floatval($item->totalhauling);
-        });
-        $akumulasiStokMasuk = 0;
-        $data->each(function ($stock, $index) use ($dataStokMasuk, &$akumulasiStokMasuk) {
+        $akumulasi = floatval($stokAwal ?? 0);
+        // Menggunakan stok awal yang sudah didapatkan
+        $data->each(function ($stock) use (&$akumulasi) {
+            // Pastikan nilai sotckawal, totalhauling, dan stockout adalah angka (float)
             $stock->sotckawal = floatval($stock->sotckawal ?? 0);
             $stock->totalhauling = floatval($stock->totalhauling ?? 0);
             $stock->stockout = floatval($stock->stockout ?? 0);
 
-            if ($index === 0) {
-                $akumulasiStokMasuk = $stock->sotckawal;
-            }
+            // Log untuk memverifikasi nilai yang digunakan
+            // Log::info("Stok ID: {$stock->id}, sotckawal: {$stock->sotckawal}, totalhauling: {$stock->totalhauling}, stockout: {$stock->stockout}, Akumulasi: {$akumulasi}");
 
-            if ($dataStokMasuk->contains('id', $stock->id)) {
-                $akumulasiStokMasuk += $stock->totalhauling;
-            }
-
-            $stock->akumulasi_stock = $akumulasiStokMasuk;
+            // Akumulasi stok masuk
+            $akumulasi += $stock->totalhauling;
+            $stock->akumulasi_stock = $akumulasi;
         });
 
-        $prevStockAkhir = 0;
+        $prevStockAkhir = floatval($stokAwal); // Pastikan stok awal adalah angka
         $totalStockOut = 0; // Variabel untuk menyimpan total stockout
 
         $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut) {
-            $stock->sotckawal = $stock->sotckawal > 0 ? $stock->sotckawal : $prevStockAkhir;
+            // Pastikan nilai-nilai tersebut adalah float
+            $stock->sotckawal = floatval($stock->sotckawal ?? 0);
+            $stock->totalhauling = floatval($stock->totalhauling ?? 0);
+            $stock->stockout = floatval($stock->stockout ?? 0);
 
+            // Jika sotckawal <= 0, gunakan prevStockAkhir
+            if ($stock->sotckawal <= 0) {
+                $stock->sotckawal = $prevStockAkhir;  // Gunakan stok sebelumnya jika stokawal <= 0
+            }
+
+            // Perhitungan stock_akhir: stokawal + totalhauling - stockout
             $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;
 
+            // Akumulasi total stockout
             $totalStockOut += $stock->stockout;
 
+            // Set prevStockAkhir untuk iterasi berikutnya
             $prevStockAkhir = $stock->stock_akhir;
+
+            // Log untuk memeriksa nilai selama perhitungan (opsional)
+            // Log::info('Iterasi perhitungan:', [
+            //     'sotckawal' => $stock->sotckawal,
+            //     'totalhauling' => $stock->totalhauling,
+            //     'stockout' => $stock->stockout,
+            //     'stock_akhir' => $stock->stock_akhir,
+            //     'prevStockAkhir' => $prevStockAkhir
+            // ]);
         });
-
-        // dd($totalStockOut);
-
-
-        // dd($data->toArray());
         $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
+
+        // Menyimpan total hasil akhir
         $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
-        return view('stockjt.indexmenu', compact('startDate', 'endDate','data', 'grandTotalstockakhir'));
+
+        Log::info('Grand Total Stock Akhir:', [
+            'grandTotalstockakhir' => $grandTotalstockakhir
+        ]);
+
+
+        // Sekarang kamu bisa pakai:
+        // dd([
+        //     'stok_awal' => $stokAwal,
+        //     'total_hauling' => $totalHauling,
+        //     'total_stockout' => $totalStockOut,
+        //     'stock_akhir_terakhir' => $prevStockAkhir,
+        // ]);
+
+        return view('stockjt.indexmenu', compact('startDate', 'endDate', 'data', 'grandTotalstockakhir'));
     }
 
 
@@ -195,7 +231,6 @@ class StockJtController extends Controller
             }
         }
 
-
         if (!$startDate || !$endDate) {
             $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
             $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
@@ -204,84 +239,101 @@ class StockJtController extends Controller
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
 
-        $query->where(function ($q) use ($startDate, $endDate) {
-            $q->whereBetween('stock_jts.date', [$startDate, $endDate])
-                ->orWhere('stock_jts.sotckawal', '!=', null);
-        })
+        $query->whereBetween('stock_jts.date', [$startDate, $endDate])
             ->orderBy('stock_jts.date', 'asc');
 
+        // Ambil data stok awal (sotckawal) dari tahun sebelumnya, hanya yang terbaru
+        $stokAwalQuery = DB::table('stock_jts')
+            ->join('users', 'stock_jts.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
 
+            ->select('sotckawal', 'date')
+            ->whereNotNull('sotckawal')
+            ->whereDate('stock_jts.date', '<', "$tahun-01-01") // Tahun sebelumnya
+            ->orderByDesc('date')
+            ->limit(1); // Ambil yang terbaru
 
+        // Jika ada filter perusahaan, tambahkan filter yang sama
+        if ($user->role !== 'admin') {
+            $stokAwalQuery->where('users.id_company', $user->id_company);
+        } elseif ($companyId) {
+            $stokAwalQuery->where('users.id_company', $companyId);
+        }
+
+        // Ambil stok awal yang terbaru
+        $stokAwal = $stokAwalQuery->pluck('sotckawal')->first() ?? 0;
+
+        // Mengambil data utama
         $data = $query->get();
 
+        // Menghitung total plan nominal
         $planNominal = $data->sum(function ($p) {
             return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
         });
 
+        // Transformasi sotckawal menjadi angka float
         $data->transform(function ($item) {
             $item->sotckawal = floatval(str_replace(',', '.', str_replace('.', '', $item->sotckawal)));
             return $item;
         });
 
+        // Menambahkan ekstensi file jika ada
         $data->each(function ($item) {
             $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
         });
 
+        // Menghitung total hauling
         $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
-
-        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
-        $akumulasi = $stokAwal;
-
-        $endForStokMasuk = date('Y-m-d', strtotime($endDate . ' -1 day'));
-        $dataStokMasuk = $data->filter(function ($item) use ($endForStokMasuk) {
-            return isset($item->date) && $item->date <= $endForStokMasuk;
-        });
-
-
-        if ($dataStokMasuk->isEmpty()) {
-            $dataStokMasuk = collect();
-        }
-        $akumulasiStokMasuk = $data->where('date', '<=', $endDate)->sum(function ($item) {
-            return floatval($item->sotckawal) + floatval($item->totalhauling);
-        });
-        $akumulasiStokMasuk = 0;
-        $data->each(function ($stock, $index) use ($dataStokMasuk, &$akumulasiStokMasuk) {
+        $akumulasi = floatval($stokAwal ?? 0);
+        $data->each(function ($stock) use (&$akumulasi) {
             $stock->sotckawal = floatval($stock->sotckawal ?? 0);
             $stock->totalhauling = floatval($stock->totalhauling ?? 0);
             $stock->stockout = floatval($stock->stockout ?? 0);
 
-            if ($index === 0) {
-                $akumulasiStokMasuk = $stock->sotckawal;
-            }
+            // Log::info("Stok ID: {$stock->id}, sotckawal: {$stock->sotckawal}, totalhauling: {$stock->totalhauling}, stockout: {$stock->stockout}, Akumulasi: {$akumulasi}");
 
-            if ($dataStokMasuk->contains('id', $stock->id)) {
-                $akumulasiStokMasuk += $stock->totalhauling;
-            }
-
-            $stock->akumulasi_stock = $akumulasiStokMasuk;
+            $akumulasi += $stock->totalhauling;
+            $stock->akumulasi_stock = $akumulasi;
         });
 
-        $prevStockAkhir = 0;
-        $totalStockOut = 0; // Variabel untuk menyimpan total stockout
+        $prevStockAkhir = floatval($stokAwal); 
+        $totalStockOut = 0; 
 
         $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut) {
-            $stock->sotckawal = $stock->sotckawal > 0 ? $stock->sotckawal : $prevStockAkhir;
+            $stock->sotckawal = floatval($stock->sotckawal ?? 0);
+            $stock->totalhauling = floatval($stock->totalhauling ?? 0);
+            $stock->stockout = floatval($stock->stockout ?? 0);
+
+            if ($stock->sotckawal <= 0) {
+                $stock->sotckawal = $prevStockAkhir;  
+            }
 
             $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;
 
             $totalStockOut += $stock->stockout;
 
             $prevStockAkhir = $stock->stock_akhir;
+
+            // Log::info('Iterasi perhitungan:', [
+            //     'sotckawal' => $stock->sotckawal,
+            //     'totalhauling' => $stock->totalhauling,
+            //     'stockout' => $stock->stockout,
+            //     'stock_akhir' => $stock->stock_akhir,
+            //     'prevStockAkhir' => $prevStockAkhir
+            // ]);
         });
-
-        // dd($totalStockOut);
-
-
-        // dd($data->toArray());
         $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
+
         $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
 
-        return view('stockjt.index', compact('startDate', 'endDate',
+        // Log::info('Grand Total Stock Akhir:', [
+        //     'grandTotalstockakhir' => $grandTotalstockakhir
+        // ]);
+
+
+        return view('stockjt.index', compact(
+            'startDate',
+            'endDate',
             'data',
             'totalHauling',
             'grandTotal',
@@ -488,7 +540,7 @@ class StockJtController extends Controller
         $data = $query->get();
 
 
-        return view('picastokjt.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
+        return view('picastokjt.index', compact('startDate', 'endDate', 'data', 'perusahaans', 'companyId'));
     }
 
     public function formpicasjt()

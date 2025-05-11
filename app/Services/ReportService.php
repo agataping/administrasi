@@ -994,7 +994,25 @@ class ReportService
         });
         // dd($totalQuantity);
 
+        // Ambil stok awal dari data sebelum tahun yang difilter
+        $stokAwalRecord = DB::table('stock_jts')
+            ->join('users', 'stock_jts.created_by', '=', 'users.username')
+            ->when($user->role !== 'admin', function ($q) use ($user) {
+                $q->where('users.id_company', $user->id_company);
+            }, function ($q) use ($companyId) {
+                if ($companyId) {
+                    $q->where('users.id_company', $companyId);
+                }
+            })
+            ->whereNotNull('stock_jts.sotckawal')
+            ->whereDate('stock_jts.date', '<', "$tahun-01-01")
+            ->orderBy('stock_jts.date', 'desc') // ambil stok awal terbaru sebelum tahun tersebut
+            ->select('stock_jts.sotckawal')
+            ->first();
 
+        $stokAwal = floatval(str_replace(',', '.', str_replace('.', '', $stokAwalRecord->sotckawal ?? 0)));
+
+        // Query utama untuk ambil data dalam tahun
         $query = DB::table('stock_jts')
             ->select('stock_jts.*')
             ->join('users', 'stock_jts.created_by', '=', 'users.username')
@@ -1007,12 +1025,58 @@ class ReportService
                 $query->where('users.id_company', $companyId);
             }
         }
+
         if (!empty($tahun)) {
             $query->whereBetween('stock_jts.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
 
         $data = $query->get();
 
+        // Lanjutkan proses transformasi data dan perhitungan...
+
+
+        // 1. Query utama: hanya untuk data dalam tahun filter
+        $query = DB::table('stock_jts')
+            ->select('stock_jts.*')
+            ->join('users', 'stock_jts.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } elseif ($companyId) {
+            $query->where('users.id_company', $companyId);
+        }
+
+        if (!empty($tahun)) {
+            $query->whereBetween('stock_jts.date', ["$tahun-01-01", "$tahun-12-31"]);
+        }
+
+        $data = $query->get();
+
+        // 2. Ambil sotckawal dari tahun-tahun sebelumnya (TANPA filter tahun)
+        $sotckAwalQuery = DB::table('stock_jts')
+            ->select('sotckawal', 'date')
+            ->join('users', 'stock_jts.created_by', '=', 'users.username')
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->whereNotNull('stock_jts.sotckawal')
+            ->whereDate('stock_jts.date', '<', "$tahun-01-01"); // sebelum tahun yang difilter
+
+        if ($user->role !== 'admin') {
+            $sotckAwalQuery->where('users.id_company', $user->id_company);
+        } elseif ($companyId) {
+            $sotckAwalQuery->where('users.id_company', $companyId);
+        }
+
+        // Ambil stok awal paling terakhir sebelum tahun tersebut
+        $stokAwal = $sotckAwalQuery
+            ->orderByDesc('date')
+            ->pluck('sotckawal')
+            ->map(function ($val) {
+                return floatval(str_replace(',', '.', str_replace('.', '', $val)));
+            })
+            ->first() ?? 0;
+
+        // Tambahkan stok awal ke data tahun itu
         $planNominal = $data->sum(function ($p) {
             return floatval(str_replace(['.', ','], ['', '.'], $p->plan));
         });
@@ -1022,54 +1086,36 @@ class ReportService
             return $item;
         });
 
-        $data->each(function ($item) {
-            $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
-        });
+        $totalHauling = $data->sum('totalhauling') ?? 0;
 
-        $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+        // Proses total stockout dan stock akhir
+        $prevStockAkhir = $stokAwal;
+        $totalStockOut = 0;
+        $totalStockAkhir = 0;
 
-        $stokAwal = floatval($data->whereNotNull('sotckawal')->first()->sotckawal ?? 0);
-        $akumulasi = $stokAwal;
+        $data = $data->sortBy('date')->values(); // urutkan dulu biar akurat
 
-
-        $akumulasiStokMasuk = $data->where('date', '<=',)->sum(function ($item) {
-            return floatval($item->sotckawal) + floatval($item->totalhauling);
-        });
-        $akumulasiStokMasuk = 0;
-        $data->each(function ($stock, $index) use ($akumulasiStokMasuk) {
-            $stock->sotckawal = floatval($stock->sotckawal ?? 0);
-            $stock->totalhauling = floatval($stock->totalhauling ?? 0);
-            $stock->stockout = floatval($stock->stockout ?? 0);
-
-            if ($index === 0) {
-                $akumulasiStokMasuk = $stock->sotckawal;
-            }
-
-            $akumulasiStokMasuk += $stock->totalhauling;
-
-            $stock->akumulasi_stock = $akumulasiStokMasuk;
-        });
-
-        $prevStockAkhir = 0;
-        $totalStockOut = 0; // Variabel untuk menyimpan total stockout
-
-        $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut) {
+        $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut, &$totalStockAkhir) {
             $stock->sotckawal = $stock->sotckawal > 0 ? $stock->sotckawal : $prevStockAkhir;
 
             $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;
 
             $totalStockOut += $stock->stockout;
-
             $prevStockAkhir = $stock->stock_akhir;
+            $totalStockAkhir = $stock->stock_akhir; // disimpan yang terakhir
         });
-
-        // dd($totalStockOut);
-
-
-        // dd($data->toArray());
         $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
+
         $grandTotalstockakhir = optional($data->last())->stock_akhir ?? 0;
-        // dd($grandTotalstockakhir);
+
+        // Sekarang kamu bisa pakai:
+        // dd([
+        //     'stok_awal' => $stokAwal,
+        //     'total_hauling' => $totalHauling,
+        //     'total_stockout' => $totalStockOut,
+        //     'stock_akhir_terakhir' => $totalStockAkhir,
+        // ]);
+
 
         //ewh
         $queryewh = DB::table('ewhs')
@@ -1363,6 +1409,5 @@ class ReportService
         $request = new \Illuminate\Http\Request();
         $request->merge(['company_id' => $companyId, 'tahun' => $tahun]);  // Menambahkan tahun ke request
         return $this->DataReport($request);
-        
     }
 }
