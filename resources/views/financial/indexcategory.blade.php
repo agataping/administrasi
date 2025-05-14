@@ -40,7 +40,7 @@
                     </div>
                 </div>
 
-                <!-- @if(auth()->user()->role === 'admin')    
+                {{-- @if(auth()->user()->role === 'admin')    
                 <form method="GET" action="{{ route('indexcategoryneraca') }}" id="filterForm">
                     <label for="id_company">Select Company:
                         <br>
@@ -54,7 +54,7 @@
                             @endforeach
                         </select>
                     </form>
-                    @endif -->
+                    @endif --}}
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
                     style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
                 <div class="" style="overflow-x:auto;">

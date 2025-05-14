@@ -10,7 +10,7 @@
         <div class="card-body">
             <div class="col-12">
                 <h2 class="text-center mb-4">OverBurden & coal getting</h2>
-                <!-- @if(auth()->user()->role === 'admin')
+                {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexovercoal') }}" id="filterForm" class="filter-form">
                     <label for="id_company">Select Company:
@@ -27,7 +27,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif -->
+                @endif --}}
                 <form method="GET" action="{{ route('indexovercoal') }}" style=" text-transform:uppercase; display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;" class="mt-3 filter-date">
                         <div>
                             <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>

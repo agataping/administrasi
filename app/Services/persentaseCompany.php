@@ -921,7 +921,7 @@ class persentaseCompany
             ->join('users', 'stock_jts.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
             ->whereNotNull('stock_jts.sotckawal')
-            ->whereDate('stock_jts.date', '<', "$tahun-01-01")// sebelum tahun yang difilter
+            ->whereDate('stock_jts.date', '<', "$tahun-01-01")
             ->where('users.id_company', $companyid);
 
 

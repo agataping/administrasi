@@ -39,21 +39,22 @@
                     </div>
                 </div>
 
-                <!-- @if(auth()->user()->role === 'admin')    
+
+                {{-- @if(auth()->user()->role === 'admin')
                 <form method="GET" action="{{ route('indexsublr') }}" id="filterForm">
                     <label for="id_company">Select Company:
                         <br>
                         <small><em>To view company data, please select a company from the list.</em></small></label>
-                        <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                            <option value="">-- Select Company --</option>
-                            @foreach ($perusahaans as $company)
-                            <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                                {{ $company->nama }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </form>
-                    @endif -->
+                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                        <option value="">-- Select Company --</option>
+                        @foreach ($perusahaans as $company)
+                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                            {{ $company->nama }}
+                        </option>
+                        @endforeach
+                    </select>
+                </form>
+                @endif --}}
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
                     style="margin-bottom: 10px; padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;">
 
@@ -74,7 +75,7 @@
                                 @foreach($kat as $d)
                                 <tr>
                                     <th rowspan="" class="no" style="vertical-align: middle;">{{ $loop->iteration }}</th>
-                                    <td >{{$d->namesub}}</td>
+                                    <td>{{$d->namesub}}</td>
 
                                     <td style="text-align: center; vertical-align: middle;" rowspan="">
 

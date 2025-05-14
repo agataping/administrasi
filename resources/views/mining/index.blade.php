@@ -12,9 +12,9 @@
             <div class="col-12">
                 <h3 class="mb-3">Mining Readines</h3>
 
-{{-- Success Notification --}}
-@if (session('success'))
-<div id="notif-success" style="
+                {{-- Success Notification --}}
+                @if (session('success'))
+                <div id="notif-success" style="
                 position: fixed;
                 top: 20px;
                 right: 20px;
@@ -27,13 +27,13 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    {{ session('success') }}
-</div>
-@endif
+                    {{ session('success') }}
+                </div>
+                @endif
 
-{{-- Error Notification --}}
-@if ($errors->any())
-<div id="notif-error" style="
+                {{-- Error Notification --}}
+                @if ($errors->any())
+                <div id="notif-error" style="
                 position: fixed;
                 top: 60px; /* Biar nggak nabrak success */
                 right: 20px;
@@ -46,34 +46,34 @@
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
                 transition: opacity 0.5s ease;
                 ">
-    <ul style="margin: 0; padding-left: 20px;">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
 
-{{-- Script untuk menghilangkan notifikasi --}}
-<script>
-    setTimeout(function() {
-        let notifSuccess = document.getElementById("notif-success");
-        let notifError = document.getElementById("notif-error");
+                {{-- Script untuk menghilangkan notifikasi --}}
+                <script>
+                    setTimeout(function() {
+                        let notifSuccess = document.getElementById("notif-success");
+                        let notifError = document.getElementById("notif-error");
 
-        if (notifSuccess) {
-            notifSuccess.style.opacity = '0';
-            setTimeout(() => notifSuccess.remove(), 500);
-        }
+                        if (notifSuccess) {
+                            notifSuccess.style.opacity = '0';
+                            setTimeout(() => notifSuccess.remove(), 500);
+                        }
 
-        if (notifError) {
-            notifError.style.opacity = '0';
-            setTimeout(() => notifError.remove(), 500);
-        }
-    }, 3000);
-</script>
+                        if (notifError) {
+                            notifError.style.opacity = '0';
+                            setTimeout(() => notifError.remove(), 500);
+                        }
+                    }, 3000);
+                </script>
 
-                                <div class="row justify-content-start mb-0">
+                <div class="row justify-content-start mb-0">
                     <div class="col-auto">
                         <form action="{{ route('FormKategori') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
@@ -93,35 +93,35 @@
                         </a>
                     </div>
                 </div>
-                <!-- @if(auth()->user()->role === 'admin')
+                {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexmining') }}" id="filterForm">
-                    <label for="id_company">Select Company:
-                        <br>
-                        <small><em>To view company data, please select a company from the list.</em></small></label>
-                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                        <option value="">-- Select Company --</option>
-                        @foreach ($perusahaans as $company)
-                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                            {{ $company->nama }}
-                        </option>
-                        @endforeach
-                    </select>
+                <label for="id_company">Select Company:
+                    <br>
+                    <small><em>To view company data, please select a company from the list.</em></small></label>
+                <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">-- Select Company --</option>
+                    @foreach ($perusahaans as $company)
+                    <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                        {{ $company->nama }}
+                    </option>
+                    @endforeach
+                </select>
                 </form>
                 @endif
- -->
+                --}}
 
                 <form method="GET" action="{{ route('indexmining') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                        <div>
-                            <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
-                        <div>
-                            <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
+                    <div>
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>

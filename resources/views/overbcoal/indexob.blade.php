@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <!-- @if(auth()->user()->role === 'admin')
+                {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexob') }}" id="filterForm">
                     <label for="id_company">Select Company:
@@ -72,7 +72,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif -->
+                @endif --}}
                 <form method="GET" action="{{ route('indexob') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                         <div>
                             <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
@@ -142,7 +142,7 @@
                                 <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
                                 <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d F Y') }}</td>
                                 <td>{{ $detail->desc }}</td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format($detail->nominalpla,  2, ',', '.') }} </td>
+                                <td style="vertical-align: middle; text-align: end;"> {{ is_numeric($detail->nominalplan ) ? number_format((float)$detail->nominalplan , 2, ',', '.') : '0,00' }}</td>
                                 <td style="vertical-align: middle; text-align: end;">
                                     @php
                                     $fileExtension = $detail->file_extension;
@@ -150,7 +150,8 @@
                                     <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
 
                                 </td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format($detail->nominalactual,  2, ',', '.') }}</td>
+                                <td style="vertical-align: middle; text-align: end;">
+                                     {{ is_numeric($detail->nominalactual) ? number_format((float)$detail->nominalactual, 2, ',', '.') : '0,00' }}</td>
 
                                 <td></td>
                                 <td></td>

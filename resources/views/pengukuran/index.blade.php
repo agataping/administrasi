@@ -77,7 +77,7 @@
 
 
 
-                <!-- @if(auth()->user()->role === 'admin')
+                {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexPeople') }}" id="filterForm">
                     <label for="id_company">Select Company:
@@ -92,7 +92,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif -->
+                @endif --}}
                 <div class="row sidebar p-1 border rounded shadow-sm bg-light ">
                     <h6 class="text-muted text-center ">Please select a year to view the KPI performance.</h6>
 
@@ -107,7 +107,7 @@
                         </select>
                     </form>
                 </div>
-                @if(auth()->user()->role === 'staff')
+                @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin')
                 <div class="col text-center" style="position: relative; left:;">
                     @if(isset($data['companyName']))
                         <p>{{ $data['companyName']->company_name }}</p>
@@ -428,7 +428,7 @@
                         <li>
                             <a href="/indexkpi">
                                 KPI
-                                @if(auth()->user()->role === 'staff' && isset($data['companyName']))
+                                @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin' && isset($data['companyName']))
                                 {{ $data['companyName']->company_name }}
                                 @endif
                             </a>

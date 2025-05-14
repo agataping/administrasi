@@ -60,7 +60,7 @@
                         </div>
 
                         <!-- Grid Container -->
-                        @if(auth()->user()->role === 'staff')
+   @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin'))
                         <div class="grid-container justify-content-center">
                             @foreach($data as $item)
                             <div class="grid-item">

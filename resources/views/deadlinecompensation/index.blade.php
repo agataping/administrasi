@@ -40,7 +40,7 @@
                         <a href="/formaddMR" class="btn btn-custom">Add Deadline Compensation</a>
                     </div>
                 </div>
-                <!-- @if(auth()->user()->role === 'admin')
+                {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexdeadline') }}" id="filterForm">
                     <label for="id_company">Select Company:
@@ -55,7 +55,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif -->
+                @endif --}}
                 <div class="" style="overflow-x:auto;">
                     <form method="GET" action="{{ route('indexdeadline') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                         <div>

@@ -47,7 +47,7 @@
 
 
                     <!-- ama perusahaan berdasrkan role Admin -->
-                    @if(auth()->user()->role === 'staff')
+                   @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin'))
                     <div class="col text-center" style="position: relative; left: -100px;">
                         <h4>KPI</h4>
 
@@ -1372,7 +1372,7 @@
                         <li>
                             <a href="/indexkpi">
                                 KPI
-                                @if(auth()->user()->role === 'staff' && isset($data['companyName']))
+                               @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin' && isset($data['companyName']))
                                 {{ $data['companyName']->company_name }}
                                 @endif
                             </a>

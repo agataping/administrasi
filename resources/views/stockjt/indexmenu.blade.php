@@ -13,7 +13,7 @@
                 <!-- <a href="" class="cardcost text-decoration-none"> -->
                 <h2 class="text-center mb-4">STOCK JETTY</h2>
                 <!-- </a> -->
-                <!-- @if(auth()->user()->role === 'admin')    
+                {{-- @if(auth()->user()->role === 'admin')    
 
                 <form method="GET" action="{{ route('dashboardstockjt') }}" id="filterForm" class="filter-form">
                 <label for="id_company">Select Company:
@@ -30,7 +30,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif -->
+                @endif --}}
                 <form method="GET" action="{{ route('dashboardstockjt') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;" class="mt-3 filter-date">
                     <div>
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>

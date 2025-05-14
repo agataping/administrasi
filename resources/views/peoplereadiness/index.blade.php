@@ -42,7 +42,7 @@
                         <a href="/formPR" class="btn btn-custom">Add Data</a>
                     </div>
                 </div>
-                <!-- @if(auth()->user()->role === 'admin')
+                {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexPeople') }}" id="filterForm">
                     <label for="id_company">Select Company:
@@ -57,7 +57,7 @@
                         @endforeach
                     </select>
                 </form>
-                @endif -->
+                @endif --}}
                 <form method="GET" action="{{ route('indexPeople') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <div>
                         <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>

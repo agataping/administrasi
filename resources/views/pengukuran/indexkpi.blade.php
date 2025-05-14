@@ -76,22 +76,22 @@
 
 
 
-                <!-- @if(auth()->user()->role === 'admin')
+                {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexPeople') }}" id="filterForm">
-                    <label for="id_company">Select Company:
-                        <br>
-                        <small><em>To view company data, please select a company from the list.</em></small></label>
-                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                        <option value="">-- Select Company --</option>
-                        @foreach ($perusahaans as $company)
-                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                            {{ $company->nama }}
-                        </option>
-                        @endforeach
-                    </select>
+                <label for="id_company">Select Company:
+                    <br>
+                    <small><em>To view company data, please select a company from the list.</em></small></label>
+                <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">-- Select Company --</option>
+                    @foreach ($perusahaans as $company)
+                    <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                        {{ $company->nama }}
+                    </option>
+                    @endforeach
+                </select>
                 </form>
-                @endif -->
+                @endif --}}
                 <div class="row sidebar p-1 border rounded shadow-sm bg-light ">
                     <h6 class="text-muted text-center ">Please select a year to view the KPI performance.</h6>
 
@@ -106,7 +106,7 @@
                         </select>
                     </form>
                 </div>
-                @if(auth()->user()->role === 'staff')
+               @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin')
                 <div class="col text-center" style="position: relative; left:;">
                     @if(isset($data['companyName']))
                     <p>{{ $data['companyName']->company_name }}</p>
@@ -123,7 +123,8 @@
                     <thead style="background-color:rgba(9, 220, 37, 0.75); text-align: center;">
                         <tr>
                             <th rowspan="3" style="vertical-align: middle;">No</th>
-                            <th rowspan="3" colspan="2" style="vertical-align: middle;"> @if(isset($data['companyName']))
+                            <th rowspan="3" colspan="2" style="vertical-align: middle;">
+                                @if(isset($data['companyName']))
                                 <p>{{ $data['companyName']->company_name }}</p>
                                 @else
                                 <p>Tidak ada perusahaan yang ditemukan.</p>
@@ -462,7 +463,7 @@
                         <li>
                             <a href="/indexkpi">
                                 KPI
-                                @if(auth()->user()->role === 'staff' && isset($data['companyName']))
+                               @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin')
                                 {{ $data['companyName']->company_name }}
                                 @endif
                             </a>

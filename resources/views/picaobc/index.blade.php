@@ -33,23 +33,23 @@
                         <a href="/formpicaobc" class="btn btn-custom">Add data </a>
                     </div>
                 </div>
-                <!-- @if(auth()->user()->role === 'admin')    
+                {{-- @if(auth()->user()->role === 'admin')    
 
                 <form method="GET" action="{{ route('picaobc') }}" id="filterForm">
-                                   <label for="id_company">Select Company:
+                <label for="id_company">Select Company:
                     <br>
-                        <small><em>To view company data, please select a company from the list.</em></small></label>
-                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                        <option value="">-- Select Company --</option>
-                        @foreach ($perusahaans as $company)
-                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                            {{ $company->nama }}
-                        </option>
-                        @endforeach
-                    </select>
+                    <small><em>To view company data, please select a company from the list.</em></small></label>
+                <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">-- Select Company --</option>
+                    @foreach ($perusahaans as $company)
+                    <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                        {{ $company->nama }}
+                    </option>
+                    @endforeach
+                </select>
                 </form>
                 @endif
- -->
+                --}}
             </div>
             <form method="GET" action="{{ route('picaobc') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                 <div>
