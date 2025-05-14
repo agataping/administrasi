@@ -141,14 +141,14 @@
                                 <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
                                 <td>{{ \Carbon\Carbon::parse($detail->tanggal)->format('d F Y') }}</td>
                                 <td>{{ $detail->desc }}</td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format($detail->nominalplan,  2, ',', '.') }}</td>
+                                <td style="vertical-align: middle; text-align: end;">{{ is_numeric($detail->nominalplan ) ? number_format((float)$detail->nominalplan , 2, ',', '.') : '0,00' }}</td>
                                 <td>
                                     @php
                                     $fileExtension = $detail->file_extension;
                                     @endphp
                                     <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
                                 </td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format($detail->nominalactual,  2, ',', '.') }}</td>
+                                <td style="vertical-align: middle; text-align: end;">{{ is_numeric($detail->nominalactual ) ? number_format((float)$detail->nominalactual , 2, ',', '.') : '0,00' }}</td>
                                 <td></td>
                                 <td></td>
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
