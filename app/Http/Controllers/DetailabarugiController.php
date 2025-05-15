@@ -438,7 +438,7 @@ class DetailabarugiController extends Controller
         }
 
         $kat = $query
-            ->orderBy('category_labarugis.ordernumber ', 'asc')
+            ->orderBy('category_labarugis.ordernumber', 'asc')
             ->get();
 
         return view('labarugi.indexcategory', compact('kat', 'companyId', 'perusahaans'));

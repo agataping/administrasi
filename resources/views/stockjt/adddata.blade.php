@@ -104,7 +104,7 @@
                             <option value="" disabled selected>-- Select Load to Barge--</option>
                             @foreach($data as $kategori)
                             <option value="{{ $kategori->quantity }}">
-                                {{ \Carbon\Carbon::parse($kategori->tanggal)->format('d-m-Y' ?? 0) }}&nbsp;&nbsp;|&nbsp;&nbsp; {{ $kategori->quantity }}
+                                {{ \Carbon\Carbon::parse($kategori->tanggal)->format('d-m-Y' ?? 0) }}&nbsp;&nbsp;|&nbsp;&nbsp;{{ $kategori->quantity }}
                             </option>
 
                             @endforeach
@@ -151,8 +151,13 @@
     </div>
 </div>
 @endsection
+<!-- Select2 CSS -->
 
 @section('scripts')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const shiftPertama = document.getElementById('shift_pertama');
@@ -197,6 +202,16 @@
     document.getElementById('stockoutBtn').addEventListener('click', function() {
         document.getElementById('plan').style.display = 'none';
         document.getElementById('stockout-container').style.display = 'block';
+    });
+
+    $(document).ready(function() {
+        $('#stockout').select2({
+            placeholder: "-- Select Category --",
+            allowClear: true,
+            minimumResultsForSearch: Infinity, // Nonaktifkan search box
+            maximumInputLength: 10,
+            dropdownCssClass: "custom-dropdown-scroll"
+        });
     });
 </script>
 @endsection
