@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Picastockjt;
 use App\Models\StockJt;
 use App\Models\Barging;
-
+use Carbon\date;
 use App\Models\HistoryLog;
 use Illuminate\Support\Facades\Log;
 
@@ -215,9 +215,9 @@ class StockJtController extends Controller
 
 
         $query = DB::table('stock_jts')
-            ->select('stock_jts.*')
             ->join('users', 'stock_jts.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id');
+            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+            ->select('stock_jts.*');
 
         if ($user->role !== 'admin') {
             $query->where('users.id_company', $user->id_company);
@@ -235,29 +235,28 @@ class StockJtController extends Controller
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
 
-        $query->whereBetween('stock_jts.date', [$startDate, $endDate])
-            ->orderBy('stock_jts.date', 'asc');
+        $query->whereBetween('stock_jts.date', [$startDate, $endDate]);
 
         // Ambil data stok awal (sotckawal) dari tahun sebelumnya, hanya yang terbaru
+        $tanggalInput = Carbon::parse($request->date)->toDateString();
+
         $stokAwalQuery = DB::table('stock_jts')
             ->join('users', 'stock_jts.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-
             ->select('sotckawal', 'date')
             ->whereNotNull('sotckawal')
-            ->whereDate('stock_jts.date', '<', "$tahun-01-01") // Tahun sebelumnya
+            ->whereDate('stock_jts.date', '<=', $tanggalInput) // ambil yang sama atau sebelum tanggal input
             ->orderByDesc('date')
-            ->limit(1); // Ambil yang terbaru
+            ->limit(1);
 
-        // Jika ada filter perusahaan, tambahkan filter yang sama
         if ($user->role !== 'admin') {
             $stokAwalQuery->where('users.id_company', $user->id_company);
         } elseif ($companyId) {
             $stokAwalQuery->where('users.id_company', $companyId);
         }
 
-        // Ambil stok awal yang terbaru
         $stokAwal = $stokAwalQuery->pluck('sotckawal')->first() ?? 0;
+
 
         // Mengambil data utama
         $data = $query->get();
@@ -358,52 +357,55 @@ class StockJtController extends Controller
             'totalhauling' => 'nullable|regex:/^-?[0-9.,]+$/',
             'lokasi' => 'required',
             'file' => 'nullable|file',
-
-
         ]);
-        // Format nominal untuk menghapus koma
 
-
-
-        // Tentukan mana yang diset null
+        // Konversi inputan nominal agar bersih dari titik/koma
         $validatedData['plan'] = convertToCorrectNumber($validatedData['plan']);
         $validatedData['sotckawal'] = convertToCorrectNumber($validatedData['sotckawal']);
         $validatedData['stockout'] = convertToCorrectNumber($validatedData['stockout'] ?? null);
         $validatedData['shifpertama'] = convertToCorrectNumber($validatedData['shifpertama']);
         $validatedData['shifkedua'] = convertToCorrectNumber($validatedData['shifkedua']);
         $validatedData['totalhauling'] = convertToCorrectNumber($validatedData['totalhauling']);
+        // Upload file jika ada
+        $filePath = $request->hasFile('file') ? $request->file('file')->store('uploads', 'public') : null;
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $filePath = $file->store('uploads', 'public');
-        } else {
-            $filePath = null;
+        // Cek apakah sudah ada data stockawal sebelumnya
+        $existingStockAwal = StockJt::whereNotNull('sotckawal')->first();
+
+        // Jika user menginput stock awal dan sudah ada sebelumnya, maka hapus data sebelumnya
+        if ($validatedData['sotckawal'] !== null && $existingStockAwal) {
+            $existingStockAwal->delete();
         }
 
-        $existingStock = StockJt::whereNotNull('sotckawal')->first();
+        // Simpan data baru
         $data = StockJt::create([
-            'date' => $request->date,
-            'sotckawal' => $request->sotckawal,
-            'stockout' => $request->stockout,
-            'plan' => $request->plan,
+            'date' => $validatedData['date'],
+            'sotckawal' => $validatedData['sotckawal'],
+            'stockout' => $validatedData['stockout'],
+            'plan' => $validatedData['plan'],
             'file' => $filePath,
-            'shifpertama' => $request->shifpertama,
-            'shifkedua' => $request->shifkedua,
-            'lokasi' => $request->lokasi,
-            'totalhauling' => $request->totalhauling,
+            'shifpertama' => $validatedData['shifpertama'],
+            'shifkedua' => $validatedData['shifkedua'],
+            'lokasi' => $validatedData['lokasi'],
+            'totalhauling' => $validatedData['totalhauling'],
             'created_by' => auth()->user()->username,
         ]);
+
+        // Simpan log riwayat
         HistoryLog::create([
-            'table_name' => '',
+            'table_name' => 'stock_jts',
             'record_id' => $data->id,
             'action' => 'create',
             'old_data' => null,
-            'new_data' => json_encode($request),
+            'new_data' => json_encode($data),
             'user_id' => auth()->id(),
         ]);
+
+        // Arahkan kembali setelah simpan
         if ($request->input('action') == 'save') {
-            return redirect('/stockjt')->with('success', 'Data added successfully.');
+            return redirect('/stockjt')->with('success', 'Data berhasil ditambahkan.');
         }
+
 
         return redirect()->back()->with('success', 'Data added successfully.');
     }
