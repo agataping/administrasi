@@ -19,7 +19,7 @@
                         
                     </label>
                     <select list="id_company" name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                        <option value="">-- Select Company --</option>
+                        <option value="">-- Select Compan y --</option>
                         @foreach ($perusahaans as $company)
                         <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
                             {{ $company->nama }}

@@ -92,7 +92,9 @@ class StockJtController extends Controller
         });
 
         // Menghitung total hauling
-        $totalHauling = (clone $query)->sum('totalhauling') ?? 0;
+        $totalHauling = $data->sum(function ($item) {
+            return is_numeric($item['totalhauling']) ? $item['totalhauling'] : 0;
+        });
         $akumulasi = floatval($stokAwal ?? 0);
         // Menggunakan stok awal yang sudah didapatkan
         $data->each(function ($stock) use (&$akumulasi) {

@@ -194,7 +194,7 @@
                                 @endforeach
                             <tfoot>
                                 <tr>
-                                    <th colspan="11" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; color:black; ">Total</th>
+                                    <th colspan="12" style="vertical-align: middle; background-color:rgb(244, 244, 244); text-align: end; color:black; ">Total</th>
                                     <th style="background-color:rgb(244, 244, 244); text-align: end; color:black;">
                                         {{ number_format(floatval( $quantity), 2, ',',)}}
 
