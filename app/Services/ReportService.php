@@ -1058,25 +1058,27 @@ class ReportService
         $totalStockOut = 0;
         $totalStockAkhir = 0;
 
-        $data = $data->sortBy('date')->values(); // urutkan biar kronologis
+        $data = $data->sortBy('date')->values(); // urutkan biar 
 
-        $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut, &$totalStockAkhir) {
-            // Pastikan semuanya numeric
-            $sotckawal     = is_numeric($stock->sotckawal) ? (float)$stock->sotckawal : 0;
-            $totalhauling  = is_numeric($stock->totalhauling) ? (float)$stock->totalhauling : 0;
-            $stockout      = is_numeric($stock->stockout) ? (float)$stock->stockout : 0;
+        $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut) {
+            // Pastikan nilai-nilai tersebut adalah float
+            $stock->sotckawal = floatval($stock->sotckawal ?? 0);
+            $stock->totalhauling = floatval($stock->totalhauling ?? 0);
+            $stock->stockout = floatval($stock->stockout ?? 0);
 
-            // Gunakan stok awal dari sebelumnya jika 0 atau tidak valid
-            $sotckawal = $sotckawal > 0 ? $sotckawal : $prevStockAkhir;
-            $stock->sotckawal = $sotckawal; // update balik ke item
+            // Jika sotckawal <= 0, gunakan prevStockAkhir
+            if ($stock->sotckawal <= 0) {
+                $stock->sotckawal = $prevStockAkhir;  // Gunakan stok sebelumnya jika stokawal <= 0
+            }
 
-            // Hitung stock akhir
-            $stock->stock_akhir = ($sotckawal + $totalhauling) - $stockout;
+            // Perhitungan stock_akhir: stokawal + totalhauling - stockout
+            $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;
 
-            // Simpan total & update stok untuk iterasi selanjutnya
-            $totalStockOut += $stockout;
+            // Akumulasi total stockout
+            $totalStockOut += $stock->stockout;
+
+            // Set prevStockAkhir untuk iterasi berikutnya
             $prevStockAkhir = $stock->stock_akhir;
-            $totalStockAkhir = $stock->stock_akhir;
         });
 
         $grandTotal = optional($data->last())->akumulasi_stock ?? 0;

@@ -136,15 +136,6 @@ class StockJtController extends Controller
 
             // Set prevStockAkhir untuk iterasi berikutnya
             $prevStockAkhir = $stock->stock_akhir;
-
-            // Log untuk memeriksa nilai selama perhitungan (opsional)
-            // Log::info('Iterasi perhitungan:', [
-            //     'sotckawal' => $stock->sotckawal,
-            //     'totalhauling' => $stock->totalhauling,
-            //     'stockout' => $stock->stockout,
-            //     'stock_akhir' => $stock->stock_akhir,
-            //     'prevStockAkhir' => $prevStockAkhir
-            // ]);
         });
         $grandTotal = optional($data->last())->akumulasi_stock ?? 0;
 
