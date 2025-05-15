@@ -93,8 +93,11 @@ class StockJtController extends Controller
 
         // Menghitung total hauling
         $totalHauling = $data->sum(function ($item) {
-            return is_numeric($item['totalhauling']) ? $item['totalhauling'] : 0;
+            return isset($item->totalhauling) && is_numeric($item->totalhauling)
+                ? $item->totalhauling
+                : 0;
         });
+
         $akumulasi = floatval($stokAwal ?? 0);
         // Menggunakan stok awal yang sudah didapatkan
         $data->each(function ($stock) use (&$akumulasi) {
@@ -298,8 +301,8 @@ class StockJtController extends Controller
             $stock->akumulasi_stock = $akumulasi;
         });
 
-        $prevStockAkhir = floatval($stokAwal); 
-        $totalStockOut = 0; 
+        $prevStockAkhir = floatval($stokAwal);
+        $totalStockOut = 0;
 
         $data->each(function ($stock) use (&$prevStockAkhir, &$totalStockOut) {
             $stock->sotckawal = floatval($stock->sotckawal ?? 0);
@@ -307,7 +310,7 @@ class StockJtController extends Controller
             $stock->stockout = floatval($stock->stockout ?? 0);
 
             if ($stock->sotckawal <= 0) {
-                $stock->sotckawal = $prevStockAkhir;  
+                $stock->sotckawal = $prevStockAkhir;
             }
 
             $stock->stock_akhir = ($stock->sotckawal + $stock->totalhauling) - $stock->stockout;

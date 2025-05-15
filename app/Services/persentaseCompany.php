@@ -945,8 +945,11 @@ class persentaseCompany
         });
 
         $totalHauling = $data->sum(function ($item) {
-            return is_numeric($item['totalhauling']) ? $item['totalhauling'] : 0;
+            return isset($item->totalhauling) && is_numeric($item->totalhauling)
+                ? $item->totalhauling
+                : 0;
         });
+
 
         // Proses total stockout dan stock akhir
         $prevStockAkhir = $stokAwal;
