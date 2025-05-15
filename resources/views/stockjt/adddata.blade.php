@@ -104,7 +104,7 @@
                             <option value="" disabled selected>-- Select Load to Barge--</option>
                             @foreach($data as $kategori)
                             <option value="{{ $kategori->quantity }}">
-                                {{ $kategori->tanggal }} &nbsp;&nbsp;|&nbsp;&nbsp; {{ $kategori->quantity }}
+                                {{ \Carbon\Carbon::parse($kategori->tanggal)->format('d-m-Y' ?? 0) }}&nbsp;&nbsp;|&nbsp;&nbsp; {{ $kategori->quantity }}
                             </option>
 
                             @endforeach

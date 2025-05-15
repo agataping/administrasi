@@ -343,7 +343,7 @@ class StockJtController extends Controller
     }
     public function formstockjt(Request $request)
     {
-        $data = Barging::all();
+        $data = Barging::whereYear('tanggal', now()->year)->get();
         return view('stockjt.adddata', compact('data'));
     }
     public function createstockjt(Request $request)
