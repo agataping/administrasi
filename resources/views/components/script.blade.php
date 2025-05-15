@@ -65,6 +65,14 @@
   });
 
 
+    $(document).ready(function() {
+    $('#stockout').select2({
+      placeholder: "-- Select Category --",
+      allowClear: true,
+      maximumInputLength: 10, // Gantilah dengan angka yang sesuai
+      dropdownCssClass: "custom-dropdown-scroll" // Pisahkan menjadi properti sendiri
+    });
+  });
   document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById("note");
 

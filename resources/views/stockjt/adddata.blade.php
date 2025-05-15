@@ -151,13 +151,8 @@
     </div>
 </div>
 @endsection
-<!-- Select2 CSS -->
 
 @section('scripts')
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const shiftPertama = document.getElementById('shift_pertama');
@@ -204,14 +199,5 @@
         document.getElementById('stockout-container').style.display = 'block';
     });
 
-    $(document).ready(function() {
-        $('#stockout').select2({
-            placeholder: "-- Select Category --",
-            allowClear: true,
-            minimumResultsForSearch: Infinity, // Nonaktifkan search box
-            maximumInputLength: 10,
-            dropdownCssClass: "custom-dropdown-scroll"
-        });
-    });
 </script>
 @endsection
