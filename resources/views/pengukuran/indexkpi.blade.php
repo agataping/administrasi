@@ -246,16 +246,16 @@
                             <th rowspan="4">2</th>
                             <th rowspan="4">Customer Perspective</th>
                             <td style="text-align: start;">SHE Index</td>
-                            <td>2%</td>
-                            <td>4%</td>
+                            <td>2</td>
+                            <td>4</td>
                             <td>1%</td>
                             <td>27,28%</td>
                             <td>0,56%</td>
                         </tr>
                         <tr>
                             <td>Customer Satisfaction Index</td>
-                            <td>3%</td>
-                            <td>3,20%</td>
+                            <td>3</td>
+                            <td>3,20</td>
                             <td>3,20%</td>
                             <td>100%</td>
                             <td>3,00%</td>
@@ -263,16 +263,16 @@
                         <tr>
                             <td>Barging Domestik</td>
                             <td>5%</td>
-                            <td>{{ number_format($data['totalplandomestik'], 2) }}%</td>
-                            <td>{{ number_format($data['totalactualdomestik'], 2) }}%</td>
+                            <td>{{ number_format($data['totalplandomestik'], 2) }}</td>
+                            <td>{{ number_format($data['totalactualdomestik'], 2) }}</td>
                             <td>{{ number_format($data['indexdomestik'], 2) }}%</td>
                             <td>{{ number_format($data['resultdomestik'], 2) }}%</td>
                         </tr>
                         <tr>
                             <td>Barging Ekspor</td>
                             <td>5%</td>
-                            <td>{{ number_format($data['totalplanekspor'], 2) }}%</td>
-                            <td>{{ number_format($data['totalactualekspor'], 2) }}%</td>
+                            <td>{{ number_format($data['totalplanekspor'], 2) }}</td>
+                            <td>{{ number_format($data['totalactualekspor'], 2) }}</td>
                             <td>{{ number_format($data['indexekspor'], 2) }}%</td>
                             <td>{{ number_format($data['resultekspor'], 2) }}%</td>
                         </tr>
@@ -289,32 +289,32 @@
                             <th rowspan="9">Internal Process Perspective</th>
                             <td style="text-align: start;">Fleet Productivity (Coal)</td>
                             <td>2%</td>
-                            <td>{{ number_format($data['totalPlancoal'], 0, ',', '.') }}%</td>
-                            <td>{{ number_format($data['totalActualcoal'], 0, ',', '.') }}%</td>
+                            <td>{{ number_format($data['totalPlancoal'], 0, ',', '.') }}</td>
+                            <td>{{ number_format($data['totalActualcoal'], 0, ',', '.') }}</td>
                             <td>{{ number_format($data['indexcoalgetting'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['resultcoal'], 2) }}%</td>
                         </tr>
                         <tr>
                             <td>Fleet Productivity (OB)</td>
                             <td>2%</td>
-                            <td>{{ number_format($data['totalPlanob'], 0, ',', '.') }}%</td>
-                            <td>{{ number_format($data['totalActualob'], 0, ',', '.') }}%</td>
+                            <td>{{ number_format($data['totalPlanob'], 0, ',', '.') }}</td>
+                            <td>{{ number_format($data['totalActualob'], 0, ',', '.') }}</td>
                             <td>{{ number_format($data['indexoverburder'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['resultob'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td>Effective Working Hour</td>
                             <td>4%</td>
-                            <td>{{ number_format($data['totalplanewh'], 2) }}%</td>
-                            <td>{{ number_format($data['totalactualewh'], 2) }}%</td>
+                            <td>{{ number_format($data['totalplanewh'], 2) }}</td>
+                            <td>{{ number_format($data['totalactualewh'], 2) }}</td>
                             <td>{{ number_format($data['indexoverburder'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['resultewh'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td>Utilization of Availability</td>
                             <td>4%</td>
-                            <td>{{ number_format($data['totalactualunithauler'], 2) }}%%</td>
-                            <td>{{ number_format($data['totalactualuaunithauler'], 2) }}%</td>
+                            <td>{{ number_format($data['totalactualunithauler'], 2) }}</td>
+                            <td>{{ number_format($data['totalactualuaunithauler'], 2) }}</td>
                             <td>{{ number_format($data['indexoverburder'], 2, ',', '.') }} %</td>
                             <td>{{ number_format($data['resultua'], 2, ',', '.') }} %</td>
                         </tr>

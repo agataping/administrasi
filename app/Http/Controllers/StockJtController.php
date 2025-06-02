@@ -53,13 +53,14 @@ class StockJtController extends Controller
             ->orderBy('stock_jts.date', 'asc');
 
         // Ambil data stok awal (sotckawal) dari tahun sebelumnya, hanya yang terbaru
+        $tanggalInput = Carbon::parse($request->date)->toDateString();
+
         $stokAwalQuery = DB::table('stock_jts')
             ->join('users', 'stock_jts.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-
             ->select('sotckawal', 'date')
             ->whereNotNull('sotckawal')
-            ->whereDate('stock_jts.date', '<', "$tahun-01-01")
+            ->whereDate('stock_jts.date', '<=', $tanggalInput) // ambil yang sama atau sebelum tanggal input
             ->orderByDesc('date')
             ->limit(1);
 
@@ -69,8 +70,8 @@ class StockJtController extends Controller
             $stokAwalQuery->where('users.id_company', $companyId);
         }
 
-        // Ambil stok awal yang terbaru
         $stokAwal = $stokAwalQuery->pluck('sotckawal')->first() ?? 0;
+
 
         // Mengambil data utama
         $data = $query->get();

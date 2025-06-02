@@ -220,7 +220,7 @@
                             <td>{{ number_format($data['persenassetplan'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['weightasset'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['totalactualasset'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['persenactualasset'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['actualreturnonasset'], 2, ',', '.') }}%</td>
                         </tr>
                         <tr>
                             <td colspan="2">Return On Equity</td>
