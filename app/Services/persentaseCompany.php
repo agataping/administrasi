@@ -627,6 +627,23 @@ class persentaseCompany
 
 
         //PA 
+        $dataunits = DB::table('units')
+            ->join('users', 'units.id_company', '=', 'users.id_company')
+            ->select('units.*')
+            ->where('users.id_company', $companyid);
+
+
+        if ($user->role !== 'admin') {
+            $dataunits->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyid) {
+                $dataunits->where('users.id_company', $companyid);
+            } else {
+                $dataunits->whereRaw('users.id_company', $companyid);
+            }
+        }
+
+
         $query = DB::table('units')
             ->join('produksi_pas', 'units.id', '=', 'produksi_pas.unit_id')
             ->leftJoin('users', 'units.created_by', '=', 'users.username')
@@ -1245,6 +1262,7 @@ class persentaseCompany
             'totalresultcostumer',
             'totalresultcp',
             'totalindexfinancial',
+            'dataunits',
 
 
 

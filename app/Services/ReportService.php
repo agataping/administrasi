@@ -668,6 +668,24 @@ class ReportService
 
 
         //PA 
+                $query = DB::table('units')
+            ->join('users', 'units.created_by', '=', 'users.id_company')
+            ->select('units.*')
+            ->where('users.id_company', $companyId);
+
+
+        if ($user->role !== 'admin') {
+            $query->where('users.id_company', $user->id_company);
+        } else {
+            if ($companyId) {
+                $query->where('users.id_company', $companyId);
+            } else {
+                $query->whereRaw('users.id_company', $companyId);
+            }
+        }
+
+        $dataunits = $query->get();
+
         $query = DB::table('units')
             ->join('produksi_pas', 'units.id', '=', 'produksi_pas.unit_id')
             ->leftJoin('users', 'units.created_by', '=', 'users.username')
@@ -1373,6 +1391,7 @@ class ReportService
             'totalresultcostumer',
             'totalresultcp',
             'totalindexfinancial',
+            'dataunits',
 
 
 

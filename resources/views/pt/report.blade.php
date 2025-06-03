@@ -1173,11 +1173,12 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead>
                                     <tr>
                                         <th colspan="3" style="text-align: center; vertical-align: middle;">
-                                            Physical Availability <br> PA PA Loader	
+                                            Physical Availability <br> PA  Loader	
                                         </th>
                                     </tr>
                                 </thead>
