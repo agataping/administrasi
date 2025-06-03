@@ -60,7 +60,7 @@
 
                 @forelse ($totalsPas as $item)
                 <div class="section-card">
-                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No Data' }} EWH</h3>
+                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No data available' }} EWH</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexewh" class="cardcost text-decoration-none">
@@ -92,7 +92,7 @@
                 </div>
                 @empty
                 <div class="section-card">
-                    <h3 class="section-title">No Data EWH</h3>
+                    <h3 class="section-title">No data available EWH</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexewh" class="cardcost text-decoration-none">
@@ -121,7 +121,7 @@
 
                 @forelse ($totalsUas as $item)
                 <div class="section-card">
-                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No Data' }} FUEL</h3>
+                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No data available' }} FUEL</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexfuel" class="cardcost text-decoration-none">
@@ -153,7 +153,7 @@
                 </div>
                 @empty
                 <div class="section-card">
-                    <h3 class="section-title">No Data FUEL</h3>
+                    <h3 class="section-title">No data available FUEL</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexfuel" class="cardcost text-decoration-none">

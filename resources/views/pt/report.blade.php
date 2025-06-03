@@ -47,7 +47,7 @@
 
 
                     <!-- ama perusahaan berdasrkan role Admin -->
-                   @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin'))
+                    @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin'))
                     <div class="col text-center" style="position: relative; left: -100px;">
                         <h4>KPI</h4>
 
@@ -1113,28 +1113,28 @@
 
 
                             <!-- Physical Availability (PA) Tables -->
-@if (!empty($data['unitpa']) && count($data['unitpa']) > 0)
-    @foreach ($data['unitpa'] as $index => $item)
-        <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-            <thead>
-                <tr>
-                    <th colspan="3" style="text-align: center; vertical-align: middle;">
-                        Physical Availability <br> PA {{ $item['units'] }}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Plan</td>
-                    <td>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}%</td>
-                </tr>
-                <tr>
-                    <td>Actual</td>
-                    <td>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}%</td>
-                </tr>
-                <tr>
-                    <td>Index</td>
-                    <td class="text-end" style="vertical-align: middle; 
+                            @if (!empty($data['unitpa']) && count($data['unitpa']) > 0)
+                            @foreach ($data['unitpa'] as $index => $item)
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">
+                                            Physical Availability <br> PA {{ $item['units'] }}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan</td>
+                                        <td>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual</td>
+                                        <td>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Index</td>
+                                        <td class="text-end" style="vertical-align: middle; 
                         @if ($data['indexoverburder'] <= 75)
                             background-color: black; color: white;
                         @elseif ($data['indexoverburder'] > 75 && $data['indexoverburder'] <= 90)
@@ -1146,54 +1146,85 @@
                         @elseif ($data['indexoverburder'] > 190)
                             background-color: rgb(0, 60, 255); color: white;
                         @endif">
-                        {{ number_format($data['indexoverburder'], 2, ',', '.') }}%
-                    </td>
-                </tr>
-                <tr>
-                    <td>Weight</td>
-                    <td class="text-end">6,00%</td>
-                </tr>
-            </tbody>
-        </table>
-    @endforeach
-@else
-    <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-        <thead>
-            <tr>
-                <th colspan="3" style="text-align: center; vertical-align: middle;">
-                    Physical Availability <br> PA
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td colspan="2" style="text-align: center; color: gray;">
-                    No data available
-                </td>
-            </tr>
-        </tbody>
-    </table>
-@endif
-                            <!-- Fleet Overburden Removal (BCM)	 -->
-
+                                            {{ number_format($data['indexoverburder'], 2, ',', '.') }}%
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td class="text-end">6,00%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            @endforeach
+                            @else
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th colspan="3" style="text-align: center; vertical-align: middle;">Overburden Removal (BCM)</th>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">
+                                            Physical Availability <br> PA PA Support
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Plan</td>
-                                        <td>{{ number_format($data['totalPlanob'], 0, ',', '.') }}</td>
+                                        <td colspan="2" style="text-align: center; color: gray;">
+                                            No data available
+                                        </td>
                                     </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                <thead>
                                     <tr>
-                                        <td>Actual</td>
-                                        <td>{{ number_format($data['totalActualob'], 0, ',', '.') }}</td>
+                                        <th colspan="3" style="text-align: center; vertical-align: middle;">
+                                            Physical Availability <br> PA PA Loader	
+                                        </th>
                                     </tr>
+                                </thead>
+                                <tbody>
                                     <tr>
-                                        <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
+                                        <td colspan="2" style="text-align: center; color: gray;">
+                                            No data available
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" style="text-align: center; vertical-align: middle;">
+                                                Physical Availability <br> PA  LAUDER
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="2" style="text-align: center; color: gray;">
+                                                No data available
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                    @endif
+                                    <!-- Fleet Overburden Removal (BCM)	 -->
+
+                                    <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="3" style="text-align: center; vertical-align: middle;">Overburden Removal (BCM)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Plan</td>
+                                                <td>{{ number_format($data['totalPlanob'], 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Actual</td>
+                                                <td>{{ number_format($data['totalActualob'], 0, ',', '.') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Index</td>
+                                                <td class="text-end" style="vertical-align: middle; 
                                             @if ($data['indexoverburder'] <= 75)
                                                 background-color: black; color: white;
                                             @elseif ($data['indexoverburder'] > 75 && $data['indexoverburder'] <= 90)
@@ -1205,34 +1236,34 @@
                                             @elseif ($data['indexoverburder'] > 190)
                                                 background-color: rgb(0, 42, 255); color: white;
                                             @endif">{{ number_format($data['indexoverburder'], 2, ',', '.') }}%
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Weight</td>
-                                        <td class="text-end">,00%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Weight</td>
+                                                <td class="text-end">,00%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                            <!-- Mining Readiness -->
-                            <table style="border: 1px solid black; border-collapse: collapse; width: 16rem;" class="table table-bordered">
-                                <thead ">
+                                    <!-- Mining Readiness -->
+                                    <table style="border: 1px solid black; border-collapse: collapse; width: 16rem;" class="table table-bordered">
+                                        <thead ">
                                 <tr>
                                     <th colspan=" 3" style="text-align: center; vertical-align: middle;">Mining Readiness</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Plan</td>
-                                        <td>100%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Actual</td>
-                                        <td>{{ number_format($data['finalAverage'], 2, ',', '.') }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Plan</td>
+                                                <td>100%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Actual</td>
+                                                <td>{{ number_format($data['finalAverage'], 2, ',', '.') }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Index</td>
+                                                <td class="text-end" style="vertical-align: middle; 
                                             @if ($data['indexcoalgetting'] <= 75)
                                                 background-color: black; color: white;
                                             @elseif ($data['indexcoalgetting'] > 75 && $data['indexcoalgetting'] <= 90)
@@ -1244,14 +1275,14 @@
                                             @elseif ($data['indexcoalgetting'] > 190)
                                                 background-color: rgb(0, 42, 255); color: white;
                                             @endif">{{ number_format($data['indexcoalgetting'], 2, ',', '.') }}%
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Weight</td>
-                                        <td class="text-end">4,00%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Weight</td>
+                                                <td class="text-end">4,00%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
                         </div>
                     </div>
@@ -1392,7 +1423,7 @@
                         <li>
                             <a href="/indexkpi">
                                 KPI
-                               @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin' && isset($data['companyName']))
+                                @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin' && isset($data['companyName']))
                                 {{ $data['companyName']->company_name }}
                                 @endif
                             </a>

@@ -59,7 +59,7 @@
                 {{-- Untuk PA --}}
                 @forelse ($totalsPas as $item)
                 <div class="section-card">
-                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No Data' }} PA</h3>
+                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No data available' }} PA</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexproduksipa" class="cardcost text-decoration-none">
@@ -91,7 +91,7 @@
                 </div>
                 @empty
                 <div class="section-card">
-                    <h3 class="section-title">No Data PA</h3>
+                    <h3 class="section-title">No data available PA</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexproduksipa" class="cardcost text-decoration-none">
@@ -116,7 +116,7 @@
                 {{-- Untuk UA --}}
                 @forelse ($totalsUas as $item)
                 <div class="section-card">
-                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No Data' }} UA</h3>
+                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No data available' }} UA</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexproduksiua" class="cardcost text-decoration-none">
@@ -148,7 +148,7 @@
                 </div>
                 @empty
                 <div class="section-card">
-                    <h3 class="section-title">No Data UA</h3>
+                    <h3 class="section-title">No data available UA</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexproduksiua" class="cardcost text-decoration-none">
