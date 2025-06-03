@@ -1113,47 +1113,67 @@
 
 
                             <!-- Physical Availability (PA) Tables -->
-                            @foreach ($data['unitpa'] as $index => $item)
-                            <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
-                                <thead ">
-                                <tr>
-                                    <th colspan=" 3" style="text-align: center; vertical-align: middle;">Physical Availability <br> PA {{ $item['units'] }}</th>
-                                    </tr>
-
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Plan</td>
-                                        <td>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Actual</td>
-                                        <td>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Index</td>
-                                        <td class="text-end" style="vertical-align: middle; 
-                                                @if ($data['indexoverburder'] <= 75)
-                                                    background-color: black; color: white;
-                                                @elseif ($data['indexoverburder'] > 75 && $data['indexoverburder'] <= 90)
-                                                    background-color: rgb(206, 24, 24); color: white;
-                                                @elseif ($data['indexoverburder'] > 90 && $data['indexoverburder'] <= 100)
-                                                    background-color: yellow; color: black;
-                                                @elseif ($data['indexoverburder'] > 100 && $data['indexoverburder'] <= 190)
-                                                    background-color: rgb(0, 255, 72); color: white;
-                                                @elseif ($data['indexoverburder'] > 190)
-                                                    background-color: rgb(0, 60, 255); color: white;
-                                                @endif">
-                                            {{ number_format($data['indexoverburder'], 2, ',', '.') }}%
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Weight</td>
-                                        <td class="text-end">6,00%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            @endforeach
+@if (!empty($data['unitpa']) && count($data['unitpa']) > 0)
+    @foreach ($data['unitpa'] as $index => $item)
+        <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                    <th colspan="3" style="text-align: center; vertical-align: middle;">
+                        Physical Availability <br> PA {{ $item['units'] }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Plan</td>
+                    <td>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}%</td>
+                </tr>
+                <tr>
+                    <td>Actual</td>
+                    <td>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}%</td>
+                </tr>
+                <tr>
+                    <td>Index</td>
+                    <td class="text-end" style="vertical-align: middle; 
+                        @if ($data['indexoverburder'] <= 75)
+                            background-color: black; color: white;
+                        @elseif ($data['indexoverburder'] > 75 && $data['indexoverburder'] <= 90)
+                            background-color: rgb(206, 24, 24); color: white;
+                        @elseif ($data['indexoverburder'] > 90 && $data['indexoverburder'] <= 100)
+                            background-color: yellow; color: black;
+                        @elseif ($data['indexoverburder'] > 100 && $data['indexoverburder'] <= 190)
+                            background-color: rgb(0, 255, 72); color: white;
+                        @elseif ($data['indexoverburder'] > 190)
+                            background-color: rgb(0, 60, 255); color: white;
+                        @endif">
+                        {{ number_format($data['indexoverburder'], 2, ',', '.') }}%
+                    </td>
+                </tr>
+                <tr>
+                    <td>Weight</td>
+                    <td class="text-end">6,00%</td>
+                </tr>
+            </tbody>
+        </table>
+    @endforeach
+@else
+    <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr>
+                <th colspan="3" style="text-align: center; vertical-align: middle;">
+                    Physical Availability <br> PA
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="2" style="text-align: center; color: gray;">
+                    No data available
+                </td>
+            </tr>
+        </tbody>
+    </table>
+@endif
                             <!-- Fleet Overburden Removal (BCM)	 -->
 
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
