@@ -458,7 +458,7 @@ class ReportService
         // dd($indexrevenue,$persenactualrevenue,$persenrevenue,$totalRevenuep,$ongkosplan);
         $resultrevenue = round($indexrevenue *  ($weightrevenue / 100), 2);
         $persenactualcogs = ($ongkosactual != 0) ? round(($totalactualcogas / $ongkosactual) * 100, 2) : 0;/* cogs*/
-        $indexcogs = ($persencogs != 0) ? round(($persenactualcogs / $persencogs) * 100, 2) : 0;
+        $indexcogs = ($persencogs != 0) ? floor(($persenactualcogs / $persencogs) * 10000) / 100 : 0;
         $resultcogs = round($indexcogs * ($weightcogs / 100), 2);
         $persenactualprofitmg = ($ongkosactual != 0) ? round(($totalactuallr / $ongkosactual) * 100, 2) : 0;/* profit margin*/
         $indexprofitmg = ($persenprofitmargin != 0) ? round(($persenactualprofitmg / $persenprofitmargin) * 100, 2) : 0;
