@@ -56,18 +56,22 @@
             </form>
 
             <div class="dashboard-container grid-3 mt-10">
-                @foreach($totalsPas as $item)
-
+                {{-- Untuk PA --}}
+                @forelse ($totalsPas as $item)
                 <div class="section-card">
-
-                    <h3 class="section-title">{{ $item['units'] }} PA</h3>
+                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No Data' }} PA</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexproduksipa" class="cardcost text-decoration-none">
                                 <h4>Plan </h4>
                             </a>
                             <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}</span>
+                                <strong></strong>
+                                <span>
+                                    {{ isset($item['total_pas_plan']) && $item['total_pas_plan'] !== null
+                            ? number_format($item['total_pas_plan'], 0, ',', '.')
+                            : '-' }}
+                                </span>
                             </div>
                         </div>
                         <div class="metric">
@@ -75,27 +79,56 @@
                                 <h4>Actual </h4>
                             </a>
                             <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}</span>
+                                <strong></strong>
+                                <span>
+                                    {{ isset($item['total_pas_actual']) && $item['total_pas_actual'] !== null
+                            ? number_format($item['total_pas_actual'], 0, ',', '.')
+                            : '-' }}
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                @endforeach
-
-
-
-                @foreach($totalsUas as $item)
-
+                @empty
                 <div class="section-card">
+                    <h3 class="section-title">No Data PA</h3>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <a href="/indexproduksipa" class="cardcost text-decoration-none">
+                                <h4>Plan </h4>
+                            </a>
+                            <div class="percentage-box">
+                                <strong></strong><span>-</span>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <a href="/indexproduksipa" class="cardcost text-decoration-none">
+                                <h4>Actual </h4>
+                            </a>
+                            <div class="percentage-box">
+                                <strong></strong><span>-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforelse
 
-                    <h3 class="section-title">{{ $item['units'] }} UA</h3>
+                {{-- Untuk UA --}}
+                @forelse ($totalsUas as $item)
+                <div class="section-card">
+                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No Data' }} UA</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexproduksiua" class="cardcost text-decoration-none">
                                 <h4>Plan </h4>
                             </a>
                             <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_uas_plan'], 0, ',', '.') }}</span>
+                                <strong></strong>
+                                <span>
+                                    {{ isset($item['total_uas_plan']) && $item['total_uas_plan'] !== null
+                            ? number_format($item['total_uas_plan'], 0, ',', '.')
+                            : '-' }}
+                                </span>
                             </div>
                         </div>
                         <div class="metric">
@@ -103,12 +136,39 @@
                                 <h4>Actual </h4>
                             </a>
                             <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_uas_actual'], 0, ',', '.') }}</span>
+                                <strong></strong>
+                                <span>
+                                    {{ isset($item['total_uas_actual']) && $item['total_uas_actual'] !== null
+                            ? number_format($item['total_uas_actual'], 0, ',', '.')
+                            : '-' }}
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                @endforeach
+                @empty
+                <div class="section-card">
+                    <h3 class="section-title">No Data UA</h3>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <a href="/indexproduksiua" class="cardcost text-decoration-none">
+                                <h4>Plan </h4>
+                            </a>
+                            <div class="percentage-box">
+                                <strong></strong><span>-</span>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <a href="/indexproduksiua" class="cardcost text-decoration-none">
+                                <h4>Actual </h4>
+                            </a>
+                            <div class="percentage-box">
+                                <strong></strong><span>-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforelse
             </div>
         </div>
     </div>

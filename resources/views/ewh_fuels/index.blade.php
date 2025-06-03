@@ -24,19 +24,19 @@
             {{-- @if(auth()->user()->role === 'admin')
 
             <form method="GET" action="{{ route('indexpaua') }}" id="filterForm" class="filter-form">
-                <label for="id_company">Select Company:
-                    <br>
-                    <small><em>To view company data, please select a company from the list.</em></small>
+            <label for="id_company">Select Company:
+                <br>
+                <small><em>To view company data, please select a company from the list.</em></small>
 
-                </label>
-                <select list="id_company" name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                    <option value="">-- Select Company --</option>
-                    @foreach ($perusahaans as $company)
-                    <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                        {{ $company->nama }}
-                    </option>
-                    @endforeach
-                </select>
+            </label>
+            <select list="id_company" name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                <option value="">-- Select Company --</option>
+                @foreach ($perusahaans as $company)
+                <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                    {{ $company->nama }}
+                </option>
+                @endforeach
+            </select>
             </form>
             @endif --}}
             <form method="GET" class="mt-3 filter-date" action="{{ route('indexpaua') }}" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
@@ -52,24 +52,27 @@
                 </div>
                 <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                     Filter
-                
+
                 </button>
             </form>
 
             <div class="dashboard-container grid-3 mt-10">
-                @foreach($totalsPas as $item)
 
+                @forelse ($totalsPas as $item)
                 <div class="section-card">
-
-                    <h3 class="section-title">{{ $item['units'] }} EWH</h3>
+                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No Data' }} EWH</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexewh" class="cardcost text-decoration-none">
-
                                 <h4>Plan </h4>
                             </a>
                             <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}</span>
+                                <strong></strong>
+                                <span>
+                                    {{ isset($item['total_uas_plan']) && $item['total_uas_plan'] !== null
+                                ? number_format($item['total_uas_plan'], 0, ',', '.')
+                                : '-' }}
+                                </span>
                             </div>
                         </div>
                         <div class="metric">
@@ -77,40 +80,104 @@
                                 <h4>Actual </h4>
                             </a>
                             <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}</span>
+                                <strong></strong>
+                                <span>
+                                    {{ isset($item['total_uas_plan']) && $item['total_uas_plan'] !== null
+                                ? number_format($item['total_uas_plan'], 0, ',', '.')
+                                : '-' }}
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                @endforeach
-                @foreach($totalsUas as $item)
-
+                @empty
                 <div class="section-card">
-
-                    <h3 class="section-title">{{ $item['units'] }} FUEL</h3>
+                    <h3 class="section-title">No Data EWH</h3>
                     <div class="metrics-grid">
                         <div class="metric">
-                            <a href="/indexfuel" class="cardcost text-decoration-none">
-
+                            <a href="/indexewh" class="cardcost text-decoration-none">
                                 <h4>Plan </h4>
                             </a>
                             <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_uas_plan'], 0, ',', '.') }}</span>
+                                <strong></strong>
+                                <span>-</span>
                             </div>
                         </div>
                         <div class="metric">
-                            <a href="/indexfuel" class="cardcost text-decoration-none">
-
+                            <a href="/indexewh" class="cardcost text-decoration-none">
                                 <h4>Actual </h4>
                             </a>
                             <div class="percentage-box">
-                                <strong></strong> <span>{{ number_format($item['total_uas_actual'], 0, ',', '.') }}</span>
+                                <strong></strong>
+                                <span>-</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                @endforeach
+                @endforelse
+
+
+
+
+                @forelse ($totalsUas as $item)
+                <div class="section-card">
+                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No Data' }} FUEL</h3>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <a href="/indexfuel" class="cardcost text-decoration-none">
+                                <h4>Plan </h4>
+                            </a>
+                            <div class="percentage-box">
+                                <strong></strong>
+                                <span>
+                                    {{ isset($item['total_uas_plan']) && $item['total_uas_plan'] !== null
+                                ? number_format($item['total_uas_plan'], 0, ',', '.')
+                                : '-' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <a href="/indexfuel" class="cardcost text-decoration-none">
+                                <h4>Actual </h4>
+                            </a>
+                            <div class="percentage-box">
+                                <strong></strong>
+                                <span>
+                                    {{ isset($item['total_pas_actual']) && $item['total_pas_actual'] !== null
+                                ? number_format($item['total_pas_actual'], 0, ',', '.')
+                                : '-' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="section-card">
+                    <h3 class="section-title">No Data FUEL</h3>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <a href="/indexfuel" class="cardcost text-decoration-none">
+                                <h4>Plan </h4>
+                            </a>
+                            <div class="percentage-box">
+                                <strong></strong>
+                                <span>-</span>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <a href="/indexfuel" class="cardcost text-decoration-none">
+                                <h4>Actual </h4>
+                            </a>
+                            <div class="percentage-box">
+                                <strong></strong>
+                                <span>-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforelse
             </div>
+
         </div>
     </div>
 </div>

@@ -419,7 +419,7 @@ class persentaseCompany
         $persennetprofitmargin = ($ongkosplan != 0) ? round(($totalnetprofitplan / $ongkosplan) * 100, 2) : 0;/*net profit*/
         $weightnetprofitmargin = round(($persennetprofitmargin / 35.00) * 100, 2);
         $totalpercenfinancial = $persenassetplan + $persenmodalhutangplan + $persenrevenue + $persencogs + $persenprofitmargin + $persencostemploye + $persencsr + $persenopratingcost + $persenoperatingprofitmargin + $persennetprofitmargin;
-
+        $totalpercenfinancial_bulat = round($totalpercenfinancial);
         // Perhitungan persen actual dan index result (index * weight)
         $actualreturnonasset = ($ongkosactual != 0) ? round(($totalactualasset / $ongkosactual) * 100, 2) : 0;/* asset*/
         $persenactualasset = ($totalactualasset != 0) ? round(($totalactuallb / $totalactualasset) * 100, 2) : 0;/* asset*/
@@ -469,7 +469,7 @@ class persentaseCompany
         $totalresultfinancial = round(($totalindexfinancial / 35.00) * 100, 2);
         // dd($totalresultfinancial,$totalindexfinancial, $resultrevenue , $resultcogs , $resultemploye , $resultcsr , $resultgrosspm , $ressultoperasionalcost , $resultoperatingpm , $resultnetpm , $resultasset , $resultequity,);
         $totalopersenactualfinancial = $persenactualasset + $actualreturnonequaity + $persenactualrevenue + $persenactualcogs + $persenactualprofitmg + $pserenactualcostemploye + $persenactualcsr + $persenactualoperatincost + $persenactualoperasionalpmg + $persenactualnetprofitmg;
-
+        $totalopersenactualfinancial_bulat = round($totalopersenactualfinancial);
         // Memetakan data untuk menampilkan laporan KPI
         $totals = $data->map(function ($categories, $jenisName) use ($totalRevenuep, $totalRevenuea) {
             return [

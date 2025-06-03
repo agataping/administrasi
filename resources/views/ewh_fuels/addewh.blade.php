@@ -59,7 +59,7 @@
                     </div>
 
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal Plan</label>
+                        <label for="plan">Nominal Actual</label>
                         <input type="text" class="form-control" id="plan" name="actual">
                     </div>
 
