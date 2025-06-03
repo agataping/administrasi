@@ -9,6 +9,7 @@
         padding: 5px;
         font-family: Arial, sans-serif;
     }
+
     .vard {
         width: 100%;
         background-color: #dddddd;
@@ -38,7 +39,6 @@
         background-color: #bbb;
         /* efek saat hover */
     }
-
 </style>
 
 
@@ -48,7 +48,7 @@
     <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-            <a href="{{ route('reportkpi') }}" class="text-decoration-none" style="color: black;">
+                <a href="{{ route('reportkpi') }}" class="text-decoration-none" style="color: black;">
                     <h3 class="mb-3">Measurement</h3>
                 </a> {{-- Error Notification --}}
                 {{-- Error Notification --}}
@@ -80,17 +80,17 @@
                 {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexPeople') }}" id="filterForm">
-                    <label for="id_company">Select Company:
-                        <br>
-                        <small><em>To view company data, please select a company from the list.</em></small></label>
-                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                        <option value="">-- Select Company --</option>
-                        @foreach ($perusahaans as $company)
-                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                            {{ $company->nama }}
-                        </option>
-                        @endforeach
-                    </select>
+                <label for="id_company">Select Company:
+                    <br>
+                    <small><em>To view company data, please select a company from the list.</em></small></label>
+                <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">-- Select Company --</option>
+                    @foreach ($perusahaans as $company)
+                    <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                        {{ $company->nama }}
+                    </option>
+                    @endforeach
+                </select>
                 </form>
                 @endif --}}
                 <div class="row sidebar p-1 border rounded shadow-sm bg-light ">
@@ -110,7 +110,7 @@
                 @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin')
                 <div class="col text-center" style="position: relative; left:;">
                     @if(isset($data['companyName']))
-                        <p>{{ $data['companyName']->company_name }}</p>
+                    <p>{{ $data['companyName']->company_name }}</p>
                     @else
                     <p>Tidak ada perusahaan yang ditemukan.</p>
                     @endif
@@ -233,10 +233,11 @@
                         <tr style="vertical-align: middle; background-color:rgb(176, 175, 175);  text-align: end;">
                             <th colspan="4"></th>
                             <td>{{ number_format($data['ongkosplan'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['totalpercenfinancial'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format(round($data['totalpercenfinancial'], 2), 2, ',', '.') }}%</td>
                             <td>35%</td>
                             <td>{{ number_format($data['ongkosactual'], 2, ',', '.') }}</td>
-                            <td>{{ number_format($data['totalopersenactualfinancial'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format(round($data['totalopersenactualfinancial'], 2), 2, ',', '.') }}%</td>
+
                         </tr>
                         <tr>
                             <th rowspan="4">2</th>
