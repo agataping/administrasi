@@ -467,6 +467,7 @@ class ReportService
         $resultoperatingpm = round($indexprofitmg * ($weightprofitmargin / 100), 2);
         $pserenactualcostemploye = ($ongkosactual != 0) ? round(($totactualsalary / $ongkosactual) * 100, 2) : 0;/* saleri cost employe*/
         $indexcostemlpoye = ($persencostemploye != 0) ? round(($pserenactualcostemploye / $persencostemploye) * 100, 2) : 0;
+
         $resultemploye = round($indexcostemlpoye * ($weightcostemploye / 100), 2);
         $persenactualcsr = ($ongkosactual != 0) ? round(($totactualscsr / $ongkosactual) * 100, 2) : 0;/* csr*/
         $indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;

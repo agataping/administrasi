@@ -274,18 +274,15 @@ class MiningReadinessController extends Controller
         ]);
         return redirect('/indexmining')->with('success', ' Data saved successfully.');
     }
-
-    public function deleteminig($id)
+    public function deletemining($id)
     {
         $data = MiningReadiness::findOrFail($id);
         $oldData = $data->toArray();
 
-        // Hapus data dari tabel 
         $data->delete();
 
-        // Simpan log ke tabel history_logs
         HistoryLog::create([
-            'table_name' => 'mining_readinesses  ',
+            'table_name' => 'mining_readinesses',
             'record_id' => $id,
             'action' => 'delete',
             'old_data' => json_encode($oldData),
@@ -294,6 +291,7 @@ class MiningReadinessController extends Controller
         ]);
         return redirect('/indexmining')->with('success', 'Data deleted successfully.');
     }
+
 
     public function picamining(Request $request)
     {
@@ -330,7 +328,7 @@ class MiningReadinessController extends Controller
 
         $data = $query->get();
 
-        return view('picamining.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
+        return view('picamining.index', compact('startDate', 'endDate', 'data', 'perusahaans', 'companyId'));
     }
 
     public function formpicamining()

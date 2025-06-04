@@ -423,14 +423,14 @@ class persentaseCompany
         // Perhitungan persen actual dan index result (index * weight)
         $actualreturnonasset = ($ongkosactual != 0) ? round(($totalactualasset / $ongkosactual) * 100, 2) : 0;/* asset*/
         $persenactualasset = ($totalactualasset != 0) ? round(($totalactuallb / $totalactualasset) * 100, 2) : 0;/* asset*/
-        $indexactualasset = ($actualreturnonasset != 0) ? round(($persenassetplan / $actualreturnonasset) * 100, 2) : 0;
+        $indexactualasset = ($actualreturnonasset != 0) ? floor(($persenassetplan / $actualreturnonasset) * 1000)/100 : 0;
         // dd( $actualreturnonasset,$indexactualasset,$ongkosactual,$totalactualasset);
 
         $resultasset = round($indexactualasset * ($weightasset / 100), 2);
         $actualreturnonequaity = ($ongkosactual != 0) ? round(($totalactualequity / $ongkosactual) * 100, 2) : 0;/* liabiliti equity*/
         $persenactualmodalhutang = ($totalactualequity != 0) ? round(($totalactuallb / $totalactualequity) * 100, 2) : 0;/* liabiliti equity*/
 
-        $indexmodalhutangactual = ($actualreturnonequaity != 0) ? round(($persenmodalhutangplan / $actualreturnonequaity) * 100, 2) : 0;
+        $indexmodalhutangactual = ($actualreturnonequaity != 0) ? floor(($persenmodalhutangplan / $actualreturnonequaity) * 1000)/100 : 0;
         // $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity / $persenmodalhutangplan) * 100, 2) : 0;
         // dd( $indexmodalhutangactual,$persenmodalhutangplan,$actualreturnonequaity,$persenmodalhutangplan);
 
@@ -449,20 +449,20 @@ class persentaseCompany
 
         $resultoperatingpm = round($indexprofitmg * ($weightprofitmargin / 100), 2);
         $pserenactualcostemploye = ($ongkosactual != 0) ? round(($totactualsalary / $ongkosactual) * 100, 2) : 0;/* saleri cost employe*/
-        $indexcostemlpoye = ($persencostemploye != 0) ? round(($pserenactualcostemploye / $persencostemploye) * 100, 2) : 0;
+        $indexcostemlpoye = ($persencostemploye != 0) ? floor(($pserenactualcostemploye / $persencostemploye) * 1000)/100 : 0;
         $resultemploye = round($indexcostemlpoye * ($weightcostemploye / 100), 2);
         $persenactualcsr = ($ongkosactual != 0) ? round(($totactualscsr / $ongkosactual) * 100, 2) : 0;/* csr*/
         $indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;
         $resultcsr = round($indexcsr *  ($weightcsr / 100), 2);
         // dd($indexcsr,$persencsr,$persenactualcsr);
         $persenactualoperatincost = ($ongkosactual != 0) ? round(($actualoperasional / $ongkosactual) * 100, 2) : 0;/*operasional cost*/
-        $indexoperatingcost = ($persenopratingcost != 0) ? round(($persenactualoperatincost / $persenopratingcost) * 100, 2) : 0;
+        $indexoperatingcost = ($persenopratingcost != 0) ? floor(($persenactualoperatincost / $persenopratingcost) * 1000)/100 : 0;
         $ressultoperasionalcost = round($indexoperatingcost * ($weightopratingcost / 100), 2);
         $persenactualoperasionalpmg = ($ongkosactual != 0) ? round(($totalactualOp / $ongkosactual) * 100, 2) : 0;/* opersional profit mg*/
-        $indexoperasionalpmg = ($persenoperatingprofitmargin != 0) ? round(($persenactualoperasionalpmg / $persenoperatingprofitmargin) * 100, 2) : 0;
+        $indexoperasionalpmg = ($persenoperatingprofitmargin != 0) ? floor(($persenactualoperasionalpmg / $persenoperatingprofitmargin) * 1000)/100 : 0;
         $resultgrosspm = round($indexoperasionalpmg * ($weightopratingmg / 100), 2);
         $persenactualnetprofitmg = ($ongkosactual != 0) ? round(($actuallb / $ongkosactual) * 100, 2) : 0;/*net profit*/
-        $indexnetprofitmg = ($persennetprofitmargin != 0) ? round(($persenactualnetprofitmg / $persennetprofitmargin) * 100, 2) : 0;
+        $indexnetprofitmg = ($persennetprofitmargin != 0) ? floor(($persenactualnetprofitmg / $persennetprofitmargin) * 1000)/100 : 0;
         $resultnetpm = round($indexnetprofitmg * ($weightnetprofitmargin / 100), 2);
         //financial perspectif 
         $totalindexfinancial = $resultrevenue + $resultcogs + $resultemploye + $resultcsr + $resultgrosspm + $ressultoperasionalcost + $resultoperatingpm + $resultnetpm + $resultasset + $resultequity;
@@ -558,7 +558,7 @@ class persentaseCompany
             });
         // dd($totalactualekspor);
 
-        $indexekspor = ($totalplanekspor != 0) ? round(($totalactualekspor / $totalplanekspor) * 100, 2) : 0;
+        $indexekspor = ($totalplanekspor != 0) ? floor(($totalactualekspor / $totalplanekspor) * 1000)/100 : 0;
         $resultekspor = round(($indexekspor * 0.05), 2);
         $totalactualdomestik = (clone $query)
             ->where('bargings.kuota', 'Domestik')
@@ -566,7 +566,7 @@ class persentaseCompany
             ->sum(function ($item) {
                 return (float)str_replace('.', '', $item->quantity ?? 0);
             });
-        $indexdomestik = ($totalplandomestik != 0) ? round(($totalactualdomestik / $totalplandomestik) * 100, 2) : 0;
+        $indexdomestik = ($totalplandomestik != 0) ? floor(($totalactualdomestik / $totalplandomestik) * 1000)/100 : 0;
         $resultdomestik = round(($indexdomestik * 0.05), 2);
         // dd($resultdomestik);
         // dd($resulutdomestik,$resultekspor,$indexdomestik,$totalactualdomestik);
@@ -609,7 +609,7 @@ class persentaseCompany
         $totalActualcoal = $data->where('kategori_name', 'Coal Getting')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
-        $indexcoalgetting = ($totalPlancoal != 0) ? round($totalActualcoal / $totalPlancoal, 2) : 0;
+        $indexcoalgetting = ($totalPlancoal != 0) ? floor(($totalActualcoal / $totalPlancoal)*1000)/100 : 0;
         $resultcoal = round(($indexcoalgetting * 0.02), 2); //result coal
         $resultcoalmt = round(($indexcoalgetting * 0.03), 2); //result coal mt
 
@@ -620,7 +620,7 @@ class persentaseCompany
         $totalActualob = $data->where('kategori_name', 'Over Burden')->sum(function ($item) {
             return (float)str_replace(',', '', $item->nominalactual ?? 0);
         });
-        $indexoverburder = $totalPlanob != 0 ? round(($totalActualob / $totalPlanob) * 100, 2) : 0;
+        $indexoverburder = $totalPlanob != 0 ? floor(($totalActualob / $totalPlanob) * 1000)/100 : 0;
         $resultob = round(($indexoverburder * 0.02), 2); //result ob
         $resultobbcm = round(($indexoverburder * 0.03), 2); //result ob bcm
         // dd($resultob);
@@ -849,7 +849,7 @@ class persentaseCompany
             $totalpr = 0;
         }
 
-        $indexpeople = $totalpr != 0 ? round(($totalpr * 100) / 100, 2) : 0;
+        $indexpeople = $totalpr != 0 ? floor(($totalpr * 100) * 1000)/100 : 0;
         $resultpeople = round($indexpeople * (10 / 100), 2);
 
 
@@ -873,7 +873,7 @@ class persentaseCompany
             })
             ->avg();
 
-        $indexinfra = $averagePerformance != 0 ? round(($averagePerformance * 100) / 100, 2) : 0;
+        $indexinfra = $averagePerformance != 0 ? floor(($averagePerformance * 100) *1000)/100 : 0;
         $resultinfrastruktur = round($indexinfra * (10 / 100), 2);
         //l&g
         $totalindexlearning = $resultpeople + $resultinfrastruktur;

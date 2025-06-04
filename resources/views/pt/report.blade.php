@@ -1114,6 +1114,7 @@
 
                             <!-- Physical Availability (PA) Tables -->
                             @if (!empty($data['unitpa']) && count($data['unitpa']) > 0)
+                            
                             @foreach ($data['unitpa'] as $index => $item)
                             <table class="table table-bordered" style="border: 1px solid black; border-collapse: collapse; width: 100%;">
                                 <thead>
@@ -1148,10 +1149,6 @@
                         @endif">
                                             {{ number_format($data['indexoverburder'], 2, ',', '.') }}%
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Weight</td>
-                                        <td class="text-end">6,00%</td>
                                     </tr>
                                 </tbody>
                             </table>
