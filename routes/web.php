@@ -348,6 +348,15 @@ Route::post('/updateewh/{id}', [ControllerEwhFuel::class, 'updateewh'])->middlew
 Route::post('/updatefuel/{id}', [ControllerEwhFuel::class, 'updatefuel'])->middleware('auth')->name('updatefuel');
 Route::delete('/deleteewh/{id}', [ControllerEwhFuel::class, 'deleteewh'])->middleware('auth')->name('deleteewh');
 Route::delete('/deletefuel/{id}', [ControllerEwhFuel::class, 'deletefuel'])->middleware('auth')->name('deletefuel');
+
+//code unit ewh
+Route::get('/indexcodeunit', [ControllerEwhFuel::class, 'indexcodeunit'])->middleware('auth')->name('indexcodeunit');
+Route::get('/codeunit', [ControllerEwhFuel::class, 'codeunit'])->middleware('auth')->name('codeunit');
+Route::post('/createcodeunit', [ControllerEwhFuel::class, 'createcodeunit'])->middleware('auth')->name('createcodeunit');
+Route::get('/formupdatecodeunit/{id}', [ControllerEwhFuel::class, 'formupdatecodeunit'])->middleware('auth')->name('formupdatecodeunit');
+Route::post('/updetedcodeunit/{id}', [ControllerEwhFuel::class, 'updetedcodeunit'])->middleware('auth')->name('updetedcodeunit');
+Route::delete('/deletedcodeunit/{id}', [ControllerEwhFuel::class, 'deletedcodeunit'])->middleware('auth')->name('deletedcodeunit');
+
 //picaa ewh fuel
 Route::get('/picaewhfuel', [ControllerEwhFuel::class, 'picaewhfuel'])->middleware('auth')->name('picaewhfuel');
 Route::post('/createpicaewhfuel', [ControllerEwhFuel::class, 'createpicaewhfuel'])->middleware('auth')->name('createpicaewhfuel');

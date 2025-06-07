@@ -1,5 +1,5 @@
 @extends('template.main')
-@section('title', 'Unit')
+@section('title', 'Unit code')
 @section('content')
 @extends('components.style')
 
@@ -9,7 +9,9 @@
     <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <h3 class="mb-3" onclick="window.history.back()" style="cursor: pointer;">Add Data Unit</h3>
+                <a href="/indexewh" class=" text-decoration-none " style="color: black;">
+                    <h3 class="mb-3">Add Data Unit code</h3>
+                </a>
 
                 {{-- Success Notification --}}
                 @if (session('success'))
@@ -72,17 +74,18 @@
                     }, 3000);
                 </script>
 
-                <form action="{{ route('createunit') }}" method="post">
+                <form action="{{ route('createcodeunit') }}" method="post">
                     @csrf
                     <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
+
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
 
                     <div id="">
                         <div class="row g-3">
 
                             <div class="">
-                                <label for="" class="form-label">Unit Name</label>
-                                <input type="text" class="form-control" id="" placeholder="e.g. Hauler Etc." value="" required name="unit">
+                                <label for="" class="form-label">unit Code</label>
+                                <input type="text" class="form-control" id="" placeholder="e.g. EX-79 Etc." value="" required name="code">
                             </div>
 
                         </div>

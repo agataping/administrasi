@@ -1,6 +1,9 @@
 @extends('template.main')
 @section('title', 'update_pa')
+@extends('components.style')
+@extends('components.script')
 @section('content')
+
 <div class="background-full" style="background: url('{{ asset('img/tambang-batubara.jpg') }}') no-repeat center center/cover; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: -1;">
 </div>
 <div class="container-fluid mt-2">
@@ -27,18 +30,19 @@
                 <form action="{{ route('updateewh',$data->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
-                    <div class="form-group">
-                        <label for="unit_id">Unit</label>
-                        <select name="unit_id" id="unit_id" class="form-control select2" required>
-                            <option value="" disabled selected>Select Unit</option>
-                            @foreach($unit as $kategori)
-                            <option value="{{ $kategori->id }}" {{ $kategori->id == $data->code_number ? 'selected' : '' }}>
-                                {{ $kategori->unit }}
-                            </option>
 
+                    <div class="form-group">
+                        <label for="unit_id">Code Unit</label>
+                        <select name="unit_id" id="unit_id" class="form-control select2" required>
+                            <option value="" disabled {{ $data->unit_id ? '' : 'selected' }}>Select Code Unit</option>
+                            @foreach($unit as $kategori)
+                            <option value="{{ $kategori->id }}" {{ $kategori->id == $data->unit_id ? 'selected' : '' }}>
+                                {{ $kategori->code }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
+                
                     <div style="margin-bottom: 1rem;">
                         <label for="tanggal" style="font-weight: bold; font-size: 1rem;">Date:</label>
                         <input type="date" class="form-control" value="{{$data->date}}" id="tanggal" name="date" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: #f9f9f9;" required>
@@ -49,9 +53,9 @@
                         <input type="text" class="form-control" value="{{$data->desc}}" id="nameindikator" name="desc" required>
                     </div>
 
-                    <!-- Nominal Inputs -->
+                    <!-- Inputs -->
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal Plan</label>
+                        <label for="plan">Plan</label>
                         <input type="text" class="form-control" value="{{$data->plan}}" id="plan" name="plan">
                     </div>
                     <div class="form-group" id="file">
@@ -64,7 +68,7 @@
 
                     </div>
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal actual</label>
+                        <label for="plan">actual</label>
                         <input type="text" class="form-control" value="{{$data->actual}}" id="plan" name="actual">
                     </div>
 

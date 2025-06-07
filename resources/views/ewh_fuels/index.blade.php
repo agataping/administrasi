@@ -56,11 +56,10 @@
                 </button>
             </form>
 
-            <div class="dashboard-container grid-3 mt-10">
+            <div class="dashboard-container mt-10 " style="">
 
-                @forelse ($totalsPas as $item)
                 <div class="section-card">
-                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No data available' }} EWH</h3>
+                    <h3 class="section-title">EWH</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexewh" class="cardcost text-decoration-none">
@@ -69,9 +68,7 @@
                             <div class="percentage-box">
                                 <strong></strong>
                                 <span>
-                                    {{ isset($item['total_uas_plan']) && $item['total_uas_plan'] !== null
-                                ? number_format($item['total_uas_plan'], 0, ',', '.')
-                                : '-' }}
+                                    {{ isset($averagePlanGlobal) ? number_format($averagePlanGlobal, 0, ',', '.') : '-' }}
                                 </span>
                             </div>
                         </div>
@@ -82,46 +79,15 @@
                             <div class="percentage-box">
                                 <strong></strong>
                                 <span>
-                                    {{ isset($item['total_uas_plan']) && $item['total_uas_plan'] !== null
-                                ? number_format($item['total_uas_plan'], 0, ',', '.')
-                                : '-' }}
+                                    {{ isset($averageActualGlobal) ? number_format($averageActualGlobal, 0, ',', '.') : '-' }}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                @empty
+
                 <div class="section-card">
-                    <h3 class="section-title">No data available EWH</h3>
-                    <div class="metrics-grid">
-                        <div class="metric">
-                            <a href="/indexewh" class="cardcost text-decoration-none">
-                                <h4>Plan </h4>
-                            </a>
-                            <div class="percentage-box">
-                                <strong></strong>
-                                <span>-</span>
-                            </div>
-                        </div>
-                        <div class="metric">
-                            <a href="/indexewh" class="cardcost text-decoration-none">
-                                <h4>Actual </h4>
-                            </a>
-                            <div class="percentage-box">
-                                <strong></strong>
-                                <span>-</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforelse
-
-
-
-
-                @forelse ($totalsUas as $item)
-                <div class="section-card">
-                    <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No data available' }} FUEL</h3>
+                    <h3 class="section-title">FUEL</h3>
                     <div class="metrics-grid">
                         <div class="metric">
                             <a href="/indexfuel" class="cardcost text-decoration-none">
@@ -130,9 +96,7 @@
                             <div class="percentage-box">
                                 <strong></strong>
                                 <span>
-                                    {{ isset($item['total_uas_plan']) && $item['total_uas_plan'] !== null
-                                ? number_format($item['total_uas_plan'], 0, ',', '.')
-                                : '-' }}
+                                    {{ isset($averagePlanGlobalfuels) ? number_format($averagePlanGlobalfuels, 0, ',', '.') : '-' }}
                                 </span>
                             </div>
                         </div>
@@ -143,39 +107,16 @@
                             <div class="percentage-box">
                                 <strong></strong>
                                 <span>
-                                    {{ isset($item['total_pas_actual']) && $item['total_pas_actual'] !== null
-                                ? number_format($item['total_pas_actual'], 0, ',', '.')
-                                : '-' }}
+                                    {{ isset($averageActualGlobalfuels) ? number_format($averageActualGlobalfuels, 0, ',', '.') : '-' }}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                @empty
-                <div class="section-card">
-                    <h3 class="section-title">No data available FUEL</h3>
-                    <div class="metrics-grid">
-                        <div class="metric">
-                            <a href="/indexfuel" class="cardcost text-decoration-none">
-                                <h4>Plan </h4>
-                            </a>
-                            <div class="percentage-box">
-                                <strong></strong>
-                                <span>-</span>
-                            </div>
-                        </div>
-                        <div class="metric">
-                            <a href="/indexfuel" class="cardcost text-decoration-none">
-                                <h4>Actual </h4>
-                            </a>
-                            <div class="percentage-box">
-                                <strong></strong>
-                                <span>-</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforelse
+
+
+
+
             </div>
 
         </div>

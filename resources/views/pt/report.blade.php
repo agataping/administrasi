@@ -924,11 +924,11 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td>{{ number_format($data['totalplanewh'], 2) }}</td>
+                                        <td>{{ number_format($data['averagePlanGlobal'], 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td>{{ number_format($data['totalactualewh'], 2) }}</td>
+                                        <td>{{ number_format($data['averageActualGlobal'], 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>
@@ -1001,11 +1001,11 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td>{{ number_format($data['totalplanfuel'], 2) }}</td>
+                                        <td>{{ number_format($data['averagePlanGlobalfuels'], 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td>{{ number_format($data['totalactualfuel'], 2) }}</td>
+                                        <td>{{ number_format($data['averageActualGlobalfuels'], 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>

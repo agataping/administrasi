@@ -30,11 +30,11 @@
                     @csrf
                     <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
                     <div class="form-group">
-                        <label for="unit_id">Seelect Unit</label>
+                        <label for="unit_id">Seelect code Unit</label>
                         <select name="unit_id" id="unit_id" class="form-control select2" required>
-                            <option value="" disabled selected>Select Unit</option>
+                            <option value="" disabled selected>Select code Unit</option>
                             @foreach($unit as $u)
-                            <option value="{{ $u->id }}">{{$u->unit }}</option>
+                            <option value="{{ $u->id }}">{{$u->code }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -50,7 +50,7 @@
 
                     <!-- Nominal Inputs -->
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal Plan</label>
+                        <label for="plan">Plan</label>
                         <input type="text" class="form-control" id="plan" name="plan">
                     </div>
                     <div id="planInput" class="form-group">
@@ -59,7 +59,7 @@
                     </div>
 
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal Actual</label>
+                        <label for="plan">Actual</label>
                         <input type="text" class="form-control" id="plan" name="actual">
                     </div>
 

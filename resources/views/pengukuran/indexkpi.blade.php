@@ -312,8 +312,8 @@
                         <tr>
                             <td>Effective Working Hour</td>
                             <td>4%</td>
-                            <td>{{ number_format($data['totalplanewh'], 2) }}</td>
-                            <td>{{ number_format($data['totalactualewh'], 2) }}</td>
+                            <td>{{ number_format($data['averagePlanGlobal'], 2) }}</td>
+                            <td>{{ number_format($data['averageActualGlobal'], 2) }}</td>
                             <td>{{ number_format($data['indexoverburder'], 2, ',', '.') }}%</td>
                             <td>{{ $data['resultewh'] < 0 ? '0,00%' : number_format($data['resultewh'], 2, ',', '.') . '%' }}</td>
                         </tr>
@@ -336,8 +336,8 @@
                         <tr>
                             <td>Fuel Ratio</td>
                             <td>3%</td>
-                            <td>{{ number_format($data['totalplanfuel'], 2) }}%</td>
-                            <td>{{ number_format($data['totalactualfuel'], 2) }}%</td>
+                            <td>{{ number_format($data['averagePlanGlobalfuels'], 2) }}%</td>
+                            <td>{{ number_format($data['averageActualGlobalfuels'], 2) }}%</td>
                             <td>{{ number_format($data['indexoverburder'], 2, ',', '.') }}%</td>
                             <td>{{ $data['resultfuel'] < 0 ? '0,00%' : number_format($data['resultfuel'], 2, ',', '.') . '%' }}</td>
                         </tr>

@@ -28,14 +28,13 @@
                     @csrf
                     <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
                     <div class="form-group">
-                        <label for="unit_id">Unit</label>
+                        <label for="unit_id">Code Unit</label>
                         <select name="unit_id" id="unit_id" class="form-control select2" required>
-                            <option value="" disabled selected>Select Unit</option>
+                            <option value="" disabled {{ $data->unit_id ? '' : 'selected' }}>Select code Unit</option>
                             @foreach($unit as $kategori)
-                            <option value="{{ $kategori->id }}" {{ $kategori->id == $data->code_number ? 'selected' : '' }}>
-                                {{ $kategori->unit }}
+                            <option value="{{ $kategori->id }}" {{ $kategori->id == $data->unit_id ? 'selected' : '' }}>
+                                {{ $kategori->code }}
                             </option>
-
                             @endforeach
                         </select>
                     </div>
@@ -49,9 +48,9 @@
                         <input type="text" class="form-control" value="{{$data->desc}}" id="nameindikator" name="desc" required>
                     </div>
 
-                    <!-- Nominal Inputs -->
+                    <!-- Inputs -->
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal Plan</label>
+                        <label for="plan">Plan</label>
                         <input type="text" class="form-control" value="{{$data->plan}}" id="plan" name="plan">
                     </div>
                     <div class="form-group" id="file" style="display: none;">
@@ -64,7 +63,7 @@
 
                     </div>
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal actual</label>
+                        <label for="plan">actual</label>
                         <input type="text" class="form-control" value="{{$data->actual}}" id="plan" name="actual">
                     </div>
 

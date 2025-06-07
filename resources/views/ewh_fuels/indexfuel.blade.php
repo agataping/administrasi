@@ -38,7 +38,7 @@
                 @endif
                 <div class="row justify-content-start mb-0">
                     <div class="col-auto">
-                        <form action="{{ route('unit') }}" method="get">
+                        <form action="{{ route('codeunit') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
                             <button type="submit" class="btn btn-custom">Add Description</button>
                         </form>
@@ -52,23 +52,23 @@
                 </div>
                 <div class="row justify-content-start mb-0">
                     <div class="col-auto">
-                        <a href="/indexunit">View Unit Data</a>
+                        <a href="/indexcodeunit">View Code Unit Data</a>
                     </div>
                 </div>
                 {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexfuel') }}" id="filterForm">
-                    <label for="id_company">Select Company:
-                        <br>
-                        <small><em>To view company data, please select a company from the list.</em></small></label>
-                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                        <option value="">-- Select Company --</option>
-                        @foreach ($perusahaans as $company)
-                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                            {{ $company->nama }}
-                        </option>
-                        @endforeach
-                    </select>
+                <label for="id_company">Select Company:
+                    <br>
+                    <small><em>To view company data, please select a company from the list.</em></small></label>
+                <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">-- Select Company --</option>
+                    @foreach ($perusahaans as $company)
+                    <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                        {{ $company->nama }}
+                    </option>
+                    @endforeach
+                </select>
                 </form>
                 @endif --}}
                 <form method="GET" action="{{ route('indexfuel') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
@@ -99,6 +99,7 @@
                                 <th colspan="" style="vertical-align: middle; text-align: center;">Plan</th>
                                 <th colspan="" style="vertical-align: middle; text-align: center;">File</th>
                                 <th colspan="" style="vertical-align: middle; text-align: center;">Actual</th>
+                                <th colspan="" style="vertical-align: middle; text-align: center;">ACH</th>
                                 <th colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
                             </tr>
                         </thead>
@@ -119,9 +120,11 @@
                                 <td colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                     {{ number_format($total['total_actual'], 2) }}
                                 </td>
-
+                                <td colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                                    {{ number_format($total['totalAch'], 2) }}%
+                                </td>
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                    <form action="{{ route('formupadteunit', $total['details'][0]->unit_id) }}">
+                                    <form action="{{ route('formupdatecodeunit', $total['details'][0]->unit_id) }}">
                                         <button type="submit" class="btn btn-primary btn-sm">Edit</button>
                                     </form>
                                 </td>
@@ -144,6 +147,7 @@
 
                                 </td>
                                 <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
+                                <td></td>
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
                                     <form action="{{ route('formupdatefuel', ['id' => $detail->id]) }}">
                                         <button type="submit" class="btn btn-primary btn-sm">Edit</button>
@@ -163,7 +167,12 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="10" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                                <th colspan="3" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">total</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"> {{ number_format($averagePlanGlobalfuels, 2) }}</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"> {{ number_format($averageActualGlobalfuels , 2) }}</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"> {{ number_format($averageachGlobalFuel, 2) }}</th>
+
                             </tr>
                         </tfoot>
                     </table>

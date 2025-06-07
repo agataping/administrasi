@@ -34,7 +34,7 @@
                         <select name="unit_id" id="unit_id" class="form-control select2" required>
                             <option value="" disabled selected>Pilih Unit</option>
                             @foreach($unit as $u)
-                            <option value="{{ $u->id }}">{{$u->unit }}</option>
+                            <option value="{{ $u->id }}">{{$u->code }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -48,9 +48,9 @@
                         <input type="text" class="form-control" id="nameindikator" name="desc" required>
                     </div>
 
-                    <!-- Nominal Inputs -->
+                    <!-- Inputs -->
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal Plan</label>
+                        <label for="plan">Plan</label>
                         <input type="text" class="form-control" id="plan" name="plan">
                     </div>
                     <div id="planInput" class="form-group">
@@ -58,7 +58,7 @@
                         <input type="file" class="form-control" id="plan" name="file">
                     </div>
                     <div id="planInput" class="form-group">
-                        <label for="plan">Nominal Actual</label>
+                        <label for="plan">Actual</label>
                         <input type="text" class="form-control" id="plan" name="actual">
                     </div>
 

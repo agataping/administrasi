@@ -1,5 +1,5 @@
 @extends('template.main')
-@section('title', 'Unit')
+@section('title', 'Unit code')
 @section('content')
 @extends('components.style')
 
@@ -9,7 +9,9 @@
     <div class="card w-100" style="background-color:rgba(255, 255, 255, 0.96);">
         <div class="card-body">
             <div class="col-12">
-                <h3 class="mb-3" onclick="window.history.back()" style="cursor: pointer;">Add Data Unit</h3>
+                <a href="/indexewh" class=" text-decoration-none " style="color: black;">
+                    <h3 class="mb-3"> update Data Unit code </h3>
+                </a>
 
                 {{-- Success Notification --}}
                 @if (session('success'))
@@ -72,23 +74,23 @@
                     }, 3000);
                 </script>
 
-                <form action="{{ route('createunit') }}" method="post">
+                <form action="{{ route('updetedcodeunit',$data->id) }}" method="post">
                     @csrf
                     <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
-                    <input type="hidden" name="created_by_name" value="{{ Auth::user()->username }}">
+
+                    <input type="hidden" name="updated_by_name" value="{{ Auth::user()->username }}">
 
                     <div id="">
                         <div class="row g-3">
 
                             <div class="">
-                                <label for="" class="form-label">Unit Name</label>
-                                <input type="text" class="form-control" id="" placeholder="e.g. Hauler Etc." value="" required name="unit">
+                                <label for="" class="form-label">Unit code</label>
+                                <input type="text" class="form-control" id="" placeholder="e.g. EX Etc." value="{{$data->code}}" required name="code">
                             </div>
 
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" name="action" class="button btn-block btn-lg gradient-custom-4  me-2">Add</button>
                         <button type="submit" name="action" value="save" class="button btn-block btn-lg gradient-custom-4 ">Save</button>
                     </div>
 

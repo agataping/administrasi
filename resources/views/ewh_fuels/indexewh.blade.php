@@ -13,7 +13,7 @@
         <div class="card-body">
             <div class="col-12">
                 <a href="/indexewhfuel" class=" text-decoration-none " style="color: black;">
-                    <h3 class="mb-3">EWH</h3>
+                    <h3 class="mb-3">Effective Working Hour	</h3>
                 </a>
                 {{-- Error Notification --}}
                 @if ($errors->any())
@@ -39,7 +39,7 @@
                 @endif
                 <div class="row justify-content-start mb-0">
                     <div class="col-auto">
-                        <form action="{{ route('unit') }}" method="get">
+                        <form action="{{ route('codeunit') }}" method="get">
                             <input type="hidden" name="form_type" value="kategori">
                             <button type="submit" class="btn btn-custom">Add Description</button>
                         </form>
@@ -53,36 +53,37 @@
                 </div>
                 <div class="row justify-content-start mb-0">
                     <div class="col-auto">
-                        <a href="/indexunit">View Unit Data</a>
+                        <a href="/indexcodeunit">View Code Unit Data</a>
                     </div>
                 </div>
                 {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexewh') }}" id="filterForm">
-                    <label for="id_company">Select Company:
-                        <br>
-                        <small><em>To view company data, please select a company from the list.</em></small></label>
-                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                        <option value="">-- Select Company --</option>
-                        @foreach ($perusahaans as $company)
-                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                            {{ $company->nama }}
-                        </option>
-                        @endforeach
-                    </select>
+                <label for="id_company">Select Company:
+                    <br>
+                    <small><em>To view company data, please select a company from the list.</em></small></label>
+                <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">-- Select Company --</option>
+                    @foreach ($perusahaans as $company)
+                    <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                        {{ $company->nama }}
+                    </option>
+                    @endforeach
+                </select>
                 </form>
                 @endif --}}
+                
                 <form method="GET" action="{{ route('indexewh') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                        <div>
-                            <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
-                        <div>
-                            <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
+                    <div>
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
@@ -102,6 +103,7 @@
                                 <th colspan="" style="vertical-align: middle; text-align: center;">Plan</th>
                                 <th colspan="" style="vertical-align: middle; text-align: center;">File</th>
                                 <th colspan="" style="vertical-align: middle; text-align: center;">Actual</th>
+                                <th colspan="" style="vertical-align: middle; text-align: center;">ACH</th>
                                 <th colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
                             </tr>
                         </thead>
@@ -123,9 +125,12 @@
                                 <td colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
                                     {{ number_format($total['total_actual'], 2) }}
                                 </td>
+                                <td colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
+                                    {{ number_format($total['totalAch'], 2) }}%
+                                </td>
 
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                    <form action="{{ route('formupadteunit', $total['details'][0]->unit_id) }}">
+                                    <form action="{{ route('formupdatecodeunit', $total['details'][0]->unit_id) }}">
                                         <button type="submit" class="btn btn-primary btn-sm">Edit</button>
                                     </form>
                                 </td>
@@ -152,7 +157,8 @@
 
 
                                 <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
-
+                                <td style="vertical-align: middle; text-align: end;"></td>
+                    
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
                                     <form action="{{ route('formupdateewh', ['id' => $detail->id]) }}">
                                         <button type="submit" class="btn btn-primary btn-sm">Edit</button>
@@ -172,7 +178,12 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="10" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                                <th colspan="3" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">total</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"> {{ number_format($averagePlanGlobal, 2) }}</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"> {{ number_format($averageActualGlobal, 2) }}</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"> {{ number_format($averageachGlobal, 2) }}</th>
+
                             </tr>
                         </tfoot>
                     </table>

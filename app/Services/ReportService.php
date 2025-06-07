@@ -404,7 +404,7 @@ class ReportService
 
         $planreturnonasset = ($totalplanasset != 0) ? round(($totalplanlb / $totalplanasset) * 100, 2) : 0;/* asset*/
         $persenassetplan = ($ongkosplan != 0) ? round(($totalplanasset / $ongkosplan) * 100, 2) : 0;/* asset*/
-        $weightasset = round(($persenassetplan * 0.35) , 2);
+        $weightasset = round(($persenassetplan * 0.35), 2);
         // dd( $weightasset,$totalplanasset,$ongkosplan,$persenassetplan);
 
 
@@ -417,15 +417,15 @@ class ReportService
         $weightrevenue = round(($persenrevenue * 0.35), 2);
         // dd($persenrevenue,$weightrevenue);
         $persencogs = ($ongkosplan != 0) ? round(($totalplancogas / $ongkosplan) * 100, 2) : 0;/* cogs*/
-        $weightcogs = round(($persencogs *0.35) , 2);
+        $weightcogs = round(($persencogs * 0.35), 2);
         $persenprofitmargin = ($ongkosplan != 0) ? round(($totalplanlr / $ongkosplan) * 100, 2) : 0;/* profit margin*/
-        $weightprofitmargin = round(($persenprofitmargin * 0.35) , 2);
+        $weightprofitmargin = round(($persenprofitmargin * 0.35), 2);
         // dd( $weightprofitmargin,$persenprofitmargin,$ongkosplan,$totalplanlr);
 
         $persencostemploye = ($ongkosplan != 0) ? round(($totplansalary / $ongkosplan) * 100, 2) : 0;/* saleri cost employe*/
         $weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
         $persencsr = ($ongkosplan != 0) ? round(($totplanscsr / $ongkosplan) * 100, 2) : 0;/* csr*/
-        $weightcsr = round(($persencsr * 0.35) , 2);
+        $weightcsr = round(($persencsr * 0.35), 2);
         // dd($totplanscsr,$ongkosplan,$persencsr);
         // dd($ongkosplan);
 
@@ -434,7 +434,7 @@ class ReportService
         $persenoperatingprofitmargin = ($ongkosplan != 0) ? round(($totalplanlp / $ongkosplan) * 100, 2) : 0;/* opersional profit mg*/
         $weightopratingmg = round(($persenoperatingprofitmargin * 0.35), 2);
         $persennetprofitmargin = ($ongkosplan != 0) ? round(($totalnetprofitplan / $ongkosplan) * 100, 2) : 0;/*net profit*/
-        $weightnetprofitmargin = round(($persennetprofitmargin * 0.35) , 2);
+        $weightnetprofitmargin = round(($persennetprofitmargin * 0.35), 2);
         $totalpercenfinancial = $persenassetplan + $persenmodalhutangplan + $persenrevenue + $persencogs + $persenprofitmargin + $persencostemploye + $persencsr + $persenopratingcost + $persenoperatingprofitmargin + $persennetprofitmargin;
 
         // Perhitungan persen actual dan index result (index * weight)
@@ -486,8 +486,8 @@ class ReportService
         $totalindexfinancial = $resultrevenue + $resultcogs + $resultemploye + $resultcsr + $resultgrosspm + $ressultoperasionalcost + $resultoperatingpm + $resultnetpm + $resultasset + $resultequity;
         $totalresultfinancial = round(($totalindexfinancial / 35.00) * 100, 2);
         // dd($totalresultfinancial,$totalindexfinancial, $resultrevenue , $resultcogs , $resultemploye , $resultcsr , $resultgrosspm , $ressultoperasionalcost , $resultoperatingpm , $resultnetpm , $resultasset , $resultequity,);
-        $totalopersenactualfinancial = $persenactualrevenue + $persenactualcogs + 
-        $persenactualprofitmg + $pserenactualcostemploye + $persenactualcsr + $persenactualoperatincost + $persenactualoperasionalpmg + $persenactualnetprofitmg+$actualreturnonasset+$actualreturnonequaity;
+        $totalopersenactualfinancial = $persenactualrevenue + $persenactualcogs +
+            $persenactualprofitmg + $pserenactualcostemploye + $persenactualcsr + $persenactualoperatincost + $persenactualoperasionalpmg + $persenactualnetprofitmg + $actualreturnonasset + $actualreturnonequaity;
 
         // Memetakan data untuk menampilkan laporan KPI
         $totals = $data->map(function ($categories, $jenisName) use ($totalRevenuep, $totalRevenuea) {
@@ -669,7 +669,7 @@ class ReportService
 
 
         //PA 
-                $query = DB::table('units')
+        $query = DB::table('units')
             ->join('users', 'units.created_by', '=', 'users.id_company')
             ->select('units.*')
             ->where('users.id_company', $companyId);
@@ -1115,11 +1115,11 @@ class ReportService
 
 
         //ewh
-        $queryewh = DB::table('ewhs')
-            ->join('units', 'ewhs.unit_id', '=', 'units.id')
+                $queryewh = DB::table('ewhs')
+            ->join('code_unit', 'ewhs.unit_id', '=', 'code_unit.id')
             ->join('users', 'ewhs.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-            ->select('ewhs.*', 'units.unit as units');
+            ->select('ewhs.*', 'code_unit.code as code');
         if ($user->role !== 'admin') {
             $queryewh->where('users.id_company', $user->id_company);
         } else {
@@ -1133,44 +1133,183 @@ class ReportService
             $query->whereBetween('ewhs.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
 
-        $data = $queryewh
-            ->get();
-        $totalplanewh = $data->sum(function ($p) {
-            return (float) str_replace(',', '', $p->plan ?? 0);
+
+        $data = $queryewh->orderBy('code_unit.code')
+            ->get()
+            ->groupBy('code');
+        $data->each(function ($items) {
+            $items->each(function ($item) {
+                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+            });
         });
-        $totalactualewh = $data->sum(function ($p) {
-            return (float) str_replace(',', '', $p->actual ?? 0);
+        $count = $queryewh->count();
+
+        // Hitung totals per kategori
+        $totals = $data->map(function ($items, $category) {
+            $totalPlan = $items->sum(function ($item) {
+                return (float) str_replace(',', '', $item->plan ?? 0);
+            });
+            $totalActual = $items->sum(function ($item) {
+                return (float) str_replace(',', '', $item->actual ?? 0);
+            });
+
+            $jumlahDataPlanValid = $items->filter(function ($item) {
+                return is_numeric(str_replace(',', '', $item->plan));
+            })->count();
+
+            $jumlahDataActualValid = $items->filter(function ($item) {
+                return is_numeric(str_replace(',', '', $item->actual));
+            })->count();
+
+            $averagePlan = $jumlahDataPlanValid > 0 ? $totalPlan / $jumlahDataPlanValid : 0;
+            $averageActual = $jumlahDataActualValid > 0 ? $totalActual / $jumlahDataActualValid : 0;
+            $Ach = ($totalPlan != 0) ? floor(($totalActual / $totalPlan) * 10000) / 100 : 0;
+            // dd($Ach);
+
+            return [
+                'totalAch' => $Ach,
+                'units' => $category,
+                'total_plan' => $totalPlan,
+                'total_actual' => $totalActual,
+                'details' => $items,
+                'jumlah_data_plan_valid' => $jumlahDataPlanValid,
+                'jumlah_data_actual_valid' => $jumlahDataActualValid,
+                'average_plan' => $averagePlan,
+                'average_actual' => $averageActual,
+            ];
         });
+
+        // Hitung total data valid plan dan actual dari semua data (flat)
+        $allItems = $data->flatten();
+
+        $totalDataPlanValid = $allItems->filter(function ($item) {
+            return is_numeric(str_replace(',', '', $item->plan));
+        })->count();
+
+        $totalDataActualValid = $allItems->filter(function ($item) {
+            return is_numeric(str_replace(',', '', $item->actual));
+        })->count();
+        $totalDataActualValid = $allItems->filter(function ($item) {
+            return is_numeric(str_replace(',', '', $item->actual));
+        })->count();
+
+        $totalPlanGlobal = $allItems->sum(function ($item) {
+            return (float) str_replace(',', '', $item->plan ?? 0);
+        });
+
+        $totalActualGlobal = $allItems->sum(function ($item) {
+            return (float) str_replace(',', '', $item->actual ?? 0);
+        });
+        $totalAchGlobal = $allItems->sum(function ($item) {
+            return (float) str_replace(',', '', $item->actual ?? 0);
+        });
+        $totalachGlobal = ($totalPlanGlobal != 0) ? floor(($totalActualGlobal / $totalPlanGlobal) * 10000) / 100 : 0;
+
+        $averageachGlobal = $count > 0 ? $totalachGlobal / $count : 0;
+
+        $averagePlanGlobal = $totalDataPlanValid > 0 ? $totalPlanGlobal / $totalDataPlanValid : 0;
+        $averageActualGlobal = $totalDataActualValid > 0 ? $totalActualGlobal / $totalDataActualValid : 0;
+
         $resultewh = round(($indexoverburder * 0.04), 2); //result ewh
 
         //fuel
-        $queryfuels = DB::table('fuels')
-            ->join('units', 'fuels.unit_id', '=', 'units.id')
+        $fuels = DB::table('fuels')
+            ->join('code_unit', 'fuels.unit_id', '=', 'code_unit.id')
             ->join('users', 'fuels.created_by', '=', 'users.username')
             ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
             ->select(
                 'fuels.*',
-                'units.unit as units'
+                'code_unit.code as units'
             );
         if ($user->role !== 'admin') {
-            $queryfuels->where('users.id_company', $user->id_company);
+            $fuels->where('users.id_company', $user->id_company);
         } else {
             if ($companyId) {
-                $queryfuels->where('users.id_company', $companyId);
+                $fuels->where('users.id_company', $companyId);
             } else {
-                $queryfuels->whereRaw('users.id_company', $companyId);
+                $fuels->whereRaw('users.id_company', $companyId);
             }
         }
         if (!empty($tahun)) {
             $query->whereBetween('fuels.date', ["$tahun-01-01", "$tahun-12-31"]);
         }
-        $data = $queryfuels->get();
-        $totalplanfuel = $data->sum(function ($p) {
-            return (float) str_replace(',', '', $p->plan ?? 0);
+
+        $data = $fuels->orderBy('code_unit.code')
+            ->get()
+            ->groupBy('code');
+        $data->each(function ($items) {
+            $items->each(function ($item) {
+                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+            });
         });
-        $totalactualfuel = $data->sum(function ($p) {
-            return (float) str_replace(',', '', $p->actual ?? 0);
+        $count = $fuels->count();
+
+        // Hitung totals per kategori
+        $totals = $data->map(function ($items, $category) {
+            $totalPlan = $items->sum(function ($item) {
+                return (float) str_replace(',', '', $item->plan ?? 0);
+            });
+            $totalActual = $items->sum(function ($item) {
+                return (float) str_replace(',', '', $item->actual ?? 0);
+            });
+
+            $jumlahDataPlanValid = $items->filter(function ($item) {
+                return is_numeric(str_replace(',', '', $item->plan));
+            })->count();
+
+            $jumlahDataActualValid = $items->filter(function ($item) {
+                return is_numeric(str_replace(',', '', $item->actual));
+            })->count();
+
+            $averagePlan = $jumlahDataPlanValid > 0 ? $totalPlan / $jumlahDataPlanValid : 0;
+            $averageActual = $jumlahDataActualValid > 0 ? $totalActual / $jumlahDataActualValid : 0;
+            $Ach = ($totalPlan != 0) ? floor(($totalActual / $totalPlan) * 10000) / 100 : 0;
+            // dd($Ach);
+
+            return [
+                'totalAch' => $Ach,
+                'units' => $category,
+                'total_plan' => $totalPlan,
+                'total_actual' => $totalActual,
+                'details' => $items,
+                'jumlah_data_plan_valid' => $jumlahDataPlanValid,
+                'jumlah_data_actual_valid' => $jumlahDataActualValid,
+                'average_plan' => $averagePlan,
+                'average_actual' => $averageActual,
+            ];
         });
+
+        // Hitung total data valid plan dan actual dari semua data (flat)
+        $allItems = $data->flatten();
+
+        $totalDataPlanValid = $allItems->filter(function ($item) {
+            return is_numeric(str_replace(',', '', $item->plan));
+        })->count();
+
+        $totalDataActualValid = $allItems->filter(function ($item) {
+            return is_numeric(str_replace(',', '', $item->actual));
+        })->count();
+        $totalDataActualValid = $allItems->filter(function ($item) {
+            return is_numeric(str_replace(',', '', $item->actual));
+        })->count();
+
+        $totalPlanGlobalfuels = $allItems->sum(function ($item) {
+            return (float) str_replace(',', '', $item->plan ?? 0);
+        });
+
+        $totalActualGlobalfuels = $allItems->sum(function ($item) {
+            return (float) str_replace(',', '', $item->actual ?? 0);
+        });
+        $totalAchGlobal = $allItems->sum(function ($item) {
+            return (float) str_replace(',', '', $item->actual ?? 0);
+        });
+        $totalachGlobalFuel = ($totalPlanGlobalfuels != 0) ? floor(($totalActualGlobalfuels / $totalPlanGlobalfuels) * 10000) / 100 : 0;
+
+        $averageachGlobalFuel = $count > 0 ? $totalachGlobalFuel / $count : 0;
+        $averagePlanGlobalfuels = $totalDataPlanValid > 0 ? $totalPlanGlobalfuels / $totalDataPlanValid : 0;
+        $averageActualGlobalfuels = $totalDataActualValid > 0 ? $totalActualGlobalfuels / $totalDataActualValid : 0;
+
+
         $resultfuel = round(($indexoverburder * 0.03), 2); //result fuel
         $resultIPP = $resultcoal + $resultob + $resultewh + $resultua + $resultpa + $resultfuel + $resultcoalmt + $resultobbcm + $resultmining;
         $totalresultIPP = round(($resultIPP / 30.00) * 100, 2);
@@ -1186,11 +1325,11 @@ class ReportService
             'totalresultcompany',
             'totalresultIPP',
             //fuels
-            'totalplanfuel',
-            'totalactualfuel',
+            'averagePlanGlobalfuels',
+            'averageActualGlobalfuels',
             //ewh
-            'totalplanewh',
-            'totalactualewh',
+            'averageActualGlobal',
+            'averagePlanGlobal',
             //barging
             'totalresultcostumer',
             'totalactualbarging',
