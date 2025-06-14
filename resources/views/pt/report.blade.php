@@ -1158,7 +1158,7 @@
                                 <thead>
                                     <tr>
                                         <th colspan="3" style="text-align: center; vertical-align: middle;">
-                                            Physical Availability <br> PA PA Support
+                                            Physical Availability <br> PA Support
                                         </th>
                                     </tr>
                                 </thead>
