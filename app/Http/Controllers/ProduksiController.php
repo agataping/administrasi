@@ -94,11 +94,13 @@ class ProduksiController extends Controller
             $totalPasActual = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->pas_actual ?? 0);
             });
-
+            $count = $items->count();
             return [
                 'units' => $unit,
                 'total_pas_plan' => $totalPasPlan,
                 'total_pas_actual' => $totalPasActual,
+                'avg_pas_plan' => $count > 0 ? floor($totalPasPlan / $count * 100) / 100  : 0,
+                'avg_pas_actual' => $count > 0 ? floor($totalPasActual / $count * 100) / 100 : 0,
                 'details' => $items,
             ];
         });
@@ -112,11 +114,15 @@ class ProduksiController extends Controller
             $totalUasActual = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->uas_actual ?? 0);
             });
+            $count = $items->count();
 
             return [
                 'units' => $unit,
                 'total_uas_plan' => $totalUasPlan,
                 'total_uas_actual' => $totalUasActual,
+                'avg_uas_plan' => $count > 0 ? floor($totalUasPlan / $count * 100) / 100 : 0,
+                'avg_uas_actual' => $count > 0 ? floor($totalUasActual / $count * 100) / 100 : 0,
+
                 'details' => $items,
             ];
         });
@@ -176,16 +182,42 @@ class ProduksiController extends Controller
             $totalActual = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->actual ?? 0);
             });
+            $count = $items->count();
 
             return [
                 'units' => $category, // Nama grup dari groupBy
                 'total_plan' => $totalPlan,
                 'total_actual' => $totalActual,
+                'avg_uas_plan' => $count > 0 ? floor($totalPlan / $count * 100) / 100 : 0,
+                'avg_uas_actual' => $count > 0 ? floor($totalActual / $count * 100) / 100 : 0,
+
                 'details' => $items,
             ];
         });
-        // dd($totals);
-        return view('PA_UA.indexua', compact('data', 'startDate', 'endDate', 'totals', 'perusahaans', 'companyId'));
+        $allItems = $data->flatten();
+
+        $totalPlanAll = $allItems->sum(function ($item) {
+            return (float)str_replace(',', '', $item->plan ?? 0);
+        });
+
+        $totalActualAll = $allItems->sum(function ($item) {
+            return (float)str_replace(',', '', $item->actual ?? 0);
+        });
+
+        $totalCount = $allItems->count();
+
+        $avg_uas_plan_all = $totalCount > 0 ? floor($totalPlanAll / $totalCount * 100) / 100 : 0;
+        $avg_uas_actual_all = $totalCount > 0 ? floor($totalActualAll / $totalCount * 100) / 100 : 0;
+        return view('PA_UA.indexua', compact(
+            'data',
+            'startDate',
+            'endDate',
+            'totals',
+            'perusahaans',
+            'companyId',
+            'avg_uas_plan_all',
+            'avg_uas_actual_all',
+        ));
     }
 
     public function indexproduksipa(Request $request)
@@ -242,16 +274,42 @@ class ProduksiController extends Controller
             $totalActual = $items->sum(function ($item) {
                 return (float)str_replace(',', '', $item->actual ?? 0);
             });
+            $count = $items->count();
 
             return [
                 'units' => $category, // Nama grup dari groupBy
                 'total_plan' => $totalPlan,
                 'total_actual' => $totalActual,
+                'avg_pas_plan' => $count > 0 ? floor($totalPlan / $count * 100) / 100  : 0,
+                'avg_pas_actual' => $count > 0 ? floor($totalActual / $count * 100) / 100 : 0,
+
                 'details' => $items,
             ];
         });
-        // dd($totals);
-        return view('PA_UA.indexpa', compact('data', 'startDate', 'endDate', 'totals', 'perusahaans', 'companyId'));
+        $allItems = $data->flatten();
+
+        $totalPlanAll = $allItems->sum(function ($item) {
+            return (float)str_replace(',', '', $item->plan ?? 0);
+        });
+
+        $totalActualAll = $allItems->sum(function ($item) {
+            return (float)str_replace(',', '', $item->actual ?? 0);
+        });
+
+        $totalCount = $allItems->count();
+
+        $avg_pas_plan_all = $totalCount > 0 ? floor($totalPlanAll / $totalCount * 100) / 100 : 0;
+        $avg_pas_actual_all = $totalCount > 0 ? floor($totalActualAll / $totalCount * 100) / 100 : 0;
+        return view('PA_UA.indexpa', compact(
+            'data',
+            'startDate',
+            'endDate',
+            'totals',
+            'perusahaans',
+            'companyId',
+            'avg_pas_plan_all',
+            'avg_pas_actual_all',
+        ));
     }
 
 
@@ -642,14 +700,14 @@ class ProduksiController extends Controller
         } else {
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
-        }            
+        }
         $query->whereBetween('tanggal', [$startDate, $endDate]); // Tidak perlu menyebut nama tabel
-        
+
 
         $data = $query->get();
 
 
-        return view('picapaua.index', compact('startDate', 'endDate','data', 'perusahaans', 'companyId'));
+        return view('picapaua.index', compact('startDate', 'endDate', 'data', 'perusahaans', 'companyId'));
     }
 
     public function formpicapaua()

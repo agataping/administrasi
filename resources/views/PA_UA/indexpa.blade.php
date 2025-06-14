@@ -111,12 +111,12 @@
                                 </th>
 
                                 <th style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
-                                    {{ number_format($total['total_plan'], 2) }}
+                                    {{ number_format($total['avg_pas_plan'], 2) }}
                                 </th>
                                 <th style="vertical-align: middle; background-color: #f0f0f0;"></th>
 
                                 <th colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
-                                    {{ number_format($total['total_actual'], 2) }}
+                                    {{ number_format($total['avg_pas_actual'], 2) }}
                                 </th>
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
                                     <form action="{{ route('formupadteunit', $total['details'][0]->unit_id) }}">
@@ -166,7 +166,11 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="10" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                                <th colspan="3" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">TOTAL</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">{{number_format($avg_pas_plan_all, 2) }}</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">{{number_format($avg_pas_actual_all, 2) }}</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
                             </tr>
                         </tfoot>
                     </table>

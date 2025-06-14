@@ -690,19 +690,38 @@ class persentaseCompany
 
             $indexpa = $totalPasPlan != 0 ? round(($totalPasActual / $totalPasPlan) * 100, 2) : 0;
             // dd($totalPasPlan, $totalPasActual, $indexpa);
+            $count = $items->count();
 
             return [
                 'units' => $unit,
                 'total_pas_plan' => $totalPasPlan,
                 'total_pas_actual' => $totalPasActual,
                 'indexpa' => $indexpa,
+                'avg_pas_plan' => $count > 0 ? floor($totalPasPlan / $count * 100) / 100  : 0,
+                'avg_pas_actual' => $count > 0 ? floor($totalPasActual / $count * 100) / 100 : 0,
+
                 'details' => $items,
             ];
         });
         // Hitung rata-rata total plan dan actual (Physical Availability)
-        $averagePasPlan = $unitpa->avg('total_pas_plan');
-        $averagePasActual = $unitpa->avg('total_pas_actual');
+        // $averagePasPlan = $unitpa->avg('total_pas_plan');
+        // $averagePasActual = $unitpa->avg('total_pas_actual');
         // dd($averagePasPlan);
+        $allItems = $data->flatten();
+
+        $totalPlanAll = $allItems->sum(function ($item) {
+            return (float)str_replace(',', '', $item->plan ?? 0);
+        });
+
+        $totalActualAll = $allItems->sum(function ($item) {
+            return (float)str_replace(',', '', $item->actual ?? 0);
+        });
+
+        $totalCount = $allItems->count();
+
+        $averagePasPlan = $totalCount > 0 ? floor($totalPlanAll / $totalCount * 100) / 100 : 0;
+        $averagePasActual = $totalCount > 0 ? floor($totalActualAll / $totalCount * 100) / 100 : 0;
+
         //ua
         $query = DB::table('produksi_uas')
             ->join('units', 'produksi_uas.unit_id', '=', 'units.id')

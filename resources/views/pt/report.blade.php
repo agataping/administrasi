@@ -1127,11 +1127,11 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td>{{ number_format($item['total_pas_plan'], 0, ',', '.') }}%</td>
+                                        <td>{{ number_format($item['avg_pas_plan'], 0, ',', '.') }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
-                                        <td>{{ number_format($item['total_pas_actual'], 0, ',', '.') }}%</td>
+                                        <td>{{ number_format($item['avg_pas_actual'], 0, ',', '.') }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Index</td>

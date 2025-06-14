@@ -192,9 +192,11 @@
                                 <td style="text-align: center; vertical-align: middle;">{{ $d->Achievement ?? '-' }} </td>
 
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                    <form action="{{ route('FormMiningUpdate', ['id' => $d->id]) }}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Edit</button>
-                                    </form>
+                                    <a href="{{ route('FormMiningUpdate', [
+                                            'id' => $d->id,
+                                            'start_date' => request('start_date'),
+                                            'end_date' => request('end_date')
+                                        ]) }}" class="btn btn-primary btn-sm">Edit</a>
                                 </td>
                                 <td style="text-align: center; vertical-align: middle;" rowspan="">
                                     <form action="{{ route('deletemining', $d->id) }}" method="POST" onsubmit="return confirmDelete(event)">

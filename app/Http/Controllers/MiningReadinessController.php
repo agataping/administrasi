@@ -236,11 +236,16 @@ class MiningReadinessController extends Controller
         return redirect()->back()->with('success', 'Data added successfully.');
     }
 
-    public function FormMiningUpdate($id)
+    public function FormMiningUpdate(Request $request,$id)
     {
         $kategori = KategoriMiniR::all();
         $mining = MiningReadiness::findOrFail($id);
-        return view('mining.updateMining', compact('mining', 'kategori'));
+        return view('mining.updateMining', [
+            'mining' => $mining,
+            'kategori' => $kategori,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ]);
     }
 
     public function UpdateMining(Request $request, $id)
@@ -272,7 +277,10 @@ class MiningReadinessController extends Controller
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indexmining')->with('success', ' Data saved successfully.');
+        return redirect()->route('indexmining', [
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ])->with('success', 'Data saved successfully.');
     }
     public function deletemining($id)
     {

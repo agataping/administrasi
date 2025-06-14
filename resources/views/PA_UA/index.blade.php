@@ -68,8 +68,8 @@
                             <div class="percentage-box">
                                 <strong></strong>
                                 <span>
-                                    {{ isset($item['total_pas_plan']) && $item['total_pas_plan'] !== null
-                            ? number_format($item['total_pas_plan'], 0, ',', '.')
+                                    {{ isset($item['avg_pas_plan']) && $item['avg_pas_plan'] !== null
+                            ? number_format($item['avg_pas_plan'], 2, ',', '.')
                             : '-' }}
                                 </span>
                             </div>
@@ -81,9 +81,11 @@
                             <div class="percentage-box">
                                 <strong></strong>
                                 <span>
-                                    {{ isset($item['total_pas_actual']) && $item['total_pas_actual'] !== null
-                            ? number_format($item['total_pas_actual'], 0, ',', '.')
+
+                                    {{ isset($item['avg_pas_actual']) && $item['avg_pas_actual'] !== null
+                            ? number_format($item['avg_pas_actual'], 2, ',', '.')
                             : '-' }}
+
                                 </span>
                             </div>
                         </div>
@@ -125,8 +127,8 @@
                             <div class="percentage-box">
                                 <strong></strong>
                                 <span>
-                                    {{ isset($item['total_uas_plan']) && $item['total_uas_plan'] !== null
-                            ? number_format($item['total_uas_plan'], 0, ',', '.')
+                                    {{ isset($item['avg_uas_plan']) && $item['avg_uas_plan'] !== null
+                            ? number_format($item['avg_uas_plan'], 2, ',', '.')
                             : '-' }}
                                 </span>
                             </div>
@@ -138,8 +140,8 @@
                             <div class="percentage-box">
                                 <strong></strong>
                                 <span>
-                                    {{ isset($item['total_uas_actual']) && $item['total_uas_actual'] !== null
-                            ? number_format($item['total_uas_actual'], 0, ',', '.')
+                                    {{ isset($item['avg_uas_actual']) && $item['avg_uas_actual'] !== null
+                            ? number_format($item['avg_uas_actual'], 2, ',', '.')
                             : '-' }}
                                 </span>
                             </div>

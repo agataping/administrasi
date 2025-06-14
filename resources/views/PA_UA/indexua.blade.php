@@ -109,13 +109,13 @@
                                     {{ $total['units'] }}
                                 </th>
                                 <th style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
-                                    {{ number_format($total['total_plan'], 2) }}
+                                    {{ number_format($total['avg_uas_plan'], 2) }}
                                 </th>
                                 <th style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
 
                                 </th>
                                 <th colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
-                                    {{ number_format($total['total_actual'], 2) }}
+                                    {{ number_format($total['avg_uas_actual'], 2) }}
                                 </th>
 
 
@@ -159,7 +159,11 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="10" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                                <th colspan="3" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">TOTAL</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">{{number_format($avg_uas_plan_all, 2) }}</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">{{number_format($avg_uas_actual_all, 2) }}</th>
+                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
                             </tr>
                         </tfoot>
                     </table>
