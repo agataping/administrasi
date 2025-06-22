@@ -423,46 +423,65 @@ class persentaseCompany
         // Perhitungan persen actual dan index result (index * weight)
         $actualreturnonasset = ($ongkosactual != 0) ? round(($totalactualasset / $ongkosactual) * 100, 2) : 0;/* asset*/
         $persenactualasset = ($totalactualasset != 0) ? round(($totalactuallb / $totalactualasset) * 100, 2) : 0;/* asset*/
-        $indexactualasset = ($actualreturnonasset != 0) ? floor(($persenassetplan / $actualreturnonasset) * 1000) / 100 : 0;
+        // $indexactualasset = ($actualreturnonasset != 0) ? floor(($persenassetplan / $actualreturnonasset) * 1000) / 100 : 0;
+        $indexactualasset = ($actualreturnonasset == 0) ? 0 : floor(min(1.9, max(0, $persenassetplan / $actualreturnonasset)) * 1000) / 100;
+
         // dd( $actualreturnonasset,$indexactualasset,$ongkosactual,$totalactualasset);
 
         $resultasset = round($indexactualasset * ($weightasset / 100), 2);
         $actualreturnonequaity = ($ongkosactual != 0) ? round(($totalactualequity / $ongkosactual) * 100, 2) : 0;/* liabiliti equity*/
         $persenactualmodalhutang = ($totalactualequity != 0) ? round(($totalactuallb / $totalactualequity) * 100, 2) : 0;/* liabiliti equity*/
+        $indexmodalhutangactual = ($actualreturnonequaity == 0) ? 0 : floor(min(1.9, max(0, $persenmodalhutangplan / $actualreturnonequaity)) * 1000) / 100;
 
-        $indexmodalhutangactual = ($actualreturnonequaity != 0) ? floor(($persenmodalhutangplan / $actualreturnonequaity) * 1000) / 100 : 0;
+        // $indexmodalhutangactual = ($actualreturnonequaity != 0) ? floor(($persenmodalhutangplan / $actualreturnonequaity) * 1000) / 100 : 0;
         // $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity / $persenmodalhutangplan) * 100, 2) : 0;
         // dd( $indexmodalhutangactual,$persenmodalhutangplan,$actualreturnonequaity,$persenmodalhutangplan);
 
         // dd($indexmodalhutangactual,$actualreturnonequaity,$persenmodalhutangplan);
         $resultequity = round($indexmodalhutangactual * ($weightmodalhutang / 100), 2);
         $persenactualrevenue = ($ongkosactual != 0) ? round(($totalRevenuea / $ongkosactual) * 100, 2) : 0; /* revenue*/
-        $indexrevenue = ($persenrevenue != 0) ? floor(($persenactualrevenue / $persenrevenue) * 10000) / 100 : 0;
+        $indexrevenue = ($persenrevenue == 0) ? 0 : floor(min(1.9, max(0, $persenactualrevenue / $persenrevenue)) * 10000) / 100;
+
+        // $indexrevenue = ($persenrevenue != 0) ? floor(($persenactualrevenue / $persenrevenue) * 10000) / 100 : 0;
         // dd($indexrevenue,$persenactualrevenue,$persenrevenue,$totalRevenuep,$ongkosplan);
         $resultrevenue = round($indexrevenue *  ($weightrevenue / 100), 2);
         $persenactualcogs = ($ongkosactual != 0) ? round(($totalactualcogas / $ongkosactual) * 100, 2) : 0;/* cogs*/
-        $indexcogs = ($persencogs != 0) ? floor(($persenactualcogs / $persencogs) * 10000) / 100 : 0;
+        // $indexcogs = ($persencogs != 0) ? floor(($persenactualcogs / $persencogs) * 10000) / 100 : 0;
+        $indexcogs = ($persencogs == 0) ? 0 : floor(min(1.9, max(0, $persenactualcogs / $persencogs)) * 10000) / 100;
+
         $resultcogs = round($indexcogs * ($weightcogs / 100), 2);
         $persenactualprofitmg = ($ongkosactual != 0) ? round(($totalactuallr / $ongkosactual) * 100, 2) : 0;/* profit margin*/
-        $indexprofitmg = ($persenprofitmargin != 0) ? round(($persenactualprofitmg / $persenprofitmargin) * 100, 2) : 0;
+        // $indexprofitmg = ($persenprofitmargin != 0) ? round(($persenactualprofitmg / $persenprofitmargin) * 100, 2) : 0;
+        $indexprofitmg = ($persenprofitmargin == 0) ? 0 : round(min(1.9, max(0, $persenactualprofitmg / $persenprofitmargin)) * 100, 2);
+
         // dd($totalactuallr,$indexprofitmg,$persenprofitmargin,$persenactualprofitmg,$totalRevenuep,$ongkosplan);
 
         $resultoperatingpm = round($indexprofitmg * ($weightprofitmargin / 100), 2);
         $pserenactualcostemploye = ($ongkosactual != 0) ? round(($totactualsalary / $ongkosactual) * 100, 2) : 0;/* saleri cost employe*/
-        $indexcostemlpoye = ($persencostemploye != 0) ? floor(($pserenactualcostemploye / $persencostemploye) * 1000) / 100 : 0;
+        // $indexcostemlpoye = ($persencostemploye != 0) ? floor(($pserenactualcostemploye / $persencostemploye) * 1000) / 100 : 0;
+        $indexcostemlpoye = ($persencostemploye == 0) ? 0 : floor(min(1.9, max(0, $pserenactualcostemploye / $persencostemploye)) * 1000) / 100;
+
         $resultemploye = round($indexcostemlpoye * ($weightcostemploye / 100), 2);
         $persenactualcsr = ($ongkosactual != 0) ? round(($totactualscsr / $ongkosactual) * 100, 2) : 0;/* csr*/
-        $indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;
+        // $indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;
+        $indexcsr = ($persencsr == 0) ? 0 : floor(min(1.9, max(0, $persenactualcsr / $persencsr)) * 10000) / 100;
+
         $resultcsr = round($indexcsr *  ($weightcsr / 100), 2);
         // dd($indexcsr,$persencsr,$persenactualcsr);
         $persenactualoperatincost = ($ongkosactual != 0) ? round(($actualoperasional / $ongkosactual) * 100, 2) : 0;/*operasional cost*/
-        $indexoperatingcost = ($persenopratingcost != 0) ? floor(($persenactualoperatincost / $persenopratingcost) * 1000) / 100 : 0;
+        // $indexoperatingcost = ($persenopratingcost != 0) ? floor(($persenactualoperatincost / $persenopratingcost) * 1000) / 100 : 0;
+        $indexoperatingcost = ($persenopratingcost == 0) ? 0 : floor(min(1.9, max(0, $persenactualoperatincost / $persenopratingcost)) * 1000) / 100;
+
         $ressultoperasionalcost = round($indexoperatingcost * ($weightopratingcost / 100), 2);
         $persenactualoperasionalpmg = ($ongkosactual != 0) ? round(($totalactualOp / $ongkosactual) * 100, 2) : 0;/* opersional profit mg*/
-        $indexoperasionalpmg = ($persenoperatingprofitmargin != 0) ? floor(($persenactualoperasionalpmg / $persenoperatingprofitmargin) * 1000) / 100 : 0;
+        // $indexoperasionalpmg = ($persenoperatingprofitmargin != 0) ? floor(($persenactualoperasionalpmg / $persenoperatingprofitmargin) * 1000) / 100 : 0;
+        $indexoperasionalpmg = ($persenoperatingprofitmargin == 0) ? 0 : floor(min(1.9, max(0, $persenactualoperasionalpmg / $persenoperatingprofitmargin)) * 1000) / 100;
+
         $resultgrosspm = round($indexoperasionalpmg * ($weightopratingmg / 100), 2);
         $persenactualnetprofitmg = ($ongkosactual != 0) ? round(($actuallb / $ongkosactual) * 100, 2) : 0;/*net profit*/
-        $indexnetprofitmg = ($persennetprofitmargin != 0) ? floor(($persenactualnetprofitmg / $persennetprofitmargin) * 1000) / 100 : 0;
+        // $indexnetprofitmg = ($persennetprofitmargin != 0) ? floor(($persenactualnetprofitmg / $persennetprofitmargin) * 1000) / 100 : 0;
+        $indexnetprofitmg = ($persennetprofitmargin == 0) ? 0 : floor(min(1.9, max(0, $persenactualnetprofitmg / $persennetprofitmargin)) * 1000) / 100;
+
         $resultnetpm = round($indexnetprofitmg * ($weightnetprofitmargin / 100), 2);
         //financial perspectif 
         $totalindexfinancial = $resultrevenue + $resultcogs + $resultemploye + $resultcsr + $resultgrosspm + $ressultoperasionalcost + $resultoperatingpm + $resultnetpm + $resultasset + $resultequity;
@@ -1208,6 +1227,9 @@ class persentaseCompany
         // dd($totalresultcompany);
 
         return compact(
+            //ua
+            'totalplanuaunithauler',
+
             //total 
             'totalresult',
             'resultIPP',

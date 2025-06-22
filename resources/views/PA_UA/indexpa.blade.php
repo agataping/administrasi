@@ -11,7 +11,7 @@
         <div class="card-body">
             <div class="col-12">
                 <a href="/indexpaua" class=" text-decoration-none " style="color: black;">
-                    <h3 class="mb-3">PA</h3>
+                    <h3 class="mb-3">Physical Availability & Utilization of Availability</h3>
                 </a>
                 {{-- Error Notification --}}
                 @if ($errors->any())
@@ -45,7 +45,13 @@
                     <div class="col-auto">
                         <form action="{{ route('formproduksipa') }}" method="get">
                             <input type="hidden" name="form_type" value="subkategori">
-                            <button type="submit" class="btn btn-custom">Add Detail</button>
+                            <button type="submit" class="btn btn-custom">Add Detail PA</button>
+                        </form>
+                    </div>
+                    <div class="col-auto">
+                        <form action="{{ route('formproduksiua') }}" method="get">
+                            <input type="hidden" name="form_type" value="subkategori">
+                            <button type="submit" class="btn btn-custom">Add Detail UA</button>
                         </form>
                     </div>
                 </div>
@@ -57,30 +63,30 @@
                 {{-- @if(auth()->user()->role === 'admin')
 
                 <form method="GET" action="{{ route('indexproduksipa') }}" id="filterForm">
-                    <label for="id_company">Select Company:
-                        <br>
-                        <small><em>To view company data, please select a company from the list.</em></small></label>
-                    <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
-                        <option value="">-- Select Company --</option>
-                        @foreach ($perusahaans as $company)
-                        <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
-                            {{ $company->nama }}
-                        </option>
-                        @endforeach
-                    </select>
+                <label for="id_company">Select Company:
+                    <br>
+                    <small><em>To view company data, please select a company from the list.</em></small></label>
+                <select name="id_company" id="id_company" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">-- Select Company --</option>
+                    @foreach ($perusahaans as $company)
+                    <option value="{{ $company->id }}" {{ request('id_company') == $company->id ? 'selected' : '' }}>
+                        {{ $company->nama }}
+                    </option>
+                    @endforeach
+                </select>
                 </form>
                 @endif --}}
                 <form method="GET" action="{{ route('indexproduksipa') }}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                        <div>
-                            <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
-                        <div>
-                            <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
-                                style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                        </div>
+                    <div>
+                        <label for="start_date" style="margin-right: 5px; font-weight: bold;">Start Date:</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ $startDate ? $startDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
+                    <div>
+                        <label for="end_date" style="margin-right: 5px; font-weight: bold;">End Date:</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ $endDate ? $endDate->toDateString() : '' }}"
+                            style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                    </div>
                     <button type="submit" style=" padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
                         Filter
                     </button>
@@ -91,86 +97,107 @@
                     <table id="myTable" class="table table-bordered" style="border: 2px solid gray; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.51);">
                         <thead style=" position: sticky; top: 0; z-index: 1; background-color:rgba(9, 220, 37, 0.75); text-align: center; vertical-align: middle;">
                             <tr>
-                                <th rowspan="" style="vertical-align: middle; text-align: center;">No</th>
-                                <th colspan="" style="vertical-align: middle; text-align: center;">Date</th>
-                                <th rowspan="" style="vertical-align: middle;  text-align: center;">Description</th>
-                                <th colspan="" style="vertical-align: middle; text-align: center;">Plan</th>
-                                <th colspan="" style="vertical-align: middle; text-align: center;">File</th>
+                                <th rowspan="2" style="vertical-align: middle; text-align: center;">No</th>
+                                <th rowspan="2" style="vertical-align: middle; text-align: center;">Date</th>
+                                <th rowspan="2" style="vertical-align: middle;  text-align: center;">Description</th>
+                                <th colspan="2" style="vertical-align: middle; text-align: center;">pa</th>
+                                <th colspan="2" style="vertical-align: middle; text-align: center;">ua</th>
+                                <th rowspan="2" style="vertical-align: middle; text-align: center;">File</th>
+                                <th colspan="2" rowspan="2" style="vertical-align: middle; text-align: center;">Action</th>
+                            </tr>
+                            <tr>
+                                <th colspan="" style="vertical-align: middle; text-align: center;">plan</th>
                                 <th colspan="" style="vertical-align: middle; text-align: center;">Actual</th>
-                                <th colspan="2" style="vertical-align: middle; text-align: center;">Action</th>
+                                <th colspan="" style="vertical-align: middle; text-align: center;">plan</th>
+                                <th colspan="" style="vertical-align: middle; text-align: center;">Actual</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($totals as $total)
                             <tr>
-
-                                <th style="vertical-align: middle; background-color: #f0f0f0;">{{ $loop->iteration }}</th>
-                                <th style="vertical-align: middle; background-color: #f0f0f0;"></th>
-                                <th colspan="" style="text-align: left; background-color: #f0f0f0;">
-                                    {{ $total['units'] }}
-                                </th>
-
-                                <th style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
-                                    {{ number_format($total['avg_pas_plan'], 2) }}
-                                </th>
-                                <th style="vertical-align: middle; background-color: #f0f0f0;"></th>
-
-                                <th colspan="" style="vertical-align: middle; background-color: #f0f0f0; text-align: end;">
-                                    {{ number_format($total['avg_pas_actual'], 2) }}
-                                </th>
-                                <td style="text-align: center; vertical-align: middle;" rowspan="">
+                                <th style="background-color: #f0f0f0;">{{ $loop->iteration }}</th>
+                                <td style="background-color: #f0f0f0;"></td>
+                                <td style="text-align: left; background-color: #f0f0f0;">{{ $total['unit'] }}</td>
+                                <td style="text-align: end; background-color: #f0f0f0;">{{ number_format($total['avg_pas_plan'], 2) }}</td>
+                                <td style="text-align: end; background-color: #f0f0f0;">{{ number_format($total['avg_pas_actual'], 2) }}</td>
+                                <td style="text-align: end; background-color: #f0f0f0;">{{ number_format($total['avg_uas_plan'], 2) }}</td>
+                                <td style="text-align: end; background-color: #f0f0f0;">{{ number_format($total['avg_uas_actual'], 2) }}</td>
+                                <td style="background-color: #f0f0f0;"></td>
+                                <td colspan="2" style="background-color: #f0f0f0;">
                                     <form action="{{ route('formupadteunit', $total['details'][0]->unit_id) }}">
                                         <button type="submit" class="btn btn-primary btn-sm">Edit</button>
                                     </form>
                                 </td>
-
-
-
-
-
                             </tr>
+
                             @foreach ($total['details'] as $subIndex => $detail)
                             <tr>
-                                <th style="vertical-align: middle;">{{ $loop->parent->iteration }}.{{ (int) $subIndex + 1 }}</th>
+                                <th>{{ $loop->parent->iteration }}.{{ $subIndex + 1 }}</th>
                                 <td>{{ \Carbon\Carbon::parse($detail->date)->format('d-m-Y') }}</td>
                                 <td>{{ $detail->desc }}</td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->plan, 2) }}</td>
+
+                                {{-- Plan/Actual PA --}}
+                                @if ($detail->sumber == 'pa')
+                                <td style="text-align: end;">{{ number_format((float)$detail->plan, 2) }}</td>
+                                <td style="text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
+                                @else
+                                <td></td>
+                                <td></td>
+                                @endif
+
+                                {{-- Plan/Actual UA --}}
+                                @if ($detail->sumber == 'ua')
+                                <td style="text-align: end;">{{ number_format((float)$detail->plan, 2) }}</td>
+                                <td style="text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
+                                @else
+                                <td></td>
+                                <td></td>
+                                @endif
+
+                                {{-- File --}}
                                 <td>
-                                    @php
-                                    $fileExtension = $detail->file_extension;
-                                    @endphp
-                                    <a href="{{ asset('storage/' . $detail->file) }}" class="text-decoration-none" target="_blank">View File</a>
+                                    @if ($detail->file)
+                                    <a href="{{ asset('storage/' . $detail->file) }}" target="_blank">view File</a>
+                                    @else
+                                    -
+                                    @endif
                                 </td>
-                                <td style="vertical-align: middle; text-align: end;">{{ number_format((float)$detail->actual, 2) }}</td>
-                              
 
-                                <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                    <form action="{{ route('formupdateproduksipa', ['id_pa' => $detail->id_pa]) }}">
-
+                                {{-- Action --}}
+                                <td>
+                                    @if ($detail->sumber == 'pa')
+                                    <form action="{{ route('formupdateproduksipa', ['id_pa' => $detail->id]) }}">
                                         <button type="submit" class="btn btn-primary btn-sm">Edit</button>
                                     </form>
+                                    @elseif ($detail->sumber == 'ua')
+                                    <form action="{{ route('formupdateproduksiua', ['id' => $detail->id]) }}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Edit</button>
+                                    </form>
+                                    @endif
                                 </td>
-                                
-                                <td style="text-align: center; vertical-align: middle;" rowspan="">
-                                    <form action="{{ route('deleteproduksipa', $detail->id_pa) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                <td>
+                                    <form action="{{ $detail->sumber == 'pa' ? route('deleteproduksipa', $detail->id) : route('deleteproduksiua', $detail->id) }}" method="POST" onsubmit="return confirmDelete(event)">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                     </form>
-
                                 </td>
-
                             </tr>
                             @endforeach
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="3" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">TOTAL</th>
-                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">{{number_format($avg_pas_plan_all, 2) }}</th>
-                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
-                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;">{{number_format($avg_pas_actual_all, 2) }}</th>
-                                <th colspan="" style="vertical-align: middle; background-color:rgb(244, 244, 244);  text-align: end;"></th>
+                                <th colspan="3" style="text-align: end; background-color: #f8f8f8;">TOTAL</th>
+                                <th style="text-align: end;">{{ number_format($avg_pas_plan_all, 2) }}</th>
+                                <th style="text-align: end;">{{ number_format($avg_pas_actual_all, 2) }}</th>
+                                <th style="text-align: end;">{{ number_format($avg_uas_plan_all, 2) }}</th>
+                                <th style="text-align: end;">{{ number_format($avg_uas_actual_all, 2) }}</th>
+
+                                <th colspan="4"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="4"></th>
                             </tr>
                         </tfoot>
                     </table>

@@ -1339,6 +1339,8 @@ class ReportService
         // dd($totalindexfinancial, $resultIPP, $totalresultcp, $totalindexlearning);
 
         return compact(
+            //ua
+            'totalplanuaunithauler',
             //total 
             'totalresult',
             'resultIPP',

@@ -17,7 +17,7 @@
                 <!-- </a> -->
                 <h2 class="text-center mb-4">&</h2>
 
-                <!-- <a href="/indexproduksiua" class="cardcost text-decoration-none"> -->
+                <!-- <a href="/indexproduksipa" class="cardcost text-decoration-none"> -->
                 <h2>UA</h2>
                 <!-- </a> -->
             </div>
@@ -121,7 +121,7 @@
                     <h3 class="section-title">{{ !empty($item['units']) ? $item['units'] : 'No data available' }} UA</h3>
                     <div class="metrics-grid">
                         <div class="metric">
-                            <a href="/indexproduksiua" class="cardcost text-decoration-none">
+                            <a href="/indexproduksipa" class="cardcost text-decoration-none">
                                 <h4>Plan </h4>
                             </a>
                             <div class="percentage-box">
@@ -134,7 +134,7 @@
                             </div>
                         </div>
                         <div class="metric">
-                            <a href="/indexproduksiua" class="cardcost text-decoration-none">
+                            <a href="/indexproduksipa" class="cardcost text-decoration-none">
                                 <h4>Actual </h4>
                             </a>
                             <div class="percentage-box">
@@ -153,7 +153,7 @@
                     <h3 class="section-title">No data available UA</h3>
                     <div class="metrics-grid">
                         <div class="metric">
-                            <a href="/indexproduksiua" class="cardcost text-decoration-none">
+                            <a href="/indexproduksipa" class="cardcost text-decoration-none">
                                 <h4>Plan </h4>
                             </a>
                             <div class="percentage-box">
@@ -161,7 +161,7 @@
                             </div>
                         </div>
                         <div class="metric">
-                            <a href="/indexproduksiua" class="cardcost text-decoration-none">
+                            <a href="/indexproduksipa" class="cardcost text-decoration-none">
                                 <h4>Actual </h4>
                             </a>
                             <div class="percentage-box">

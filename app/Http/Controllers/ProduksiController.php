@@ -130,187 +130,282 @@ class ProduksiController extends Controller
         return view('PA_UA.index', compact('dataPas', 'dataUas', 'totalsPas', 'totalsUas', 'startDate', 'endDate', 'perusahaans', 'companyId'));
     }
 
-    public function indexproduksiua(Request $request)
-    {
-        $user = Auth::user();
+    // public function indexproduksiua(Request $request)
+    // {
+    //     $user = Auth::user();
 
-        $tahun = Carbon::now()->year;
-        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
-        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
-        $companyId = $request->input('id_company');
-        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
-        $query = DB::table('produksi_uas')
-            ->join('units', 'produksi_uas.unit_id', '=', 'units.id')
-            ->join('users', 'produksi_uas.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-            ->select(
-                'produksi_uas.*',
-                'units.unit as units'
-            );
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
-        }
-        if (!$startDate || !$endDate) {
-            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
-            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
-        } else {
-            $startDate = Carbon::parse($startDate)->startOfDay();
-            $endDate = Carbon::parse($endDate)->endOfDay();
-        }
-        $query->whereBetween('produksi_uas.date', [$startDate, $endDate]);
+    //     $tahun = Carbon::now()->year;
+    //     $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+    //     $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
+    //     $companyId = $request->input('id_company');
+    //     $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+    //     $query = DB::table('produksi_uas')
+    //         ->join('units', 'produksi_uas.unit_id', '=', 'units.id')
+    //         ->join('users', 'produksi_uas.created_by', '=', 'users.username')
+    //         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+    //         ->select(
+    //             'produksi_uas.*',
+    //             'units.unit as units'
+    //         );
+    //     if ($user->role !== 'admin') {
+    //         $query->where('users.id_company', $user->id_company);
+    //     } else {
+    //         if ($companyId) {
+    //             $query->where('users.id_company', $companyId);
+    //         } else {
+    //             $query->whereRaw('users.id_company', $companyId);
+    //         }
+    //     }
+    //     if (!$startDate || !$endDate) {
+    //         $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+    //         $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+    //     } else {
+    //         $startDate = Carbon::parse($startDate)->startOfDay();
+    //         $endDate = Carbon::parse($endDate)->endOfDay();
+    //     }
+    //     $query->whereBetween('produksi_uas.date', [$startDate, $endDate]);
 
 
-        $data = $query->orderBy('units.unit')
-            ->get()
-            ->groupBy('units');
-        $data->each(function ($items) {
-            $items->each(function ($item) {
-                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
-            });
-        });
-        $totals = $data->map(function ($items, $category) {
-            // Hitung total_plan dan total_actual
-            $totalPlan = $items->sum(function ($item) {
-                return (float)str_replace(',', '', $item->plan ?? 0);
-            });
-            $totalActual = $items->sum(function ($item) {
-                return (float)str_replace(',', '', $item->actual ?? 0);
-            });
-            $count = $items->count();
+    //     $data = $query->orderBy('units.unit')
+    //         ->get()
+    //         ->groupBy('units');
+    //     $data->each(function ($items) {
+    //         $items->each(function ($item) {
+    //             $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+    //         });
+    //     });
+    //     $totals = $data->map(function ($items, $category) {
+    //         // Hitung total_plan dan total_actual
+    //         $totalPlan = $items->sum(function ($item) {
+    //             return (float)str_replace(',', '', $item->plan ?? 0);
+    //         });
+    //         $totalActual = $items->sum(function ($item) {
+    //             return (float)str_replace(',', '', $item->actual ?? 0);
+    //         });
+    //         $count = $items->count();
 
-            return [
-                'units' => $category, // Nama grup dari groupBy
-                'total_plan' => $totalPlan,
-                'total_actual' => $totalActual,
-                'avg_uas_plan' => $count > 0 ? floor($totalPlan / $count * 100) / 100 : 0,
-                'avg_uas_actual' => $count > 0 ? floor($totalActual / $count * 100) / 100 : 0,
+    //         return [
+    //             'units' => $category, // Nama grup dari groupBy
+    //             'total_plan' => $totalPlan,
+    //             'total_actual' => $totalActual,
+    //             'avg_uas_plan' => $count > 0 ? floor($totalPlan / $count * 100) / 100 : 0,
+    //             'avg_uas_actual' => $count > 0 ? floor($totalActual / $count * 100) / 100 : 0,
 
-                'details' => $items,
-            ];
-        });
-        $allItems = $data->flatten();
+    //             'details' => $items,
+    //         ];
+    //     });
+    //     $allItems = $data->flatten();
 
-        $totalPlanAll = $allItems->sum(function ($item) {
-            return (float)str_replace(',', '', $item->plan ?? 0);
-        });
+    //     $totalPlanAll = $allItems->sum(function ($item) {
+    //         return (float)str_replace(',', '', $item->plan ?? 0);
+    //     });
 
-        $totalActualAll = $allItems->sum(function ($item) {
-            return (float)str_replace(',', '', $item->actual ?? 0);
-        });
+    //     $totalActualAll = $allItems->sum(function ($item) {
+    //         return (float)str_replace(',', '', $item->actual ?? 0);
+    //     });
 
-        $totalCount = $allItems->count();
+    //     $totalCount = $allItems->count();
 
-        $avg_uas_plan_all = $totalCount > 0 ? floor($totalPlanAll / $totalCount * 100) / 100 : 0;
-        $avg_uas_actual_all = $totalCount > 0 ? floor($totalActualAll / $totalCount * 100) / 100 : 0;
-        return view('PA_UA.indexua', compact(
-            'data',
-            'startDate',
-            'endDate',
-            'totals',
-            'perusahaans',
-            'companyId',
-            'avg_uas_plan_all',
-            'avg_uas_actual_all',
-        ));
-    }
+    //     $avg_uas_plan_all = $totalCount > 0 ? floor($totalPlanAll / $totalCount * 100) / 100 : 0;
+    //     $avg_uas_actual_all = $totalCount > 0 ? floor($totalActualAll / $totalCount * 100) / 100 : 0;
+    //     return view('PA_UA.indexua', compact(
+    //         'data',
+    //         'startDate',
+    //         'endDate',
+    //         'totals',
+    //         'perusahaans',
+    //         'companyId',
+    //         'avg_uas_plan_all',
+    //         'avg_uas_actual_all',
+    //     ));
+    // }
+
+    // public function indexproduksipa(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $tahun = Carbon::now()->year;
+    //     $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
+    //     $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
+    //     $companyId = $request->input('id_company');
+    //     $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+    //     $query = DB::table('produksi_pas')
+    //         ->join('units', 'produksi_pas.unit_id', '=', 'units.id')
+    //         ->join('users', 'produksi_pas.created_by', '=', 'users.username')
+    //         ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
+    //         ->select(
+    //             'produksi_pas.*',
+    //             'produksi_pas.id as id_pa',
+    //             'units.*',
+    //             'units.unit as units'
+    //         );
+    //     if ($user->role !== 'admin') {
+    //         $query->where('users.id_company', $user->id_company);
+    //     } else {
+    //         if ($companyId) {
+    //             $query->where('users.id_company', $companyId);
+    //         } else {
+    //             $query->whereRaw('users.id_company', $companyId);
+    //         }
+    //     }
+    //     if (!$startDate || !$endDate) {
+    //         $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+    //         $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+    //     } else {
+    //         $startDate = Carbon::parse($startDate)->startOfDay();
+    //         $endDate = Carbon::parse($endDate)->endOfDay();
+    //     }
+    //     $query->whereBetween('produksi_pas.date', [$startDate, $endDate]);
+
+
+    //     $data = $query->orderBy('units.unit')
+    //         ->get()
+    //         ->groupBy('units');
+    //     $data->each(function ($items) {
+    //         $items->each(function ($item) {
+    //             $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
+    //         });
+    //     });
+    //     $totals = $data->map(function ($items, $category) {
+    //         // Hitung total_plan dan total_actual
+    //         $totalPlan = $items->sum(function ($item) {
+    //             return (float)str_replace(',', '', $item->plan ?? 0);
+    //         });
+    //         $totalActual = $items->sum(function ($item) {
+    //             return (float)str_replace(',', '', $item->actual ?? 0);
+    //         });
+    //         $count = $items->count();
+
+    //         return [
+    //             'units' => $category, // Nama grup dari groupBy
+    //             'total_plan' => $totalPlan,
+    //             'total_actual' => $totalActual,
+    //             'avg_pas_plan' => $count > 0 ? floor($totalPlan / $count * 100) / 100  : 0,
+    //             'avg_pas_actual' => $count > 0 ? floor($totalActual / $count * 100) / 100 : 0,
+
+    //             'details' => $items,
+    //         ];
+    //     });
+    //     $allItems = $data->flatten();
+
+    //     $totalPlanAll = $allItems->sum(function ($item) {
+    //         return (float)str_replace(',', '', $item->plan ?? 0);
+    //     });
+
+    //     $totalActualAll = $allItems->sum(function ($item) {
+    //         return (float)str_replace(',', '', $item->actual ?? 0);
+    //     });
+
+    //     $totalCount = $allItems->count();
+
+    //     $avg_pas_plan_all = $totalCount > 0 ? floor($totalPlanAll / $totalCount * 100) / 100 : 0;
+    //     $avg_pas_actual_all = $totalCount > 0 ? floor($totalActualAll / $totalCount * 100) / 100 : 0;
+    //     return view('PA_UA.indexpa', compact(
+    //         'data',
+    //         'startDate',
+    //         'endDate',
+    //         'totals',
+    //         'perusahaans',
+    //         'companyId',
+    //         'avg_pas_plan_all',
+    //         'avg_pas_actual_all',
+    //     ));
+    // }
+
 
     public function indexproduksipa(Request $request)
-    {
-        $user = Auth::user();
-        $tahun = Carbon::now()->year;
-        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : null;
-        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : null;
-        $companyId = $request->input('id_company');
-        $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+{
+    $user = Auth::user();
+    $tahun = Carbon::now()->year;
 
-        $query = DB::table('produksi_pas')
-            ->join('units', 'produksi_pas.unit_id', '=', 'units.id')
-            ->join('users', 'produksi_pas.created_by', '=', 'users.username')
-            ->join('perusahaans', 'users.id_company', '=', 'perusahaans.id')
-            ->select(
-                'produksi_pas.*',
-                'produksi_pas.id as id_pa',
-                'units.*',
-                'units.unit as units'
-            );
-        if ($user->role !== 'admin') {
-            $query->where('users.id_company', $user->id_company);
-        } else {
-            if ($companyId) {
-                $query->where('users.id_company', $companyId);
-            } else {
-                $query->whereRaw('users.id_company', $companyId);
-            }
+    $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date'))->startOfDay() : Carbon::createFromDate($tahun, 1, 1)->startOfDay();
+    $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date'))->endOfDay() : Carbon::createFromDate($tahun, 12, 31)->endOfDay();
+    $companyId = $request->input('id_company');
+    $perusahaans = DB::table('perusahaans')->select('id', 'nama')->get();
+
+    // Query PA
+    $queryPA = DB::table('produksi_pas')
+        ->join('units', 'produksi_pas.unit_id', '=', 'units.id')
+        ->join('users', 'produksi_pas.created_by', '=', 'users.username')
+        ->select('produksi_pas.*', 'units.unit', 'units.id as unit_id', DB::raw("'pa' as sumber"))
+        ->whereBetween('produksi_pas.date', [$startDate, $endDate]);
+
+    // Query UA
+    $queryUA = DB::table('produksi_uas')
+        ->join('units', 'produksi_uas.unit_id', '=', 'units.id')
+        ->join('users', 'produksi_uas.created_by', '=', 'users.username')
+        ->select('produksi_uas.*', 'units.unit', 'units.id as unit_id', DB::raw("'ua' as sumber"))
+        ->whereBetween('produksi_uas.date', [$startDate, $endDate]);
+
+    // Filter by company
+    if ($user->role !== 'admin') {
+        $queryPA->where('users.id_company', $user->id_company);
+        $queryUA->where('users.id_company', $user->id_company);
+    } else {
+        if ($companyId) {
+            $queryPA->where('users.id_company', $companyId);
+            $queryUA->where('users.id_company', $companyId);
         }
-        if (!$startDate || !$endDate) {
-            $startDate = Carbon::createFromDate($tahun, 1, 1)->startOfDay();
-            $endDate = Carbon::createFromDate($tahun, 12, 31)->endOfDay();
-        } else {
-            $startDate = Carbon::parse($startDate)->startOfDay();
-            $endDate = Carbon::parse($endDate)->endOfDay();
-        }
-        $query->whereBetween('produksi_pas.date', [$startDate, $endDate]);
-
-
-        $data = $query->orderBy('units.unit')
-            ->get()
-            ->groupBy('units');
-        $data->each(function ($items) {
-            $items->each(function ($item) {
-                $item->file_extension = pathinfo($item->file ?? '', PATHINFO_EXTENSION);
-            });
-        });
-        $totals = $data->map(function ($items, $category) {
-            // Hitung total_plan dan total_actual
-            $totalPlan = $items->sum(function ($item) {
-                return (float)str_replace(',', '', $item->plan ?? 0);
-            });
-            $totalActual = $items->sum(function ($item) {
-                return (float)str_replace(',', '', $item->actual ?? 0);
-            });
-            $count = $items->count();
-
-            return [
-                'units' => $category, // Nama grup dari groupBy
-                'total_plan' => $totalPlan,
-                'total_actual' => $totalActual,
-                'avg_pas_plan' => $count > 0 ? floor($totalPlan / $count * 100) / 100  : 0,
-                'avg_pas_actual' => $count > 0 ? floor($totalActual / $count * 100) / 100 : 0,
-
-                'details' => $items,
-            ];
-        });
-        $allItems = $data->flatten();
-
-        $totalPlanAll = $allItems->sum(function ($item) {
-            return (float)str_replace(',', '', $item->plan ?? 0);
-        });
-
-        $totalActualAll = $allItems->sum(function ($item) {
-            return (float)str_replace(',', '', $item->actual ?? 0);
-        });
-
-        $totalCount = $allItems->count();
-
-        $avg_pas_plan_all = $totalCount > 0 ? floor($totalPlanAll / $totalCount * 100) / 100 : 0;
-        $avg_pas_actual_all = $totalCount > 0 ? floor($totalActualAll / $totalCount * 100) / 100 : 0;
-        return view('PA_UA.indexpa', compact(
-            'data',
-            'startDate',
-            'endDate',
-            'totals',
-            'perusahaans',
-            'companyId',
-            'avg_pas_plan_all',
-            'avg_pas_actual_all',
-        ));
     }
+
+    $pasData = $queryPA->get();
+    $uaData = $queryUA->get();
+
+    // Group data gabungan untuk tampilan per unit
+    $merged = collect($pasData)->merge($uaData)->groupBy('unit');
+
+    $totals = $merged->map(function ($items, $unit) {
+        $pasItems = $items->where('sumber', 'pa');
+        $uaItems = $items->where('sumber', 'ua');
+
+        $countPA = $pasItems->count();
+        $countUA = $uaItems->count();
+
+        $planPA = $pasItems->sum(fn($i) => (float)str_replace(',', '', $i->plan));
+        $actualPA = $pasItems->sum(fn($i) => (float)str_replace(',', '', $i->actual));
+
+        $planUA = $uaItems->sum(fn($i) => (float)str_replace(',', '', $i->plan));
+        $actualUA = $uaItems->sum(fn($i) => (float)str_replace(',', '', $i->actual));
+
+        return [
+            'unit' => $unit,
+            'avg_pas_plan' => $countPA > 0 ? floor($planPA / $countPA * 100) / 100 : 0,
+            'avg_pas_actual' => $countPA > 0 ? floor($actualPA / $countPA * 100) / 100 : 0,
+            'avg_uas_plan' => $countUA > 0 ? floor($planUA / $countUA * 100) / 100 : 0,
+            'avg_uas_actual' => $countUA > 0 ? floor($actualUA / $countUA * 100) / 100 : 0,
+            'details' => $items,
+        ];
+    });
+
+    // ✅ Perhitungan total all PA
+    $allPA = collect($pasData);
+    $totalPlanAllPA = $allPA->sum(fn($item) => (float)str_replace(',', '', $item->plan));
+    $totalActualAllPA = $allPA->sum(fn($item) => (float)str_replace(',', '', $item->actual));
+    $totalCountPA = $allPA->count();
+    $avg_pas_plan_all = $totalCountPA > 0 ? floor($totalPlanAllPA / $totalCountPA * 100) / 100 : 0;
+    $avg_pas_actual_all = $totalCountPA > 0 ? floor($totalActualAllPA / $totalCountPA * 100) / 100 : 0;
+
+    // ✅ Perhitungan total all UA
+    $allUA = collect($uaData);
+    $totalPlanAllUA = $allUA->sum(fn($item) => (float)str_replace(',', '', $item->plan));
+    $totalActualAllUA = $allUA->sum(fn($item) => (float)str_replace(',', '', $item->actual));
+    $totalCountUA = $allUA->count();
+    $avg_uas_plan_all = $totalCountUA > 0 ? floor($totalPlanAllUA / $totalCountUA * 100) / 100 : 0;
+    $avg_uas_actual_all = $totalCountUA > 0 ? floor($totalActualAllUA / $totalCountUA * 100) / 100 : 0;
+
+    return view('PA_UA.indexpa', compact(
+        'startDate',
+        'endDate',
+        'perusahaans',
+        'companyId',
+        'totals',
+        'avg_pas_plan_all',
+        'avg_pas_actual_all',
+        'avg_uas_plan_all',
+        'avg_uas_actual_all',
+    ));
+}
+
 
 
     public function unit()
@@ -431,7 +526,7 @@ class ProduksiController extends Controller
             'user_id' => auth()->id(),
         ]);
         if ($request->input('action') == 'save') {
-            return redirect('/indexproduksiua')->with('success', 'Data added successfully.');
+            return redirect('/indexproduksipa')->with('success', 'Data added successfully.');
         }
 
         return redirect()->back()->with('success', 'Data added successfully.');
@@ -609,7 +704,7 @@ class ProduksiController extends Controller
             'new_data' => json_encode($validatedData),
             'user_id' => auth()->id(),
         ]);
-        return redirect('/indexproduksiua')->with('success', 'Data saved successfully.');
+        return redirect('/indexproduksipa')->with('success', 'Data saved successfully.');
     }
 
     public function deleteproduksipa($id_pa)

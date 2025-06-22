@@ -962,7 +962,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Plan</td>
-                                        <td>{{ number_format($data['totalactualunithauler'], 2) }}%</td>
+                                        <td>{{ number_format($data['totalplanuaunithauler'], 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Actual</td>
