@@ -462,11 +462,19 @@ class ReportService
         // dd($indexmodalhutangactual,$actualreturnonequaity,$persenmodalhutangplan);
         $resultequity = round($indexmodalhutangactual * ($weightmodalhutang / 100), 2);
         $persenactualrevenue = ($ongkosactual != 0) ? ($totalRevenuea / $ongkosactual) * 100 : 0; /* revenue*/
-        $indexrevenue = ($persenrevenue == 0) ? 0 : floor(min(1.9, max(0, $persenactualrevenue / $persenrevenue)) * 10000) / 100;
+        $indexrevenue = ($persenrevenue == 0)
+            ? 0
+            : floor(min(1.9, max(0, $persenactualrevenue / $persenrevenue)) * 10000) / 100;
+
+        // $indexrevenue = ($persenrevenue == 0) ? 0 : floor(min(1.9, max(0, $persenactualrevenue / $persenrevenue)) * 10000) / 100;
         // dd($indexrevenue,$persenactualrevenue,$persenrevenue,$totalRevenuep,$ongkosplan);
         $resultrevenue = round($indexrevenue *  ($weightrevenue / 100), 2);
         $persenactualcogs = ($ongkosactual != 0) ? round(($totalactualcogas / $ongkosactual) * 100, 2) : 0;/* cogs*/
-        $indexcogs = ($persencogs == 0) ? 0 : floor(min(1.9, max(0, $persenactualcogs / $persencogs)) * 10000) / 100;
+        // $indexcogs = ($persencogs == 0) ? 0 : floor(min(1.9, max(0, $persenactualcogs / $persencogs)) * 10000) / 100;
+        $indexcogs = ($persencogs == 0)
+            ? 0
+            : floor(min(1.9, max(0, $persenactualcogs / $persencogs)) * 10000) / 100;
+
         $resultcogs = round($indexcogs * ($weightcogs / 100), 2);
         $persenactualprofitmg = ($ongkosactual != 0) ? ($totalactuallr / $ongkosactual) * 100 : 0;/* profit margin*/
         $indexprofitmg = ($persenprofitmargin == 0) ? 0 : round(min(1.9, max(0, $persenactualprofitmg / $persenprofitmargin)) * 100, 2);
@@ -492,7 +500,11 @@ class ReportService
         $indexoperasionalpmg = ($persenoperatingprofitmargin == 0) ? 0 : floor(min(1.9, max(0, $persenactualoperasionalpmg / $persenoperatingprofitmargin)) * 1000) / 100;
         $resultgrosspm = round($indexoperasionalpmg * ($weightopratingmg / 100), 2);
         $persenactualnetprofitmg = ($ongkosactual != 0) ? ($actuallb / $ongkosactual) * 100 : 0;/*net profit*/
-        $indexnetprofitmg = ($persennetprofitmargin == 0) ? 0 : floor(min(1.9, max(0, $persenactualnetprofitmg / $persennetprofitmargin)) * 1000) / 100;
+        // $indexnetprofitmg = ($persennetprofitmargin == 0) ? 0 : floor(min(1.9, max(0, $persenactualnetprofitmg / $persennetprofitmargin)) * 1000) / 100;
+        $indexnetprofitmg = ($persennetprofitmargin == 0)
+            ? 0
+            : floor(min(1.9, max(0, $persenactualnetprofitmg / $persennetprofitmargin)) * 10000) / 100;
+
         $resultnetpm = round($indexnetprofitmg * ($weightnetprofitmargin / 100), 2);
         //financial perspectif 
         $totalindexfinancial = $resultrevenue + $resultcogs + $resultemploye + $resultcsr + $resultgrosspm + $ressultoperasionalcost + $resultoperatingpm + $resultnetpm + $resultasset + $resultequity;
