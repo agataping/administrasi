@@ -227,7 +227,7 @@
                             <td>Return On Assets</td>
                             <td>{{ number_format($data['weightasset'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['persenassetplan'], 2, ',', '.') }}%</td>
-                            <td>{{ number_format($data['totalactualasset'], 2, ',', '.') }}%</td>
+                            <td>{{ number_format($data['actualreturnonasset'], 2, ',', '.') }}%</td>
                             <td>{{ number_format($data['indexactualasset'], 2, ',', '.') }}%</td>
                             <td> {{ $data['resultasset'] < 0 ? '0,00%' : number_format($data['resultasset'], 2, ',', '.') . '%' }}</td>
                         </tr>
