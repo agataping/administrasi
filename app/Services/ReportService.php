@@ -423,7 +423,9 @@ class ReportService
         // dd( $weightprofitmargin,$persenprofitmargin,$ongkosplan,$totalplanlr);
 
         $persencostemploye = ($ongkosplan != 0) ? ($totplansalary / $ongkosplan) * 100 : 0;/* saleri cost employe*/
-        $weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
+        // $weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
+                $weightcostemploye = round (($persencostemploye * 0.35),2);
+
         $persencsr = ($ongkosplan != 0) ? ($totplanscsr / $ongkosplan) * 100 : 0;/* csr*/
         $weightcsr = round(($persencsr * 0.35), 2);
         // dd($totplanscsr,$ongkosplan,$persencsr);
