@@ -424,7 +424,7 @@ class ReportService
 
         $persencostemploye = ($ongkosplan != 0) ? round(($totplansalary / $ongkosplan) * 100, 2) : 0;/* saleri cost employe*/
         $weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
-        $persencsr = ($ongkosplan != 0) ? round(($totplanscsr / $ongkosplan) * 100, 2) : 0;/* csr*/
+        $persencsr = ($ongkosplan != 0) ? ($totplanscsr / $ongkosplan) * 100 : 0;/* csr*/
         $weightcsr = round(($persencsr * 0.35), 2);
         // dd($totplanscsr,$ongkosplan,$persencsr);
         // dd($ongkosplan);
@@ -471,7 +471,7 @@ class ReportService
         $indexcostemlpoye = ($persencostemploye == 0) ? 0 : floor(min(1.9, max(0, $pserenactualcostemploye / $persencostemploye)) * 1000) / 100;
 
         $resultemploye = round($indexcostemlpoye * ($weightcostemploye / 100), 2);
-        $persenactualcsr = ($ongkosactual != 0) ? round(($totactualscsr / $ongkosactual) * 100, 2) : 0;/* csr*/
+        $persenactualcsr = ($ongkosactual != 0) ? ($totactualscsr / $ongkosactual) * 100 : 0;/* csr*/
         $indexcsr = ($persencsr == 0) ? 0 : floor(min(1.9, max(0, $persenactualcsr / $persencsr)) * 10000) / 100;
         $resultcsr = round($indexcsr *  ($weightcsr / 100), 2);
         // dd($indexcsr,$persencsr,$persenactualcsr);
