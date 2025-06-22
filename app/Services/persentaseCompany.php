@@ -462,7 +462,7 @@ class persentaseCompany
         $indexcostemlpoye = ($persencostemploye == 0) ? 0 : floor(min(1.9, max(0, $pserenactualcostemploye / $persencostemploye)) * 1000) / 100;
 
         $resultemploye = round($indexcostemlpoye * ($weightcostemploye / 100), 2);
-        $persenactualcsr = ($ongkosactual != 0) ? round(($totactualscsr / $ongkosactual) * 100, 2) : 0;/* csr*/
+        $persenactualcsr = ($ongkosactual != 0) ? ($totactualscsr / $ongkosactual) * 100 : 0;/* csr*/
         // $indexcsr = ($persencsr != 0) ? round(($persenactualcsr / $persencsr) * 100, 2) : 0;
         $indexcsr = ($persencsr == 0) ? 0 : floor(min(1.9, max(0, $persenactualcsr / $persencsr)) * 10000) / 100;
 
