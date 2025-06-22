@@ -416,15 +416,15 @@ class ReportService
         $persenrevenue = ($ongkosplan != 0) ? ($totalRevenuep / $ongkosplan) * 100 : 0;/* revenue*/
         $weightrevenue = round(($persenrevenue * 0.35), 2);
         // dd($persenrevenue,$weightrevenue);
-        $persencogs = ($ongkosplan != 0) ? ($totalplancogas / $ongkosplan) * 100: 0;/* cogs*/
+        $persencogs = ($ongkosplan != 0) ? ($totalplancogas / $ongkosplan) * 100 : 0;/* cogs*/
         $weightcogs = round(($persencogs * 0.35), 2);
-        $persenprofitmargin = ($ongkosplan != 0) ?($totalplanlr / $ongkosplan) * 100 : 0;/* profit margin*/
+        $persenprofitmargin = ($ongkosplan != 0) ? ($totalplanlr / $ongkosplan) * 100 : 0;/* profit margin*/
         $weightprofitmargin = round(($persenprofitmargin * 0.35), 2);
         // dd( $weightprofitmargin,$persenprofitmargin,$ongkosplan,$totalplanlr);
 
         $persencostemploye = ($ongkosplan != 0) ? ($totplansalary / $ongkosplan) * 100 : 0;/* saleri cost employe*/
         // $weightcostemploye = round(($persencostemploye / 35.00) * 100, 2);
-                $weightcostemploye = round (($persencostemploye * 0.35),2);
+        $weightcostemploye = round(($persencostemploye * 0.35), 2);
 
         $persencsr = ($ongkosplan != 0) ? ($totplanscsr / $ongkosplan) * 100 : 0;/* csr*/
         $weightcsr = round(($persencsr * 0.35), 2);
@@ -442,16 +442,20 @@ class ReportService
         // Perhitungan persen actual dan index result (index * weight)
         $actualreturnonasset = ($ongkosactual != 0) ? ($totalactualasset / $ongkosactual) * 100 : 0;/* asset*/
         $persenactualasset = ($totalactualasset != 0) ? ($totalactuallb / $totalactualasset) * 100 : 0;/* asset*/
-        $indexactualasset = ($actualreturnonasset == 0) ? 0 : floor(min(1.9, max(0, $persenassetplan / $actualreturnonasset)) * 1000) / 100;
+        $indexactualasset = ($actualreturnonasset == 0)
+            ? 0
+            : floor(min(1.9, max(0, $persenassetplan / $actualreturnonasset)) * 10000) / 100;
 
         // $indexactualasset = ($actualreturnonasset != 0) ? round(($persenassetplan / $actualreturnonasset) * 100, 2) : 0;
         // dd( $actualreturnonasset,$indexactualasset,$ongkosactual,$totalactualasset);
         // dd($totalactualasset, $ongkosactual,$actualreturnonasset);
 
         $resultasset = round($indexactualasset * ($weightasset / 100), 2);
-        $actualreturnonequaity = ($ongkosactual != 0) ?($totalactualequity / $ongkosactual) * 100: 0;/* liabiliti equity*/
+        $actualreturnonequaity = ($ongkosactual != 0) ? ($totalactualequity / $ongkosactual) * 100 : 0;/* liabiliti equity*/
         $persenactualmodalhutang = ($totalactualequity != 0) ? ($totalactuallb / $totalactualequity) * 100 : 0;/* liabiliti equity*/
-        $indexmodalhutangactual = ($actualreturnonequaity == 0) ? 0 : floor(min(1.9, max(0, $persenmodalhutangplan / $actualreturnonequaity)) * 1000) / 100;
+        $indexmodalhutangactual = ($actualreturnonequaity == 0)
+            ? 0
+            : floor(min(1.9, max(0, $persenmodalhutangplan / $actualreturnonequaity)) * 10000) / 100;
         // $indexmodalhutangactual = ($persenmodalhutangplan != 0) ? round(($actualreturnonequaity / $persenmodalhutangplan) * 100, 2) : 0;
         // dd( $indexmodalhutangactual,$persenmodalhutangplan,$actualreturnonequaity,$persenmodalhutangplan);
 
@@ -470,7 +474,9 @@ class ReportService
 
         $resultoperatingpm = round($indexprofitmg * ($weightprofitmargin / 100), 2);
         $pserenactualcostemploye = ($ongkosactual != 0) ? ($totactualsalary / $ongkosactual) * 100 : 0;/* saleri cost employe*/
-        $indexcostemlpoye = ($persencostemploye == 0) ? 0 : floor(min(1.9, max(0, $pserenactualcostemploye / $persencostemploye)) * 1000) / 100;
+        $indexcostemlpoye = ($persencostemploye == 0)
+            ? 0
+            : floor(min(1.9, max(0, $pserenactualcostemploye / $persencostemploye)) * 10000) / 100;
 
         $resultemploye = round($indexcostemlpoye * ($weightcostemploye / 100), 2);
         $persenactualcsr = ($ongkosactual != 0) ? ($totactualscsr / $ongkosactual) * 100 : 0;/* csr*/
@@ -478,7 +484,9 @@ class ReportService
         $resultcsr = round($indexcsr *  ($weightcsr / 100), 2);
         // dd($indexcsr,$persencsr,$persenactualcsr);
         $persenactualoperatincost = ($ongkosactual != 0) ? ($actualoperasional / $ongkosactual) * 100 : 0;/*operasional cost*/
-        $indexoperatingcost = ($persenopratingcost == 0) ? 0 : floor(min(1.9, max(0, $persenactualoperatincost / $persenopratingcost)) * 1000) / 100;
+        $indexoperatingcost = ($persenopratingcost == 0)
+            ? 0
+            : floor(min(1.9, max(0, $persenactualoperatincost / $persenopratingcost)) * 10000) / 100;
         $ressultoperasionalcost = round($indexoperatingcost * ($weightopratingcost / 100), 2);
         $persenactualoperasionalpmg = ($ongkosactual != 0) ? ($totalactualOp / $ongkosactual) * 100 : 0;/* opersional profit mg*/
         $indexoperasionalpmg = ($persenoperatingprofitmargin == 0) ? 0 : floor(min(1.9, max(0, $persenactualoperasionalpmg / $persenoperatingprofitmargin)) * 1000) / 100;
